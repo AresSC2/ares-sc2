@@ -1,3 +1,5 @@
+[![Linting](https://github.com/AresSC2/ares-sc2/actions/workflows/lint.yml/badge.svg)](https://github.com/AresSC2/ares-sc2/actions/workflows/lint.yml)
+
 # ares-sc2
 
 ## Dev notes (all to go in docs when ready):
