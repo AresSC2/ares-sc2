@@ -14,5 +14,17 @@ lint-mypy:
 lint-mypy-report:
 	@mypy ./src --html-report ./mypy_html
 
+unit-tests:
+	@pytest
+unit-tests-cov:
+	@pytest --cov=src --cov-report term-missing --cov-report=html
+unit-tests-cov-fail:
+	@pytest --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=pytest.xml | tee pytest-coverage.txt
+clean-cov:
+	@rm -rf .coverage
+	@rm -rf htmlcov
+	@rm -rf pytest.xml
+	@rm -rf pytest-coverage.txt
+
 format: format-black format-isort
 lint: lint-black lint-isort lint-flake8 lint-mypy
