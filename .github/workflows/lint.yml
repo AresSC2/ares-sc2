@@ -28,7 +28,7 @@ jobs:
           cache: 'poetry'
       # install requirements (including dev dependencies)
       - name: Install requirements
-        run: poetry install --only lint
+        run: poetry install --only lint --no-root
       # run linters
       - name: Run linters
         run: |
