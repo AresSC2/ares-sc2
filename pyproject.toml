@@ -12,13 +12,54 @@ license = "MIT"
 [tool.poetry.dependencies]
 python = "^3.9"
 
-
 [tool.poetry.group.lint.dependencies]
 isort = "^5.11.4"
 black = "^22.12.0"
 flake8 = "^6.0.0"
 mypy = "^0.991"
 
+[tool.poetry.group.test.dependencies]
+pytest = "^7.2.1"
+pytest-cov = "^4.0.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.report]
+exclude_lines = [
+    'if __name__ == "__main__":'
+]
+
+[tool.pytest.ini_options]
+testpaths = ["src", "tests"]
+addopts = "-p no:cacheprovider" # deactivating pytest caching.
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+# 3rd party import
+ignore_missing_imports = true
+# dynamic typing
+disallow_any_unimported = true
+disallow_any_expr = false
+disallow_any_decorated = false
+disallow_any_explicit = true
+disallow_any_generics = false
+disallow_subclassing_any = false
+# platform
+python_version = "3.10"
+# untyped
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+# None and Optionalpytes
+no_implicit_optional = true
+# Warnings
+warn_return_any = false
+warn_unreachable = true
+# Misc
+pretty = true
+exclude = "src/ares/docstring_test.py"
