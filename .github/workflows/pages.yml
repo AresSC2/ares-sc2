@@ -1,0 +1,33 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-documentation:
+    runs-on: ubuntu-latest
+    steps:
+      # check-out repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      # install poetry
+      - name: Install poetry
+        run: pipx install poetry==1.2.0
+      # set-up python with cache
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
+      # install requirements (including dev dependencies)
+      - name: Install requirements
+        run: poetry install --only docs
+      # build & deploy docs
+      - name: Build docs
+        run: |
+          set -o pipefail
+          poetry run make docs-deploy

@@ -1,0 +1,13 @@
+site_name: Ares SC2
+
+theme:
+  name: "material"
+
+nav:
+  - Index Page: index.md
+  - Dev Guide: dev-guide.md
+  - Tutorials: tutorials.md
+  - Reference: reference.md
+
+# to navigate with `/site` content correctly
+use_directory_urls: false
