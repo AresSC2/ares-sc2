@@ -15,9 +15,9 @@ lint-mypy-report:
 	@mypy ./src --html-report ./mypy_html
 
 unit-tests:
-	@pytest
+	@pytest --doctest-modules
 unit-tests-cov:
-	@pytest --cov=src --cov-report term-missing --cov-report=html
+	@pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html
 unit-tests-cov-fail:
 	@pytest --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=pytest.xml | tee pytest-coverage.txt
 clean-cov:

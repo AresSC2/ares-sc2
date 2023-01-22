@@ -26,6 +26,7 @@ pytest-cov = "^4.0.0"
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.4.2"
 mkdocs-material = "^9.0.6"
+mkdocstrings = {extras = ["python"], version = "^0.20.0"}
 
 [build-system]
 requires = ["poetry-core"]
@@ -67,4 +68,5 @@ warn_return_any = false
 warn_unreachable = true
 # Misc
 pretty = true
-exclude = "src/ares/docstring_test.py"
+# This file will be removed later
+exclude = "src/ares/example_docstrings.py"
