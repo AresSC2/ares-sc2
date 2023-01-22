@@ -28,7 +28,7 @@ jobs:
           cache: 'poetry'
       # install requirements (including dev dependencies)
       - name: Install requirements
-        run: poetry install --only docs
+        run: poetry install --only docs --no-root
       # build & deploy docs
       - name: Build docs
         run: |
