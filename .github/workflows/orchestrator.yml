@@ -1,0 +1,21 @@
+name: Orchestrator
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  call-testing-pipeline:
+    name: Testing
+    uses: ./.github/workflows/test.yml
+  call-linting-pipeline:
+    name: Linting
+    uses: ./.github/workflows/lint.yml
+  call-release-pipeline:
+    name: Release
+    needs:
+      - call-testing-pipeline
+      - call-linting-pipeline
+    uses: ./.github/workflows/release.yml
+    secrets: inherit

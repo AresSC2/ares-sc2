@@ -28,6 +28,10 @@ mkdocs = "^1.4.2"
 mkdocs-material = "^9.0.6"
 mkdocstrings = {extras = ["python"], version = "^0.20.0"}
 
+
+[tool.poetry.group.semver.dependencies]
+python-semantic-release = "^7.33.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -70,3 +74,16 @@ warn_unreachable = true
 pretty = true
 # This file will be removed later
 exclude = "src/ares/example_docstrings.py"
+
+[tool.semantic_release]
+branch = "main"
+version_variable = "src/ares/__init__.py:__version__"
+version_toml = "pyproject.toml:tool.poetry.version"
+version_source = "tag"
+commit_version_number = true # required for version_source = "tag"
+tag_commit = true
+# might want these true later
+upload_to_pypi = false
+upload_to_release = false
+hvcs = "github"
+commit_message = "{version} [skip ci]" # skip triggering ci pipelines for version commits
