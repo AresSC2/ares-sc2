@@ -86,3 +86,4 @@ tag_commit = true
 upload_to_pypi = false
 upload_to_release = false
 hvcs = "github"
+commit_message = "{version} [skip ci]" # skip triggering ci pipelines for version commits

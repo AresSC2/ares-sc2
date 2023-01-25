@@ -89,7 +89,7 @@ The rest of the commit message is then the description of the change, justificat
 Python Semantic Release will recognise the types of commits to automatically determine a new version
 
  - `fix:` commit is a PATCH
- - `fest:` commit is a MINOR
+ - `feat:` commit is a MINOR
  - `BREAKING CHANGE` or `!` is a MAJOR
  - `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:` do not increase version
 
