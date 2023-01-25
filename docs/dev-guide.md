@@ -56,12 +56,10 @@ to ensure the github lint workflow tests pass
 
 
 ### Git commit guidelines
-Following these guidelines is vital for the automatic releases
+See [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), all commits and PR's should follow
+these guidelines
 
-Commits should follow the 
-[Angular commit guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits).
-See more detailed guidelines 
-[here](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#)
+A github workflow is setup to enforce this, [see here](https://github.com/amannn/action-semantic-pull-request)
 
 Layout:
 ```
@@ -80,12 +78,6 @@ This is a very short description of the change.
  - don't capitalize first letter
  - no dot (.) at the end
 
-
-All breaking changes have to be mentioned as a breaking change block in the footer, 
-which should start with the word BREAKING CHANGE: with a space or two newlines. 
-The rest of the commit message is then the description of the change, justification and migration notes. 
-
-
 Python Semantic Release will recognise the types of commits to automatically determine a new version
 
  - `fix:` commit is a PATCH
@@ -94,6 +86,10 @@ Python Semantic Release will recognise the types of commits to automatically det
  - `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:` do not increase version
 
 A scope can also be added in parentheses. For example: `feat(combat): add kiting behavior`
+
+Example of breaking change commit message
+`feat(api)!: send an email to the customer when a product is shipped`
+
 
 #### Github workflow
 All formatters and linters are run in a github workflow, we use the `makefile` here.
