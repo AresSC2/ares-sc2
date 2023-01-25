@@ -33,7 +33,7 @@ jobs:
           cache: 'poetry'
       # install requirements
       - name: Install requirements
-        run: poetry install --only semver
+        run: poetry install --only semver --no-root
       # semantic release
       - name: Python Semantic Release
         env:

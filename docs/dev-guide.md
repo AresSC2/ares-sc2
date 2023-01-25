@@ -54,6 +54,47 @@ black, isort and flake8
 mypy - PyCharm will help with type annotations, just ensure they are being used, and run `mypy .` before committing
 to ensure the github lint workflow tests pass
 
+
+### Git commit guidelines
+Following these guidelines is vital for the automatic releases
+
+Commits should follow the 
+[Angular commit guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits).
+See more detailed guidelines 
+[here](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#)
+
+Layout:
+```
+<type>(<scope>): <subject>
+<BLANK LINE>
+<body>
+<BLANK LINE>
+<footer>
+```
+
+Commit message no longer than 100 characters (scope is optional)
+
+<subject> text
+This is a very short description of the change.
+ - use imperative, present tense: “change” not “changed” nor “changes”
+ - don't capitalize first letter
+ - no dot (.) at the end
+
+
+All breaking changes have to be mentioned as a breaking change block in the footer, 
+which should start with the word BREAKING CHANGE: with a space or two newlines. 
+The rest of the commit message is then the description of the change, justification and migration notes. 
+
+
+Python Semantic Release will recognise the types of commits to automatically determine a new version
+
+ - `fix:` commit is a PATCH
+ - `fest:` commit is a MINOR
+ - `BREAKING CHANGE` or `!` is a MAJOR
+ - `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:` do not increase version
+
+A scope can also be added in parentheses. For example: `feat(combat): add kiting behavior`
+
 #### Github workflow
 All formatters and linters are run in a github workflow, we use the `makefile` here.
 
@@ -126,46 +167,6 @@ Generate a new changelog:
 
 Publish a release:
 `semantic-release publish --noop`
-
-
-### Git commit guidelines
-Commits should follow the 
-[Angular commit guidelines](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits).
-See more detailed guidelines 
-[here](https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#)
-
-Layout:
-```
-<type>(<scope>): <subject>
-<BLANK LINE>
-<body>
-<BLANK LINE>
-<footer>
-```
-
-Commit message no longer than 100 characters (scope is optional)
-
-<subject> text
-This is a very short description of the change.
- - use imperative, present tense: “change” not “changed” nor “changes”
- - don't capitalize first letter
- - no dot (.) at the end
-
-
-All breaking changes have to be mentioned as a breaking change block in the footer, 
-which should start with the word BREAKING CHANGE: with a space or two newlines. 
-The rest of the commit message is then the description of the change, justification and migration notes. 
-
-
-Python Semantic Release will recognise the types of commits to automatically determine a new version
-
- - `fix:` commit is a PATCH
- - `fest:` commit is a MINOR
- - `BREAKING CHANGE` or `!` is a MAJOR
- - `build:`, `chore:`, `ci:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:` do not increase version
-
-A scope can also be added in parentheses. For example: `feat(combat): add kiting behavior.`
-
 
 ### Poetry
 Takes care of env, dependency, building and publishing
