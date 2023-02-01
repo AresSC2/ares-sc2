@@ -5,13 +5,13 @@ Used primarily for numerical tasks and iteration.
 """
 
 from typing import List, Set, Tuple, Union
-import numpy as np
 
+import numpy as np
 from sc2.position import Point2
 from sc2.unit import Unit
 
 def add_neighbors_to_ignore(
-        points_to_ignore: List[Union[Point2, Tuple[int, int]]]
+    points_to_ignore: List[Union[Point2, Tuple[int, int]]]
 ) -> Set[Tuple[int, int]]:
     """Given a list of points, add each point's neighbors for ease of ignoring.
 
@@ -31,7 +31,7 @@ def add_neighbors_to_ignore(
     ...
 
 def add_units_to_ignore(
-        units_to_avoid: List[Unit],
+    units_to_avoid: List[Unit],
 ) -> Set[Tuple[int, int]]:
     """Given a list of units, add each unit's position's neighbors for ease of ignoring.
 
@@ -49,7 +49,9 @@ def add_units_to_ignore(
     ...
 
 def all_points_below_max_value(
-        grid: np.ndarray, max_value: float, points_to_check: List[Union[Point2, Tuple[int, int], List[int]]]
+    grid: np.ndarray,
+    max_value: float,
+    points_to_check: List[Union[Point2, Tuple[int, int], List[int]]],
 ) -> bool:
     """Checks whether every point has a value on the grid equal to or below the maximum value.
 
@@ -72,9 +74,7 @@ def all_points_below_max_value(
     ...
 
 def all_points_have_value(
-        grid: np.ndarray,
-        value: int,
-        points: List[Union[List[int], Tuple[int, int]]]
+    grid: np.ndarray, value: int, points: List[Union[List[int], Tuple[int, int]]]
 ) -> bool:
     """Checks whether every point's value on the grid matches the desired value.
 
@@ -95,9 +95,8 @@ def all_points_have_value(
     """
     ...
 
-
 def get_bounding_box(
-        coordinates: List[Union[Point2, List[float], Tuple[float, float]]]
+    coordinates: List[Union[Point2, List[float], Tuple[float, float]]]
 ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
     """Given a list of coordinates, find a rectangle such that all points are contained in it.
 
@@ -118,7 +117,7 @@ def get_bounding_box(
     ...
 
 def get_neighbors8(
-        point: Union[Point2, List[float], Tuple[float, float]]
+    point: Union[Point2, List[float], Tuple[float, float]]
 ) -> Set[Tuple[float, float]]:
     """Get the 8 neighboring tiles of a single point.
 
@@ -135,11 +134,8 @@ def get_neighbors8(
     """
     ...
 
-
 def last_index_with_value(
-        grid: np.ndarray,
-        value: int,
-        points: List[Union[List[int], Tuple[int, int]]]
+    grid: np.ndarray, value: int, points: List[Union[List[int], Tuple[int, int]]]
 ) -> int:
     """Finds the index of the last point in `points` where `grid[point] == value`
 
@@ -163,11 +159,8 @@ def last_index_with_value(
     """
     ...
 
-
 def points_with_value(
-    grid: np.ndarray,
-    value: int,
-    points: List[Tuple[int, int]]
+    grid: np.ndarray, value: int, points: List[Tuple[int, int]]
 ) -> List[Tuple[int, int]]:
     """Return all points from a grid that match a given value.
 
@@ -188,11 +181,8 @@ def points_with_value(
     """
     ...
 
-
 def translate_point_along_line(
-    point: Tuple[float, float],
-    a_value: float,
-    distance: float
+    point: Tuple[float, float], a_value: float, distance: float
 ) -> Tuple[float, float]:
     """Given a point and slope of a line, translate the point along the line with the
     given slope.
@@ -215,10 +205,7 @@ def translate_point_along_line(
     ...
 
 def group_by_spatial(
-    ai: "BotAI",
-    units: "Units",
-    distance: float = 0.5,
-    min_samples: int = 1
+    ai: "BotAI", units: "Units", distance: float = 0.5, min_samples: int = 1
 ) -> Tuple[List["Units"], Set[int]]:
     """Use DBSCAN to group units. Returns grouped units and the tags of units that
     were not placed in a group.

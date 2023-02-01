@@ -4,7 +4,7 @@ version = "0.0.2"
 description = ""
 authors = ["Tom Kerr <tomkerrdev@gmail.com>"]
 readme = "README.md"
-packages = [{include = "ares_sc2"}]
+packages = [{include = "src/ares"}]
 homepage = "https://github.com/AresSC2/ares-sc2"
 repository = "https://github.com/AresSC2/ares-sc2"
 license = "MIT"
@@ -33,6 +33,10 @@ mkdocstrings = {extras = ["python"], version = "^0.20.0"}
 
 [tool.poetry.group.semver.dependencies]
 python-semantic-release = "^7.33.0"
+
+
+[tool.poetry.group.build.dependencies]
+cython = "^0.29.33"
 
 [build-system]
 requires = ["poetry-core"]
