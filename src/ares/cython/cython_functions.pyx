@@ -1,8 +1,10 @@
 import numpy as np
+
 cimport numpy as np
-from sklearn.cluster import DBSCAN
+
 from sc2.units import Units
 from scipy.signal import convolve2d
+from sklearn.cluster import DBSCAN
 
 from libc.math cimport atan2, cos, floor, round, sin, sqrt
 
