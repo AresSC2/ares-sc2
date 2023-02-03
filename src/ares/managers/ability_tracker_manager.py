@@ -50,12 +50,14 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         """
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
-            ManagerRequestType.GET_UNIT_TO_ABILITY_DICT: lambda kwargs: self.unit_to_ability_dict,
-            ManagerRequestType.UPDATE_ABILITY_COOLDOWN: lambda kwargs: self.update_ability_cooldown(
-                **kwargs
+            ManagerRequestType.GET_UNIT_TO_ABILITY_DICT: lambda kwargs: (
+                self.unit_to_ability_dict
             ),
-            ManagerRequestType.UPDATE_UNIT_TO_ABILITY_DICT: lambda kwargs: self.update_unit_to_ability_dict(
-                **kwargs
+            ManagerRequestType.UPDATE_ABILITY_COOLDOWN: lambda kwargs: (
+                self.update_ability_cooldown(**kwargs)
+            ),
+            ManagerRequestType.UPDATE_UNIT_TO_ABILITY_DICT: lambda kwargs: (
+                self.update_unit_to_ability_dict(**kwargs)
             ),
         }
         # make a copy so we don't mess with anything when updating Medivac cds
