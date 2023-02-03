@@ -25,6 +25,7 @@ from consts import (
     UNITS_TO_AVOID_TYPES,
     USE_DATA,
     WORKER_TYPES,
+    UnitTreeQueryType,
 )
 from custom_bot_ai import CustomBotAI
 from dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
@@ -56,7 +57,7 @@ class AresBot(CustomBotAI):
     manager_hub: Hub  #: Hub in charge of handling the Managers
 
     def __init__(self, game_step_override: Optional[int] = None):
-        """Load config and set up necessary attributes
+        """Load config and set up necessary attributes.
 
         Parameters
         ----------
@@ -571,9 +572,12 @@ class AresBot(CustomBotAI):
         shade_tag: int = shade.tag
         shade_position: Point2 = Point2((shade.pos.x, shade.pos.y))
         if shade_tag not in self.adept_shades:
-            close_adepts: Units = self.get_enemy_ground_in_range_of_point(
-                shade_position, 40
-            ).filter(
+            close_adepts: Units = self.manager_hub.unit_memory_manager.units_in_range(
+                [shade_position],
+                40,
+                UnitTreeQueryType.EnemyGround,
+                return_as_dict=False,
+            )[0].filter(
                 lambda u: u.tag not in self.adept_tags_with_shades_assigned
                 and u.type_id == UnitID.ADEPT
             )
@@ -589,7 +593,7 @@ class AresBot(CustomBotAI):
                 self.adept_shades[shade_tag][SHADE_COMMENCED] = current_frame - 32
 
     def _reset_managers(self) -> None:
-        """Reset managers to prepare for a new game loop
+        """Reset managers to prepare for a new game loop.
 
         Returns
         -------
@@ -600,7 +604,7 @@ class AresBot(CustomBotAI):
         self.manager_hub.unit_role_manager.get_assigned_units()
 
     def _reset_variables(self) -> None:
-        """Reset all variables that need to be populated this loop
+        """Reset all variables that need to be populated this loop.
 
         Returns
         -------
@@ -640,7 +644,7 @@ class AresBot(CustomBotAI):
         self.enemy_parasitic_bomb_positions: List[Point2] = []
 
     def _should_add_unit(self, unit: RawUnit) -> bool:
-        """Whether the given unit should be tracked
+        """Whether the given unit should be tracked.
 
         This will always return True unless the unit is an Adept Shade, in which
         case whether it's added is based on frame counts.
@@ -667,8 +671,7 @@ class AresBot(CustomBotAI):
         return True
 
     def _update_memory_units(self, index: int):
-        """Go through memory units and add them to all_units to avoid forgetting about
-        them.
+        """Go through memory units and add them to all_units.
 
         Parameters
         ----------

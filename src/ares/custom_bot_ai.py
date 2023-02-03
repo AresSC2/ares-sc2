@@ -1,7 +1,7 @@
 """Extension of sc2.BotAI to add custom functions.
 
 """
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from consts import ALL_STRUCTURES
 from dicts.unit_data import UNIT_DATA
@@ -17,6 +17,7 @@ class CustomBotAI(BotAI):
 
     base_townhall_type: UnitID
     enemy_detectors: Units
+    enemy_parasitic_bomb_positions: List[Point2]
     gas_type: UnitID
     unit_tag_dict: Dict[int, Unit]
     worker_type: UnitID
