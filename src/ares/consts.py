@@ -239,6 +239,7 @@ class ManagerRequestType(Enum):
 
     # UnitCacheManager
     GET_CACHED_ENEMY_ARMY = auto()
+    GET_ENEMY_ARMY_CENTER_MASS = auto()
     GET_CACHED_ENEMY_ARMY_DICT = auto()
     GET_CACHED_ENEMY_WORKERS = auto()
     GET_OLD_OWN_ARMY_DICT = auto()
@@ -435,6 +436,19 @@ DETECTORS: Set[UnitID] = {
 }
 
 EGG_BUTTON_NAMES: Set[str] = {"Drone", "Overlord"}
+
+# we ignore these when detecting if an expansion location is blocked
+FLYING_IGNORE: Set[UnitID] = {
+    UnitID.OBSERVER,
+    UnitID.OVERLORD,
+    UnitID.OVERSEER,
+    UnitID.BARRACKSFLYING,
+    UnitID.COMMANDCENTERFLYING,
+    UnitID.ORBITALCOMMANDFLYING,
+    UnitID.FACTORYFLYING,
+    UnitID.STARPORTFLYING,
+    UnitID.PHOENIX,
+}
 
 GAS_BUILDINGS = {UnitID.ASSIMILATOR, UnitID.EXTRACTOR, UnitID.REFINERY}
 

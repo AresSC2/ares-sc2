@@ -8,7 +8,7 @@ from sc2.units import Units
 
 from ..consts import ManagerName, ManagerRequestType
 from ..custom_bot_ai import CustomBotAI
-from ..managers.manager_mediator_full import ManagerMediator
+from ..managers.manager_mediator import ManagerMediator
 
 
 class Manager(metaclass=ABCMeta):
