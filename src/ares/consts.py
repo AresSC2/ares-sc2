@@ -253,8 +253,8 @@ class ManagerRequestType(Enum):
     GET_ENEMY_GROUND = auto()
     GET_ENEMY_FLIERS = auto()
     GET_ENEMY_TREE = auto()
-    GET_ENEMY_UNITS_IN_RANGE = auto()
     GET_OWN_TREE = auto()
+    GET_UNITS_IN_RANGE = auto()
 
     # UnitRoleManager
     ASSIGN_ROLE = auto()
