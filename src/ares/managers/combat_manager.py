@@ -8,8 +8,7 @@ from sc2.position import Point2
 from sc2.units import Units
 
 from ..cache import property_cache_once_per_frame
-from ..combat.base_unit import BaseUnit
-from ..combat.unit_squads import UnitSquads
+from ..combat import BaseUnit, UnitSquads
 from ..consts import (
     ATTACK_DISENGAGE_FURTHER_THAN,
     ATTACK_ENGAGE_CLOSER_THAN,
