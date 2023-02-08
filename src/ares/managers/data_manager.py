@@ -3,9 +3,7 @@ import json
 from os import path
 from typing import Any, Dict, List, Optional, Union
 
-from sc2.data import Result
-
-from ..consts import (
+from consts import (
     BUILD_CYCLE,
     CYCLE,
     DATA_DIR,
@@ -23,9 +21,10 @@ from ..consts import (
     ManagerName,
     ManagerRequestType,
 )
-from ..custom_bot_ai import CustomBotAI
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
+from custom_bot_ai import CustomBotAI
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
+from sc2.data import Result
 
 
 class DataManager(Manager, IManagerMediator):

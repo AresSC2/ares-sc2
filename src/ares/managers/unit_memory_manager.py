@@ -5,13 +5,7 @@ from collections import deque
 from typing import Any, Deque, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
-from sc2.position import Point2
-from sc2.unit import Unit
-from sc2.units import Units
-from scipy.spatial import KDTree
-
-from ..cache import property_cache_once_per_frame
-from ..consts import (
+from consts import (
     BURROWED_ALIAS,
     IGNORED_UNIT_TYPES_MEMORY_MANAGER,
     MAX_SNAPSHOTS_PER_UNIT,
@@ -19,10 +13,16 @@ from ..consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
-from ..custom_bot_ai import CustomBotAI
-from ..dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
+from custom_bot_ai import CustomBotAI
+from dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
+from sc2.position import Point2
+from sc2.unit import Unit
+from sc2.units import Units
+from scipy.spatial import KDTree
+
+from cache import property_cache_once_per_frame
 
 
 class UnitMemoryManager(Manager, IManagerMediator):

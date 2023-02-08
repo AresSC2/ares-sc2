@@ -7,15 +7,8 @@ from collections import defaultdict
 from typing import Any, DefaultDict, Dict, List, Optional, Set
 
 import numpy as np
-from sc2.data import Race
-from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.unit import Unit
-from sc2.units import Units
-
-from ..cache import property_cache_once_per_frame
-from ..consts import (
+from cache import property_cache_once_per_frame
+from consts import (
     DEBUG,
     DEBUG_OPTIONS,
     IGNORED_UNIT_TYPES_MEMORY_MANAGER,
@@ -32,9 +25,15 @@ from ..consts import (
     UnitRole,
     UnitTreeQueryType,
 )
-from ..custom_bot_ai import CustomBotAI
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
+from custom_bot_ai import CustomBotAI
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
+from sc2.data import Race
+from sc2.ids.ability_id import AbilityId
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.unit import Unit
+from sc2.units import Units
 
 
 class ResourceManager(Manager, IManagerMediator):
@@ -328,7 +327,7 @@ class ResourceManager(Manager, IManagerMediator):
     def select_worker(
         self, target_position: Point2, force_close: bool = False
     ) -> Optional[Unit]:
-        """Use this manager to select a worker.
+        """Select a worker.
 
         This way we can select one assigned to a far mineral patch.
 
@@ -348,6 +347,8 @@ class ResourceManager(Manager, IManagerMediator):
 
         Returns
         -------
+        Optional[Unit] :
+            Selected worker, if available.
 
         """
         workers: Units = self.manager_mediator.get_units_from_roles(

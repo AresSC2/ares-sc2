@@ -4,15 +4,7 @@
 from collections import defaultdict
 from typing import Any, DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
-from sc2.game_data import AbilityData
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.unit import Unit
-from sc2.units import Units
-
-from rust_helpers import find_center_mass
-
-from ..consts import (
+from consts import (
     CREEP_TUMOR_TYPES,
     EGG_BUTTON_NAMES,
     UNITS_TO_IGNORE,
@@ -20,10 +12,17 @@ from ..consts import (
     ManagerName,
     ManagerRequestType,
 )
-from ..custom_bot_ai import CustomBotAI
-from ..dicts.does_not_use_larva import DOES_NOT_USE_LARVA
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
+from custom_bot_ai import CustomBotAI
+from dicts.does_not_use_larva import DOES_NOT_USE_LARVA
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
+from sc2.game_data import AbilityData
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.unit import Unit
+from sc2.units import Units
+
+from rust_helpers import find_center_mass
 
 
 class UnitCacheManager(Manager, IManagerMediator):

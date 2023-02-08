@@ -11,7 +11,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ..consts import (
+from consts import (
     BUILDING,
     BUILDING_PURPOSE,
     CANCEL_ORDER,
@@ -27,9 +27,9 @@ from ..consts import (
     ManagerRequestType,
     UnitRole,
 )
-from ..custom_bot_ai import CustomBotAI
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
+from custom_bot_ai import CustomBotAI
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
 
 
 class BuildingManager(Manager, IManagerMediator):
@@ -74,10 +74,14 @@ class BuildingManager(Manager, IManagerMediator):
         super(BuildingManager, self).__init__(ai, config, mediator)
 
         self.manager_requests_dict = {
-            ManagerRequestType.GET_BUILDING_COUNTER: lambda kwargs: self.building_counter,
-            ManagerRequestType.GET_BUILDING_TRACKER_DICT: lambda kwargs: self.building_tracker,
-            ManagerRequestType.BUILD_WITH_SPECIFIC_WORKER: lambda kwargs: self.build_with_specific_worker(
-                **kwargs
+            ManagerRequestType.GET_BUILDING_COUNTER: lambda kwargs: (
+                self.building_counter
+            ),
+            ManagerRequestType.GET_BUILDING_TRACKER_DICT: lambda kwargs: (
+                self.building_tracker
+            ),
+            ManagerRequestType.BUILD_WITH_SPECIFIC_WORKER: lambda kwargs: (
+                self.build_with_specific_worker(**kwargs)
             ),
         }
 

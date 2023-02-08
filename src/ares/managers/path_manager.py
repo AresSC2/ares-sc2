@@ -4,16 +4,7 @@
 from typing import Any, Dict, List, Union
 
 import numpy as np
-from sc2.ids.effect_id import EffectId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.unit import Unit
-from scipy import spatial
-from scipy.spatial import KDTree
-
-from MapAnalyzer import MapData
-
-from ..consts import (
+from consts import (
     ACTIVE_GRID,
     AIR,
     AIR_AVOIDANCE,
@@ -50,10 +41,18 @@ from ..consts import (
     ManagerName,
     ManagerRequestType,
 )
-from ..custom_bot_ai import CustomBotAI
-from ..dicts.weight_costs import WEIGHT_COSTS
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
+from custom_bot_ai import CustomBotAI
+from dicts.weight_costs import WEIGHT_COSTS
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
+from sc2.ids.effect_id import EffectId
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.unit import Unit
+from scipy import spatial
+from scipy.spatial import KDTree
+
+from MapAnalyzer import MapData
 
 
 class PathManager(Manager, IManagerMediator):

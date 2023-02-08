@@ -3,16 +3,15 @@
 """
 from typing import Any, Dict, List
 
+from consts import DEBUG, UNITS_TO_IGNORE, ManagerName, ManagerRequestType
+from custom_bot_ai import CustomBotAI
+from managers.build_runner import BuildRunner
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
+from production.base_production import BaseProduction
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
-
-from ..consts import DEBUG, UNITS_TO_IGNORE, ManagerName, ManagerRequestType
-from ..custom_bot_ai import CustomBotAI
-from ..managers.build_runner import BuildRunner
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
-from ..production.base_production import BaseProduction
 
 
 class ProductionManager(Manager, IManagerMediator):

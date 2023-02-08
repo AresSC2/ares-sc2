@@ -4,24 +4,23 @@
 
 from typing import TYPE_CHECKING, Dict, List, Union
 
+from consts import DEBUG, UnitRole
+from custom_bot_ai import CustomBotAI
+from managers.ability_tracker_manager import AbilityTrackerManager
+from managers.building_manager import BuildingManager
+from managers.combat_manager import CombatManager
+from managers.data_manager import DataManager
+from managers.manager_mediator import ManagerMediator
+from managers.path_manager import PathManager
+from managers.production_manager import ProductionManager
+from managers.resource_manager import ResourceManager
+from managers.strategy_manager import StrategyManager
+from managers.terrain_manager import TerrainManager
+from managers.unit_cache_manager import UnitCacheManager
+from managers.unit_memory_manager import UnitMemoryManager
+from managers.unit_role_manager import UnitRoleManager
 from sc2.data import Result
 from sc2.unit import Unit
-
-from ..consts import DEBUG, UnitRole
-from ..custom_bot_ai import CustomBotAI
-from ..managers.ability_tracker_manager import AbilityTrackerManager
-from ..managers.building_manager import BuildingManager
-from ..managers.combat_manager import CombatManager
-from ..managers.data_manager import DataManager
-from ..managers.manager_mediator_full import ManagerMediator
-from ..managers.path_manager import PathManager
-from ..managers.production_manager import ProductionManager
-from ..managers.resource_manager import ResourceManager
-from ..managers.strategy_manager import StrategyManager
-from ..managers.terrain_manager import TerrainManager
-from ..managers.unit_cache_manager import UnitCacheManager
-from ..managers.unit_memory_manager import UnitMemoryManager
-from ..managers.unit_role_manager import UnitRoleManager
 
 if TYPE_CHECKING:
     from ..managers.manager import Manager

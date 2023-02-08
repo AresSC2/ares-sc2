@@ -3,15 +3,14 @@
 """
 from typing import Dict, Optional
 
+from consts import ManagerName, ManagerRequestType
+from custom_bot_ai import CustomBotAI
+from dicts.ability_cooldowns import ABILITY_FRAME_COOL_DOWN
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.unit import Unit
-
-from ..consts import ManagerName, ManagerRequestType
-from ..custom_bot_ai import CustomBotAI
-from ..dicts.ability_cooldowns import ABILITY_FRAME_COOL_DOWN
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
 
 
 class AbilityTrackerManager(Manager, IManagerMediator):
