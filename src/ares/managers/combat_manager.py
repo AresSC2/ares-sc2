@@ -3,13 +3,9 @@
 """
 from typing import Any, Dict, List, Set
 
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.units import Units
-
-from ..cache import property_cache_once_per_frame
-from ..combat import BaseUnit, UnitSquads
-from ..consts import (
+from cache import property_cache_once_per_frame
+from combat import BaseUnit, UnitSquads
+from consts import (
     ATTACK_DISENGAGE_FURTHER_THAN,
     ATTACK_ENGAGE_CLOSER_THAN,
     COMBAT,
@@ -21,9 +17,12 @@ from ..consts import (
     UnitRole,
     UnitTreeQueryType,
 )
-from ..custom_bot_ai import CustomBotAI
-from ..managers.manager import Manager
-from ..managers.manager_mediator import IManagerMediator, ManagerMediator
+from custom_bot_ai import CustomBotAI
+from managers.manager import Manager
+from managers.manager_mediator import IManagerMediator, ManagerMediator
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.units import Units
 
 
 class CombatManager(Manager, IManagerMediator):
@@ -56,6 +55,9 @@ class CombatManager(Manager, IManagerMediator):
         super(CombatManager, self).__init__(ai, config, mediator)
 
         self.manager_requests_dict = {
+            ManagerRequestType.GET_ATTACK_SQUAD_ENGAGE_TARGET: lambda kwargs: (
+                self.attack_squad_engage_target
+            ),
             ManagerRequestType.GET_POSITION_OF_MAIN_ATTACKING_SQUAD: lambda kwargs: (
                 self.unit_squads.position_of_main_attacking_squad
             ),
@@ -146,7 +148,7 @@ class CombatManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def predicted_main_armies_fight_result(self) -> EngagementResult:
-        """Find the main army for each force, and check the combat sim.
+        """Find the main army for each player, and check the combat sim.
 
         Returns
         -------

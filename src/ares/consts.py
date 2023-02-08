@@ -174,6 +174,7 @@ class ManagerRequestType(Enum):
     GET_BUILDING_TRACKER_DICT = auto()
 
     # CombatManager
+    GET_ATTACK_SQUAD_ENGAGE_TARGET = auto()
     GET_POSITION_OF_MAIN_ATTACKING_SQUAD = auto()
     GET_PREDICTED_DEFENSIVE_FIGHT_RESULT = auto()
     GET_PREDICTED_MAIN_FIGHT_RESULT = auto()

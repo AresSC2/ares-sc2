@@ -8,8 +8,9 @@ import math
 from typing import Any, Dict, List, Optional, Set, Tuple
 from functools import lru_cache
 import numpy as np
-from ..cache import property_cache_once_per_frame
-from ..consts import (
+
+from cache import property_cache_once_per_frame
+from consts import (
     ManagerRequestType,
     ManagerName,
     ALL_STRUCTURES,
@@ -23,9 +24,9 @@ from ..consts import (
     TOWNHALL_TYPES,
     UnitTreeQueryType,
 )
-from ..custom_bot_ai import CustomBotAI
-from ..managers.manager import Manager
-from ..managers.manager_mediator import ManagerMediator, IManagerMediator
+from custom_bot_ai import CustomBotAI
+from managers.manager import Manager
+from managers.manager_mediator import ManagerMediator, IManagerMediator
 from MapAnalyzer import MapData
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.game_info import Ramp
@@ -329,6 +330,18 @@ class TerrainManager(Manager, IManagerMediator):
         return [Point2(tuple_spot) for tuple_spot in self.map_data.overlord_spots]
 
     @property_cache_once_per_frame
+    def ol_spot_near_enemy_natural(self) -> Point2:
+        """Find an overlord spot near enemy natural for first overlord.
+
+        Returns
+        -------
+        Point2 :
+            Overlord spot near the enemy natural.
+
+        """
+        return self.get_closest_overlord_spot(self.enemy_nat)
+
+    @property_cache_once_per_frame
     def own_nat(self) -> Point2:
         """Calculate our natural expansion.
 
@@ -495,7 +508,11 @@ class TerrainManager(Manager, IManagerMediator):
 
         Returns
         -------
-        expansion_distances : List[Tuple]
+        expansion_distances : List[Tuple[Point2, float]]
+            List of Tuples where
+                The first element is the location of the base.
+                The second element is the pathing distance from `from_pos`.
+
         """
         expansion_distances: List[Tuple[Point2, float]] = []
         for el in self.ai.expansion_locations_list:
