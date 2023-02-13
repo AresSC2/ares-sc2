@@ -4,6 +4,7 @@
 from collections import defaultdict
 from typing import Any, DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
+from cache import property_cache_once_per_frame
 from consts import (
     CREEP_TUMOR_TYPES,
     EGG_BUTTON_NAMES,
@@ -11,6 +12,7 @@ from consts import (
     WORKER_TYPES,
     ManagerName,
     ManagerRequestType,
+    UnitTreeQueryType,
 )
 from custom_bot_ai import CustomBotAI
 from dicts.does_not_use_larva import DOES_NOT_USE_LARVA
@@ -404,3 +406,38 @@ class UnitCacheManager(Manager, IManagerMediator):
             max_units_found, position = find_center_mass(units, distance, position)
             position = Point2(position)
         return max_units_found, position
+
+    @property_cache_once_per_frame
+    def enemy_bunkers_near_spawn(self) -> Optional[Units]:
+        """Find enemy bunkers near our spawn.
+
+        Returns
+        -------
+        Optional[Units] :
+            Enemy bunkers near our spawn, if any.
+
+        """
+        return self.enemy_near_spawn.filter(
+            lambda u: u.type_id == UnitID.BUNKER
+            and (
+                self.ai.get_terrain_z_height(u.position)
+                == self.ai.get_terrain_z_height(self.ai.start_location)
+                or u.distance_to(self.manager_mediator.get_own_nat) < 16
+            )
+        )
+
+    @property_cache_once_per_frame
+    def enemy_near_spawn(self) -> Units:
+        """Get all enemy units within 60 of our main.
+
+        Returns
+        -------
+        Units :
+            Enemy units near our spawn.
+
+        """
+        return self.manager_mediator.get_units_in_range(
+            start_positions=[self.ai.start_location],
+            distances=60,
+            query_type=UnitTreeQueryType.AllEnemy,
+        )[0]

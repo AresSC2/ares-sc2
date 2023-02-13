@@ -132,4 +132,4 @@ dmypy.json
 .idea
 
 # cython compiled c code
-src/ares/cython/*.c
+src/ares/*/*.c
