@@ -212,18 +212,18 @@ class BuildRunner:
         """
         build_order: List[BuildOrderStep] = []
 
-        for step in raw_build_order:
-            commands: List[str] = step.split(" ")
-            command: str = commands[0].upper()
-            target: str = ""
-
-            if len(commands) >= 2:
-                target = commands[-1].upper()
-
-            """
-            Create a BuildOrderStep for each entry in the build order and then append
-            them to build_order
-            """
+        # for step in raw_build_order:
+        #     commands: List[str] = step.split(" ")
+        #     command: str = commands[0].upper()
+        #     target: str = ""
+        #
+        #     if len(commands) >= 2:
+        #         target = commands[-1].upper()
+        #
+        #     """
+        #     Create a BuildOrderStep for each entry in the build order and then append
+        #     them to build_order
+        #     """
 
         return build_order
 

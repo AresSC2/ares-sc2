@@ -9,7 +9,6 @@ from dicts.ability_cooldowns import ABILITY_FRAME_COOL_DOWN
 from managers.manager import Manager
 from managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.unit import Unit
 
 
@@ -136,9 +135,9 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         -------
 
         """
-        tag: int = unit.tag
-        unit_type: UnitID = unit.type_id
-        current_frame: int = self.ai.state.game_loop
+        # tag: int = unit.tag
+        # unit_type: UnitID = unit.type_id
+        # current_frame: int = self.ai.state.game_loop
         if unit.tag not in self.unit_to_ability_dict:
             pass
             # Protoss
