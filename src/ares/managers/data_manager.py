@@ -1,7 +1,7 @@
 """Handle data."""
 import json
 from os import path
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from consts import (
     BUILD_CYCLE,
@@ -30,7 +30,7 @@ from sc2.data import Result
 class DataManager(Manager, IManagerMediator):
     """
     Handles opponent data, and chooses a strategy, based on the
-    build cycle in config.yaml
+    build cycle in config.yml
     """
 
     def __init__(
@@ -38,7 +38,9 @@ class DataManager(Manager, IManagerMediator):
     ) -> None:
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
-            ManagerRequestType.GET_INITIAL_BOT_MODE: lambda kwargs: self.starting_bot_mode
+            ManagerRequestType.GET_INITIAL_BOT_MODE: lambda kwargs: (
+                self.starting_bot_mode
+            )
         }
 
         self.build_cycle: List[BotMode] = self.get_build_cycle()
