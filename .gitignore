@@ -130,3 +130,6 @@ dmypy.json
 
 # PyCharm
 .idea
+
+# cython compiled c code
+src/ares/*/*.c

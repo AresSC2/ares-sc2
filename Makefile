@@ -27,7 +27,7 @@ clean-cov:
 	@rm -rf pytest-coverage.txt
 
 format: format-black format-isort
-lint: lint-black lint-isort lint-flake8 lint-mypy
+lint: lint-black lint-isort lint-flake8
 
 
 ##@ Documentation

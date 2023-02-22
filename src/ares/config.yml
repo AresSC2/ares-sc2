@@ -1,0 +1,101 @@
+UseData: False
+Debug: True
+GameStep: 2
+DebugGameStep: 2
+
+DebugOptions:
+    # one of: Air, AirVsGround, Ground, GroundAvoidance, AirAvoidance
+    ActiveGrid: Ground
+    ChatDebug: True
+    DebugSpawn: False
+    ShowPathingCost: False
+    ResourceDebug: False
+
+BuildCycle:
+    # There should be a corresponding Strategies key for each build in a Cycle
+    # key should be the opponent id from aiarena
+    # test_123 is active if Debug: True
+    test_123:
+        BotName: Test
+        Cycle:
+            - DEFAULT
+    Protoss:
+        BotName: DEFAULT
+        Cycle:
+            - DEFAULT
+    Random:
+        BotName: RandomRace
+        Cycle:
+            - DEFAULT
+    Terran:
+        BotName: TerranRace
+        Cycle:
+            - DEFAULT
+    Zerg:
+        BotName: ZergRace
+        Cycle:
+            - DEFAULT
+
+Chat:
+    Enabled: True
+    AiarenaTags: True
+    FlankChat: True
+
+Distances:
+    FlyingEnemyNearBases:
+        EarlyGame: 20
+    GroundEnemyNearBases:
+        EarlyGame: 14
+        MidGame: 20
+    GroundEnemyLeavingBases: 24
+    FlyingEnemyLeavingBases: 22
+
+Strategies:
+    DEFAULT:
+        OpeningBuildOrder:
+            []
+
+Building:
+    # how many seconds before giving up on a construction order?
+    CancelOrder: 18
+
+Mining:
+    MineralBoost: True
+    # shouldn't ever need to turn this off, adds 3-4% income without any tricks
+    MineralStacking: True
+    # make sure VespeneBoost code is uncommented if setting to True
+    VespeneBoost: False
+    BoostBackToTownHall: True
+    GeyserDistanceFactor: 1.05
+    GeyserThreshold: 0.05
+    MineralDistanceFactor: 1.25
+    TownhallDistanceFactor: 1.08
+
+Pathing:
+    # amount of extra buffer to add to unit/structure ranges
+    RangeBuffer: 4.0
+    EffectsRangeBuffer: 1.0
+    CostMultiplier: 1
+    # amount of pathing cost to add for each effect and their range
+    Effects:
+        BlindingCloud:
+            Cost: 300
+            Range: 3.5
+        CorrosiveBile:
+            Cost: 100
+            Range: 3.0
+        LiberatorZone:
+            Cost: 500
+            Range: 6
+        LurkerSpine:
+            Cost: 600
+            Range: 1
+        Nuke:
+            Cost: 1000
+            Range: 8
+        ParasiticBomb:
+            Cost: 17.15  # roughly 120 / 7
+            Range: 4
+        Storm:
+            Cost: 600
+            Range: 3.5
