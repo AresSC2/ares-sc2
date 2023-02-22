@@ -3,6 +3,7 @@
 The bot will be called from here, but most of the logic should be in Hub.
 """
 from collections import defaultdict
+from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
 import yaml
@@ -68,8 +69,9 @@ class AresBot(CustomBotAI):
         super().__init__()
         # use this Dict when compiling
         # self.config: Dict = CONFIG
-        # otherwise we use the config.yaml file
-        with open(CONFIG_FILE, "r") as config_file:
+        # otherwise we use the config.yml file
+        __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
+        with open(path.join(__location__, CONFIG_FILE), "r") as config_file:
             self.config = yaml.safe_load(config_file)
 
         self.game_step_override: Optional[int] = game_step_override
@@ -495,7 +497,7 @@ class AresBot(CustomBotAI):
         unit_type: UnitID = unit_obj.type_id
         if update_managers:
             self.manager_hub.unit_role_manager.catch_unit(unit_obj)
-            self.manager_hub.ability_tracker_manager.catch_unit(unit_obj, unit_type)
+            self.manager_hub.ability_tracker_manager.catch_unit(unit_obj)
 
         self.all_own_units.append(unit_obj)
         if unit_type in UNITS_TO_AVOID_TYPES:
