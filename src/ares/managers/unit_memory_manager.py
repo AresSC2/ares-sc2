@@ -5,6 +5,7 @@ from collections import deque
 from typing import Any, Deque, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
+from cache import property_cache_once_per_frame
 from consts import (
     BURROWED_ALIAS,
     IGNORED_UNIT_TYPES_MEMORY_MANAGER,
@@ -21,8 +22,6 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 from scipy.spatial import KDTree
-
-from cache import property_cache_once_per_frame
 
 
 class UnitMemoryManager(Manager, IManagerMediator):

@@ -1,5 +1,5 @@
 from functools import lru_cache
-from typing import List, Set, Tuple, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, List, Set, Tuple, Union
 
 import numpy as np
 from loguru import logger

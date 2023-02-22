@@ -1,13 +1,13 @@
 from functools import lru_cache
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import numpy as np
 from loguru import logger
 from sc2.game_info import Ramp as sc2Ramp
 from sc2.position import Point2
 
-from .Polygon import Polygon
 from .cext import CMapChoke
+from .Polygon import Polygon
 
 if TYPE_CHECKING:  # pragma: no cover
     from .MapData import MapData
@@ -127,7 +127,7 @@ class MDRamp(ChokeArea):
         )
         # TODO  its white board time,  need to figure out some geometric intuition here
         dist = self.map_data.distance(raw_points[0], raw_points[1])
-        r = dist ** 0.5
+        r = dist**0.5
         if dist / 2 >= r:
             intersect = (raw_points[0] + raw_points[1]) / 2
             return intersect.offset(self.offset)

@@ -1,11 +1,9 @@
 import numpy as np
 
 try:
-    from .mapanalyzerext import (
-        astar as ext_astar,
-        astar_with_nydus as ext_astar_nydus,
-        get_map_data as ext_get_map_data,
-    )
+    from .mapanalyzerext import astar as ext_astar
+    from .mapanalyzerext import astar_with_nydus as ext_astar_nydus
+    from .mapanalyzerext import get_map_data as ext_get_map_data
 except ImportError:
     from mapanalyzerext import (
         astar as ext_astar,
@@ -13,7 +11,8 @@ except ImportError:
         get_map_data as ext_get_map_data,
     )
 
-from typing import Optional, Tuple, Union, List, Set
+from typing import List, Optional, Set, Tuple, Union
+
 from sc2.position import Point2, Rect
 
 

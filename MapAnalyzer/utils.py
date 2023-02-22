@@ -1,10 +1,9 @@
 import lzma
 import os
 import pickle
+from typing import TYPE_CHECKING, List, Optional, Union
+
 import numpy as np
-
-from typing import List, Optional, TYPE_CHECKING, Union
-
 from s2clientprotocol.sc2api_pb2 import Response, ResponseObservation
 from sc2.bot_ai import BotAI
 from sc2.game_data import GameData
@@ -14,6 +13,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 
 from MapAnalyzer.constructs import MDRamp, VisionBlockerArea
+
 from .cext import CMapChoke
 from .destructibles import *
 from .settings import ROOT_DIR

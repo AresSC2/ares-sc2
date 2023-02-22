@@ -1,12 +1,11 @@
 from functools import lru_cache
-
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 import numpy as np
 from sc2.position import Point2
 
+from MapAnalyzer.constructs import ChokeArea, MDRamp
 from MapAnalyzer.Polygon import Polygon
-from MapAnalyzer.constructs import MDRamp, ChokeArea
 
 if TYPE_CHECKING:
     from MapAnalyzer import MapData

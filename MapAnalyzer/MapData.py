@@ -1,7 +1,7 @@
 import math
 import time
-from itertools import chain
 from functools import lru_cache
+from itertools import chain
 from os import mkdir, path
 from typing import Dict, List, Optional, Set, Tuple, Union
 
@@ -11,30 +11,25 @@ from numpy import float64, ndarray
 from pkg_resources import DistributionNotFound, get_distribution
 from sc2.bot_ai import BotAI
 from sc2.position import Point2
-from scipy.ndimage import (
-    binary_fill_holes,
-    center_of_mass,
-    generate_binary_structure,
-    label as ndlabel,
-)
+from scipy.ndimage import binary_fill_holes, center_of_mass, generate_binary_structure
+from scipy.ndimage import label as ndlabel
 from scipy.spatial import distance
 
+from MapAnalyzer.constructs import ChokeArea, MDRamp, RawChoke, VisionBlockerArea
 from MapAnalyzer.Debugger import MapAnalyzerDebugger
 from MapAnalyzer.Pather import MapAnalyzerPather
 from MapAnalyzer.Region import Region
-from MapAnalyzer.utils import get_sets_with_mutual_elements, fix_map_ramps
+from MapAnalyzer.utils import fix_map_ramps, get_sets_with_mutual_elements
 
+from .cext import CMapChoke, CMapInfo
 from .constants import (
     BINARY_STRUCTURE,
     CORNER_MIN_DISTANCE,
     MAX_REGION_AREA,
     MIN_REGION_AREA,
 )
-
 from .decorators import progress_wrapped
 from .exceptions import CustomDeprecationWarning
-from MapAnalyzer.constructs import ChokeArea, MDRamp, VisionBlockerArea, RawChoke
-from .cext import CMapInfo, CMapChoke
 
 try:
     __version__ = get_distribution("sc2mapanalyzer")

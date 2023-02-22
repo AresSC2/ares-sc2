@@ -4,13 +4,6 @@
 from collections import defaultdict
 from typing import Any, Coroutine, DefaultDict, Dict, List, Optional, Set, Union
 
-from sc2.constants import ALL_GAS
-from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.unit import Unit
-from sc2.units import Units
-
 from consts import (
     BUILDING,
     BUILDING_PURPOSE,
@@ -30,6 +23,12 @@ from consts import (
 from custom_bot_ai import CustomBotAI
 from managers.manager import Manager
 from managers.manager_mediator import IManagerMediator, ManagerMediator
+from sc2.constants import ALL_GAS
+from sc2.ids.ability_id import AbilityId
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.unit import Unit
+from sc2.units import Units
 
 
 class BuildingManager(Manager, IManagerMediator):

@@ -2,7 +2,7 @@ import inspect
 import os
 import sys
 import warnings
-from typing import Any, Dict, Optional, Tuple, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple, Union
 
 import numpy as np
 from loguru import logger
@@ -281,8 +281,8 @@ class MapAnalyzerDebugger:
         fontdict: dict = None,
     ) -> None:
         import matplotlib.pyplot as plt
-        from mpl_toolkits.axes_grid1 import make_axes_locatable
         from matplotlib.cm import ScalarMappable
+        from mpl_toolkits.axes_grid1 import make_axes_locatable
 
         if not fontdict:
             fontdict = {"family": "serif", "weight": "bold", "size": 20}
@@ -334,8 +334,8 @@ class MapAnalyzerDebugger:
         fontdict: dict = None,
     ) -> None:
         import matplotlib.pyplot as plt
-        from mpl_toolkits.axes_grid1 import make_axes_locatable
         from matplotlib.cm import ScalarMappable
+        from mpl_toolkits.axes_grid1 import make_axes_locatable
 
         if not fontdict:
             fontdict = {"family": "serif", "weight": "bold", "size": 20}

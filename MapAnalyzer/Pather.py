@@ -1,7 +1,6 @@
-from typing import List, Optional, Tuple, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Optional, Tuple
 
 import numpy as np
-
 from loguru import logger
 from numpy import ndarray
 from sc2.ids.unit_typeid import UnitTypeId
@@ -10,6 +9,7 @@ from sc2.position import Point2
 from MapAnalyzer.exceptions import OutOfBoundsException, PatherNoPointsException
 from MapAnalyzer.Region import Region
 from MapAnalyzer.utils import change_destructable_status_in_grid
+
 from .cext import astar_path, astar_path_with_nyduses
 from .destructibles import *
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 def _bounded_circle(center, radius, shape):
     xx, yy = np.ogrid[: shape[0], : shape[1]]
     circle = (xx - center[0]) ** 2 + (yy - center[1]) ** 2
-    return np.nonzero(circle <= radius ** 2)
+    return np.nonzero(circle <= radius**2)
 
 
 def draw_circle(c, radius, shape=None):

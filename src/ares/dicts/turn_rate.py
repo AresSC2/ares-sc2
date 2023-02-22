@@ -1,7 +1,6 @@
 from typing import Dict
 
 import numpy as np
-
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
 # movement turn rate
