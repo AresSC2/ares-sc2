@@ -8,7 +8,6 @@ from consts import DEBUG, UnitRole
 from custom_bot_ai import CustomBotAI
 from managers.ability_tracker_manager import AbilityTrackerManager
 from managers.building_manager import BuildingManager
-from managers.combat_manager import CombatManager
 from managers.data_manager import DataManager
 from managers.manager_mediator import ManagerMediator
 from managers.path_manager import PathManager
@@ -75,9 +74,6 @@ class Hub:
         self.building_manager: BuildingManager = BuildingManager(
             ai, config, self.manager_mediator
         )
-        self.combat_manager: CombatManager = CombatManager(
-            ai, config, self.manager_mediator
-        )
         self.production_manager: ProductionManager = ProductionManager(
             ai, config, self.manager_mediator
         )
@@ -93,7 +89,6 @@ class Hub:
             self.resource_manager,
             self.building_manager,  # must be updated before production manager
             self.production_manager,
-            self.combat_manager,
             self.ability_tracker_manager,
         ]
 
@@ -131,8 +126,6 @@ class Hub:
         self.unit_role_manager.clear_role(unit_tag)
         # remove dead townhalls and workers
         self.resource_manager.on_unit_destroyed(unit_tag)
-
-        self.combat_manager.handle_dead_units(unit_tag)
 
         if unit_tag in self.building_manager.building_tracker:
             self.building_manager.remove_unit(unit_tag)
@@ -253,14 +246,6 @@ class Hub:
             f"Base Defenders: \
             {str(self.unit_role_manager.unit_role_dict[UnitRole.BASE_DEFENDER])}",
             pos=(0.05, 0.30),
-            size=13,
-            color=(0, 255, 255),
-        )
-
-        self.ai.client.debug_text_screen(
-            f"Predicted main fight result: \
-            {self.combat_manager.predicted_main_armies_fight_result}",
-            pos=(0.05, 0.34),
             size=13,
             color=(0, 255, 255),
         )
