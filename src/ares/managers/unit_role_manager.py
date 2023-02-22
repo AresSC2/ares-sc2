@@ -185,8 +185,8 @@ class UnitRoleManager(Manager, IManagerMediator):
         -------
 
         """
-        if role not in self.SQUAD_ROLES:
-            self.manager_mediator.remove_tag_from_squads(tag=tag)
+        # if role not in self.SQUAD_ROLES:
+        #     self.manager_mediator.remove_tag_from_squads(tag=tag)
         self.clear_role(tag)
         self.unit_role_dict[role].add(tag)
         self.tag_to_role_dict[tag] = role

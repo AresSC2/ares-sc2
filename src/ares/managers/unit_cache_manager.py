@@ -2,7 +2,7 @@
 
 """
 from collections import defaultdict
-from typing import Any, DefaultDict, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, DefaultDict, Dict, List, Optional, Set, Union
 
 from cache import property_cache_once_per_frame
 from consts import (
@@ -23,8 +23,6 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
-
-from rust_helpers import find_center_mass
 
 
 class UnitCacheManager(Manager, IManagerMediator):
@@ -140,9 +138,6 @@ class UnitCacheManager(Manager, IManagerMediator):
         self.removed_units: Units = Units([], self.ai)
         self.enemy_army_tags: Set[int] = self.enemy_army.tags
         self.enemy_worker_tags: Set[int] = self.enemy_workers.tags
-        self.enemy_army_center_mass: Point2 = self._calculate_enemy_army_center_mass(
-            self.enemy_army
-        )[1]
 
     @property
     def enemy_army_value(self) -> int:
@@ -381,31 +376,31 @@ class UnitCacheManager(Manager, IManagerMediator):
                 retrieved_tags.append(unit)
         return retrieved_tags
 
-    def _calculate_enemy_army_center_mass(
-        self, units: Units, distance: int = 12
-    ) -> Tuple[int, Point2]:
-        """Find the point containing the largest amount of the enemy army.
-
-        Parameters
-        ----------
-        units :
-            Units to find the center mass of.
-        distance :
-            How far way units can be to be considered part of the mass.
-
-        Returns
-        -------
-        Tuple[int, Point2] :
-            First element is the number of units found in the mass.
-            Second element is the position of the center mass.
-
-        """
-        max_units_found: int = 0
-        position: Point2 = self.ai.enemy_start_locations[0]
-        if units:
-            max_units_found, position = find_center_mass(units, distance, position)
-            position = Point2(position)
-        return max_units_found, position
+    # def _calculate_enemy_army_center_mass(
+    #     self, units: Units, distance: int = 12
+    # ) -> Tuple[int, Point2]:
+    #     """Find the point containing the largest amount of the enemy army.
+    #
+    #     Parameters
+    #     ----------
+    #     units :
+    #         Units to find the center mass of.
+    #     distance :
+    #         How far way units can be to be considered part of the mass.
+    #
+    #     Returns
+    #     -------
+    #     Tuple[int, Point2] :
+    #         First element is the number of units found in the mass.
+    #         Second element is the position of the center mass.
+    #
+    #     """
+    #     max_units_found: int = 0
+    #     position: Point2 = self.ai.enemy_start_locations[0]
+    #     if units:
+    #         max_units_found, position = find_center_mass(units, distance, position)
+    #         position = Point2(position)
+    #     return max_units_found, position
 
     @property_cache_once_per_frame
     def enemy_bunkers_near_spawn(self) -> Optional[Units]:

@@ -2,17 +2,16 @@
 
 """
 # cython imports
-from libc.math cimport sqrt, acos
+
+from libc.math cimport acos, sqrt
 
 import math
-from typing import Any, Dict, List, Optional, Set, Tuple
 from functools import lru_cache
-import numpy as np
+from typing import Any, Dict, List, Optional, Set, Tuple
 
+import numpy as np
 from cache import property_cache_once_per_frame
 from consts import (
-    ManagerRequestType,
-    ManagerName,
     ALL_STRUCTURES,
     CURIOUS,
     DEBUG,
@@ -22,19 +21,20 @@ from consts import (
     LIGHTSHADE,
     OXIDE,
     TOWNHALL_TYPES,
+    ManagerName,
+    ManagerRequestType,
     UnitTreeQueryType,
 )
 from custom_bot_ai import CustomBotAI
 from managers.manager import Manager
-from managers.manager_mediator import ManagerMediator, IManagerMediator
-from MapAnalyzer import MapData
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.game_info import Ramp
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
 
+from MapAnalyzer import MapData
 from MapAnalyzer.constructs import ChokeArea, VisionBlockerArea
-from rust_helpers import terrain_flood_fill
 
 
 class TerrainManager(Manager, IManagerMediator):
@@ -625,39 +625,6 @@ class TerrainManager(Manager, IManagerMediator):
             for base_loc in self.ai.expansion_locations_list
         }
         return final_dict
-
-    @lru_cache()
-    def get_flood_fill_area(
-        self, start_point: Point2, max_dist: float = 10.0
-    ) -> Tuple[int, List[Tuple[int, int]]]:
-        """Given a point, flood fill outward from it and return the valid points.
-
-        Notes
-        -----
-        This flood fill does not continue through chokes.
-
-        Parameters
-        ----------
-        start_point :
-            Where to start the flood fill.
-        max_dist :
-            Only include points closer than this distance to the start point.
-
-        Returns
-        -------
-        Tuple[int, List[Tuple[int, int]]] :
-            First element is the number of valid points.
-            Second element is the list of all valid points.
-
-        """
-        all_points = terrain_flood_fill(
-            start_point=start_point.rounded,
-            terrain_grid=self.ai.game_info.terrain_height.data_numpy.T,
-            pathing_grid=self.cached_pathing_grid.astype(np.uint8),
-            max_distance=max_dist,
-            choke_points=self.choke_points,
-        )
-        return len(all_points), all_points
 
     def _clear_positions_blocked_by_burrowed_enemy(self) -> None:
         """Determine if locations blocked by enemies are still blocked.
