@@ -6,3 +6,6 @@
 # ares-sc2
 
 [Documentation](https://aressc2.github.io/ares-sc2/index.html)
+
+To install for development:
+`poetry install --with docs lint test semver`

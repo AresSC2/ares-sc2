@@ -2,7 +2,7 @@
 name = "ares-sc2"
 version = "0.1.0"
 description = ""
-authors = ["Tom Kerr <tomkerrdev@gmail.com>"]
+authors = ["Tom Kerr <tomkerrdev@gmail.com>, Paul <paul@ares.com>"]
 readme = "README.md"
 packages = [{include = "src/ares"}]
 homepage = "https://github.com/AresSC2/ares-sc2"
@@ -13,6 +13,20 @@ license = "MIT"
 python = ">=3.9, <3.10"
 burnysc2 = { git = "https://github.com/august-k/python-sc2", branch = "develop" }
 PyYAML = "6.0"
+cython = "^0.29.33"
+tqdm = "^4.64.1"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.lint]
+optional = true
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.semver]
+optional = true
 
 [tool.poetry.group.lint.dependencies]
 isort = "^5.11.4"
@@ -24,19 +38,13 @@ mypy = "^0.991"
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 
-
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.4.2"
 mkdocs-material = "^9.0.6"
 mkdocstrings = {extras = ["python"], version = "^0.20.0"}
 
-
 [tool.poetry.group.semver.dependencies]
 python-semantic-release = "^7.33.0"
-
-
-[tool.poetry.group.build.dependencies]
-cython = "^0.29.33"
 
 [build-system]
 requires = ["poetry-core"]
