@@ -4,3 +4,4 @@ max-line-length = 88
 extend-ignore = E203
 exclude =
     MapAnalyzer
+    sc2_helper
