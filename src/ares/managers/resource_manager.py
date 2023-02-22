@@ -550,43 +550,15 @@ class ResourceManager(Manager, IManagerMediator):
             ):
                 continue
 
-            # if enemy worker rush, don't assign to minerals where the enemy workers are
-            # near
-            if self.manager_mediator.get_enemy_committed_worker_rush:
-                grid = self.manager_mediator.get_ground_grid
-                safe_minerals: Units = _minerals.filter(
-                    lambda m: self.manager_mediator.is_position_safe(
-                        grid=grid, position=m.position
-                    )
-                )
-                if safe_minerals:
-                    mineral: Unit = safe_minerals.closest_to(worker)
-                # might as well return here and check again next time
-                else:
-                    return
-            elif self.ai.time < 120:
+            if self.ai.time < 120:
                 mineral: Unit = _minerals.closest_to(worker)
             else:
-                # if early game and we are on 2 base, try to keep workers in the main
-                # when possible (2 base might indicate playing defensive against some
-                # cheese so keep workers out of danger)
-                if (
-                    self.ai.townhalls.amount <= 2
-                    and self.ai.time < 300.0
-                    and not self.manager_mediator.get_enemy_has_expanded
-                ):
-                    th: Unit = self.ai.townhalls.closest_to(self.ai.start_location)
-                    if nearby_minerals := _minerals.closer_than(10, th):
-                        mineral: Unit = nearby_minerals.closest_to(th)
-                    else:
-                        mineral: Unit = _minerals.closest_to(worker)
                 # find the closest mineral, then find the nearby minerals that are
                 # closest to the townhall
-                else:
-                    closest_mineral: Unit = _minerals.closest_to(worker)
-                    nearby_minerals: Units = _minerals.closer_than(10, closest_mineral)
-                    th: Unit = self.ai.townhalls.closest_to(closest_mineral)
-                    mineral: Unit = nearby_minerals.closest_to(th)
+                closest_mineral: Unit = _minerals.closest_to(worker)
+                nearby_minerals: Units = _minerals.closer_than(10, closest_mineral)
+                th: Unit = self.ai.townhalls.closest_to(closest_mineral)
+                mineral: Unit = nearby_minerals.closest_to(th)
 
             if len(self.mineral_patch_to_list_of_workers.get(mineral.tag, [])) < 2:
                 self._assign_worker_to_patch(mineral, worker)
@@ -649,36 +621,24 @@ class ResourceManager(Manager, IManagerMediator):
             worker_position: Point2 = worker.position
             worker_tag: int = worker.tag
             # lib zone / nukes etc
-            if (
-                worker_tag in self.worker_tag_to_townhall_tag
-                and not self.manager_mediator.get_is_worker_rush
-                # if this is not true, prevents the `is_position_safe` calls
-                and (
-                    self.worker_tag_to_townhall_tag[worker_tag]
-                    or self.manager_mediator.get_enemy_unit_count(
-                        unit_type=UnitID.GHOST
-                    )
-                    > 0
+            if worker_tag in self.worker_tag_to_townhall_tag and (
+                not self.manager_mediator.is_position_safe(
+                    grid=self.manager_mediator.get_ground_avoidance_grid,
+                    position=worker_position,
                 )
-                and (
+                or (
                     not self.manager_mediator.is_position_safe(
-                        grid=self.manager_mediator.get_ground_avoidance_grid,
+                        grid=self.grid,
                         position=worker_position,
+                        weight_safety_limit=16.5,
                     )
-                    or (
-                        not self.manager_mediator.is_position_safe(
-                            grid=self.grid,
-                            position=worker_position,
-                            weight_safety_limit=16.5,
-                        )
-                    )
-                    # lower health drones are much more cautious
-                    or (
-                        worker.health_percentage <= health_perc
-                        and not self.manager_mediator.is_position_safe(
-                            grid=self.grid,
-                            position=worker_position,
-                        )
+                )
+                # lower health drones are much more cautious
+                or (
+                    worker.health_percentage <= health_perc
+                    and not self.manager_mediator.is_position_safe(
+                        grid=self.grid,
+                        position=worker_position,
                     )
                 )
             ):
@@ -690,8 +650,6 @@ class ResourceManager(Manager, IManagerMediator):
                 mineral_tag: int = self.worker_to_mineral_patch_dict[worker_tag]
                 mineral: Optional[Unit] = minerals.get(mineral_tag, None)
                 boost_active: bool = True
-                if self.manager_mediator.get_is_worker_rush:
-                    boost_active = False
 
                 if mineral is None:
                     # Mined out or no vision? Remove it
@@ -805,23 +763,18 @@ class ResourceManager(Manager, IManagerMediator):
         if (
             worker_dist > 6
             and not worker.is_carrying_resource
-            and not self.manager_mediator.manager_request(
-                ManagerName.PATH_MANAGER,
-                ManagerRequestType.NEIGHBOURING_TILES_ARE_INPATHABLE,
-                position=worker.position,
-            )
+            # TODO: Add this back in later, as can produce drone mining bug near spores
+            # and not self.manager_mediator.manager_request(
+            #     ManagerName.PATH_MANAGER,
+            #     ManagerRequestType.NEIGHBOURING_TILES_ARE_INPATHABLE,
+            #     position=worker.position,
+            # )
         ):
-            if (
-                self.ai.time < 240.0
-                and self.manager_mediator.get_enemy_committed_worker_rush
-            ):
-                move_to: Point2 = resource_target_pos
-            else:
-                move_to: Point2 = self.manager_mediator.find_path_next_point(
-                    start=worker.position,
-                    target=resource_target_pos,
-                    grid=self.grid,
-                )
+            move_to: Point2 = self.manager_mediator.find_path_next_point(
+                start=worker.position,
+                target=resource_target_pos,
+                grid=self.grid,
+            )
             worker.move(move_to)
 
         # fix realtime bug where worker is stuck with a move command but already
