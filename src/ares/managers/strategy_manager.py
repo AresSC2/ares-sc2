@@ -2,10 +2,10 @@
 
 """
 from collections import defaultdict
-from typing import Any, DefaultDict, Dict, Tuple
+from typing import Any, DefaultDict, Dict
 
 from cache import property_cache_once_per_frame
-from consts import DEBUG, BotMode, EngagementResult, ManagerName, ManagerRequestType
+from consts import DEBUG, BotMode, ManagerName, ManagerRequestType
 from custom_bot_ai import CustomBotAI
 from managers.manager import Manager
 from managers.manager_mediator import IManagerMediator, ManagerMediator
@@ -13,7 +13,7 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
 
-from sc2_helper.combat_simulator import CombatSimulator
+# from sc2_helper.combat_simulator import CombatSimulator
 
 # add a little health to units in combat sim to avoid division by zero
 HEALTH_ADJUSTMENT: float = 0.00000001
@@ -77,7 +77,7 @@ class StrategyManager(Manager, IManagerMediator):
 
         self.defensive_attack_target: Point2 = self.ai.start_location
         self.offensive_attack_target: Point2 = self.ai.enemy_start_locations[0]
-        self.combat_sim = CombatSimulator()
+        # self.combat_sim = CombatSimulator()
         self.cached_enemy_center: Point2 = self.ai.enemy_start_locations[0]
         self.enemy_main_ramp = min(
             (ramp for ramp in self.ai.game_info.map_ramps if len(ramp.upper) in {2, 5}),
@@ -157,88 +157,6 @@ class StrategyManager(Manager, IManagerMediator):
 
         """
         self.offensive_attack_target = self.ai.enemy_start_locations[0]
-
-    def can_win_fight(
-        self,
-        own_units: Units,
-        enemy_units: Units,
-        timing_adjust: bool = True,
-        good_positioning: bool = False,
-    ) -> EngagementResult:
-        """Use the combat simulator to predict if our units can beat the enemy units.
-
-        Returns an Enum so that thresholds can be easily adjusted and it may be easier
-        to read the results in other code.
-
-        Warnings
-        --------
-        The combat simulator has some bugs in it that I'm not able to fix since they're
-        in the Rust code. Notable bugs include Missile Turrets shooting Hydralisks and
-        45 SCVs killing a Mutalisk. To get around this, you can filter out units that
-        shouldn't be included, such as not including SCVs when seeing if the Mutalisks
-        can win a fight (this creates its own problems due to the bounce, but I don't
-        believe the bounce is included in the simulation). The simulator isn't perfect,
-        but I think it's still usable. My recommendation is to use it cautiously and
-        only when all units involved can attack each other. It definitely doesn't factor
-        good micro in, so anything involving spell casters is probably a bad idea.
-
-        Parameters
-        ----------
-        own_units :
-            Friendly units to us in the simulation.
-        enemy_units :
-            Enemy units to us in the simulation.
-        timing_adjust :
-            Take distance between units into account.
-        good_positioning :
-            Assume units are positioned reasonably.
-
-        Returns
-        -------
-        EngagementResult :
-            Predicted result of the engagement.
-
-        """
-        self.combat_sim.enable_timing_adjustment(timing_adjust)
-        self.combat_sim.assume_reasonable_positioning(good_positioning)
-        result: Tuple[bool, float] = self.combat_sim.predict_engage(
-            own_units, enemy_units
-        )
-
-        own_health: float
-        enemy_health: float
-        own_health, enemy_health = (
-            sum([u.health for u in own_units]) + HEALTH_ADJUSTMENT,
-            sum([u.health + u.shield for u in enemy_units]) + HEALTH_ADJUSTMENT,
-        )
-        # if the winning units are at 10% health after the fight, the actual engagement
-        # will be determined by micro
-        if result[0]:
-            health_percentage = result[1] / own_health
-            if health_percentage >= 0.9:
-                return EngagementResult.VICTORY_EMPHATIC
-            elif health_percentage >= 0.75:
-                return EngagementResult.VICTORY_OVERWHELMING
-            elif health_percentage >= 0.6:
-                return EngagementResult.VICTORY_DECISIVE
-            elif health_percentage > 0.4:
-                return EngagementResult.VICTORY_CLOSE
-            elif health_percentage > 0.2:
-                return EngagementResult.VICTORY_MARGINAL
-        else:
-            health_percentage = result[1] / enemy_health
-            if health_percentage >= 0.9:
-                return EngagementResult.LOSS_EMPHATIC
-            elif health_percentage >= 0.75:
-                return EngagementResult.LOSS_OVERWHELMING
-            elif health_percentage > 0.6:
-                return EngagementResult.LOSS_DECISIVE
-            elif health_percentage > 0.4:
-                return EngagementResult.LOSS_CLOSE
-            elif health_percentage > 0.2:
-                return EngagementResult.LOSS_MARGINAL
-        # no previous condition was met
-        return EngagementResult.TIE
 
     @property_cache_once_per_frame
     def enemy_at_home(self) -> bool:
