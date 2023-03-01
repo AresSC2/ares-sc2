@@ -1,11 +1,16 @@
 """Cache armies for better and faster tracking.
 
 """
-from collections import defaultdict
-from typing import Any, DefaultDict, Dict, List, Optional, Set, Union
+from typing import Any, Dict, List, Optional, Set, Union
 
-from cache import property_cache_once_per_frame
-from consts import (
+from sc2.game_data import AbilityData
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.unit import Unit
+from sc2.units import Units
+
+from ares.cache import property_cache_once_per_frame
+from ares.consts import (
     CREEP_TUMOR_TYPES,
     EGG_BUTTON_NAMES,
     UNITS_TO_IGNORE,
@@ -14,15 +19,10 @@ from consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
-from custom_bot_ai import CustomBotAI
-from dicts.does_not_use_larva import DOES_NOT_USE_LARVA
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
-from sc2.game_data import AbilityData
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.unit import Unit
-from sc2.units import Units
+from ares.custom_bot_ai import CustomBotAI
+from ares.dicts.does_not_use_larva import DOES_NOT_USE_LARVA
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
 
 class UnitCacheManager(Manager, IManagerMediator):
@@ -83,16 +83,17 @@ class UnitCacheManager(Manager, IManagerMediator):
         self.enemy_army_tags: Set[int] = set()
         self.enemy_worker_tags: Set[int] = set()
         # keep a dict of units for fast lookup
-        self.enemy_army_dict: DefaultDict = defaultdict(Units([], ai))
-        self.own_army_dict: DefaultDict = defaultdict(Units([], ai))
+        # caution: this is for bookkeeping only,
+        # don't use distance checks here for example
+        self.enemy_army_dict: dict[UnitID, Units] = dict()
+        self.own_army_dict: dict[UnitID, Units] = dict()
         # used for assigning roles to locusts, may not be useful
-        self.old_own_army: DefaultDict = defaultdict(Units([], ai))
-        self.own_structures_dict: DefaultDict = defaultdict(Units([], ai))
+        self.old_own_army: dict[UnitID, Units] = dict()
+        self.own_structures_dict: dict[UnitID, Units] = dict()
         self.own_structure_tags: Set = set()
-        # keep track of units that get removed so they can be deleted from memory units
+        # keep track of units that get removed, so they can be deleted from memory units
         self.removed_units: Units = Units([], ai)
-        # keep track of unit tags we want to remove each step so we can do it in one
-        # operation
+        # keep track of unit tags we want to remove, so we can do it in one operation
         self.enemy_tags_to_remove: Set[int] = set()
         self.enemy_army_units_to_add: Units = Units([], ai)
 
@@ -193,7 +194,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         # this doesn't consider units in eggs
         value: int = 0
         for unit in self.own_army:
-            if unit.type_id in {UnitID.DRONE, UnitID.PROBE, UnitID.SCV}:
+            if unit.type_id in WORKER_TYPES:
                 continue
             unit_cost = self.ai.calculate_unit_value(unit.type_id)
             value += unit_cost.minerals + unit_cost.vespene
@@ -256,47 +257,43 @@ class UnitCacheManager(Manager, IManagerMediator):
         -------
 
         """
-        if enemy not in self.enemy_army_dict[enemy.type_id]:
-            # only store a siege tank once
-            if enemy.type_id == UnitID.SIEGETANK:
-                if enemy not in self.enemy_army_dict[UnitID.SIEGETANKSIEGED]:
-                    self.enemy_army_dict[enemy.type_id].append(enemy)
-            elif enemy.type_id == UnitID.SIEGETANKSIEGED:
-                if enemy not in self.enemy_army_dict[UnitID.SIEGETANK]:
-                    self.enemy_army_dict[enemy.type_id].append(enemy)
+        enemy_army_dict: dict[UnitID, Units] = self.enemy_army_dict
+        tag: int = enemy.tag
+        type_id: UnitID = enemy.type_id
+
+        # we don't care about saving these
+        if type_id in UNITS_TO_IGNORE or enemy.is_hallucination:
+            return
+
+        # never seen this unit before
+        if tag not in self.enemy_army_tags:
+            self.enemy_army.append(enemy)
+            if type_id in enemy_army_dict:
+                enemy_army_dict[enemy.type_id].append(enemy)
             else:
-                self.enemy_army_dict[enemy.type_id].append(enemy)
+                enemy_army_dict[enemy.type_id] = Units([enemy], self.ai)
 
-        if enemy.type_id in WORKER_TYPES and enemy.tag not in self.enemy_worker_tags:
-            self.enemy_workers.append(enemy)
-            return
+            if enemy.type_id in WORKER_TYPES and tag not in self.enemy_worker_tags:
+                self.enemy_workers.append(enemy)
+                return
 
-        if enemy.type_id in UNITS_TO_IGNORE or enemy.is_hallucination:
-            return
         # we've seen this enemy before, but we might want to update our records
         # ZERG MORPHS (baneling for example) CARRY THE SAME TAG FROM
         # ZERGLING -> BANELINGCOCOON -> BANELING
-        if enemy.tag in self.enemy_army_tags:
+        else:
             # This first part handles units that have morphed from something
-            if (
-                enemy.type_id in DOES_NOT_USE_LARVA
-                or enemy.type_id == UnitID.HELLIONTANK
-            ):
-                enemy_unit: Optional[Unit] = self.ai.unit_tag_dict.get(enemy.tag, None)
+            if type_id in DOES_NOT_USE_LARVA or type_id == UnitID.HELLIONTANK:
+                enemy_unit: Optional[Unit] = self.ai.unit_tag_dict.get(tag, None)
                 if enemy_unit:
-                    self.enemy_tags_to_remove.add(enemy_unit.tag)
+                    self.enemy_tags_to_remove.add(tag)
                     self.removed_units.append(enemy_unit)
                 # we want this unit appended no matter what (we might not have seen the
                 # original ling for example)
                 self.enemy_army_units_to_add.append(enemy_unit)
             # we've seen this unit before, but want to update our records
             else:
-                self.enemy_tags_to_remove.add(enemy.tag)
+                self.enemy_tags_to_remove.add(tag)
                 self.enemy_army_units_to_add.append(enemy)
-
-        # we've never seen this unit before, we can add it without worrying
-        else:
-            self.enemy_army.append(enemy)
 
     def update_enemy_army(self) -> None:
         """Update cached enemy army.
@@ -334,7 +331,11 @@ class UnitCacheManager(Manager, IManagerMediator):
         -------
 
         """
-        self.own_army_dict[unit.type_id].append(unit)
+        type_id: UnitID = unit.type_id
+        if type_id in self.own_army_dict:
+            self.own_army_dict[type_id].append(unit)
+        else:
+            self.own_army_dict[type_id] = Units([unit], self.ai)
         if unit.type_id in UNITS_TO_IGNORE:
             return
         self.own_army.append(unit)
@@ -353,9 +354,13 @@ class UnitCacheManager(Manager, IManagerMediator):
         -------
 
         """
-        if unit.type_id not in CREEP_TUMOR_TYPES:
-            self.own_structure_tags.add(unit.tag)
-        self.own_structures_dict[unit.type_id].append(unit)
+        type_id: UnitID = unit.type_id
+        if type_id not in CREEP_TUMOR_TYPES:
+            self.own_structure_tags.add(type_id)
+        if type_id in self.own_structures_dict:
+            self.own_structures_dict[unit.type_id].append(unit)
+        else:
+            self.own_structures_dict[unit.type_id] = Units([unit], self.ai)
 
     def get_units_from_tags(self, tags: Union[List[int], Set[int]]) -> List[Unit]:
         """Get a `list` of `Unit` objects corresponding to the given tags.
