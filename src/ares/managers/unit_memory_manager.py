@@ -42,7 +42,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         Parameters
         ----------
         ai :
-            Bot object that will be running the game
+            Bot object that will be running the game.
         config :
             Dictionary with the data from the configuration file
         mediator :

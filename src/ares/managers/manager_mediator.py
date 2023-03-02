@@ -253,6 +253,125 @@ class ManagerMediator(IManagerMediator):
             ManagerName.COMBAT_MANAGER, ManagerRequestType.GET_SQUAD_CLOSE_TO_TARGET
         )
 
+    @property
+    def get_mineral_patch_to_list_of_workers(self) -> Dict[int, Set[int]]:
+        """Get a dictionary containing mineral tag to worker tags
+
+        Resource Manager
+
+        Returns
+        -------
+        dict :
+            Dictionary where key is mineral tag, and value is workers assigned here.
+
+        """
+        return self.manager_request(
+            ManagerName.RESOURCE_MANAGER,
+            ManagerRequestType.GET_MINERAL_PATCH_TO_LIST_OF_WORKERS,
+        )
+
+    @property
+    def get_worker_tag_to_townhall_tag(self) -> dict[int, int]:
+        """Get a dictionary containing worker tag to townhall tag.
+        Where the townhall is the place where worker returns resources
+
+        Resource Manager
+
+        Returns
+        -------
+        dict :
+            Dictionary where key is worker tag, and value is townhall tag.
+
+        """
+        return self.manager_request(
+            ManagerName.RESOURCE_MANAGER,
+            ManagerRequestType.GET_WORKER_TAG_TO_TOWNHALL_TAG,
+        )
+
+    @property
+    def get_worker_to_mineral_patch_dict(self) -> dict[int, int]:
+        """Get a dictionary containing worker tag to mineral patch tag.
+
+        Resource Manager
+
+        Returns
+        -------
+        dict :
+            Dictionary where key is worker tag, and value is mineral tag.
+
+        """
+        return self.manager_request(
+            ManagerName.RESOURCE_MANAGER,
+            ManagerRequestType.GET_WORKER_TO_MINERAL_PATCH_DICT,
+        )
+
+    def remove_mineral_field(self, **kwargs) -> None:
+        """Request for a mineral field to be removed from bookkeeping.
+
+        Resource Manager
+
+        Notes
+        -----
+        mineral_field_tag : int
+            The tag of the patch to remove.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Notes)
+
+        Returns
+        -------
+
+        """
+        return self.manager_request(
+            ManagerName.RESOURCE_MANAGER,
+            ManagerRequestType.REMOVE_MINERAL_FIELD,
+            **kwargs,
+        )
+
+    @property
+    def get_worker_to_vespene_dict(self) -> dict:
+        """Get a dictionary containing worker tag to gas building tag.
+
+        Resource Manager
+
+        Returns
+        -------
+        dict :
+            Dictionary where key is worker tag, and value is gas building tag.
+
+        """
+        return self.manager_request(
+            ManagerName.RESOURCE_MANAGER,
+            ManagerRequestType.GET_WORKER_TO_GAS_BUILDING_DICT,
+        )
+
+    def remove_gas_building(self, **kwargs) -> None:
+        """Request for a gas building to be removed from bookkeeping.
+
+        Resource Manager
+
+        Notes
+        -----
+        gas_building_tag : int
+            The tag of the gas building to remove.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Notes)
+
+        Returns
+        -------
+
+        """
+        return self.manager_request(
+            ManagerName.RESOURCE_MANAGER,
+            ManagerRequestType.REMOVE_GAS_BUILDING,
+            **kwargs,
+        )
+
     def remove_tag_from_squads(self, **kwargs) -> None:
         """Remove the given tag from unit squads.
 
@@ -838,6 +957,26 @@ class ManagerMediator(IManagerMediator):
         return self.manager_request(
             ManagerName.STRATEGY_MANAGER,
             ManagerRequestType.GET_ENEMY_AT_HOME,
+        )
+
+    @property
+    def get_mineral_target_dict(self) -> dict[int, Point2]:
+        """Get position in front of each mineral.
+
+        This position is used for speed mining, and is also useful for
+        making sure worker is moved to the right side of a mineral.
+
+        ResourceManager
+
+        Returns
+        -------
+        dict :
+            Key -> mineral tag, Value -> Position
+
+        """
+        return self.manager_request(
+            ManagerName.RESOURCE_MANAGER,
+            ManagerRequestType.GET_MINERAL_TARGET_DICT,
         )
 
     @property
@@ -1746,6 +1885,31 @@ class ManagerMediator(IManagerMediator):
         return self.manager_request(
             ManagerName.UNIT_ROLE_MANAGER,
             ManagerRequestType.GET_UNITS_FROM_ROLES,
+            **kwargs,
+        )
+
+    def set_workers_per_gas(self, **kwargs) -> None:
+        """Give all units in a role a different role.
+
+        ResourceManager
+
+        Notes
+        -----
+        amount :
+            Num workers to assign to each gas building
+
+        Parameters
+        ----------
+        kwargs :
+            (See Notes)
+
+        Returns
+        -------
+
+        """
+        return self.manager_request(
+            ManagerName.RESOURCE_MANAGER,
+            ManagerRequestType.SET_WORKERS_PER_GAS,
             **kwargs,
         )
 
