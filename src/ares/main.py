@@ -47,6 +47,9 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
+from ares.behavior_exectioner import BehaviorExecutioner
+from ares.behaviors.behavior import Behavior
+
 
 class AresBot(CustomBotAI):
     """Final setup of CustomBotAI for usage.
@@ -54,6 +57,7 @@ class AresBot(CustomBotAI):
     Most bot logic should go in Hub.
     """
 
+    behavior_executioner: BehaviorExecutioner  # executes behaviors on each step
     cost_dict: Dict[UnitID, Cost]  #: UnitTypeId to cost for faster lookup later
     manager_hub: Hub  #: Hub in charge of handling the Managers
 
@@ -238,6 +242,9 @@ class AresBot(CustomBotAI):
 
         self.manager_hub = Hub(self, self.config)
         await self.manager_hub.init_managers()
+        self.behavior_executioner: BehaviorExecutioner = BehaviorExecutioner(
+            self, self.config, self.manager_hub.manager_mediator
+        )
 
         if self.config[DEBUG] and self.config[DEBUG_OPTIONS][CHAT_DEBUG]:
             from chat_debug import ChatDebug
@@ -292,9 +299,26 @@ class AresBot(CustomBotAI):
         self.last_game_loop = self.state.game_loop
 
         await self.manager_hub.update_managers(self.actual_iteration)
+        self.behavior_executioner.execute()
         self.actual_iteration += 1
         if self.chat_debug:
             await self.chat_debug.parse_commands()
+
+    def register_behavior(self, behavior: Behavior) -> None:
+        """Register behavior.
+
+        Shortcut to `self.behavior_executioner.register_behavior`
+
+        Parameters
+        ----------
+        behavior : Behavior
+            Class that follows the Behavior interface.
+
+        Returns
+        -------
+
+        """
+        self.behavior_executioner.register_behavior(behavior)
 
     async def on_end(self, game_result: Result) -> None:
         """Output game info to the log and save data (if enabled)

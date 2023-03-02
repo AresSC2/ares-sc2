@@ -7,37 +7,29 @@ from collections import defaultdict
 from typing import Any, DefaultDict, Dict, List, Optional, Set
 
 import numpy as np
-from cache import property_cache_once_per_frame
-from consts import (
+from sc2.position import Point2
+from sc2.unit import Unit
+from sc2.units import Units
+
+from ares.cache import property_cache_once_per_frame
+from ares.consts import (
     DEBUG,
     DEBUG_OPTIONS,
     IGNORED_UNIT_TYPES_MEMORY_MANAGER,
     MINERAL,
-    MINERAL_BOOST,
-    MINERAL_STACKING,
-    MINING,
     RESOURCE_DEBUG,
-    TOWNHALL_DISTANCE_FACTOR,
-    WORKER_TYPES,
-    BotMode,
     ManagerName,
     ManagerRequestType,
     UnitRole,
     UnitTreeQueryType,
 )
-from custom_bot_ai import CustomBotAI
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
-from sc2.data import Race
-from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.unit import Unit
-from sc2.units import Units
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
 
 class ResourceManager(Manager, IManagerMediator):
-    """Handles resource collection."""
+    """Handles resource collection data structures."""
 
     MINING_RADIUS = 1.35
     grid: np.ndarray
@@ -65,14 +57,38 @@ class ResourceManager(Manager, IManagerMediator):
         """
         super(ResourceManager, self).__init__(ai, config, mediator)
         self.manager_requests_dict = {
+            ManagerRequestType.GET_MINERAL_PATCH_TO_LIST_OF_WORKERS: lambda kwargs: (
+                self.mineral_patch_to_list_of_workers
+            ),
+            ManagerRequestType.GET_MINERAL_TARGET_DICT: lambda kwargs: (
+                self.mineral_target_dict
+            ),
             ManagerRequestType.GET_NUM_AVAILABLE_MIN_PATCHES: lambda kwargs: (
                 self.available_minerals.amount
+            ),
+            ManagerRequestType.GET_WORKER_TAG_TO_TOWNHALL_TAG: lambda kwargs: (
+                self.worker_tag_to_townhall_tag
+            ),
+            ManagerRequestType.GET_WORKER_TO_GAS_BUILDING_DICT: lambda kwargs: (
+                self.worker_to_geyser_dict
+            ),
+            ManagerRequestType.GET_WORKER_TO_MINERAL_PATCH_DICT: lambda kwargs: (
+                self.worker_to_mineral_patch_dict
+            ),
+            ManagerRequestType.REMOVE_GAS_BUILDING: lambda kwargs: (
+                self._remove_gas_building(**kwargs)
+            ),
+            ManagerRequestType.REMOVE_MINERAL_FIELD: lambda kwargs: (
+                self._remove_mineral_field(**kwargs)
             ),
             ManagerRequestType.REMOVE_WORKER_FROM_MINERAL: lambda kwargs: (
                 self.remove_worker_from_mineral(**kwargs)
             ),
             ManagerRequestType.SELECT_WORKER: lambda kwargs: (
                 self.select_worker(**kwargs)
+            ),
+            ManagerRequestType.SET_WORKERS_PER_GAS: lambda kwargs: (
+                self.set_worker_per_gas(**kwargs)
             ),
         }
 
@@ -102,6 +118,14 @@ class ResourceManager(Manager, IManagerMediator):
         self.went_one_base_defence: bool = False
         # For the initial split we have a special method to assign workers optimally
         self.initial_worker_split: bool = True
+
+    def set_worker_per_gas(self, amount: int) -> None:
+        """Sets how many workers to be assigned to each gas building
+
+        Returns
+        -------
+        """
+        self.workers_per_gas = amount
 
     @property_cache_once_per_frame
     def available_minerals(self) -> Units:
@@ -162,57 +186,6 @@ class ResourceManager(Manager, IManagerMediator):
             and len(self.mineral_patch_to_list_of_workers.get(mf.tag, [])) < 2
         )
 
-    @property_cache_once_per_frame
-    def safe_long_distance_mineral_fields(self) -> Optional[Units]:
-        """Find mineral fields for long distance miners.
-
-        Returns
-        -------
-            Optional[Units] :
-                Units object of safe mineral patches if mineral patches still exist,
-                None otherwise.
-        """
-        if not self.ai.mineral_field:
-            return
-
-        th_tags: Set[int] = self.ai.townhalls.tags
-        mf_to_enemy: Dict[int, Units] = self.manager_mediator.get_units_in_range(
-            start_points=self.ai.mineral_field,
-            distance=30,
-            query_tree=UnitTreeQueryType.AllEnemy,
-            return_as_dict=True,
-        )
-
-        mf_to_own: Dict[int, Units] = self.manager_mediator.get_units_in_range(
-            start_points=self.ai.mineral_field,
-            distance=8,
-            query_tree=UnitTreeQueryType.AllOwn,
-            return_as_dict=True,
-        )
-
-        enemy_ground_dangerous_tags: Set[int] = self.ai.enemy_units.filter(
-            lambda e: e.can_attack_ground
-            and e.type_id not in {UnitID.DRONE, UnitID.PROBE, UnitID.SCV, UnitID.MULE}
-        ).tags
-
-        safe_fields = []
-        for mf in self.ai.mineral_field:
-            if th_tags & mf_to_own[mf.tag].tags:  # intersection
-                # there's a shared tag in our units close to the mineral field and our
-                # townhalls
-                continue
-            else:
-                found = False
-                for tag in mf_to_enemy[mf.tag].tags:
-                    if tag in enemy_ground_dangerous_tags:
-                        # there's an enemy nearby
-                        found = True
-                        break
-                if found:
-                    continue
-                safe_fields.append(mf)
-        return Units(safe_fields, self.ai)
-
     def manager_request(
         self,
         receiver: ManagerName,
@@ -253,24 +226,16 @@ class ResourceManager(Manager, IManagerMediator):
 
         """
         self.grid = self.manager_mediator.get_ground_grid
-        bot_mode: BotMode = self.manager_mediator.get_bot_mode
-        workers: Units = self.manager_mediator.get_units_from_role(
+        if workers := self.manager_mediator.get_units_from_role(
             role=UnitRole.GATHERING,
             unit_type=self.ai.worker_type,
-        )
-
-        if not workers:
-            return
-
-        if iteration % 4 == 0:
-            self._assign_workers(workers)
-            self._decide_on_gas_collection(bot_mode)
-            # keep memory of our townhalls, so we can deal with dead ths
-            for th in self.ai.townhalls:
-                if th.tag not in self.cached_townhalls.tags and th.is_ready:
-                    self.cached_townhalls.append(th)
-
-        await self._collect_resources(workers)
+        ):
+            if iteration % 4 == 0:
+                self._assign_workers(workers)
+                # keep memory of our townhalls, so we can deal with dead ths
+                for th in self.ai.townhalls:
+                    if th.tag not in self.cached_townhalls.tags and th.is_ready:
+                        self.cached_townhalls.append(th)
 
         if self.debug and self.config[DEBUG_OPTIONS][RESOURCE_DEBUG]:
             self._print_debug_information()
@@ -594,265 +559,6 @@ class ResourceManager(Manager, IManagerMediator):
             mineral_field
         ).tag
 
-    async def _collect_resources(self, workers: Units) -> None:
-        """Mineral and vespene collection.
-
-        Each worker is assigned their own patch or gas building.
-
-        Parameters
-        ----------
-        workers :
-            Workers that have been tasked with gathering resources.
-
-        Returns
-        -------
-
-        """
-        gas_buildings: Dict[int, Unit] = {gas.tag: gas for gas in self.ai.gas_buildings}
-        minerals: Dict[int, Unit] = {
-            mineral.tag: mineral for mineral in self.ai.mineral_field
-        }
-
-        long_distance_min_time: int = 120
-
-        health_perc: float = 0.5 if self.ai.time > 180.0 else 0.7
-
-        for worker in workers:
-            worker_position: Point2 = worker.position
-            worker_tag: int = worker.tag
-            # lib zone / nukes etc
-            if worker_tag in self.worker_tag_to_townhall_tag and (
-                not self.manager_mediator.is_position_safe(
-                    grid=self.manager_mediator.get_ground_avoidance_grid,
-                    position=worker_position,
-                )
-                or (
-                    not self.manager_mediator.is_position_safe(
-                        grid=self.grid,
-                        position=worker_position,
-                        weight_safety_limit=16.5,
-                    )
-                )
-                # lower health drones are much more cautious
-                or (
-                    worker.health_percentage <= health_perc
-                    and not self.manager_mediator.is_position_safe(
-                        grid=self.grid,
-                        position=worker_position,
-                    )
-                )
-            ):
-                await self._keep_worker_safe(
-                    worker,
-                )
-
-            elif worker_tag in self.worker_to_mineral_patch_dict:
-                mineral_tag: int = self.worker_to_mineral_patch_dict[worker_tag]
-                mineral: Optional[Unit] = minerals.get(mineral_tag, None)
-                boost_active: bool = True
-
-                if mineral is None:
-                    # Mined out or no vision? Remove it
-                    self._remove_mineral_field(mineral_tag)
-
-                elif self.config[MINING][MINERAL_BOOST] and boost_active:
-                    await self._do_mining_boost(
-                        self.config[MINING][TOWNHALL_DISTANCE_FACTOR],
-                        mineral,
-                        worker,
-                    )
-                elif self.config[MINING][MINERAL_STACKING]:
-                    if worker.is_carrying_vespene:
-                        worker.return_resource()
-                    elif not worker.is_carrying_minerals and (
-                        not worker.is_gathering or worker.order_target != mineral.tag
-                    ):
-                        worker.gather(mineral)
-
-            elif worker_tag in self.worker_to_geyser_dict:
-                gas_building_tag: int = self.worker_to_geyser_dict[worker.tag]
-                gas_building: Optional[Unit] = gas_buildings.get(gas_building_tag, None)
-                if not gas_building or not gas_building.vespene_contents:
-                    self._remove_gas_building(gas_building_tag)
-
-                elif self.workers_per_gas < 3 and self.config[MINING][MINERAL_BOOST]:
-                    await self._do_mining_boost(
-                        self.config[MINING][TOWNHALL_DISTANCE_FACTOR],
-                        gas_building,
-                        worker,
-                    )
-                else:
-                    townhalls: Units = self.ai.townhalls.ready
-                    if townhalls:
-                        townhall: Unit = townhalls.closest_to(worker)
-                        worker_dist: float = worker.distance_to(gas_building)
-                        # we are far away, path to min field to avoid enemies
-                        if (
-                            worker_dist > 6
-                            and not worker.is_carrying_resource
-                            and not self.manager_mediator.manager_request(
-                                ManagerName.PATH_MANAGER,
-                                ManagerRequestType.NEIGHBOURING_TILES_ARE_INPATHABLE,
-                                position=worker_position,
-                            )
-                        ):
-                            move_to: Point2 = (
-                                self.manager_mediator.find_path_next_point(
-                                    start=worker_position,
-                                    target=gas_building.position,
-                                    grid=self.grid,
-                                )
-                            )
-                            worker.move(move_to)
-                        # can't use anything like `carry_resource`, `return_resource`
-                        # for gas because we don't get the buff if worker is carrying
-                        # rich vespene
-                        elif (
-                            worker.order_target != gas_building.tag
-                            and worker.order_target != townhall.tag
-                        ):
-                            worker.gather(gas_building)
-
-            # nowhere for this worker to go, long distance mining
-            # in early game stay in main base
-            elif self.ai.time > long_distance_min_time:
-                await self._do_long_distance_mining(
-                    worker, self.safe_long_distance_mineral_fields
-                )
-
-    async def _do_mining_boost(
-        self,
-        distance_to_townhall_factor: float,
-        target: Unit,
-        worker: Unit,
-    ) -> None:
-        """Perform the trick so that worker does not decelerate.
-
-        This avoids worker deceleration when mining by issuing a Move command near a
-        mineral patch/townhall and then issuing a Gather or Return command once the
-        worker is close enough to immediately perform the action instead of issuing a
-        Gather command and letting the SC2 engine manage the worker.
-
-        Parameters
-        ----------
-        distance_to_townhall_factor :
-            Multiplier used for finding the target of the Move command when returning
-            resources.
-        target :
-            Mineral field or Townhall that the worker should be moving toward/performing
-            an action on.
-        worker :
-            The worker being boosted.
-
-        Returns
-        -------
-
-        """
-        if not self.ai.townhalls.ready:
-            return
-
-        if target.is_mineral_field:
-            resource_target_pos: Point2 = self.mineral_target_dict.get(target.position)
-            worker_dist: float = worker.distance_to(resource_target_pos)
-        else:
-            resource_target_pos: Point2 = target.position.towards(
-                worker, target.radius * 1.21
-            )
-            worker_dist: float = worker.distance_to(resource_target_pos)
-        # we are far away, path to min field to avoid enemies
-        if (
-            worker_dist > 6
-            and not worker.is_carrying_resource
-            # TODO: Add this back in later, as can produce drone mining bug near spores
-            # and not self.manager_mediator.manager_request(
-            #     ManagerName.PATH_MANAGER,
-            #     ManagerRequestType.NEIGHBOURING_TILES_ARE_INPATHABLE,
-            #     position=worker.position,
-            # )
-        ):
-            move_to: Point2 = self.manager_mediator.find_path_next_point(
-                start=worker.position,
-                target=resource_target_pos,
-                grid=self.grid,
-            )
-            worker.move(move_to)
-
-        # fix realtime bug where worker is stuck with a move command but already
-        # returned minerals
-        elif (
-            len(worker.orders) == 1
-            and worker.orders[0].ability.id == AbilityId.MOVE
-            and worker.order_target == self.ai.townhalls.ready.closest_to(worker).tag
-        ):
-            # target being the mineral
-            worker(AbilityId.SMART, target)
-
-        # shift worker to correct mineral if it ends up on wrong one
-        elif worker.is_gathering and worker.order_target != target.tag:
-            worker(AbilityId.SMART, target)
-
-        elif (worker.is_returning or worker.is_carrying_resource) and len(
-            worker.orders
-        ) < 2:
-            townhall: Optional[Unit] = None
-            if worker.tag in self.worker_tag_to_townhall_tag:
-                townhall: Unit = self.ai.structures.by_tag(
-                    self.worker_tag_to_townhall_tag[worker.tag]
-                )
-            if not townhall:
-                townhall: Unit = self.ai.townhalls.ready.closest_to(worker)
-
-            target_pos: Point2 = townhall.position
-            target_pos = target_pos.towards(
-                worker, townhall.radius * distance_to_townhall_factor
-            )
-            if 0.75 < worker.distance_to(target_pos) < 2:
-                worker.move(target_pos)
-                worker(AbilityId.SMART, townhall, True)
-            # not at right distance to get boost command, but doesn't have return
-            # resource command for some reason
-            elif not worker.is_returning:
-                worker(AbilityId.SMART, townhall)
-
-        elif not worker.is_returning and len(worker.orders) < 2:
-            min_distance: float = 0.75 if target.is_mineral_field else 0.1
-            max_distance: float = 2.0 if target.is_mineral_field else 0.5
-            if (
-                min_distance < worker.distance_to(resource_target_pos) < max_distance
-                or worker.is_idle
-            ):
-                worker.move(resource_target_pos)
-                worker(AbilityId.SMART, target, True)
-
-        # on rare occasion above conditions don't hit and worker goes idle
-        elif worker.is_idle or not worker.is_moving:
-            if worker.is_carrying_resource:
-                worker.return_resource(self.ai.townhalls.closest_to(worker))
-            else:
-                worker.gather(target)
-
-        # attempt to fix rare bug, worker sitting next to townhall with a resource
-        elif not worker.is_returning and worker.is_carrying_resource:
-            worker.return_resource(self.ai.townhalls.closest_to(worker))
-
-    def _decide_on_gas_collection(self, _bot_mode: BotMode) -> None:
-        """Dynamically adapt how many workers per gas.
-
-        Notes
-        -----
-        This is optional, but can be helpful.
-
-        Parameters
-        ----------
-        _bot_mode :
-            What mode the bot is in.
-
-        Returns
-        -------
-
-        """
-        self.workers_per_gas = 3
-
     def _assign_initial_workers(self, minerals: Units, workers: Units) -> None:
         """Special method for initial workers to split perfectly at the start.
 
@@ -882,88 +588,6 @@ class ResourceManager(Manager, IManagerMediator):
             for w in new_workers:
                 self._assign_worker_to_patch(mineral, w)
                 assigned_workers.add(w.tag)
-
-    async def _do_long_distance_mining(self, worker: Unit, min_fields: Units) -> None:
-        """There is nowhere for worker to mine, so long distance mine instead.
-
-        Parameters
-        ----------
-        worker :
-            The worker performing the long distance mining.
-        min_fields :
-            Mineral fields on the map.
-
-        Returns
-        -------
-
-        """
-        # mined out the map
-        if not self.ai.minerals:
-            return
-        completed_bases: Units = self.ai.townhalls.ready
-        # there is nowhere to return resources!
-        if not completed_bases:
-            return
-
-        target_mineral: Optional[Unit] = None
-
-        # on route to a far mineral patch
-        if not worker.is_gathering and not worker.is_carrying_resource:
-            # enemy worker rush, click on mf at home and don't long distance mine
-            if (
-                self.manager_mediator.get_enemy_committed_worker_rush
-                and len(self.ai.townhalls) < 2
-            ):
-                worker.gather(self.ai.mineral_field.closest_to(self.ai.start_location))
-            else:
-                # if there is a pending base, we should mine from there
-                pending_bases: Units = self.ai.townhalls.filter(
-                    lambda th: not th.is_ready
-                )
-                if pending_bases and self.ai.mineral_field:
-                    target_base: Unit = pending_bases.closest_to(worker)
-                    target_mineral = self.ai.mineral_field.closest_to(target_base)
-                # no pending base, find a mineral field
-                else:
-                    # find mineral contents not near an owned base or enemy
-                    if min_fields:
-                        target_mineral = min_fields.closest_to(worker)
-
-                if target_mineral:
-                    if (
-                        not self.manager_mediator.is_position_safe(
-                            grid=self.grid,
-                            position=worker.position,
-                        )
-                        and worker.distance_to(target_mineral) > 5
-                    ):
-                        move_to: Point2 = self.manager_mediator.find_path_next_point(
-                            start=worker.position,
-                            target=target_mineral.position,
-                            grid=self.grid,
-                            sense_danger=False,
-                        )
-                        worker.move(move_to)
-                    elif self.ai.mineral_field:
-                        worker.gather(target_mineral)
-        # worker is travelling back to a ready townhall
-        else:
-            return_base: Unit = completed_bases.closest_to(worker)
-            if (
-                not self.manager_mediator.is_position_safe(
-                    grid=self.grid, position=worker.position
-                )
-                and worker.distance_to(return_base) > 8
-            ):
-                move_to: Point2 = self.manager_mediator.find_path_next_point(
-                    start=worker.position,
-                    target=return_base.position,
-                    grid=self.grid,
-                    sense_danger=False,
-                )
-                worker.move(move_to)
-            else:
-                worker.return_resource()
 
     def _remove_workers_from_gas_at_count(self, vespene_count: int = 100) -> None:
         """Precisely control when workers should be pulled off gas.
@@ -1066,7 +690,7 @@ class ResourceManager(Manager, IManagerMediator):
                 if val != gas_building_tag
             }
 
-    def _remove_mineral_field(self, mineral_field_tag) -> None:
+    def _remove_mineral_field(self, mineral_field_tag: int) -> None:
         """Remove mineral field and assigned workers from bookkeeping.
 
         Parameters
@@ -1127,59 +751,6 @@ class ResourceManager(Manager, IManagerMediator):
             resource: Units(resource_to_workers[resource], self.ai)
             for resource in resource_to_workers
         }
-
-    async def _keep_worker_safe(
-        self,
-        worker: Unit,
-    ) -> None:
-        """Logic for keeping workers in danger safe.
-
-        Notes
-        -----
-        Because we don't have knowledge of Widow Mine cds, workers will ignore them and
-        continue to mine.
-
-        Parameters
-        ----------
-        worker :
-            Worker to keep safe.
-
-        Returns
-        -------
-
-        """
-        # This is a temporary fix since we don't have knowledge of mine cool down
-        enemy_unit_count = self.manager_mediator.get_enemy_unit_count
-        if (
-            self.ai.enemy_race == Race.Terran
-            and enemy_unit_count(unit_type=UnitID.WIDOWMINE) > 0
-        ):
-            return
-
-        hp_percent: float = worker.health_percentage
-        worker_position: Point2 = worker.position
-
-        # if we have some units to defend then don't worry
-        if hp_percent > 0.55:
-            own_ground_units: Units = self.manager_mediator.get_units_in_range(
-                start_points=[worker.position],
-                distance=10,
-                query_tree=UnitTreeQueryType.AllOwn,
-            )[0]
-            own_defenders_nearby: Units = own_ground_units.filter(
-                lambda u: not u.is_flying
-                and u.type_id not in WORKER_TYPES
-                and u.can_attack
-            )
-
-            if self.ai.get_total_supply(own_defenders_nearby) > 10:
-                return
-
-        move_to: Point2 = self.manager_mediator.find_closest_safe_spot(
-            from_pos=worker_position, grid=self.grid
-        )
-
-        worker.move(move_to)
 
     def _calculate_mineral_targets(self) -> None:
         """Calculate targets for Move commands towards mineral fields when speed mining.
