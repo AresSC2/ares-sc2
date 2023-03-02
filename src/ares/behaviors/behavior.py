@@ -19,7 +19,7 @@ class Behavior(Protocol):
 
     Attributes
     ----------
-    as_group : float
+    as_group : bool
         If this behavior should issue commands as a group or individual.
     unit_tags : set[int]
         The set of unit tags we should issue commands to.
