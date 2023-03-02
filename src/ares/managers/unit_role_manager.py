@@ -52,10 +52,10 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         """
         super(UnitRoleManager, self).__init__(ai, config, mediator)
-        self.unit_role_dict: Dict[UnitRole, Set[int]] = {
-            role: set() for role in UnitRole
+        self.unit_role_dict: Dict[str, Set[int]] = {
+            role.name: set() for role in UnitRole
         }
-        self.tag_to_role_dict: Dict[int, UnitRole] = {}
+        self.tag_to_role_dict: Dict[int, str] = {}
         self.manager_requests_dict = {
             ManagerRequestType.ASSIGN_ROLE: lambda kwargs: self.assign_role(**kwargs),
             ManagerRequestType.BATCH_ASSIGN_ROLE: lambda kwargs: self.batch_assign_role(
@@ -185,11 +185,9 @@ class UnitRoleManager(Manager, IManagerMediator):
         -------
 
         """
-        # if role not in self.SQUAD_ROLES:
-        #     self.manager_mediator.remove_tag_from_squads(tag=tag)
         self.clear_role(tag)
-        self.unit_role_dict[role].add(tag)
-        self.tag_to_role_dict[tag] = role
+        self.unit_role_dict[role.name].add(tag)
+        self.tag_to_role_dict[tag] = role.name
 
     def batch_assign_role(
         self, tags: Union[List[int], Set[int]], role: UnitRole
@@ -302,9 +300,11 @@ class UnitRoleManager(Manager, IManagerMediator):
         else:
             # get every unit with the role
             if restrict_to:
-                tags_to_get: Set[int] = self.unit_role_dict[role] & restrict_to.tags
+                tags_to_get: Set[int] = (
+                    self.unit_role_dict[role.name] & restrict_to.tags
+                )
             else:
-                tags_to_get: Set[int] = self.unit_role_dict[role]
+                tags_to_get: Set[int] = self.unit_role_dict[role.name]
             # get the List[Unit] from UnitCacheManager and return as Units
             return Units(
                 self.manager_mediator.manager_request(
@@ -379,7 +379,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         valid_tags: List[int] = []
         # get a list of the tags of the units in the given roles
         for role in roles:
-            role_tags.extend(self.unit_role_dict[role])
+            role_tags.extend(self.unit_role_dict[role.name])
         # convert to a set for faster lookup
         role_set: Set[int] = set(role_tags)
         own_army_dict: Dict = self.manager_mediator.manager_request(
@@ -424,7 +424,7 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         """
         # get set of tags of units with the role
-        unit_with_role_tags: Set[int] = self.unit_role_dict[role]
+        unit_with_role_tags: Set[int] = self.unit_role_dict[role.name]
         # get the tags of units of the type
         units_of_type_tags: Set[int] = self.manager_mediator.manager_request(
             ManagerName.UNIT_CACHE_MANAGER, ManagerRequestType.GET_CACHED_OWN_ARMY_DICT
