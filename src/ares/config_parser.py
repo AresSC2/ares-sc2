@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from os import path
 
 import yaml
+
 from src.ares.consts import CONFIG_FILE
 
 
@@ -18,6 +19,7 @@ class ConfigParser:
     user_config_location : bool
         Path to user config.yml file.
     """
+
     ares_config_location: str
     user_config_location: str
 
@@ -70,7 +72,7 @@ class ConfigParser:
             A single config dictionary where user values override default values.
         """
         config: dict = internal_config.copy()
-        # iterate through internal config, and search for matching values in user's config
+        # iterate through internal config, and search for matching values in user config
         for k, v in internal_config.items():
             value_type = type(v)
             if value_type == dict and k in user_config:

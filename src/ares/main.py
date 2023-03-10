@@ -6,15 +6,11 @@ from collections import defaultdict
 from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
-import yaml
-
-from ares.config_parser import ConfigParser
 from consts import (
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
     BANNED_PHRASES,
     CHAT_DEBUG,
-    CONFIG_FILE,
     DEBUG,
     DEBUG_GAME_STEP,
     DEBUG_OPTIONS,
@@ -51,6 +47,7 @@ from sc2.units import Units
 
 from ares.behavior_exectioner import BehaviorExecutioner
 from ares.behaviors.behavior import Behavior
+from ares.config_parser import ConfigParser
 
 
 class AresBot(CustomBotAI):
