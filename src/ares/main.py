@@ -7,6 +7,8 @@ from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
 import yaml
+
+from ares.config_parser import ConfigParser
 from consts import (
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
@@ -74,9 +76,14 @@ class AresBot(CustomBotAI):
         # use this Dict when compiling
         # self.config: Dict = CONFIG
         # otherwise we use the config.yml file
-        __location__ = path.realpath(path.join(getcwd(), path.dirname(__file__)))
-        with open(path.join(__location__, CONFIG_FILE), "r") as config_file:
-            self.config = yaml.safe_load(config_file)
+        __ares_config_location__: str = path.realpath(
+            path.join(getcwd(), path.dirname(__file__))
+        )
+        __user_config_location__: str = path.abspath(".")
+        config_parser: ConfigParser = ConfigParser(
+            __ares_config_location__, __user_config_location__
+        )
+        self.config = config_parser.parse()
 
         self.game_step_override: Optional[int] = game_step_override
         self.unit_tag_dict: Dict[int, Unit] = {}
