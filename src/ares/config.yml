@@ -11,31 +11,6 @@ DebugOptions:
     ShowPathingCost: False
     ResourceDebug: False
 
-BuildCycle:
-    # There should be a corresponding Strategies key for each build in a Cycle
-    # key should be the opponent id from aiarena
-    # test_123 is active if Debug: True
-    test_123:
-        BotName: Test
-        Cycle:
-            - DEFAULT
-    Protoss:
-        BotName: DEFAULT
-        Cycle:
-            - DEFAULT
-    Random:
-        BotName: RandomRace
-        Cycle:
-            - DEFAULT
-    Terran:
-        BotName: TerranRace
-        Cycle:
-            - DEFAULT
-    Zerg:
-        BotName: ZergRace
-        Cycle:
-            - DEFAULT
-
 Chat:
     Enabled: True
     AiarenaTags: True
@@ -49,11 +24,6 @@ Distances:
         MidGame: 20
     GroundEnemyLeavingBases: 24
     FlyingEnemyLeavingBases: 22
-
-Strategies:
-    DEFAULT:
-        OpeningBuildOrder:
-            []
 
 Building:
     # how many seconds before giving up on a construction order?

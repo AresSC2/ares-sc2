@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Callable, DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
-from consts import BotMode, EngagementResult, ManagerName, ManagerRequestType, UnitRole
+from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
 from sc2.game_info import Ramp
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -926,22 +926,6 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_bot_mode(self) -> BotMode:
-        """Get the current BotMode.
-
-        StrategyManger
-
-        Returns
-        -------
-        BotMode :
-            The current BotMode.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_BOT_MODE
-        )
-
-    @property
     def get_enemy_at_home(self) -> bool:
         """Get whether the enemy is near their main or natural base.
 
@@ -1025,22 +1009,6 @@ class ManagerMediator(IManagerMediator):
         """
         return self.manager_request(
             ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_SHOULD_BE_OFFENSIVE
-        )
-
-    @property
-    def get_starting_bot_mode(self) -> BotMode:
-        """Get the BotMode we started the game in.
-
-        StrategyManager
-
-        Returns
-        -------
-        BotMode :
-            The BotMode we started the game in.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_STARTING_BOT_MODE
         )
 
     """

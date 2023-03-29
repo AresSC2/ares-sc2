@@ -132,12 +132,6 @@ UPGRADES: Set[str] = {"UPGRADES"}
 """Enums"""
 
 
-class BotMode(Enum):
-    """Various modes the bot can be in."""
-
-    DEFAULT = auto()
-
-
 class BuildingPurpose(Enum):
     """Populate this with reasons a building was built."""
 
@@ -219,12 +213,10 @@ class ManagerRequestType(str, Enum):
 
     # StrategyManager
     CAN_WIN_FIGHT = "CAN_WIN_FIGHT"
-    GET_BOT_MODE = "GET_BOT_MODE"
     GET_ENEMY_AT_HOME = "GET_ENEMY_AT_HOME"
     GET_OFFENSIVE_ATTACK_TARGET = "GET_OFFENSIVE_ATTACK_TARGET"
     GET_RALLY_POINT = "GET_RALLY_POINT"
     GET_SHOULD_BE_OFFENSIVE = "GET_SHOULD_BE_OFFENSIVE"
-    GET_STARTING_BOT_MODE = "GET_STARTING_BOT_MODE"
 
     # TerrainManager
     BUILDING_POSITION_BLOCKED_BY_BURROWED_UNIT = (

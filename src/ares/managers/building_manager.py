@@ -4,7 +4,7 @@
 from collections import defaultdict
 from typing import Any, Coroutine, DefaultDict, Dict, List, Optional, Set, Union
 
-from consts import (
+from ares.consts import (
     BUILDING,
     BUILDING_PURPOSE,
     CANCEL_ORDER,
@@ -14,15 +14,14 @@ from consts import (
     ID,
     TARGET,
     TIME_ORDER_COMMENCED,
-    BotMode,
     BuildingPurpose,
     ManagerName,
     ManagerRequestType,
     UnitRole,
 )
-from custom_bot_ai import CustomBotAI
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.constants import ALL_GAS
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -137,7 +136,7 @@ class BuildingManager(Manager, IManagerMediator):
         for tag in self.building_tracker:
             self.building_counter[self.building_tracker[tag][ID]] += 1
 
-        await self._handle_construction_orders(self.manager_mediator.get_bot_mode)
+        await self._handle_construction_orders()
 
         # check if a worker has the Building task but isn't being told to build anything
         # this normally occurs if the building gets canceled
@@ -149,17 +148,12 @@ class BuildingManager(Manager, IManagerMediator):
                     tag=worker.tag, role=UnitRole.GATHERING
                 )
 
-    async def _handle_construction_orders(self, _bot_mode: BotMode) -> None:
+    async def _handle_construction_orders(self) -> None:
         """Construct tracked buildings.
 
         Go through the building tracker and control workers. This is to avoid the
         slowing down that happens as a worker approaches the target location when issued
         a 'build' order.
-
-        Parameters
-        ----------
-        _bot_mode :
-            What mode the bot is in (unused)
 
         Returns
         -------

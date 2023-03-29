@@ -8,17 +8,16 @@ object, with many instances of these making up a BuildOrder
 
 from typing import Callable, Dict, List, Optional, Set, Union
 
-from consts import (
+from ares.consts import (
     DEBUG,
     OPENING_BUILD_ORDER,
     STRATEGIES,
-    BotMode,
     ManagerName,
     ManagerRequestType,
 )
-from custom_bot_ai import CustomBotAI
+from ares.custom_bot_ai import CustomBotAI
 from loguru import logger
-from managers.manager_mediator import ManagerMediator
+from ares.managers.manager_mediator import ManagerMediator
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
@@ -133,11 +132,11 @@ class BuildRunner:
         -------
 
         """
-        bot_mode: BotMode = self.manager_mediator.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_BOT_MODE
+        bot_mode: str = self.manager_mediator.manager_request(
+            ManagerName.DATA_MANAGER, ManagerRequestType.GET_INITIAL_BOT_MODE
         )
-        self.build_order: List[BuildOrderStep] = self.parse_build_order(
-            self.config[STRATEGIES][bot_mode.name][OPENING_BUILD_ORDER]
+        self.build_order: list[BuildOrderStep] = self.parse_build_order(
+            self.config[STRATEGIES][bot_mode][OPENING_BUILD_ORDER]
         )
 
     async def run_build(self) -> None:

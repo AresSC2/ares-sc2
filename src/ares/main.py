@@ -6,6 +6,8 @@ from collections import defaultdict
 from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
+from ares.build_parser import BuildParser
+from build_runner.build_order_runner import BuildOrderRunner
 from consts import (
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
@@ -57,6 +59,7 @@ class AresBot(CustomBotAI):
     """
 
     behavior_executioner: BehaviorExecutioner  # executes behaviors on each step
+    build_order_runner: BuildOrderRunner  # execute exact build order from config
     cost_dict: Dict[UnitID, Cost]  #: UnitTypeId to cost for faster lookup later
     manager_hub: Hub  #: Hub in charge of handling the Managers
 
@@ -246,6 +249,11 @@ class AresBot(CustomBotAI):
 
         self.manager_hub = Hub(self, self.config)
         await self.manager_hub.init_managers()
+        build_parser: BuildParser = BuildParser(self.race, self.config)
+        build_parser.parse()
+        self.build_order_runner: BuildOrderRunner = BuildOrderRunner(
+            self, self.config, self.manager_hub.strategy_manager.starting_bot_mode
+        )
         self.behavior_executioner: BehaviorExecutioner = BehaviorExecutioner(
             self, self.config, self.manager_hub.manager_mediator
         )

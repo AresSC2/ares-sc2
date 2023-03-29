@@ -3,7 +3,7 @@ import json
 from os import path
 from typing import Dict, List, Optional, Union
 
-from consts import (
+from ares.consts import (
     BUILD_CYCLE,
     CYCLE,
     DATA_DIR,
@@ -17,13 +17,12 @@ from consts import (
     TEST_OPPONENT_ID,
     USE_DATA,
     WIN,
-    BotMode,
     ManagerName,
     ManagerRequestType,
 )
-from custom_bot_ai import CustomBotAI
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.data import Result
 
 
@@ -43,8 +42,8 @@ class DataManager(Manager, IManagerMediator):
             )
         }
 
-        self.build_cycle: List[BotMode] = self.get_build_cycle()
-        self.starting_bot_mode: BotMode = BotMode.DEFAULT
+        self.build_cycle: list = self._get_build_cycle()
+        self.starting_bot_mode = "DEFAULT"
         self.found_build: bool = False
         self.opponent_history: List = []
 
@@ -67,7 +66,7 @@ class DataManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs
-    ) -> Optional[Union[BotMode, List[BotMode]]]:
+    ) -> Optional[Union[str, list[str]]]:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -130,9 +129,7 @@ class DataManager(Manager, IManagerMediator):
         if not self.found_build:
             self.starting_bot_mode = self.build_cycle[0]
 
-        self.starting_bot_mode = self.starting_bot_mode
-
-    def get_build_cycle(self) -> List[BotMode]:
+    def _get_build_cycle(self) -> List[str]:
         """
         Get the build cycle for the opponent from the config file
         If the opponent id is not present, set a default build cycle instead
@@ -143,18 +140,19 @@ class DataManager(Manager, IManagerMediator):
         else:
             opponent_id: str = self.ai.opponent_id
 
-        build_cycle: List[BotMode] = []
+        build_cycle: List[str] = []
         # get a build cycle from config depending on ai arena opponent id
         if opponent_id in self.config[BUILD_CYCLE]:
             for build in self.config[BUILD_CYCLE][opponent_id][CYCLE]:
-                build_cycle.append(BotMode[build])
+                build_cycle.append(build)
         # else choose a cycle depending on the enemy race
         elif self.ai.enemy_race.name in self.config[BUILD_CYCLE]:
             for build in self.config[BUILD_CYCLE][self.ai.enemy_race.name][CYCLE]:
-                build_cycle.append(BotMode[build])
+                build_cycle.append(build)
         # shouldn't happen, but make sure we have something just in case
-        else:
-            build_cycle.append(BotMode.DEFAULT)
+        # TODO: Remove this if safe to do so
+        # else:
+        #     build_cycle.append(BotMode.DEFAULT)
 
         return build_cycle
 
@@ -211,7 +209,7 @@ class DataManager(Manager, IManagerMediator):
         self.data_saved = True
 
     def add_game_to_dict(
-        self, bot_mode: BotMode, enemy_rushed: bool, game_duration: int, result: int
+        self, bot_mode: str, enemy_rushed: bool, game_duration: int, result: int
     ) -> None:
         """
         Append a new game to the dict's list
@@ -225,7 +223,7 @@ class DataManager(Manager, IManagerMediator):
             RACE: str(self.ai.enemy_race),
             DURATION: game_duration,
             ENEMY_RUSHED: enemy_rushed,
-            STRATEGY_USED: bot_mode.name,
+            STRATEGY_USED: bot_mode,
             RESULT: result,
         }
         self.opponent_history.append(game)

@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from consts import BotMode
-from custom_bot_ai import CustomBotAI
-from managers.manager_mediator import ManagerMediator
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager_mediator import ManagerMediator
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -59,7 +58,7 @@ class BaseProduction(ABC):
     @abstractmethod
     async def update(
         self,
-        bot_mode: BotMode,
+        bot_mode: str,
         building_loc: Point2,
         iteration: int,
     ) -> None:
