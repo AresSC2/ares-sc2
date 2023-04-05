@@ -6,8 +6,7 @@ from collections import defaultdict
 from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
-from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
-
+import yaml
 from build_runner.build_order_runner import BuildOrderRunner
 from consts import (
     ADD_SHADES_ON_FRAME,
@@ -38,7 +37,6 @@ from dicts.enemy_vs_ground_static_defense_ranges import (
 from dicts.unit_data import UNIT_DATA
 from loguru import logger
 from managers.hub import Hub
-import yaml
 from s2clientprotocol.raw_pb2 import Unit as RawUnit
 from sc2.constants import ALL_GAS, IS_PLACEHOLDER, FakeEffectID, geyser_ids, mineral_ids
 from sc2.data import Race, Result, race_gas, race_townhalls, race_worker

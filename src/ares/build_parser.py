@@ -1,12 +1,6 @@
 from dataclasses import dataclass
-from os import path
 
-import yaml
 from sc2.data import Race
-
-from src.ares.consts import CONFIG_FILE
-
-# from ares import AresBot
 
 
 @dataclass

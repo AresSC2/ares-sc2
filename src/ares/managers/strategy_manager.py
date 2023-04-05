@@ -4,14 +4,15 @@
 from collections import defaultdict
 from typing import Any, DefaultDict, Dict
 
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.units import Units
+
 from ares.cache import property_cache_once_per_frame
 from ares.consts import DEBUG, ManagerName, ManagerRequestType
 from ares.custom_bot_ai import CustomBotAI
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.units import Units
 
 # from sc2_helper.combat_simulator import CombatSimulator
 

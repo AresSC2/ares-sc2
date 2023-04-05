@@ -1,16 +1,16 @@
 from dataclasses import dataclass
-
 from typing import TYPE_CHECKING
 
 from sc2.data import Race
+from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_data import Cost
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 
 if TYPE_CHECKING:
     from ares import AresBot
+
 from ares.build_runner.build_order_step import BuildOrderStep
-from ares.consts import BuildOrderOptions, BuildOrderTargetOptions, ALL_STRUCTURES
+from ares.consts import ALL_STRUCTURES, BuildOrderOptions, BuildOrderTargetOptions
 
 
 @dataclass
@@ -27,8 +27,8 @@ class BuildOrderParser:
         for raw_step in self.raw_build_order:
             commands: list[str] = raw_step.split(" ")
             assert (
-                    len(commands) <= 3
-            ), f"Build order strings should contain three or less words, got: {raw_step}"
+                len(commands) <= 3
+            ), f"Build order strings should contain 3 or less words, got: {raw_step}"
 
             # this is the main command of a build order step (worker, gas, expand etc)
             command: str = commands[0].upper()
@@ -73,7 +73,7 @@ class BuildOrderParser:
                 start_condition=lambda: self.ai.minerals >= min_minerals_for_expand,
                 end_condition=lambda: self.ai.structures.filter(
                     lambda s: 0.00001 <= s.build_progress < 0.05
-                              and s.type_id == self.ai.base_townhall_type
+                    and s.type_id == self.ai.base_townhall_type
                 ),
             ),
             BuildOrderOptions.GAS: BuildOrderStep(
@@ -83,7 +83,7 @@ class BuildOrderParser:
                 else 50,
                 end_condition=lambda: self.ai.structures.filter(
                     lambda s: 0.00001 <= s.build_progress < 0.05
-                              and s.type_id == self.ai.gas_type
+                    and s.type_id == self.ai.gas_type
                 ),
             ),
             BuildOrderOptions.SUPPLY: BuildOrderStep(
@@ -96,7 +96,7 @@ class BuildOrderParser:
                 else (
                     self.ai.structures.filter(
                         lambda s: 0.00001 <= s.build_progress < 0.05
-                                  and s.type_id == self.ai.supply_type
+                        and s.type_id == self.ai.supply_type
                     )
                 ),
             ),
@@ -115,7 +115,7 @@ class BuildOrderParser:
             start_condition=lambda: self.ai.minerals >= cost.minerals - 75,
             end_condition=lambda: self.ai.structures.filter(
                 lambda s: 0.00001 <= s.build_progress < 0.05
-                          and s.type_id == structure_id
+                and s.type_id == structure_id
             ),
         )
 
@@ -123,10 +123,10 @@ class BuildOrderParser:
         return BuildOrderStep(
             command=unit_id,
             start_condition=lambda: self.ai.can_afford(unit_id)
-                                    and self.ai.structures.filter(
+            and self.ai.structures.filter(
                 lambda s: s.type_id in UNIT_TRAINED_FROM[unit_id]
-                          and s.build_progress == 1.0
-                          and s.is_idle
+                and s.build_progress == 1.0
+                and s.is_idle
             ),
             # if start condition is True a train order will be issued
             # therefore it will automatically complete the step
@@ -150,9 +150,9 @@ class BuildOrderParser:
             Whether we have resources, supply and structure to train unit_type.
         """
         if self.ai.all_own_units.filter(
-                lambda u: u.type_id in UNIT_TRAINED_FROM[unit_type]
-                          and u.build_progress == 1.0
-                          and u.is_idle
+            lambda u: u.type_id in UNIT_TRAINED_FROM[unit_type]
+            and u.build_progress == 1.0
+            and u.is_idle
         ):
             return self.ai.can_afford(unit_type)
 

@@ -1,13 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from ares.custom_bot_ai import CustomBotAI
-from ares.managers.manager_mediator import ManagerMediator
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
+
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager_mediator import ManagerMediator
 
 
 class BaseProduction(ABC):

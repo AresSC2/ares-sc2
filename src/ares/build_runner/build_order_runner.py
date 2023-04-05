@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING, Optional, Union
 
-from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
-from sc2.position import Point2
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.managers.build_runner import BuildOrderStep
@@ -10,15 +9,17 @@ from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
     from ares import AresBot
+
+from loguru import logger
+
 from ares.build_runner.build_order_parser import BuildOrderParser
 from ares.consts import (
-    BUILDS,
-    OPENING_BUILD_ORDER,
     ALL_STRUCTURES,
-    BuildOrderTargetOptions,
+    BUILDS,
     GAS_BUILDINGS,
+    OPENING_BUILD_ORDER,
+    BuildOrderTargetOptions,
 )
-from loguru import logger
 
 
 class BuildOrderRunner:

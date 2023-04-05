@@ -1,5 +1,10 @@
+from typing import TYPE_CHECKING
+
 from ares.behaviors.behavior import Behavior
 from ares.managers.manager_mediator import ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class BehaviorExecutioner:

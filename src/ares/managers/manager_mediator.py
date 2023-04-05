@@ -6,7 +6,6 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Callable, DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
-from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
 from sc2.game_info import Ramp
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -14,6 +13,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 from scipy.spatial import KDTree
 
+from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
 from MapAnalyzer import MapData
 
 

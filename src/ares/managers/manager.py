@@ -4,11 +4,11 @@
 from abc import ABCMeta, abstractmethod
 from typing import Any, Dict
 
-from ares.consts import ManagerName, ManagerRequestType
-from ares.managers.manager_mediator import ManagerMediator
+from sc2.bot_ai import BotAI
 from sc2.units import Units
 
-from sc2.bot_ai import BotAI
+from ares.consts import ManagerName, ManagerRequestType
+from ares.managers.manager_mediator import ManagerMediator
 
 
 class Manager(metaclass=ABCMeta):

@@ -1,7 +1,10 @@
 """Handle data."""
 import json
+import os
 from os import path
 from typing import Dict, List, Optional, Union
+
+from sc2.data import Result
 
 from ares.consts import (
     BUILD_CHOICES,
@@ -9,7 +12,6 @@ from ares.consts import (
     DATA_DIR,
     DEBUG,
     DURATION,
-    ENEMY_RUSHED,
     LOSS,
     RACE,
     RESULT,
@@ -20,10 +22,8 @@ from ares.consts import (
     ManagerName,
     ManagerRequestType,
 )
-
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from sc2.data import Result
 
 
 class DataManager(Manager, IManagerMediator):
@@ -45,7 +45,7 @@ class DataManager(Manager, IManagerMediator):
         self.opponent_history: List = []
 
         self.file_path: path = path.join(
-            DATA_DIR, "{}.json".format(self.ai.opponent_id)
+            DATA_DIR, f"{self.ai.opponent_id}-{self.ai.race.name.lower()}.json"
         )
 
         self.data_saved: bool = False
@@ -114,7 +114,7 @@ class DataManager(Manager, IManagerMediator):
         last_result: int = self.opponent_history[-1][RESULT]
 
         for i, build in enumerate(self.build_cycle):
-            if last_build == build.name:
+            if last_build == build:
                 self.found_build = True
                 # Defeat
                 if last_result == 0:
@@ -165,8 +165,7 @@ class DataManager(Manager, IManagerMediator):
                 {
                     RACE: str(self.ai.enemy_race),
                     DURATION: 0,
-                    ENEMY_RUSHED: False,
-                    STRATEGY_USED: self.build_cycle[0].name,
+                    STRATEGY_USED: self.build_cycle[0],
                     RESULT: 2,
                 }
             ]
@@ -195,20 +194,16 @@ class DataManager(Manager, IManagerMediator):
                 # treat it as a tie if we don't know what happened
                 result_id = 1
 
-        self.add_game_to_dict(
-            self.starting_bot_mode, False, int(self.ai.time), result_id
-        )
+        self.add_game_to_dict(self.chosen_opening, int(self.ai.time), result_id)
+        os.makedirs("data", exist_ok=True)
         with open(self.file_path, "w") as f:
             json.dump(self.opponent_history, f)
         self.data_saved = True
 
-    def add_game_to_dict(
-        self, bot_mode: str, enemy_rushed: bool, game_duration: int, result: int
-    ) -> None:
+    def add_game_to_dict(self, bot_mode: str, game_duration: int, result: int) -> None:
         """
         Append a new game to the dict's list
         @param bot_mode:
-        @param enemy_rushed:
         @param game_duration:
         @param result:
         @return:
@@ -216,7 +211,6 @@ class DataManager(Manager, IManagerMediator):
         game = {
             RACE: str(self.ai.enemy_race),
             DURATION: game_duration,
-            ENEMY_RUSHED: enemy_rushed,
             STRATEGY_USED: bot_mode,
             RESULT: result,
         }

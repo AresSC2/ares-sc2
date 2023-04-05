@@ -1,8 +1,8 @@
-from typing import Union, Callable
+from typing import Callable, Union
 
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.upgrade_id import UpgradeId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.upgrade_id import UpgradeId
 
 
 class BuildOrderStep:
