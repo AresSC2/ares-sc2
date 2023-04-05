@@ -2,6 +2,7 @@
 from enum import Enum, auto
 from typing import List, Set
 
+from sc2.data import Race
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
@@ -17,7 +18,8 @@ ATTACK_DISENGAGE_FURTHER_THAN: str = "AttackDisengageIfTargetFurtherThan"
 ATTACK_ENGAGE_CLOSER_THAN: str = "AttackEngageIfTargetCloserThan"
 BLINDING_CLOUD: str = "BlindingCloud"
 BOOST_BACK_TO_TOWNHALL: str = "BoostBackToTownHall"
-BUILD_CYCLE: str = "BuildCycle"
+BUILD_CHOICES: str = "BuildChoices"
+BUILDS: str = "Builds"
 CHAT_DEBUG: str = "ChatDebug"
 COMBAT: str = "Combat"
 CONFIG_FILE: str = "config.yml"
@@ -57,7 +59,6 @@ SHADE_COMMENCED: str = "SHADE_COMMENCED"
 SHADE_OWNER: str = "SHADE_OWNER"
 SHOW_PATHING_COST: str = "ShowPathingCost"
 STORM: str = "Storm"
-STRATEGIES: str = "Strategies"
 STRATEGY_MANAGER: str = "StrategyManager"
 TOWNHALL_DISTANCE_FACTOR: str = "TownhallDistanceFactor"
 UNIT_CONTROL: str = "UnitControl"
@@ -70,6 +71,7 @@ BUILDING: str = "Building"
 BUILDING_PURPOSE: str = "building_purpose"
 CANCEL_ORDER: str = "CancelOrder"
 ID: str = "id"
+STRUCTURE_ORDER_COMPLETE: str = "structure_order_complete"
 TARGET: str = "target"
 TIME_ORDER_COMMENCED: str = "time_order_commenced"
 
@@ -132,6 +134,26 @@ UPGRADES: Set[str] = {"UPGRADES"}
 """Enums"""
 
 
+class BuildOrderOptions(str, Enum):
+    GAS = "GAS"
+    EXPAND = "EXPAND"
+    SUPPLY = "SUPPLY"
+    WORKER = "WORKER"
+
+    @classmethod
+    def contains_key(cls, name):
+        return name in cls.__members__
+
+
+class BuildOrderTargetOptions(str, Enum):
+    NEXUS = "NEXUS"
+    RAMP = "RAMP"
+
+    @classmethod
+    def contains_key(cls, name):
+        return name in cls.__members__
+
+
 class BuildingPurpose(Enum):
     """Populate this with reasons a building was built."""
 
@@ -176,7 +198,7 @@ class ManagerRequestType(str, Enum):
     REMOVE_TAG_FROM_SQUADS = "REMOVE_TAG_FROM_SQUADS"
 
     # DataManager
-    GET_INITIAL_BOT_MODE = "GET_INITIAL_BOT_MODE"
+    GET_CHOSEN_OPENING = "GET_CHOSEN_OPENING"
 
     # PathManager
     FIND_LOW_PRIORITY_PATH = "FIND_LOW_PRIORITY_PATH"
@@ -521,3 +543,9 @@ UNITS_TO_AVOID_TYPES: Set[UnitID] = {
 UNITS_TO_IGNORE: Set[UnitID] = set()
 UNIT_TYPES_WITH_NO_ROLE: Set[UnitID] = set()
 WORKER_TYPES: Set[UnitID] = {UnitID.DRONE, UnitID.PROBE, UnitID.SCV}
+
+race_supply: dict[Race, UnitID] = {
+    Race.Protoss: UnitID.PYLON,
+    Race.Terran: UnitID.SUPPLYDEPOT,
+    Race.Zerg: UnitID.OVERLORD,
+}

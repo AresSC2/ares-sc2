@@ -6,7 +6,8 @@ from collections import defaultdict
 from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
-from ares.build_parser import BuildParser
+from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
+
 from build_runner.build_order_runner import BuildOrderRunner
 from consts import (
     ADD_SHADES_ON_FRAME,
@@ -27,6 +28,7 @@ from consts import (
     USE_DATA,
     WORKER_TYPES,
     UnitTreeQueryType,
+    race_supply,
 )
 from custom_bot_ai import CustomBotAI
 from dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
@@ -36,6 +38,7 @@ from dicts.enemy_vs_ground_static_defense_ranges import (
 from dicts.unit_data import UNIT_DATA
 from loguru import logger
 from managers.hub import Hub
+import yaml
 from s2clientprotocol.raw_pb2 import Unit as RawUnit
 from sc2.constants import ALL_GAS, IS_PLACEHOLDER, FakeEffectID, geyser_ids, mineral_ids
 from sc2.data import Race, Result, race_gas, race_townhalls, race_worker
@@ -79,10 +82,11 @@ class AresBot(CustomBotAI):
         __ares_config_location__: str = path.realpath(
             path.join(getcwd(), path.dirname(__file__))
         )
-        __user_config_location__: str = path.abspath(".")
+        self.__user_config_location__: str = path.abspath(".")
         config_parser: ConfigParser = ConfigParser(
-            __ares_config_location__, __user_config_location__
+            __ares_config_location__, self.__user_config_location__
         )
+
         self.config = config_parser.parse()
 
         self.game_step_override: Optional[int] = game_step_override
@@ -98,6 +102,7 @@ class AresBot(CustomBotAI):
         # we skip python-sc2 iterations in realtime, so we keep track of our own one
         self.actual_iteration: int = 0
         self.WORKER_TYPES = WORKER_TYPES | {UnitID.DRONEBURROWED}
+        self.supply_type: UnitID = UnitID.OVERLORD
 
     # noinspection PyFinal
     def _prepare_units(self):
@@ -212,18 +217,24 @@ class AresBot(CustomBotAI):
         -------
 
         """
+        # optional build order config from a user, add to the existing config dictionary
+        __user_build_orders_location__: str = path.join(
+            self.__user_config_location__, f"{self.race.name.lower()}_builds.yml"
+        )
+        if path.isfile(__user_build_orders_location__):
+            with open(__user_build_orders_location__, "r") as config_file:
+                build_order_config: dict = yaml.safe_load(config_file)
+                self.config.update(build_order_config)
+
         self.gas_type = race_gas[self.race]
         self.worker_type = race_worker[self.race]
+        self.supply_type = race_supply[self.race]
         if self.race != Race.Zerg:
-            self.townhalls.first.train(self.worker_type)
             self.base_townhall_type = (
                 UnitID.COMMANDCENTER if self.race == Race.Terran else UnitID.NEXUS
             )
         else:
             self.base_townhall_type = UnitID.HATCHERY
-            self.larva.first.train(UnitID.DRONE)
-        for worker in self.workers:
-            worker.gather(self.mineral_field.closest_to(worker))
 
     async def on_start(self) -> None:
         """Set up game step, managers, and information that requires game data
@@ -249,10 +260,12 @@ class AresBot(CustomBotAI):
 
         self.manager_hub = Hub(self, self.config)
         await self.manager_hub.init_managers()
-        build_parser: BuildParser = BuildParser(self.race, self.config)
-        build_parser.parse()
+
         self.build_order_runner: BuildOrderRunner = BuildOrderRunner(
-            self, self.config, self.manager_hub.strategy_manager.starting_bot_mode
+            self,
+            self.manager_hub.data_manager.chosen_opening,
+            self.config,
+            self.manager_hub.manager_mediator,
         )
         self.behavior_executioner: BehaviorExecutioner = BehaviorExecutioner(
             self, self.config, self.manager_hub.manager_mediator
@@ -311,6 +324,8 @@ class AresBot(CustomBotAI):
         self.last_game_loop = self.state.game_loop
 
         await self.manager_hub.update_managers(self.actual_iteration)
+        if not self.build_order_runner.build_completed:
+            await self.build_order_runner.run_build()
         self.behavior_executioner.execute()
         self.actual_iteration += 1
         if self.chat_debug:

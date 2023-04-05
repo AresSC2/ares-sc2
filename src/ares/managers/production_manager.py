@@ -3,12 +3,11 @@
 """
 from typing import Any, Dict, List
 
-from consts import DEBUG, UNITS_TO_IGNORE, ManagerName, ManagerRequestType
-from custom_bot_ai import CustomBotAI
-from managers.build_runner import BuildRunner
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
-from production.base_production import BaseProduction
+from ares.consts import DEBUG, UNITS_TO_IGNORE, ManagerName, ManagerRequestType
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+from ares.production.base_production import BaseProduction
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
@@ -42,14 +41,6 @@ class ProductionManager(Manager, IManagerMediator):
 
         self.main_building_location: Point2 = self.ai.start_location
         self.debug: bool = config[DEBUG]
-
-        # production classes
-
-        self.build_runner: BuildRunner = BuildRunner(
-            ai,
-            config,
-            mediator,
-        )
 
         self.production_facilities: List[BaseProduction] = []
 
@@ -92,21 +83,12 @@ class ProductionManager(Manager, IManagerMediator):
         -------
 
         """
+        # check where we place tech structures
+        if iteration % 16 == 0:
+            self._check_main_building_location()
 
-        if not self.build_runner.opening_build_complete:
-            await self.build_runner.run_build()
-
-        else:
-            # check where we place tech structures
-            if iteration % 16 == 0:
-                self._check_main_building_location()
-
-            for facility in self.production_facilities:
-                await facility.update(
-                    self.manager_mediator.get_bot_mode,
-                    self.main_building_location,
-                    iteration,
-                )
+        for facility in self.production_facilities:
+            await facility.update(self.main_building_location, iteration)
 
     async def initialise(self) -> None:
         """Set up values that require the bot to be initialised.
@@ -115,7 +97,7 @@ class ProductionManager(Manager, IManagerMediator):
         -------
 
         """
-        self.build_runner.initialise()
+        pass
 
     def _check_main_building_location(self) -> None:
         """Select a townhall to place buildings near.

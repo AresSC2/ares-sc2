@@ -4,6 +4,8 @@
 from collections import defaultdict
 from typing import Any, Coroutine, DefaultDict, Dict, List, Optional, Set, Union
 
+from sc2.data import Race
+
 from ares.consts import (
     BUILDING,
     BUILDING_PURPOSE,
@@ -18,6 +20,7 @@ from ares.consts import (
     ManagerName,
     ManagerRequestType,
     UnitRole,
+    STRUCTURE_ORDER_COMPLETE,
 )
 from ares.custom_bot_ai import CustomBotAI
 from ares.managers.manager import Manager
@@ -167,19 +170,37 @@ class BuildingManager(Manager, IManagerMediator):
                     "BUILDING TARGET",
                 )
             # check if building is morphing
-            worker = self.ai.units.by_tag(worker_tag)
+            if workers := self.ai.workers.filter(lambda u: u.tag == worker_tag):
+                worker: Unit = workers[0]
+            else:
+                tags_to_remove.add(worker_tag)
+                continue
 
             structure_id: UnitID = self.building_tracker[worker_tag][ID]
             target: Point2 = self.building_tracker[worker_tag][TARGET]
 
-            # check if an order has been stuck in the building tracker for too long
-            if (
-                self.ai.time
-                > self.building_tracker[worker_tag][TIME_ORDER_COMMENCED]
-                + self.config[BUILDING][CANCEL_ORDER]
+            # check if we are finished with the building worker
+            if close_structures := self.ai.structures.filter(
+                lambda s: s.type_id == structure_id
+                and s.distance_to(target.position) < 1.0
             ):
-                tags_to_remove.add(worker_tag)
-                continue
+                structure: Unit = close_structures[0]
+                target_progress: float = 1.0 if self.ai.race == Race.Terran else 0.01
+                if structure.build_progress >= target_progress:
+                    tags_to_remove.add(worker_tag)
+                    continue
+
+            # TODO: Revisit this, logic not ideal for scvs
+            #   Added block above as an alternative for now but doesn't deal with
+            #   items stuck in the building tracker
+            # check if an order has been stuck in the building tracker for too long
+            # if (
+            #     self.ai.time
+            #     > self.building_tracker[worker_tag][TIME_ORDER_COMMENCED]
+            #     + self.config[BUILDING][CANCEL_ORDER]
+            # ):
+            #     tags_to_remove.add(worker_tag)
+            #     continue
 
             # this happens if no target location is available eg: all expansions taken
             if not target:
@@ -192,7 +213,7 @@ class BuildingManager(Manager, IManagerMediator):
             # rasper: I put this here to build right away, because it bugs out sometimes
             # if trying to path
             # TODO: fix this so worker paths to building
-            if structure_id in GAS_BUILDINGS:
+            if structure_id in GAS_BUILDINGS and self.ai.can_afford(structure_id):
                 worker.build_gas(target)
 
             elif worker.distance_to(target) > distance:
@@ -204,11 +225,16 @@ class BuildingManager(Manager, IManagerMediator):
                 worker.move(point)
 
             else:
-                if self.ai.can_afford(structure_id):
+                if (
+                    (not worker.is_constructing_scv or worker.is_idle)
+                    and self.ai.can_afford(structure_id)
+                    and self.ai.tech_requirement_progress(structure_id) == 1.0
+                ):
                     worker.build(structure_id, target)
 
         for tag in tags_to_remove:
             self.building_tracker.pop(tag, None)
+            self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
 
     def remove_unit(self, tag: int) -> None:
         """Remove dead units from building tracker.
@@ -387,7 +413,7 @@ class BuildingManager(Manager, IManagerMediator):
                 self.ai.game_info.map_center, 10
             )
 
-    async def build_with_specific_worker(
+    def build_with_specific_worker(
         self,
         worker: Unit,
         structure_type: UnitID,
@@ -417,21 +443,12 @@ class BuildingManager(Manager, IManagerMediator):
         if not pos or not worker:
             return False
 
-        final_pos: Optional[Point2] = await self.ai.find_placement(
-            building=structure_type,
-            near=pos,
-            max_distance=3,
-            random_alternative=False,
-            placement_step=1,
-        )
-        if not final_pos:
-            return False
-
         self.building_tracker[worker.tag] = {
             ID: structure_type,
-            TARGET: final_pos,
+            TARGET: pos,
             TIME_ORDER_COMMENCED: self.ai.time,
             BUILDING_PURPOSE: building_purpose,
+            STRUCTURE_ORDER_COMPLETE: True,
         }
         self.manager_mediator.assign_role(tag=worker.tag, role=UnitRole.BUILDING)
         return True
