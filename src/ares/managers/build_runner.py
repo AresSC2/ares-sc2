@@ -9,9 +9,9 @@ object, with many instances of these making up a BuildOrder
 from typing import Callable, Dict, List, Optional, Set, Union
 
 from ares.consts import (
+    BUILDS,
     DEBUG,
     OPENING_BUILD_ORDER,
-    STRATEGIES,
     ManagerName,
     ManagerRequestType,
 )
@@ -132,11 +132,11 @@ class BuildRunner:
         -------
 
         """
-        bot_mode: str = self.manager_mediator.manager_request(
-            ManagerName.DATA_MANAGER, ManagerRequestType.GET_INITIAL_BOT_MODE
+        opening: str = self.manager_mediator.manager_request(
+            ManagerName.DATA_MANAGER, ManagerRequestType.GET_CHOSEN_OPENING
         )
         self.build_order: list[BuildOrderStep] = self.parse_build_order(
-            self.config[STRATEGIES][bot_mode][OPENING_BUILD_ORDER]
+            self.config[BUILDS][opening][OPENING_BUILD_ORDER]
         )
 
     async def run_build(self) -> None:

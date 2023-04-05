@@ -56,18 +56,11 @@ class BaseProduction(ABC):
         return len(own_army[unit_type]) + int(self.ai.already_pending(unit_type))
 
     @abstractmethod
-    async def update(
-        self,
-        bot_mode: str,
-        building_loc: Point2,
-        iteration: int,
-    ) -> None:
+    async def update(self, building_loc: Point2, iteration: int) -> None:
         """Update the production facility.
 
         Parameters
         ----------
-        bot_mode :
-            Current BotMode.
         building_loc :
             Area to build structures near.
         iteration :

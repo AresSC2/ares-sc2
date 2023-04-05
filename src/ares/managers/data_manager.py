@@ -4,7 +4,7 @@ from os import path
 from typing import Dict, List, Optional, Union
 
 from ares.consts import (
-    BUILD_CYCLE,
+    BUILD_CHOICES,
     CYCLE,
     DATA_DIR,
     DEBUG,
@@ -20,7 +20,7 @@ from ares.consts import (
     ManagerName,
     ManagerRequestType,
 )
-from ares.custom_bot_ai import CustomBotAI
+
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.data import Result
@@ -32,18 +32,15 @@ class DataManager(Manager, IManagerMediator):
     build cycle in config.yml
     """
 
-    def __init__(
-        self, ai: CustomBotAI, config: Dict, mediator: ManagerMediator
-    ) -> None:
+    chosen_opening: str
+
+    def __init__(self, ai, config: Dict, mediator: ManagerMediator) -> None:
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
-            ManagerRequestType.GET_INITIAL_BOT_MODE: lambda kwargs: (
-                self.starting_bot_mode
-            )
+            ManagerRequestType.GET_CHOSEN_OPENING: lambda kwargs: self.chosen_opening
         }
 
         self.build_cycle: list = self._get_build_cycle()
-        self.starting_bot_mode = "DEFAULT"
         self.found_build: bool = False
         self.opponent_history: List = []
 
@@ -53,19 +50,12 @@ class DataManager(Manager, IManagerMediator):
 
         self.data_saved: bool = False
 
-        if self.config[USE_DATA]:
-            self.get_opponent_data(self.ai.opponent_id)
-            self.choose_bot_mode()
-
-        else:
-            self.starting_bot_mode = self.build_cycle[0]
-
     def manager_request(
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> Optional[Union[str, list[str]]]:
         """Fetch information from this Manager so another Manager can use it.
 
@@ -90,6 +80,14 @@ class DataManager(Manager, IManagerMediator):
         """
         return self.manager_requests_dict[request](kwargs)
 
+    async def initialise(self) -> None:
+        if self.config[USE_DATA]:
+            self._get_opponent_data(self.ai.opponent_id)
+            self._choose_opening()
+
+        else:
+            self.chosen_opening = self.build_cycle[0]
+
     async def update(self, _iteration: int) -> None:
         """Not used by this manager.
 
@@ -106,7 +104,7 @@ class DataManager(Manager, IManagerMediator):
         """
         pass
 
-    def choose_bot_mode(self) -> None:
+    def _choose_opening(self) -> None:
         """
         Look at the last build used, and choose a strategy depending on result
         TODO: Develop a more sophisticated system rather then cycling on defeat
@@ -121,13 +119,13 @@ class DataManager(Manager, IManagerMediator):
                 # Defeat
                 if last_result == 0:
                     index: int = 0 if len(self.build_cycle) <= i + 1 else i + 1
-                    self.starting_bot_mode = self.build_cycle[index]
+                    self.chosen_opening = self.build_cycle[index]
                 else:
-                    self.starting_bot_mode = build
+                    self.chosen_opening = build
                 break
         # incase build from last game wasn't found in build cycle
         if not self.found_build:
-            self.starting_bot_mode = self.build_cycle[0]
+            self.chosen_opening = self.build_cycle[0]
 
     def _get_build_cycle(self) -> List[str]:
         """
@@ -142,21 +140,17 @@ class DataManager(Manager, IManagerMediator):
 
         build_cycle: List[str] = []
         # get a build cycle from config depending on ai arena opponent id
-        if opponent_id in self.config[BUILD_CYCLE]:
-            for build in self.config[BUILD_CYCLE][opponent_id][CYCLE]:
+        if opponent_id in self.config[BUILD_CHOICES]:
+            for build in self.config[BUILD_CHOICES][opponent_id][CYCLE]:
                 build_cycle.append(build)
         # else choose a cycle depending on the enemy race
-        elif self.ai.enemy_race.name in self.config[BUILD_CYCLE]:
-            for build in self.config[BUILD_CYCLE][self.ai.enemy_race.name][CYCLE]:
+        elif self.ai.enemy_race.name in self.config[BUILD_CHOICES]:
+            for build in self.config[BUILD_CHOICES][self.ai.enemy_race.name][CYCLE]:
                 build_cycle.append(build)
-        # shouldn't happen, but make sure we have something just in case
-        # TODO: Remove this if safe to do so
-        # else:
-        #     build_cycle.append(BotMode.DEFAULT)
 
         return build_cycle
 
-    def get_opponent_data(self, _opponent_id: str) -> None:
+    def _get_opponent_data(self, _opponent_id: str) -> None:
         """
         Get saved data on opponent, if none is present setup new data
         @param _opponent_id:
