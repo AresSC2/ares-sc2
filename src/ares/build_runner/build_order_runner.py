@@ -66,9 +66,11 @@ class BuildOrderRunner:
         self.ai = ai
         self.config: dict = config
         self.mediator: ManagerMediator = mediator
-        build_order_parser: BuildOrderParser = BuildOrderParser(
-            self.ai, config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
-        )
+        if BUILDS in self.config:
+            build: list[str] = config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
+        else:
+            build: list[str] = []
+        build_order_parser: BuildOrderParser = BuildOrderParser(self.ai, build)
         self.build_order: list[BuildOrderStep] = build_order_parser.parse()
         self.build_step: int = 0
         self.current_step_started: bool = False

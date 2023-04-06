@@ -32,14 +32,12 @@ class DataManager(Manager, IManagerMediator):
     build cycle in config.yml
     """
 
-    chosen_opening: str
-
     def __init__(self, ai, config: Dict, mediator: ManagerMediator) -> None:
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
             ManagerRequestType.GET_CHOSEN_OPENING: lambda kwargs: self.chosen_opening
         }
-
+        self.chosen_opening: str = ""
         self.build_cycle: list = self._get_build_cycle()
         self.found_build: bool = False
         self.opponent_history: List = []
@@ -81,12 +79,13 @@ class DataManager(Manager, IManagerMediator):
         return self.manager_requests_dict[request](kwargs)
 
     async def initialise(self) -> None:
-        if self.config[USE_DATA]:
-            self._get_opponent_data(self.ai.opponent_id)
-            self._choose_opening()
+        if BUILD_CHOICES in self.config:
+            if self.config[USE_DATA]:
+                self._get_opponent_data(self.ai.opponent_id)
+                self._choose_opening()
 
-        else:
-            self.chosen_opening = self.build_cycle[0]
+            else:
+                self.chosen_opening = self.build_cycle[0]
 
     async def update(self, _iteration: int) -> None:
         """Not used by this manager.
@@ -139,14 +138,15 @@ class DataManager(Manager, IManagerMediator):
             opponent_id: str = self.ai.opponent_id
 
         build_cycle: List[str] = []
-        # get a build cycle from config depending on ai arena opponent id
-        if opponent_id in self.config[BUILD_CHOICES]:
-            for build in self.config[BUILD_CHOICES][opponent_id][CYCLE]:
-                build_cycle.append(build)
-        # else choose a cycle depending on the enemy race
-        elif self.ai.enemy_race.name in self.config[BUILD_CHOICES]:
-            for build in self.config[BUILD_CHOICES][self.ai.enemy_race.name][CYCLE]:
-                build_cycle.append(build)
+        if BUILD_CHOICES in self.config:
+            # get a build cycle from config depending on ai arena opponent id
+            if opponent_id in self.config[BUILD_CHOICES]:
+                for build in self.config[BUILD_CHOICES][opponent_id][CYCLE]:
+                    build_cycle.append(build)
+            # else choose a cycle depending on the enemy race
+            elif self.ai.enemy_race.name in self.config[BUILD_CHOICES]:
+                for build in self.config[BUILD_CHOICES][self.ai.enemy_race.name][CYCLE]:
+                    build_cycle.append(build)
 
         return build_cycle
 
