@@ -28,8 +28,54 @@ from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
 class DataManager(Manager, IManagerMediator):
     """
-    Handles opponent data, and chooses a strategy, based on the
-    build cycle in config.yml
+    Class to handle data management and store opponent history.
+
+    Attributes
+    ----------
+    manager_requests_dict : Dict[ManagerRequestType, Callable[[Any]]
+        A dictionary of functions that can be requested by other managers.
+    chosen_opening : str
+        The chosen opening strategy for the current match.
+    build_cycle : List[str]
+        A list of available build strategies for the bot.
+    found_build : bool
+        A boolean flag indicating if the opponent's build strategy from the previous
+        game was found in the build cycle.
+    opponent_history : List
+        A list containing the bot's previous match history against the current opponent.
+    file_path : str
+        The file path of the json file containing the opponent's match history.
+    data_saved : bool
+        A boolean flag indicating if the opponent's match history has been saved.
+
+    Methods
+    -------
+    manager_request(
+        self,
+        receiver: ManagerName,
+        request: ManagerRequestType,
+        reason: str = None,
+        **kwargs,
+    ) -> Optional[Union[str, list[str]]]:
+        Fetch information from this Manager so another Manager can use it.
+
+    initialise(self) -> None:
+        Initialize DataManager.
+
+    update(self, _iteration: int) -> None:
+        Update the state of the DataManager.
+
+    _choose_opening(self) -> None:
+        Choose the opening strategy for the bot based on the opponent's previous game.
+
+    _get_build_cycle(self) -> List[str]:
+        Get the list of available build strategies for the bot.
+
+    _get_opponent_data(self, _opponent_id: str) -> None:
+        Load the opponent's match history from a json file.
+
+    store_opponent_data(self, result: Union[Result, str]) -> None:
+        Save the result of the current match to the opponent's match history.
     """
 
     def __init__(self, ai, config: Dict, mediator: ManagerMediator) -> None:
@@ -105,9 +151,7 @@ class DataManager(Manager, IManagerMediator):
 
     def _choose_opening(self) -> None:
         """
-        Look at the last build used, and choose a strategy depending on result
         TODO: Develop a more sophisticated system rather then cycling on defeat
-        @return:
         """
         last_build: str = self.opponent_history[-1][STRATEGY_USED]
         last_result: int = self.opponent_history[-1][RESULT]
@@ -127,11 +171,6 @@ class DataManager(Manager, IManagerMediator):
             self.chosen_opening = self.build_cycle[0]
 
     def _get_build_cycle(self) -> List[str]:
-        """
-        Get the build cycle for the opponent from the config file
-        If the opponent id is not present, set a default build cycle instead
-        @return:
-        """
         if self.config[DEBUG]:
             opponent_id: str = TEST_OPPONENT_ID
         else:
@@ -151,11 +190,6 @@ class DataManager(Manager, IManagerMediator):
         return build_cycle
 
     def _get_opponent_data(self, _opponent_id: str) -> None:
-        """
-        Get saved data on opponent, if none is present setup new data
-        @param _opponent_id:
-        @return:
-        """
         if path.isfile(self.file_path):
             with open(self.file_path, "r") as f:
                 self.opponent_history = json.load(f)
@@ -171,11 +205,6 @@ class DataManager(Manager, IManagerMediator):
             ]
 
     def store_opponent_data(self, result: Union[Result, str]) -> None:
-        """
-        Called at end of game, save build used and result.
-        @param result:
-        @return:
-        """
         # only write results once
         if self.data_saved:
             return
@@ -201,13 +230,6 @@ class DataManager(Manager, IManagerMediator):
         self.data_saved = True
 
     def add_game_to_dict(self, bot_mode: str, game_duration: int, result: int) -> None:
-        """
-        Append a new game to the dict's list
-        @param bot_mode:
-        @param game_duration:
-        @param result:
-        @return:
-        """
         game = {
             RACE: str(self.ai.enemy_race),
             DURATION: game_duration,
