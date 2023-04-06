@@ -134,6 +134,7 @@ UPGRADES: Set[str] = {"UPGRADES"}
 
 
 class BuildOrderOptions(str, Enum):
+    CHRONO = "CHRONO"
     GAS = "GAS"
     EXPAND = "EXPAND"
     SUPPLY = "SUPPLY"
@@ -145,7 +146,6 @@ class BuildOrderOptions(str, Enum):
 
 
 class BuildOrderTargetOptions(str, Enum):
-    NEXUS = "NEXUS"
     RAMP = "RAMP"
 
     @classmethod

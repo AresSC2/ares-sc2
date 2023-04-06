@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from ares import AresBot
 
 from loguru import logger
+from sc2.ids.ability_id import AbilityId
 
 from ares.build_runner.build_order_parser import BuildOrderParser
 from ares.consts import (
@@ -23,6 +24,38 @@ from ares.consts import (
 
 
 class BuildOrderRunner:
+    """
+    A class to run a build order for an AI.
+
+    Attributes
+    ----------
+    ai : AresBot
+        The AI that the build order is for.
+    chosen_opening : str
+        The name of the opening being used for the build order.
+    config : dict
+        The configuration dictionary for the AI.
+    mediator : ManagerMediator
+        The ManagerMediator object used for communicating with managers.
+    build_order : list[BuildOrderStep]
+        The build order list.
+    build_step : int
+        The current build order step index.
+    current_step_started : bool
+        True if the current build order step has started, False otherwise.
+    _opening_build_completed : bool
+        True if the opening build is completed, False otherwise.
+
+    Methods
+    -------
+    run_build()
+        Runs the build order.
+    do_step(step: BuildOrderStep)
+        Runs a specific build order step.
+    """
+
+    chosen_opening: str
+
     def __init__(
         self,
         ai: "AresBot",
@@ -43,9 +76,18 @@ class BuildOrderRunner:
 
     @property
     def build_completed(self) -> bool:
+        """
+        Returns
+        -------
+        bool
+            True if the opening build is completed, False otherwise.
+        """
         return self._opening_build_completed
 
     async def run_build(self) -> None:
+        """
+        Runs the build order.
+        """
         if self.build_step >= len(self.build_order):
             self._opening_build_completed = True
             return
@@ -53,6 +95,14 @@ class BuildOrderRunner:
         await self.do_step(self.build_order[self.build_step])
 
     async def do_step(self, step: BuildOrderStep) -> None:
+        """
+        Runs a specific build order step.
+
+        Parameters
+        ----------
+        step : BuildOrderStep
+            The build order step to run.
+        """
         if step.start_condition() and not self.current_step_started:
             command: UnitID = step.command
             if command in ALL_STRUCTURES:
@@ -69,6 +119,16 @@ class BuildOrderRunner:
             if type(command) == UnitID and command not in ALL_STRUCTURES:
                 self.current_step_started = True
                 self.ai.train(command)
+
+            elif command == AbilityId.EFFECT_CHRONOBOOST:
+                if chrono_target := self.get_structure(step.target):
+                    if available_nexuses := [
+                        th for th in self.ai.townhalls if th.energy >= 50
+                    ]:
+                        available_nexuses[0](
+                            AbilityId.EFFECT_CHRONOBOOSTENERGYCOST, chrono_target
+                        )
+                        self.current_step_started = True
 
         # current step started and end condition hasn't yet activated
         if not step.end_condition() and self.current_step_started:
@@ -116,3 +176,21 @@ class BuildOrderRunner:
             self.ai.start_location.towards(self.ai.game_info.map_center, 8.0),
             30,
         )
+
+    def get_structure(self, target: str) -> Optional[Unit]:
+        """Get the first structure matching the specified type.
+        Parameters
+        ----------
+        target :
+            Type of building to be returned.
+        Returns
+        -------
+        Optional[Unit] :
+            Unit of the structure type if found.
+        """
+        # this block is currently for chrono
+        if type(target) == UnitID:
+            if valid_structures := self.ai.structures.filter(
+                lambda s: s.build_progress == 1.0 and s.type_id == target
+            ):
+                return valid_structures.first
