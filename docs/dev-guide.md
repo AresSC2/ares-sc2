@@ -1,3 +1,5 @@
+# Required reading only if planning to contribute to Ares or understand inner workings
+
 ### Random bits explaining some decisions
  - Application layout - [Python Packaging Authority](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
 recommend the `src` layout

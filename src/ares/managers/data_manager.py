@@ -142,10 +142,6 @@ class DataManager(Manager, IManagerMediator):
         ----------
         _iteration :
             The current game iteration
-
-        Returns
-        -------
-
         """
         pass
 
