@@ -4,14 +4,15 @@
 from collections import defaultdict
 from typing import Any, DefaultDict, Dict
 
-from cache import property_cache_once_per_frame
-from consts import DEBUG, BotMode, ManagerName, ManagerRequestType
-from custom_bot_ai import CustomBotAI
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
+
+from ares.cache import property_cache_once_per_frame
+from ares.consts import DEBUG, ManagerName, ManagerRequestType
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
 # from sc2_helper.combat_simulator import CombatSimulator
 
@@ -30,9 +31,7 @@ class StrategyManager(Manager, IManagerMediator):
 
     """
 
-    bot_mode: BotMode
     cached_enemy_army: Units
-    starting_bot_mode: BotMode
 
     def __init__(
         self,
@@ -57,10 +56,9 @@ class StrategyManager(Manager, IManagerMediator):
         """
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
-            ManagerRequestType.CAN_WIN_FIGHT: lambda kwargs: self.can_win_fight(
-                **kwargs
-            ),
-            ManagerRequestType.GET_BOT_MODE: lambda kwargs: self.bot_mode,
+            # ManagerRequestType.CAN_WIN_FIGHT: lambda kwargs: self.can_win_fight(
+            #     **kwargs
+            # ),
             ManagerRequestType.GET_ENEMY_AT_HOME: lambda kwargs: self.enemy_at_home,
             ManagerRequestType.GET_OFFENSIVE_ATTACK_TARGET: lambda kwargs: (
                 self.offensive_attack_target
@@ -68,9 +66,6 @@ class StrategyManager(Manager, IManagerMediator):
             ManagerRequestType.GET_RALLY_POINT: lambda kwargs: self.rally_point,
             ManagerRequestType.GET_SHOULD_BE_OFFENSIVE: lambda kwargs: (
                 self.should_be_offensive
-            ),
-            ManagerRequestType.GET_STARTING_BOT_MODE: lambda kwargs: (
-                self.starting_bot_mode
             ),
         }
         self.debug: bool = config[DEBUG]
@@ -137,17 +132,6 @@ class StrategyManager(Manager, IManagerMediator):
             self.ai.draw_text_on_world(
                 self.offensive_attack_target, "Attack target (o)"
             )
-
-    async def initialise(self) -> None:
-        """Set up values that require the bot to be initialised.
-
-        Returns
-        -------
-
-        """
-        self.bot_mode = self.starting_bot_mode = self.manager_mediator.manager_request(
-            ManagerName.DATA_MANAGER, ManagerRequestType.GET_INITIAL_BOT_MODE
-        )
 
     def _update_attack_targets(self) -> None:
         """Pick what to attack.

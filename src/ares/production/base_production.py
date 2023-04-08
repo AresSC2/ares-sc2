@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from consts import BotMode
-from custom_bot_ai import CustomBotAI
-from managers.manager_mediator import ManagerMediator
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
+
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager_mediator import ManagerMediator
 
 
 class BaseProduction(ABC):
@@ -57,18 +57,11 @@ class BaseProduction(ABC):
         return len(own_army[unit_type]) + int(self.ai.already_pending(unit_type))
 
     @abstractmethod
-    async def update(
-        self,
-        bot_mode: BotMode,
-        building_loc: Point2,
-        iteration: int,
-    ) -> None:
+    async def update(self, building_loc: Point2, iteration: int) -> None:
         """Update the production facility.
 
         Parameters
         ----------
-        bot_mode :
-            Current BotMode.
         building_loc :
             Area to build structures near.
         iteration :

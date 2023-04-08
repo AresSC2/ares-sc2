@@ -20,19 +20,19 @@ class Mining(Behavior):
 
     Attributes
     ----------
-    flee_at_health_perc : float
-        If worker is in danger, at what health perc should it flee.
-    keep_safe : bool
-        Should workers flee if they are in danger.
-    long_distance_mine : bool
-        If worker has nothing to do, can it long distance mine?
-    mineral_boost : bool
-        Turn mineral boosting off / on.
-    vespene_boost : bool
-        Turn vespene boosting off / on (only active when workers_per_gas < 3).
-    safe_long_distance_mineral_fields : Optional[Units]
+    flee_at_health_perc : float, optional
+        If worker is in danger, at what health perc should it flee (default is 0.5).
+    keep_safe : bool, optional
+        Should workers flee if they are in danger (default is True).
+    long_distance_mine : bool, optional
+        If worker has nothing to do, can it long distance mine (default is True).
+    mineral_boost : bool, optional
+        Turn mineral boosting off / on (default is True).
+    vespene_boost : bool, optional
+        Turn vespene boosting off / on (only active when workers_per_gas < 3)
+        (default is True).
+    safe_long_distance_mineral_fields : Optional[Units], optional (default is None)
         Used internally, value is set if a worker starts long distance mining.
-
     """
 
     flee_at_health_perc: float = 0.5
@@ -47,7 +47,8 @@ class Mining(Behavior):
         """Execute the mining task (Called from `behavior_executioner.py`).
 
         Depending on the attributes passed, carry out mining tasks based
-        on the bookkeeping found inside `resource_manager`.
+        on the bookkeeping found inside `resource_manager`. No need to
+        manually call this.
 
         Parameters
         ----------

@@ -4,10 +4,11 @@
 from abc import ABCMeta, abstractmethod
 from typing import Any, Dict
 
-from consts import ManagerName, ManagerRequestType
-from custom_bot_ai import CustomBotAI
-from managers.manager_mediator import ManagerMediator
+from sc2.bot_ai import BotAI
 from sc2.units import Units
+
+from ares.consts import ManagerName, ManagerRequestType
+from ares.managers.manager_mediator import ManagerMediator
 
 
 class Manager(metaclass=ABCMeta):
@@ -19,16 +20,14 @@ class Manager(metaclass=ABCMeta):
         Bot object that will be running the game
     config :
         Dictionary with the data from the configuration file
-    mediator :
+    manager_mediator :
         ManagerMediator used for getting information from other managers.
     empty_units :
         Empty Units object that's often useful to have around.
 
     """
 
-    def __init__(
-        self, ai: CustomBotAI, config: Dict, mediator: ManagerMediator
-    ) -> None:
+    def __init__(self, ai: BotAI, config: Dict, mediator: ManagerMediator) -> None:
         """Set up the manager.
 
         Parameters
@@ -45,7 +44,7 @@ class Manager(metaclass=ABCMeta):
 
         """
         super().__init__()
-        self.ai: CustomBotAI = ai
+        self.ai: BotAI = ai
         self.config: Dict = config
         self.manager_mediator: ManagerMediator = mediator
         self.empty_units: Units = Units([], self.ai)

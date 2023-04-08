@@ -216,19 +216,6 @@ class Hub:
         """
         # left hand side
         self.ai.client.debug_text_screen(
-            f"Bot mode: {str(self.strategy_manager.bot_mode)}",
-            pos=(0.05, 0.08),
-            size=13,
-            color=(0, 255, 255),
-        )
-        self.ai.client.debug_text_screen(
-            f"Opening complete: \
-            {str(self.production_manager.build_runner.opening_build_complete)}",
-            pos=(0.05, 0.12),
-            size=13,
-            color=(0, 255, 255),
-        )
-        self.ai.client.debug_text_screen(
             f"Workers per gas: \
             {str(self.resource_manager.workers_per_gas)}",
             pos=(0.05, 0.14),

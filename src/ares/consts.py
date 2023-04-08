@@ -2,6 +2,7 @@
 from enum import Enum, auto
 from typing import List, Set
 
+from sc2.data import Race
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
@@ -17,7 +18,8 @@ ATTACK_DISENGAGE_FURTHER_THAN: str = "AttackDisengageIfTargetFurtherThan"
 ATTACK_ENGAGE_CLOSER_THAN: str = "AttackEngageIfTargetCloserThan"
 BLINDING_CLOUD: str = "BlindingCloud"
 BOOST_BACK_TO_TOWNHALL: str = "BoostBackToTownHall"
-BUILD_CYCLE: str = "BuildCycle"
+BUILD_CHOICES: str = "BuildChoices"
+BUILDS: str = "Builds"
 CHAT_DEBUG: str = "ChatDebug"
 COMBAT: str = "Combat"
 CONFIG_FILE: str = "config.yml"
@@ -57,7 +59,6 @@ SHADE_COMMENCED: str = "SHADE_COMMENCED"
 SHADE_OWNER: str = "SHADE_OWNER"
 SHOW_PATHING_COST: str = "ShowPathingCost"
 STORM: str = "Storm"
-STRATEGIES: str = "Strategies"
 STRATEGY_MANAGER: str = "StrategyManager"
 TOWNHALL_DISTANCE_FACTOR: str = "TownhallDistanceFactor"
 UNIT_CONTROL: str = "UnitControl"
@@ -70,6 +71,7 @@ BUILDING: str = "Building"
 BUILDING_PURPOSE: str = "building_purpose"
 CANCEL_ORDER: str = "CancelOrder"
 ID: str = "id"
+STRUCTURE_ORDER_COMPLETE: str = "structure_order_complete"
 TARGET: str = "target"
 TIME_ORDER_COMMENCED: str = "time_order_commenced"
 
@@ -83,9 +85,8 @@ THIRD: str = "THIRD"
 # data manager
 DATA_DIR: str = "./data"
 DURATION: str = "Duration"
-ENEMY_RUSHED: str = "EnemyRushed"
 LOSS: str = "Loss"
-RACE: str = "Race"
+RACE: str = "EnemyRace"
 RESULT: str = "Result"
 STRATEGY_USED: str = "StrategyUsed"
 TEST_OPPONENT_ID: str = "test_123"
@@ -132,10 +133,24 @@ UPGRADES: Set[str] = {"UPGRADES"}
 """Enums"""
 
 
-class BotMode(Enum):
-    """Various modes the bot can be in."""
+class BuildOrderOptions(str, Enum):
+    CHRONO = "CHRONO"
+    GAS = "GAS"
+    EXPAND = "EXPAND"
+    SUPPLY = "SUPPLY"
+    WORKER = "WORKER"
 
-    DEFAULT = auto()
+    @classmethod
+    def contains_key(cls, name):
+        return name in cls.__members__
+
+
+class BuildOrderTargetOptions(str, Enum):
+    RAMP = "RAMP"
+
+    @classmethod
+    def contains_key(cls, name):
+        return name in cls.__members__
 
 
 class BuildingPurpose(Enum):
@@ -182,7 +197,7 @@ class ManagerRequestType(str, Enum):
     REMOVE_TAG_FROM_SQUADS = "REMOVE_TAG_FROM_SQUADS"
 
     # DataManager
-    GET_INITIAL_BOT_MODE = "GET_INITIAL_BOT_MODE"
+    GET_CHOSEN_OPENING = "GET_CHOSEN_OPENING"
 
     # PathManager
     FIND_LOW_PRIORITY_PATH = "FIND_LOW_PRIORITY_PATH"
@@ -219,12 +234,10 @@ class ManagerRequestType(str, Enum):
 
     # StrategyManager
     CAN_WIN_FIGHT = "CAN_WIN_FIGHT"
-    GET_BOT_MODE = "GET_BOT_MODE"
     GET_ENEMY_AT_HOME = "GET_ENEMY_AT_HOME"
     GET_OFFENSIVE_ATTACK_TARGET = "GET_OFFENSIVE_ATTACK_TARGET"
     GET_RALLY_POINT = "GET_RALLY_POINT"
     GET_SHOULD_BE_OFFENSIVE = "GET_SHOULD_BE_OFFENSIVE"
-    GET_STARTING_BOT_MODE = "GET_STARTING_BOT_MODE"
 
     # TerrainManager
     BUILDING_POSITION_BLOCKED_BY_BURROWED_UNIT = (
@@ -529,3 +542,9 @@ UNITS_TO_AVOID_TYPES: Set[UnitID] = {
 UNITS_TO_IGNORE: Set[UnitID] = set()
 UNIT_TYPES_WITH_NO_ROLE: Set[UnitID] = set()
 WORKER_TYPES: Set[UnitID] = {UnitID.DRONE, UnitID.PROBE, UnitID.SCV}
+
+race_supply: dict[Race, UnitID] = {
+    Race.Protoss: UnitID.PYLON,
+    Race.Terran: UnitID.SUPPLYDEPOT,
+    Race.Zerg: UnitID.OVERLORD,
+}

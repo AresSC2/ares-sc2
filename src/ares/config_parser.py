@@ -16,7 +16,7 @@ class ConfigParser:
     ----------
     ares_config_location : str
         Path to internal Ares config.yml file.
-    user_config_location : bool
+    user_config_location : str
         Path to user config.yml file.
     """
 

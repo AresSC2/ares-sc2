@@ -1,6 +1,10 @@
+from typing import TYPE_CHECKING
+
 from ares.behaviors.behavior import Behavior
-from src.ares import AresBot
-from src.ares.managers.manager_mediator import ManagerMediator
+from ares.managers.manager_mediator import ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class BehaviorExecutioner:
@@ -21,9 +25,9 @@ class BehaviorExecutioner:
 
     """
 
-    def __init__(self, ai: AresBot, config: dict, mediator: ManagerMediator):
+    def __init__(self, ai: "AresBot", config: dict, mediator: ManagerMediator):
         """Inits BehaviorExecutioner class."""
-        self.ai: AresBot = ai
+        self.ai: "AresBot" = ai
         self.config: dict = config
         self.mediator: ManagerMediator = mediator
         self.behaviors: list = []

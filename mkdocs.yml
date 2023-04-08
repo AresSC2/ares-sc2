@@ -1,13 +1,45 @@
 site_name: Ares SC2
 
 theme:
-  name: "material"
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: teal
+      accent: purple
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+      primary: teal
+      accent: lime
+
+markdown_extensions:
+  - toc:
+      baselevel: 1
+      permalink: true
+      toc_depth: 4
 
 nav:
-  - Index Page: index.md
-  - Dev Guide: dev-guide.md
+  - Home: index.md
   - Tutorials: tutorials.md
-  - Reference: reference.md
+  - Behaviors: behaviors.md
+  - Manager Mediator: mediator.md
+  - Dev Guide: dev-guide.md
+  - Managers: managers.md
 
 # to navigate with `/site` content correctly
 use_directory_urls: false
@@ -18,5 +50,10 @@ plugins:
       handlers:
         python:
           paths: [src]
+          selection:
+            docstring_style: numpy
+
+extra_css:
+  - stylesheets/extra.css
 
 repo_url: https://github.com/AresSC2/ares-sc2
