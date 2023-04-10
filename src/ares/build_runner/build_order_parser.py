@@ -199,7 +199,7 @@ class BuildOrderParser:
         return BuildOrderStep(
             command=unit_id,
             start_condition=lambda: self.ai.can_afford(unit_id)
-            and self.ai.structures.filter(
+            and self.ai.all_own_units.filter(
                 lambda s: s.type_id in UNIT_TRAINED_FROM[unit_id]
                 and s.build_progress == 1.0
                 and s.is_idle
