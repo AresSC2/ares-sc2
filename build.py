@@ -1,11 +1,11 @@
 import os
+import platform
 import shutil
 from distutils.command.build_ext import build_ext
 from distutils.core import Distribution, Extension
 
 import numpy
 from Cython.Build import cythonize
-import platform
 
 link_args = []
 include_dirs = [numpy.get_include()]
@@ -25,7 +25,9 @@ def build():
 
                 module = Extension(
                     name=f"{_path}.{file_name}",
-                    sources=[os.path.join(root, file),],
+                    sources=[
+                        os.path.join(root, file),
+                    ],
                     extra_link_args=link_args,
                     include_dirs=include_dirs,
                     libraries=libraries,
@@ -52,6 +54,7 @@ def build():
         mode = os.stat(relative_extension).st_mode
         mode |= (mode & 0o444) >> 2
         os.chmod(relative_extension, mode)
+
 
 if __name__ == "__main__":
     build()

@@ -1,6 +1,7 @@
-from typing import Protocol, TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol
 
 from ares.managers.manager_mediator import ManagerMediator
+
 if TYPE_CHECKING:
     from ares import AresBot
 
