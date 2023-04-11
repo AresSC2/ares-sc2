@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2023-04-11)
+### Fix
+* Check all units for unit trained from ([`3ca162a`](https://github.com/AresSC2/ares-sc2/commit/3ca162ad16badf340c0485b1d5a0b6b90065f429))
+* Import errors ([`0698c07`](https://github.com/AresSC2/ares-sc2/commit/0698c074fb95269179f4947507b7827594b54843))
+
 ## v0.4.0 (2023-04-08)
 ### Feature
 * Generic chrono option in build runner ([`70e4f37`](https://github.com/AresSC2/ares-sc2/commit/70e4f3724f24ca06bf30153672f382bceadf4ecc))
