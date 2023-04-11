@@ -3,7 +3,7 @@ from os import path
 
 import yaml
 
-from src.ares.consts import CONFIG_FILE
+from ares.consts import CONFIG_FILE
 
 
 @dataclass

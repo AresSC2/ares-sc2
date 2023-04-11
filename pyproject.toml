@@ -47,8 +47,12 @@ mkdocstrings = {extras = ["python"], version = "^0.20.0"}
 python-semantic-release = "^7.33.0"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core", "Cython", "numpy", "setuptools"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.build]
+generate-setup-file = false
+script = 'build.py'
 
 [tool.coverage.report]
 exclude_lines = [

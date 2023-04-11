@@ -1,7 +1,9 @@
-from typing import Protocol
+from typing import TYPE_CHECKING, Protocol
 
 from ares.managers.manager_mediator import ManagerMediator
-from src.ares import AresBot
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class Behavior(Protocol):
@@ -29,7 +31,7 @@ class Behavior(Protocol):
     as_group: bool
     unit_tags: set[int]
 
-    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         """Execute the implemented behavior.
 
         Parameters
