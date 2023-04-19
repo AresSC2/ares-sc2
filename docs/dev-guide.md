@@ -12,7 +12,7 @@ recommend the `src` layout
 ### Setting up dev environment
 - install `poetry`
 - clone repo 
-- run `poetry install`
+- run `poetry install --with docs lint test semver notebook`
 
 ### Linting and autoformatting
  - black for main autoformatting
@@ -247,3 +247,12 @@ Poetry can organise dependencies by groups, since dev tools etc are not required
  - some metadata for the project: tool.poetry (the initial version of the package*, description etc.)
  - the dependencies for the app: tool.poetry.dependencies
  - gotcha - The name in `pyproject.toml` should be the same as the package
+
+### Working with jupyter notebook
+It's possible to run jupyter notebook using an existing poetry environment. Install the following
+package at the global or user level:
+
+`pip install --user poetry-kernel`
+
+As long as `ares-sc2` was installed with the `notebook` dependencies, then when launching
+jupyter notebook there should be an option to open a notebook with the poetry kernel
