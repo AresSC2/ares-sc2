@@ -33,6 +33,7 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
 
+from ares.cython_extensions.flood_fill import flood_fill_grid
 from MapAnalyzer import MapData
 from MapAnalyzer.constructs import ChokeArea, VisionBlockerArea
 
@@ -403,6 +404,35 @@ class TerrainManager(Manager, IManagerMediator):
             # by their natural
             self.ol_spots.pop(self.ol_spots.index(closest_spot))
         return closest_spot
+
+    def get_flood_fill_area(
+        self, start_point: Point2, max_dist: int = 25
+    ):
+        """
+        Given a point, flood fill outward from it and return the valid points. Does not continue through chokes.
+
+        Parameters
+        ----------
+        start_point :
+            Start flood fill outwards from this point.
+        max_dist :
+            Distance from start point before finishing the algorithm.
+
+        Returns
+        -------
+        list
+        Set of points (as tuples) that are filled in
+        """
+
+        all_points = flood_fill_grid(
+            start_point=start_point.rounded,
+            terrain_grid=self.ai.game_info.terrain_height.data_numpy.T,
+            pathing_grid=self.cached_pathing_grid.astype(np.uint8),
+            max_distance=max_dist,
+            choke_points=self.choke_points,
+        )
+        return all_points
+
 
     def location_is_blocked(
         self, position: Point2, enemy_only: bool = False, structures_only: bool = False
