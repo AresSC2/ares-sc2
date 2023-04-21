@@ -257,7 +257,10 @@ class AresBot(CustomBotAI):
                 else self.config[DEBUG_GAME_STEP]
             )
 
-        self.manager_hub = Hub(self, self.config)
+        # manager_mediator is declared here so that all Managers in Hub will use the
+        # same ManagerMediator in the event of custom Managers.
+        manager_mediator: ManagerMediator = ManagerMediator()
+        self.manager_hub = Hub(self, self.config, manager_mediator)
         await self.manager_hub.init_managers()
 
         self.build_order_runner: BuildOrderRunner = BuildOrderRunner(
