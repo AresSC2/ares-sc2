@@ -318,6 +318,7 @@ class UnitRole(str, Enum):
     GATHERING = "GATHERING"  # workers that are mining
     HARASSING = "HARASSING"  # units that are harassing
     IDLE = "IDLE"  # not doing anything
+    PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # like "BUILDING" but does not get reassigned automatically
     SCOUTING = "SCOUTING"
 
 
