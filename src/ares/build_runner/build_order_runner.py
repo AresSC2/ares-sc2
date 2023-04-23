@@ -214,8 +214,7 @@ class BuildOrderRunner:
                 return valid_structures.first
 
     def _assign_persistent_worker(self) -> None:
-        """ Assign a worker that does not get assigned back to gathering.
-        """
+        """Assign a worker that does not get assigned back to gathering."""
         if (
             # terran specific for now
             self.ai.race == Race.Terran
@@ -230,7 +229,7 @@ class BuildOrderRunner:
                 )
                 self.assigned_persistent_worker = True
                 # Move the worker in general position towards building area
-                # TODO: Once building placement is finished, move to first building position
+                # TODO: Once building placement is finished, move to building position
                 #   Which will always be a supply building
                 worker.move(
                     self.ai.start_location.towards(
