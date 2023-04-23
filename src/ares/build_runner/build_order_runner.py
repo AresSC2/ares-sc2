@@ -131,6 +131,12 @@ class BuildOrderRunner:
                             AbilityId.EFFECT_CHRONOBOOSTENERGYCOST, chrono_target
                         )
                         self.current_step_started = True
+            elif command == AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND:
+                if available_ccs := [
+                    th for th in self.ai.townhalls if th.is_idle and th.is_ready
+                ]:
+                    available_ccs[0](AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND)
+                    self.current_step_started = True
 
         # current step started and end condition hasn't yet activated
         if not step.end_condition() and self.current_step_started:

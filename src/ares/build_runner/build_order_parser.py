@@ -138,6 +138,13 @@ class BuildOrderParser:
                     and s.type_id == self.ai.gas_type
                 ),
             ),
+            BuildOrderOptions.ORBITAL: BuildOrderStep(
+                command=AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
+                start_condition=lambda: self.ai.minerals >= 150
+                and self.ai.tech_requirement_progress(UnitID.ORBITALCOMMAND) == 1.0
+                and self.ai.townhalls.filter(lambda th: th.is_ready and th.is_idle),
+                end_condition=lambda: True,
+            ),
             BuildOrderOptions.SUPPLY: BuildOrderStep(
                 command=self.ai.supply_type,
                 start_condition=lambda: self.ai.can_afford(self.ai.supply_type)
