@@ -96,7 +96,7 @@ def all_points_have_value(
     ...
 
 def get_bounding_box(
-    coordinates: List[Union[Point2, List[float], Tuple[float, float]]]
+    coordinates: set[Union[Point2, List[float], Tuple[float, float]]]
 ) -> Tuple[Tuple[float, float], Tuple[float, float]]:
     """Given a list of coordinates, find a rectangle such that all points are contained in it.
 
