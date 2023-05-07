@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Union
 
+from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -20,6 +21,7 @@ from ares.consts import (
     GAS_BUILDINGS,
     OPENING_BUILD_ORDER,
     BuildOrderTargetOptions,
+    UnitRole,
 )
 
 
@@ -75,6 +77,8 @@ class BuildOrderRunner:
         self.build_step: int = 0
         self.current_step_started: bool = False
         self._opening_build_completed: bool = False
+        self.current_build_position: Point2 = self.ai.start_location
+        self.assigned_persistent_worker: bool = False
 
     @property
     def build_completed(self) -> bool:
@@ -90,7 +94,11 @@ class BuildOrderRunner:
         """
         Runs the build order.
         """
+        self._assign_persistent_worker()
         if self.build_step >= len(self.build_order):
+            self.mediator.switch_roles(
+                from_role=UnitRole.PERSISTENT_BUILDER, to_role=UnitRole.GATHERING
+            )
             self._opening_build_completed = True
             return
 
@@ -105,19 +113,27 @@ class BuildOrderRunner:
         step : BuildOrderStep
             The build order step to run.
         """
+        if next_building_position := await self.get_position(step.command, step.target):
+            self.current_build_position = next_building_position
+
         if step.start_condition() and not self.current_step_started:
             command: UnitID = step.command
             if command in ALL_STRUCTURES:
-                if pos := await self.get_position(command, step.target):
-                    if worker := self.mediator.select_worker(
-                        target_position=pos, force_close=True
-                    ):
-                        self.current_step_started = True
-                        self.mediator.build_with_specific_worker(
-                            worker=worker,
-                            structure_type=command,
-                            pos=pos,
-                        )
+                if worker := self.mediator.select_worker(
+                    target_position=self.current_build_position,
+                    force_close=True,
+                    select_persistent_builder=command != UnitID.REFINERY,
+                    only_select_persistent_builder=command == UnitID.BARRACKS
+                    and self.ai.time < 60.0,
+                ):
+                    self.current_step_started = True
+                    self.mediator.build_with_specific_worker(
+                        worker=worker,
+                        structure_type=command,
+                        pos=self.current_build_position,
+                        assign_role=worker.tag
+                        in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
+                    )
             if type(command) == UnitID and command not in ALL_STRUCTURES:
                 self.current_step_started = True
                 self.ai.train(command)
@@ -202,3 +218,27 @@ class BuildOrderRunner:
                 lambda s: s.build_progress == 1.0 and s.type_id == target
             ):
                 return valid_structures.first
+
+    def _assign_persistent_worker(self) -> None:
+        """Assign a worker that does not get assigned back to gathering."""
+        if (
+            # terran specific for now
+            self.ai.race == Race.Terran
+            and self.ai.time > 10
+            and not self.assigned_persistent_worker
+        ):
+            if worker := self.mediator.select_worker(
+                target_position=self.ai.start_location
+            ):
+                self.mediator.assign_role(
+                    tag=worker.tag, role=UnitRole.PERSISTENT_BUILDER
+                )
+                self.assigned_persistent_worker = True
+                # Move the worker in general position towards building area
+                # TODO: Once building placement is finished, move to building position
+                #   Which will always be a supply building
+                worker.move(
+                    self.ai.start_location.towards(
+                        self.ai.main_base_ramp.top_center, 7.0
+                    )
+                )
