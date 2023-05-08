@@ -420,10 +420,9 @@ class TerrainManager(Manager, IManagerMediator):
 
         Returns
         -------
-        list
-        Set of points (as tuples) that are filled in
+        set :
+            Set of points (as tuples) that are filled in
         """
-
         all_points = flood_fill_grid(
             start_point=start_point.rounded,
             terrain_grid=self.ai.game_info.terrain_height.data_numpy.T,

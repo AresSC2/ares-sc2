@@ -9,6 +9,7 @@ DebugOptions:
     ChatDebug: True
     DebugSpawn: False
     ShowPathingCost: False
+    ShowBuildingFormation: True
     ResourceDebug: False
 
 Chat:
@@ -69,3 +70,8 @@ Pathing:
         Storm:
             Cost: 600
             Range: 3.5
+
+Placement:
+    # when requesting a placement, location is locked from being selected
+    # this allows the placement to become available again
+    WorkerOnRouteTimeout: 60.0

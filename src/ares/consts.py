@@ -52,11 +52,13 @@ ORACLE: str = "Oracle"
 PARASITIC_BOMB: str = "ParasiticBomb"
 PATHING: str = "Pathing"
 PATHING_GRID: str = "PathingGrid"
+PLACEMENT: str = "Placement"
 RANGE: str = "Range"
 RANGE_BUFFER: str = "RangeBuffer"
 RESOURCE_DEBUG: str = "ResourceDebug"
 SHADE_COMMENCED: str = "SHADE_COMMENCED"
 SHADE_OWNER: str = "SHADE_OWNER"
+SHOW_BUILDING_FORMATION: str = "ShowBuildingFormation"
 SHOW_PATHING_COST: str = "ShowPathingCost"
 STORM: str = "Storm"
 STRATEGY_MANAGER: str = "StrategyManager"
@@ -65,6 +67,7 @@ UNIT_CONTROL: str = "UnitControl"
 UNIT_SQUADS: str = "UnitSquads"
 UNITS: str = "Units"
 USE_DATA: str = "UseData"
+WORKER_ON_ROUTE_TIMEOUT: str = "WorkerOnRouteTimeout"
 
 # building manager
 BUILDING: str = "Building"
@@ -133,10 +136,17 @@ UPGRADES: Set[str] = {"UPGRADES"}
 """Enums"""
 
 
+class BuildingSize(str, Enum):
+    FIVE_BY_FIVE = "FIVE_BY_FIVE"
+    THREE_BY_THREE = "THREE_BY_THREE"
+    TWO_BY_TWO = "TWO_BY_TWO"
+
+
 class BuildOrderOptions(str, Enum):
     CHRONO = "CHRONO"
     GAS = "GAS"
     EXPAND = "EXPAND"
+    ORBITAL = "ORBITAL"
     SUPPLY = "SUPPLY"
     WORKER = "WORKER"
 
@@ -219,6 +229,10 @@ class ManagerRequestType(str, Enum):
     NEIGHBOURING_TILES_ARE_INPATHABLE = "NEIGHBOURING_TILES_ARE_INPATHABLE"
     PATH_NEXT_POINT = "PATH_NEXT_POINT"
 
+    # PlacementManager
+    CAN_PLACE_STRUCTURE = "CAN_PLACE_STRUCTURE"
+    REQUEST_BUILDING_PLACEMENT = "REQUEST_BUILDING_PLACEMENT"
+
     # ResourceManager
     GET_MINERAL_PATCH_TO_LIST_OF_WORKERS = "GET_MINERAL_PATCH_TO_LIST_OF_WORKERS"
     GET_MINERAL_TARGET_DICT = "GET_MINERAL_TARGET_DICT"
@@ -299,6 +313,7 @@ class ManagerName(str, Enum):
     COMBAT_MANAGER = "CombatManager"
     DATA_MANAGER = "DataManager"
     PATH_MANAGER = "PathManager"
+    PLACEMENT_MANAGER = "PlacementManager"
     PRODUCTION_MANAGER = "ProductionManager"
     RESOURCE_MANAGER = "ResourceManager"
     STRATEGY_MANAGER = "StrategyManager"
@@ -318,8 +333,7 @@ class UnitRole(str, Enum):
     GATHERING = "GATHERING"  # workers that are mining
     HARASSING = "HARASSING"  # units that are harassing
     IDLE = "IDLE"  # not doing anything
-    # like "BUILDING" but does not get reassigned automatically
-    PERSISTENT_BUILDER = "PERSISTENT_BUILDER"
+    PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # does not get reassigned automatically
     SCOUTING = "SCOUTING"
 
 

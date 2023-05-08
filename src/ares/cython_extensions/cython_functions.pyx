@@ -1,18 +1,15 @@
 import numpy as np
 
 cimport numpy as np
+from cython cimport boundscheck, wraparound
+from libc.math cimport atan2, cos, floor, sin
 
-from sc2.units import Units
-from scipy.signal import convolve2d
-from sklearn.cluster import DBSCAN
+# from sklearn.cluster import DBSCAN
 
-from libc.math cimport atan2, cos, floor, round, sin, sqrt
 
 DEF ANGLE_STEP = .314159  # the angle step for iteration in radians
 
 np.import_array()
-
-DEF ANGLE_STEP = .314159  # the angle step for iteration in radians
 
 
 cpdef add_neighbors_to_ignore(
@@ -103,7 +100,9 @@ cdef float euclidean_distance_squared_float((float, float) p1, (float, float) p2
     return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
 
 
-cpdef ((float, float), (float, float)) get_bounding_box(list coordinates):
+@boundscheck(False)
+@wraparound(False)
+cpdef ((float, float), (float, float)) get_bounding_box(set coordinates):
     cdef:
         float x_min = 9999.0
         float x_max = 0.0
@@ -113,9 +112,11 @@ cpdef ((float, float), (float, float)) get_bounding_box(list coordinates):
         float y_val = 0.0
         int start = 0
         int stop = len(coordinates)
+        (float, float) position
     for i in range(start, stop):
-        x_val = coordinates[i][0]
-        y_val = coordinates[i][1]
+        position = coordinates.pop()
+        x_val = position[0]
+        y_val = position[1]
         if x_val < x_min:
             x_min = x_val
         if x_val > x_max:
@@ -146,46 +147,46 @@ cpdef get_neighbors8((float, float) point):
     return set(neighbors)
 
 
-cpdef tuple group_by_spatial(
-    object ai,
-    object units,
-    float distance = 0.5,
-    unsigned int min_samples = 1
-):
-    """
-    Use DBSCAN to group units. Returns grouped units and the tags of units that were not placed in a group.
-    """
-    if not units:
-        return [], set()
-
-    cdef:
-        np.ndarray[np.int64_t, ndim = 1] clustering_labels
-        np.ndarray[np.double_t, ndim = 2] vectors
-        list groups, ungrouped_unit_tags
-        int label
-        unsigned int index, groups_length, min_range, max_range
-
-    vectors = np.array([[unit.position.x, unit.position.y] for unit in units])
-    clustering_labels = DBSCAN(eps=distance, algorithm='kd_tree', min_samples=min_samples).fit(vectors).labels_
-    groups = []
-    min_range = 0
-    max_range = len(clustering_labels)
-    ungrouped_unit_tags = []
-
-    for index in range(min_range, max_range):
-        unit = units[index]
-        label = clustering_labels[index]
-        if label == -1:
-            # not part of a group
-            ungrouped_unit_tags.append(unit.tag)
-            continue
-        groups_length = len(groups)
-        if label >= groups_length:
-            groups.append([unit])
-        else:
-            groups[label].append(unit)
-
-    return [Units(raw, ai) for raw in groups], set(ungrouped_unit_tags)
+# cpdef tuple group_by_spatial(
+#     object ai,
+#     object units,
+#     float distance = 0.5,
+#     unsigned int min_samples = 1
+# ):
+#     """
+#     Use DBSCAN to group units. Returns grouped units and the tags of units that were not placed in a group.
+#     """
+#     if not units:
+#         return [], set()
+#
+#     cdef:
+#         np.ndarray[np.int64_t, ndim = 1] clustering_labels
+#         np.ndarray[np.double_t, ndim = 2] vectors
+#         list groups, ungrouped_unit_tags
+#         int label
+#         unsigned int index, groups_length, min_range, max_range
+#
+#     vectors = np.array([[unit.position.x, unit.position.y] for unit in units])
+#     clustering_labels = DBSCAN(eps=distance, algorithm='kd_tree', min_samples=min_samples).fit(vectors).labels_
+#     groups = []
+#     min_range = 0
+#     max_range = len(clustering_labels)
+#     ungrouped_unit_tags = []
+#
+#     for index in range(min_range, max_range):
+#         unit = units[index]
+#         label = clustering_labels[index]
+#         if label == -1:
+#             # not part of a group
+#             ungrouped_unit_tags.append(unit.tag)
+#             continue
+#         groups_length = len(groups)
+#         if label >= groups_length:
+#             groups.append([unit])
+#         else:
+#             groups[label].append(unit)
+#
+#     return [Units(raw, ai) for raw in groups], set(ungrouped_unit_tags)
 
 
 cpdef int last_index_with_value(

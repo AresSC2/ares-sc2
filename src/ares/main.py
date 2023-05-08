@@ -438,12 +438,17 @@ class AresBot(CustomBotAI):
             The Unit that took damage
         amount_damage_taken :
             The amount of damage the Unit took
-
-        Returns
-        -------
-
         """
         await self.manager_hub.on_unit_took_damage(unit)
+
+    async def on_building_construction_started(self, unit: Unit) -> None:
+        """On structure starting
+
+        Parameters
+        ----------
+        unit :
+        """
+        self.manager_hub.on_building_started(unit)
 
     def _add_enemy_unit(
         self,
