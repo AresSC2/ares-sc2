@@ -1,7 +1,9 @@
-from scipy.signal import convolve2d
 import numpy as np
-cimport numpy as np
+from scipy.signal import convolve2d
+
 cimport cython
+cimport numpy as np
+
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing.
@@ -56,9 +58,12 @@ cpdef list find_building_locations(
 ):
     """
     Use a convolution pass to find all possible building locations in an area
+    See full docs in `placement_solver.pyi`
     64.8 µs ± 4.05 µs per loop (mean ± std. dev. of 1000 runs, 10 loops each)
     """
     cdef:
+        # unsigned int i = 0
+        # unsigned int j = 0
         unsigned int _x = 0
         unsigned int _y = 0
         unsigned int valid_idx = 0

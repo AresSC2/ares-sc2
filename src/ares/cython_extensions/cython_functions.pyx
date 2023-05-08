@@ -1,14 +1,11 @@
 import numpy as np
 
 cimport numpy as np
-
 from cython cimport boundscheck, wraparound
+from libc.math cimport atan2, cos, floor, sin
 
-from sc2.units import Units
-from scipy.signal import convolve2d
 # from sklearn.cluster import DBSCAN
 
-from libc.math cimport atan2, cos, floor, round, sin, sqrt
 
 DEF ANGLE_STEP = .314159  # the angle step for iteration in radians
 
