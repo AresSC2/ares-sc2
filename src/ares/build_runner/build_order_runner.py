@@ -63,7 +63,7 @@ class BuildOrderRunner:
     CONSTANT_WORKER_PRODUCTION: str = "ConstantWorkerProduction"
     REQUIRES_TOWNHALL_COMMANDS: set = {
         AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
-        AbilityId.UPGRADETOPLANETARYFORTRESS_PLANETARYFORTRESS
+        AbilityId.UPGRADETOPLANETARYFORTRESS_PLANETARYFORTRESS,
     }
 
     def __init__(
@@ -76,15 +76,15 @@ class BuildOrderRunner:
         self.ai = ai
         self.config: dict = config
         self.mediator: ManagerMediator = mediator
+        self.constant_worker_production: bool = False
         if BUILDS in self.config:
             build: list[str] = config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
-        else:
-            build: list[str] = []
-        self.constant_worker_production: bool = False
-        if self.CONSTANT_WORKER_PRODUCTION in config[BUILDS][chosen_opening]:
             self.constant_worker_production = config[BUILDS][chosen_opening][
                 self.CONSTANT_WORKER_PRODUCTION
             ]
+        else:
+            build: list[str] = []
+
         build_order_parser: BuildOrderParser = BuildOrderParser(self.ai, build)
         self.build_order: list[BuildOrderStep] = build_order_parser.parse()
         self.build_step: int = 0
@@ -108,7 +108,8 @@ class BuildOrderRunner:
         Runs the build order.
         """
         self._assign_persistent_worker()
-        await self.do_step(self.build_order[self.build_step])
+        if len(self.build_order) > 0:
+            await self.do_step(self.build_order[self.build_step])
 
         if not self.build_completed and self.build_step >= len(self.build_order):
             self.mediator.switch_roles(
