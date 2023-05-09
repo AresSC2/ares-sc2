@@ -7,7 +7,7 @@ from libc.math cimport acos, sqrt
 
 import math
 from functools import lru_cache
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
 from sc2.game_info import Ramp
@@ -30,12 +30,14 @@ from ares.consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
-from ares.custom_bot_ai import CustomBotAI
 from ares.cython_extensions.flood_fill import flood_fill_grid
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 from MapAnalyzer import MapData
 from MapAnalyzer.constructs import ChokeArea, VisionBlockerArea
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class TerrainManager(Manager, IManagerMediator):
@@ -57,7 +59,7 @@ class TerrainManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:

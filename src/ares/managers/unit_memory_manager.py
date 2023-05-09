@@ -2,7 +2,7 @@
 
 """
 from collections import deque
-from typing import Any, Deque, Dict, List, Optional, Set, Tuple, Union
+from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
 from sc2.position import Point2
@@ -19,10 +19,12 @@ from ares.consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
-from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class UnitMemoryManager(Manager, IManagerMediator):
@@ -34,7 +36,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:

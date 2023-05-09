@@ -6,7 +6,7 @@ object, with many instances of these making up a BuildOrder
 
 """
 
-from typing import Callable, Dict, List, Optional, Set, Union
+from typing import TYPE_CHECKING, Callable, Dict, List, Optional, Set, Union
 
 from loguru import logger
 from sc2.ids.ability_id import AbilityId
@@ -21,8 +21,10 @@ from ares.consts import (
     ManagerName,
     ManagerRequestType,
 )
-from ares.custom_bot_ai import CustomBotAI
 from ares.managers.manager_mediator import ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class BuildOrderStep:
@@ -102,7 +104,7 @@ class BuildRunner:
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         manager_mediator: ManagerMediator,
     ) -> None:
@@ -118,7 +120,7 @@ class BuildRunner:
         manager_mediator :
             ManagerMediator object used for getting information from other managers.
         """
-        self.ai: CustomBotAI = ai
+        self.ai: AresBot = ai
         self.config: Dict = config
         self.build_step: int = 0
         self.debug: bool = config[DEBUG]

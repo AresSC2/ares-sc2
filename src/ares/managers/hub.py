@@ -8,7 +8,6 @@ from sc2.data import Result
 from sc2.unit import Unit
 
 from ares.consts import DEBUG, UnitRole
-from ares.custom_bot_ai import CustomBotAI
 from ares.managers.ability_tracker_manager import AbilityTrackerManager
 from ares.managers.building_manager import BuildingManager
 from ares.managers.data_manager import DataManager
@@ -24,6 +23,7 @@ from ares.managers.unit_memory_manager import UnitMemoryManager
 from ares.managers.unit_role_manager import UnitRoleManager
 
 if TYPE_CHECKING:
+    from ares import AresBot
     from ares.managers.manager import Manager
 
 
@@ -36,7 +36,7 @@ class Hub:
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         manager_mediator: ManagerMediator,
         data_manager: DataManager = None,
@@ -44,6 +44,7 @@ class Hub:
         ability_tracker_manager: AbilityTrackerManager = None,
         unit_role_manager: UnitRoleManager = None,
         unit_memory_manager: UnitMemoryManager = None,
+        placement_manager: PlacementManager = None,
         path_manager: PathManager = None,
         terrain_manager: TerrainManager = None,
         strategy_manager: StrategyManager = None,
@@ -72,6 +73,8 @@ class Hub:
             Optional UnitRoleManager override
         unit_memory_manager :
             Optional UnitMemoryManager override
+        placement_manager :
+            Optional PlacementManager override
         path_manager :
             Optional PathManager override
         terrain_manager :
@@ -88,7 +91,7 @@ class Hub:
             Additional custom managers
 
         """
-        self.ai: CustomBotAI = ai
+        self.ai: "AresBot" = ai
         self.debug: bool = config[DEBUG]
         self.config: Dict = config
         self.manager_mediator: ManagerMediator = manager_mediator
@@ -118,11 +121,10 @@ class Hub:
             if not unit_memory_manager
             else unit_memory_manager
         )
-        self.placement_manager: PlacementManager = PlacementManager(
-            ai, config, self.manager_mediator
-        )
-        self.terrain_manager: TerrainManager = TerrainManager(
-            ai, config, self.manager_mediator
+        self.placement_manager: PlacementManager = (
+            PlacementManager(ai, config, self.manager_mediator)
+            if not placement_manager
+            else placement_manager
         )
         self.path_manager: PathManager = (
             PathManager(ai, config, self.manager_mediator)
