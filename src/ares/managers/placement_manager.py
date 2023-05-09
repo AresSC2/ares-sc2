@@ -206,6 +206,7 @@ class PlacementManager(Manager, IManagerMediator):
         building_size: BuildingSize,
         wall: bool = False,
         find_alternative: bool = True,
+        reserve_placement: bool = True,
     ) -> Optional[Point2]:
         """Given a base location and building size find an available placement.
         TODO: Implement find_alternative parameter where method will find a nearby
@@ -224,6 +225,9 @@ class PlacementManager(Manager, IManagerMediator):
         find_alternative : bool, optional (NOT YET IMPLEMENTED)
             If no placements available at base_location, find
             alternative at nearby base.
+        reserve_placement : bool, optional
+            Reserve this booking for a while, so another customer doesnt
+            request it.
 
         Returns
         ----------
@@ -274,11 +278,15 @@ class PlacementManager(Manager, IManagerMediator):
                     for a in available
                     if self.placements_dict[location][building_size][a]["is_wall"]
                 ]:
-                    final_placement = available[0]
+                    final_placement = min(
+                        available, key=lambda k: k.distance_to(base_location)
+                    )
 
-            self.worker_on_route_tracker[final_placement] = location
-            potential_placements[final_placement]["worker_on_route"] = True
-            potential_placements[final_placement]["time_requested"] = self.ai.time
+            if reserve_placement:
+                self.worker_on_route_tracker[final_placement] = location
+                potential_placements[final_placement]["worker_on_route"] = True
+                potential_placements[final_placement]["time_requested"] = self.ai.time
+
             return final_placement
 
         else:

@@ -54,14 +54,25 @@ BuildChoices:
 
 Builds:
     WorkerBuild:
+        ConstantWorkerProduction: True
         OpeningBuildOrder:
-            ['chrono @ nexus', 'worker', 'worker', 'worker']
+            - 12 chrono @ nexus
+            - 14 pylon @ ramp
+            - 16 gateway
     FastExpand:
+        ConstantWorkerProduction: False
         OpeningBuildOrder:
-            ['worker', 'worker', 'supply', 'worker', 'chrono @ nexus',
-             'worker', 'gateway', 'worker', 'expand', 'worker', 'zealot']
+            ['12 worker', '13 worker', '14 supply', '14 worker', '14 chrono @ nexus',
+             '15 worker', '15 gateway', '16 worker', '17 expand', '17 worker', '17 zealot']
 
 ```
+
+Note the two different ways of declaring builds. Turning `ConstantWorkerProduction` on allows a readable
+build order but may be undesirable in a fine-tuned build. 
+Each build order statement should begin with a supply count, the step will not commence till
+the supply is equal or greater than this supply. Therefore, if this is not important, or you're not sure put a low value.
+ie. `["14 pylon", "1 gateway"]` will work just as well.
+
 
 Under the BuildChoices key, you should include keys for each enemy race. You may also use opponent IDs instead of races 
 to select specific openings for opponents. Under the Cycle key, declare the opening build names for that opponent or 
@@ -82,7 +93,7 @@ class BuildOrderOptions(str, Enum):
     WORKER = "WORKER"
 ```
 
-Additionally, strings may contain targets such as 'pylon @ ramp', where the third word should contain the target 
+Additionally, strings may contain targets such as '14 pylon @ ramp', where the third word should contain the target 
 command. The following targets are currently supported:
 ```python
 class BuildOrderTargetOptions(str, Enum):

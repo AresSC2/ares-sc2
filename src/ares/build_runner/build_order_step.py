@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Callable, Union
 
 from sc2.ids.ability_id import AbilityId
@@ -5,6 +6,7 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
 
 
+@dataclass
 class BuildOrderStep:
     """Individual BuildOrderStep.
 
@@ -18,27 +20,22 @@ class BuildOrderStep:
         Extractor trick : AbilityId.CANCEL
         Train a Drone : UnitID.DRONE
         Research Zergling Speed: UpgradeId.ZERGLINGMOVEMENTSPEED
-
-    command_started: bool
-        Whether this step has started
     start_condition: Callable
         What should be checked to determine when this step should start
     end_condition: Callable
         What should be checked to determine when this step has been completed
+    command_started: bool
+        Whether this step has started
+    start_at_supply: int
+        What supply should this step commence at
     target: str
         Specifier in the case that additional information is needed to complete the step
 
     """
 
-    def __init__(
-        self,
-        command: Union[AbilityId, UnitID, UpgradeId],
-        start_condition: Callable,
-        end_condition: Callable,
-        target: str = "",
-    ) -> None:
-        self.command: Union[AbilityId, UnitID, UpgradeId] = command
-        self.command_started: bool = False
-        self.start_condition: Callable = start_condition
-        self.end_condition: Callable = end_condition
-        self.target: str = target
+    command: Union[AbilityId, UnitID, UpgradeId]
+    start_condition: Callable
+    end_condition: Callable
+    command_started: bool = False
+    start_at_supply: int = 0
+    target: str = ""

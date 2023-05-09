@@ -4,14 +4,15 @@
 import math
 from typing import Dict, List, Tuple
 
-from consts import ALL_STRUCTURES
-from dicts.turn_rate import TURN_RATE
-from dicts.unit_data import UNIT_DATA
 from sc2.bot_ai import BotAI
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
 from sc2.units import Units
+
+from ares.consts import ALL_STRUCTURES
+from ares.dicts.turn_rate import TURN_RATE
+from ares.dicts.unit_data import UNIT_DATA
 
 
 class CustomBotAI(BotAI):
