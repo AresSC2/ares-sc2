@@ -86,7 +86,7 @@ async def join_ladder_game(
         if save_replay_as is not None:
             await client.save_replay(save_replay_as)
     except ConnectionAlreadyClosed:
-        logging.error(f"Connection was closed before the game ended")
+        logging.error("Connection was closed before the game ended")
         return None
     finally:
         await ws_connection.close()
