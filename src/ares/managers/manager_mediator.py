@@ -824,6 +824,9 @@ class ManagerMediator(IManagerMediator):
         find_alternative : bool, optional (NOT YET IMPLEMENTED)
             If no placements available at base_location, find
             alternative at nearby base.
+        reserve_placement : bool, optional
+            Reserve this booking for a while, so another customer doesnt
+            request it.
 
         Parameters
         ----------
