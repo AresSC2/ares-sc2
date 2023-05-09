@@ -1,17 +1,19 @@
 """Handle production.
 
 """
-from typing import Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict, List
 
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
 
 from ares.consts import DEBUG, UNITS_TO_IGNORE, ManagerName, ManagerRequestType
-from ares.custom_bot_ai import CustomBotAI
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 from ares.production.base_production import BaseProduction
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class ProductionManager(Manager, IManagerMediator):
@@ -19,7 +21,7 @@ class ProductionManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:

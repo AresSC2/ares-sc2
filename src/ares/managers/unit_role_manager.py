@@ -1,7 +1,7 @@
 """Manage assigning/removing of roles and getting units by role.
 
 """
-from typing import Any, Dict, List, Optional, Set, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.unit import Unit
@@ -15,9 +15,11 @@ from ares.consts import (
     ManagerRequestType,
     UnitRole,
 )
-from ares.custom_bot_ai import CustomBotAI
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class UnitRoleManager(Manager, IManagerMediator):
@@ -33,7 +35,7 @@ class UnitRoleManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:

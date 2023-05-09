@@ -2,7 +2,17 @@
 
 """
 from collections import defaultdict
-from typing import Any, Coroutine, DefaultDict, Dict, List, Optional, Set, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Coroutine,
+    DefaultDict,
+    Dict,
+    List,
+    Optional,
+    Set,
+    Union,
+)
 
 from sc2.constants import ALL_GAS
 from sc2.data import Race
@@ -26,9 +36,11 @@ from ares.consts import (
     ManagerRequestType,
     UnitRole,
 )
-from ares.custom_bot_ai import CustomBotAI
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class BuildingManager(Manager, IManagerMediator):
@@ -51,7 +63,7 @@ class BuildingManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:

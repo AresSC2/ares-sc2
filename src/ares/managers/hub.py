@@ -2,13 +2,12 @@
 
 """
 
-from typing import TYPE_CHECKING, Dict, List, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
 from sc2.data import Result
 from sc2.unit import Unit
 
 from ares.consts import DEBUG, UnitRole
-from ares.custom_bot_ai import CustomBotAI
 from ares.managers.ability_tracker_manager import AbilityTrackerManager
 from ares.managers.building_manager import BuildingManager
 from ares.managers.data_manager import DataManager
@@ -24,6 +23,7 @@ from ares.managers.unit_memory_manager import UnitMemoryManager
 from ares.managers.unit_role_manager import UnitRoleManager
 
 if TYPE_CHECKING:
+    from ares import AresBot
     from ares.managers.manager import Manager
 
 
@@ -34,7 +34,25 @@ class Hub:
     On each step / frame, the managers `update` method is called
     """
 
-    def __init__(self, ai: CustomBotAI, config: Dict) -> None:
+    def __init__(
+        self,
+        ai: "AresBot",
+        config: Dict,
+        manager_mediator: ManagerMediator,
+        data_manager: DataManager = None,
+        unit_cache_manager: UnitCacheManager = None,
+        ability_tracker_manager: AbilityTrackerManager = None,
+        unit_role_manager: UnitRoleManager = None,
+        unit_memory_manager: UnitMemoryManager = None,
+        placement_manager: PlacementManager = None,
+        path_manager: PathManager = None,
+        terrain_manager: TerrainManager = None,
+        strategy_manager: StrategyManager = None,
+        resource_manager: ResourceManager = None,
+        building_manager: BuildingManager = None,
+        production_manager: ProductionManager = None,
+        additional_managers: Optional[List["Manager"]] = None,
+    ) -> None:
         """Initialise Manager objects and set update priority.
 
         Parameters
@@ -43,45 +61,102 @@ class Hub:
             Bot object that will be running the game
         config :
             Dictionary with the data from the configuration file
+        manager_mediator :
+            ManagerMediator class for inter-Manager communication
+        data_manager :
+            Optional DataManager override
+        unit_cache_manager :
+            Optional UnitCacheManager override
+        ability_tracker_manager :
+            Optional AbilityTrackerManager override
+        unit_role_manager :
+            Optional UnitRoleManager override
+        unit_memory_manager :
+            Optional UnitMemoryManager override
+        placement_manager :
+            Optional PlacementManager override
+        path_manager :
+            Optional PathManager override
+        terrain_manager :
+            Optional TerrainManager override
+        strategy_manager :
+            Optional StrategyManager override
+        resource_manager :
+            Optional ResourceManager override
+        building_manager :
+            Optional BuildingManager override
+        production_manager :
+            Optional ProductionManager override
+        additional_managers :
+            Additional custom managers
 
         """
-        self.ai: CustomBotAI = ai
+        self.ai: "AresBot" = ai
         self.debug: bool = config[DEBUG]
         self.config: Dict = config
-        self.manager_mediator: ManagerMediator = ManagerMediator()
+        self.manager_mediator: ManagerMediator = manager_mediator
 
-        self.data_manager: DataManager = DataManager(ai, config, self.manager_mediator)
-        self.unit_cache_manager: UnitCacheManager = UnitCacheManager(
-            ai, config, self.manager_mediator
+        self.data_manager: DataManager = (
+            DataManager(ai, config, self.manager_mediator)
+            if not data_manager
+            else data_manager
         )
-        self.ability_tracker_manager = AbilityTrackerManager(
-            ai, config, self.manager_mediator
+        self.unit_cache_manager: UnitCacheManager = (
+            UnitCacheManager(ai, config, self.manager_mediator)
+            if not unit_cache_manager
+            else unit_cache_manager
         )
-        self.unit_role_manager: UnitRoleManager = UnitRoleManager(
-            ai, config, self.manager_mediator
+        self.ability_tracker_manager: AbilityTrackerManager = (
+            AbilityTrackerManager(ai, config, self.manager_mediator)
+            if not ability_tracker_manager
+            else ability_tracker_manager
         )
-        self.unit_memory_manager: UnitMemoryManager = UnitMemoryManager(
-            ai, config, self.manager_mediator
+        self.unit_role_manager: UnitRoleManager = (
+            UnitRoleManager(ai, config, self.manager_mediator)
+            if not unit_role_manager
+            else unit_role_manager
         )
-        self.path_manager: PathManager = PathManager(ai, config, self.manager_mediator)
-        self.placement_manager: PlacementManager = PlacementManager(
-            ai, config, self.manager_mediator
+        self.unit_memory_manager: UnitMemoryManager = (
+            UnitMemoryManager(ai, config, self.manager_mediator)
+            if not unit_memory_manager
+            else unit_memory_manager
         )
-        self.terrain_manager: TerrainManager = TerrainManager(
-            ai, config, self.manager_mediator
+        self.placement_manager: PlacementManager = (
+            PlacementManager(ai, config, self.manager_mediator)
+            if not placement_manager
+            else placement_manager
         )
-        self.strategy_manager: StrategyManager = StrategyManager(
-            ai, config, self.manager_mediator
+        self.path_manager: PathManager = (
+            PathManager(ai, config, self.manager_mediator)
+            if not path_manager
+            else path_manager
         )
-        self.resource_manager: ResourceManager = ResourceManager(
-            ai, config, self.manager_mediator
+        self.terrain_manager: TerrainManager = (
+            TerrainManager(ai, config, self.manager_mediator)
+            if not terrain_manager
+            else terrain_manager
         )
-        self.building_manager: BuildingManager = BuildingManager(
-            ai, config, self.manager_mediator
+        self.strategy_manager: StrategyManager = (
+            StrategyManager(ai, config, self.manager_mediator)
+            if not strategy_manager
+            else strategy_manager
         )
-        self.production_manager: ProductionManager = ProductionManager(
-            ai, config, self.manager_mediator
+        self.resource_manager: ResourceManager = (
+            ResourceManager(ai, config, self.manager_mediator)
+            if not resource_manager
+            else resource_manager
         )
+        self.building_manager: BuildingManager = (
+            BuildingManager(ai, config, self.manager_mediator)
+            if not building_manager
+            else building_manager
+        )
+        self.production_manager: ProductionManager = (
+            ProductionManager(ai, config, self.manager_mediator)
+            if not production_manager
+            else production_manager
+        )
+
         # in order of priority
         self.managers: List["Manager"] = [
             self.data_manager,
@@ -97,6 +172,10 @@ class Hub:
             self.ability_tracker_manager,
             self.placement_manager,
         ]
+
+        if additional_managers:
+            for manager in additional_managers:
+                self.managers.append(manager)
 
         # manager mediator needs a reference to all the managers
         self.manager_mediator.add_managers(self.managers)

@@ -1,7 +1,7 @@
 """Handle pathing and grid information.
 
 """
-from typing import Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 import numpy as np
 from sc2.ids.effect_id import EffectId
@@ -48,11 +48,13 @@ from ares.consts import (
     ManagerName,
     ManagerRequestType,
 )
-from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 from MapAnalyzer import MapData
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class PathManager(Manager, IManagerMediator):
@@ -71,7 +73,7 @@ class PathManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:

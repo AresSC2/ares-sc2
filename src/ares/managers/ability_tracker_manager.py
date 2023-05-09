@@ -1,16 +1,18 @@
 """Handle manual tracking of abilities until python-sc2 PR #163 is merged.
 
 """
-from typing import Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 from sc2.ids.ability_id import AbilityId
 from sc2.unit import Unit
 
 from ares.consts import ManagerName, ManagerRequestType
-from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.ability_cooldowns import ABILITY_FRAME_COOL_DOWN
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class AbilityTrackerManager(Manager, IManagerMediator):
@@ -28,7 +30,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:

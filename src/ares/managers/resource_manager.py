@@ -4,7 +4,7 @@
 
 import math
 from collections import defaultdict
-from typing import Any, DefaultDict, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, Any, DefaultDict, Dict, List, Optional, Set
 
 import numpy as np
 from sc2.position import Point2
@@ -23,9 +23,11 @@ from ares.consts import (
     UnitRole,
     UnitTreeQueryType,
 )
-from ares.custom_bot_ai import CustomBotAI
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class ResourceManager(Manager, IManagerMediator):
@@ -36,7 +38,7 @@ class ResourceManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:

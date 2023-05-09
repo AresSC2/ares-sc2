@@ -257,8 +257,7 @@ class AresBot(CustomBotAI):
                 else self.config[DEBUG_GAME_STEP]
             )
 
-        self.manager_hub = Hub(self, self.config)
-        await self.manager_hub.init_managers()
+        await self.register_managers()
 
         self.build_order_runner: BuildOrderRunner = BuildOrderRunner(
             self,
@@ -294,6 +293,34 @@ class AresBot(CustomBotAI):
                 )
             )
         }
+
+    async def register_managers(self) -> None:
+        """Register standard and custom managers.
+
+        Override in your bot class if you wish to use custom managers.
+
+        Examples
+        --------
+        custom_production_manager = CustomProductionManager(
+            self, self.config, manager_mediator
+        )
+        new_manager = NewManager(self, self.config, manager_mediator)
+
+        self.manager_hub = Hub(
+            self,
+            self.config,
+            manager_mediator,
+            production_manager=custom_production_manager,
+            additional_managers=[new_manager],
+        )
+
+        Returns
+        -------
+
+        """
+        manager_mediator: ManagerMediator = ManagerMediator()
+        self.manager_hub = Hub(self, self.config, manager_mediator)
+        await self.manager_hub.init_managers()
 
     async def on_step(self, iteration: int) -> None:
         """Play the game

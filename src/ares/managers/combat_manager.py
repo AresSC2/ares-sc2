@@ -1,7 +1,7 @@
 """Manage general combat tasks.
 
 """
-from typing import Any, Dict, List, Set
+from typing import TYPE_CHECKING, Any, Dict, List, Set
 
 from cache import property_cache_once_per_frame
 from combat import BaseUnit, UnitSquads
@@ -17,12 +17,14 @@ from consts import (
     UnitRole,
     UnitTreeQueryType,
 )
-from custom_bot_ai import CustomBotAI
 from managers.manager import Manager
 from managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 
 class CombatManager(Manager, IManagerMediator):
@@ -33,7 +35,7 @@ class CombatManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: CustomBotAI,
+        ai: "AresBot",
         config: Dict,
         mediator: ManagerMediator,
     ) -> None:
