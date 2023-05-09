@@ -15,6 +15,7 @@ burnysc2 = { git = "https://github.com/august-k/python-sc2", branch = "develop" 
 PyYAML = "6.0"
 cython = "^0.29.33"
 tqdm = "^4.64.1"
+scikit-learn = "^1.2.2"
 
 [tool.poetry.group.docs]
 optional = true
