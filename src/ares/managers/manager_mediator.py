@@ -772,6 +772,78 @@ class ManagerMediator(IManagerMediator):
         )
 
     """
+    PlacementManager
+    """
+
+    def can_place_structure(self, **kwargs) -> bool:
+        """Check if structure can be placed at a given position.
+
+        Faster cython alternative to `python-sc2` `await self.can_place()`
+
+        PlacementManager
+
+        Other Parameters
+        ----------
+        position : Point2
+            The intended building position.
+        size : BuildingSize
+            Size of intended structure.
+        include_addon : bool, optional
+            For Terran structures, check addon will place too.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+        Returns
+        ----------
+        bool :
+            Indicating if structure can be placed at given position.
+        """
+        return self.manager_request(
+            ManagerName.PLACEMENT_MANAGER,
+            ManagerRequestType.CAN_PLACE_STRUCTURE,
+            **kwargs,
+        )
+
+    def request_building_placement(self, **kwargs) -> Optional[Point2]:
+        """Request a building placement from the precalculated building formation.
+
+        PlacementManager
+
+        Other Parameters
+        ----------
+        base_location : Point2
+            The general area where the placement should be near.
+            This should be a expansion location.
+        building_size : BuildingSize
+            Size of intended structure.
+        wall : bool, optional
+            Request a wall structure placement.
+            Will find alternative if no wall placements available.
+        find_alternative : bool, optional (NOT YET IMPLEMENTED)
+            If no placements available at base_location, find
+            alternative at nearby base.
+        reserve_placement : bool, optional
+            Reserve this booking for a while, so another customer doesnt
+            request it.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+        Returns
+        ----------
+        bool :
+            Indicating if structure can be placed at given position.
+        """
+        return self.manager_request(
+            ManagerName.PLACEMENT_MANAGER,
+            ManagerRequestType.REQUEST_BUILDING_PLACEMENT,
+            **kwargs,
+        )
+
+    """
     ResourceManager
     """
 
@@ -1177,7 +1249,7 @@ class ManagerMediator(IManagerMediator):
             ManagerName.TERRAIN_MANAGER, ManagerRequestType.GET_ENEMY_THIRD
         )
 
-    def get_flood_fill_area(self, **kwargs) -> Tuple[int, List[Tuple[int, int]]]:
+    def get_flood_fill_area(self, **kwargs) -> set[tuple[int, int]]:
         """Given a point, flood fill outward from it and return the valid points.
 
         This flood fill does not continue through chokes.

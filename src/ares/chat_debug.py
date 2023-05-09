@@ -3,7 +3,11 @@
 Feel free to add to this.
 """
 
-from consts import (
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.units import Units
+
+from ares.consts import (
     COOLDOWN,
     CREATE,
     FOOD,
@@ -14,10 +18,7 @@ from consts import (
     TECH_TREE,
     UPGRADES,
 )
-from custom_bot_ai import CustomBotAI
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.units import Units
+from ares.custom_bot_ai import CustomBotAI
 
 
 class ChatDebug:
@@ -159,9 +160,9 @@ class ChatDebug:
 
         """
         if player_id == 1:
-            units_to_destroy: Units = self.ai.units(unit_id)
+            units_to_destroy: Units = self.ai.all_own_units(unit_id)
         else:
-            units_to_destroy: Units = self.ai.enemy_units(unit_id)
+            units_to_destroy: Units = self.ai.all_enemy_units(unit_id)
 
         if not units_to_destroy:
             await self.ai.chat_send("Can't find any of those")

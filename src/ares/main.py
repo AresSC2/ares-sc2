@@ -7,8 +7,23 @@ from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple
 
 import yaml
-from build_runner.build_order_runner import BuildOrderRunner
-from consts import (
+from loguru import logger
+from s2clientprotocol.raw_pb2 import Unit as RawUnit
+from sc2.constants import ALL_GAS, IS_PLACEHOLDER, FakeEffectID, geyser_ids, mineral_ids
+from sc2.data import Race, Result, race_gas, race_townhalls, race_worker
+from sc2.game_data import Cost
+from sc2.game_state import EffectData
+from sc2.ids.buff_id import BuffId
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.unit import Unit
+from sc2.units import Units
+
+from ares.behavior_exectioner import BehaviorExecutioner
+from ares.behaviors.behavior import Behavior
+from ares.build_runner.build_order_runner import BuildOrderRunner
+from ares.config_parser import ConfigParser
+from ares.consts import (
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
     BANNED_PHRASES,
@@ -29,28 +44,13 @@ from consts import (
     UnitTreeQueryType,
     race_supply,
 )
-from custom_bot_ai import CustomBotAI
-from dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
-from dicts.enemy_vs_ground_static_defense_ranges import (
+from ares.custom_bot_ai import CustomBotAI
+from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
+from ares.dicts.enemy_vs_ground_static_defense_ranges import (
     ENEMY_VS_GROUND_STATIC_DEFENSE_TYPES,
 )
-from dicts.unit_data import UNIT_DATA
-from loguru import logger
-from managers.hub import Hub
-from s2clientprotocol.raw_pb2 import Unit as RawUnit
-from sc2.constants import ALL_GAS, IS_PLACEHOLDER, FakeEffectID, geyser_ids, mineral_ids
-from sc2.data import Race, Result, race_gas, race_townhalls, race_worker
-from sc2.game_data import Cost
-from sc2.game_state import EffectData
-from sc2.ids.buff_id import BuffId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.unit import Unit
-from sc2.units import Units
-
-from ares.behavior_exectioner import BehaviorExecutioner
-from ares.behaviors.behavior import Behavior
-from ares.config_parser import ConfigParser
+from ares.dicts.unit_data import UNIT_DATA
+from ares.managers.hub import Hub
 from ares.managers.manager_mediator import ManagerMediator
 
 
@@ -270,7 +270,7 @@ class AresBot(CustomBotAI):
         )
 
         if self.config[DEBUG] and self.config[DEBUG_OPTIONS][CHAT_DEBUG]:
-            from chat_debug import ChatDebug
+            from ares.chat_debug import ChatDebug
 
             self.chat_debug = ChatDebug(self)
 
@@ -465,12 +465,17 @@ class AresBot(CustomBotAI):
             The Unit that took damage
         amount_damage_taken :
             The amount of damage the Unit took
-
-        Returns
-        -------
-
         """
         await self.manager_hub.on_unit_took_damage(unit)
+
+    async def on_building_construction_started(self, unit: Unit) -> None:
+        """On structure starting
+
+        Parameters
+        ----------
+        unit :
+        """
+        self.manager_hub.on_building_started(unit)
 
     def _add_enemy_unit(
         self,

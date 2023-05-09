@@ -10,8 +10,13 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
-from cache import property_cache_once_per_frame
-from consts import (
+from sc2.game_info import Ramp
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
+from sc2.units import Units
+
+from ares.cache import property_cache_once_per_frame
+from ares.consts import (
     ALL_STRUCTURES,
     CURIOUS,
     DEBUG,
@@ -25,15 +30,10 @@ from consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
-from custom_bot_ai import CustomBotAI
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
-from sc2.game_info import Ramp
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.units import Units
-
+from ares.custom_bot_ai import CustomBotAI
 from ares.cython_extensions.flood_fill import flood_fill_grid
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 from MapAnalyzer import MapData
 from MapAnalyzer.constructs import ChokeArea, VisionBlockerArea
 
@@ -420,10 +420,9 @@ class TerrainManager(Manager, IManagerMediator):
 
         Returns
         -------
-        list
-        Set of points (as tuples) that are filled in
+        set :
+            Set of points (as tuples) that are filled in
         """
-
         all_points = flood_fill_grid(
             start_point=start_point.rounded,
             terrain_grid=self.ai.game_info.terrain_height.data_numpy.T,

@@ -290,7 +290,11 @@ class ResourceManager(Manager, IManagerMediator):
             self.geyser_to_list_of_workers[gas_building_tag].remove(worker_tag)
 
     def select_worker(
-        self, target_position: Point2, force_close: bool = False
+        self,
+        target_position: Point2,
+        force_close: bool = False,
+        select_persistent_builder: bool = False,
+        only_select_persistent_builder: bool = False,
     ) -> Optional[Unit]:
         """Select a worker.
 
@@ -309,6 +313,10 @@ class ResourceManager(Manager, IManagerMediator):
             Location to get the closest workers to.
         force_close :
             Select the available worker closest to `target_position` if True.
+        select_persistent_builder :
+            If True we can select the persistent_builder if it's available.
+        only_select_persistent_builder :
+            If True, don't find an alternative worker
 
         Returns
         -------
@@ -316,6 +324,22 @@ class ResourceManager(Manager, IManagerMediator):
             Selected worker, if available.
 
         """
+        # maybe we can quickly select the persistent worker
+        if select_persistent_builder:
+            persistent_workers: Units = self.manager_mediator.get_units_from_role(
+                role=UnitRole.PERSISTENT_BUILDER
+            )
+            # only select worker if it's not in the building tracker
+            for worker in persistent_workers:
+                if (
+                    not worker.is_constructing_scv
+                    and worker not in self.manager_mediator.get_building_tracker_dict
+                ):
+                    return worker
+
+        if only_select_persistent_builder:
+            return
+
         workers: Units = self.manager_mediator.get_units_from_roles(
             roles={UnitRole.GATHERING, UnitRole.IDLE}, unit_type=self.ai.worker_type
         )

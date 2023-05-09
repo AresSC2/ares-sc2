@@ -3,7 +3,11 @@
 """
 from typing import Any, Dict, List, Optional, Set, Union
 
-from consts import (
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.unit import Unit
+from sc2.units import Units
+
+from ares.consts import (
     ALL_STRUCTURES,
     CHANGELING_TYPES,
     UNIT_TYPES_WITH_NO_ROLE,
@@ -11,12 +15,9 @@ from consts import (
     ManagerRequestType,
     UnitRole,
 )
-from custom_bot_ai import CustomBotAI
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.unit import Unit
-from sc2.units import Units
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
 
 class UnitRoleManager(Manager, IManagerMediator):
@@ -210,8 +211,6 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         """
         for tag in tags:
-            if role not in self.SQUAD_ROLES:
-                self.manager_mediator.remove_tag_from_squads(tag=tag)
             self.assign_role(tag, role)
 
     def clear_role(self, tag: int) -> None:

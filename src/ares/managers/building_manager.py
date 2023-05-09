@@ -140,7 +140,6 @@ class BuildingManager(Manager, IManagerMediator):
         await self._handle_construction_orders()
 
         # check if a worker has the Building task but isn't being told to build anything
-        # this normally occurs if the building gets canceled
         for worker in self.manager_mediator.get_units_from_role(
             role=UnitRole.BUILDING, unit_type=self.ai.worker_type
         ):
@@ -167,11 +166,15 @@ class BuildingManager(Manager, IManagerMediator):
                     Point2(self.building_tracker[worker_tag][TARGET].position),
                     "BUILDING TARGET",
                 )
-            # check if building is morphing
+
             if workers := self.ai.workers.filter(lambda u: u.tag == worker_tag):
                 worker: Unit = workers[0]
             else:
                 tags_to_remove.add(worker_tag)
+                continue
+
+            # leave the worker alone
+            if worker.is_constructing_scv:
                 continue
 
             structure_id: UnitID = self.building_tracker[worker_tag][ID]
@@ -232,7 +235,8 @@ class BuildingManager(Manager, IManagerMediator):
 
         for tag in tags_to_remove:
             self.building_tracker.pop(tag, None)
-            self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
+            if tag in self.manager_mediator.get_unit_role_dict[UnitRole.BUILDING]:
+                self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
 
     def remove_unit(self, tag: int) -> None:
         """Remove dead units from building tracker.
@@ -241,10 +245,6 @@ class BuildingManager(Manager, IManagerMediator):
         ----------
         tag :
             Tag of the unit to remove
-
-        Returns
-        -------
-
         """
         self.building_tracker.pop(tag, None)
 
@@ -262,10 +262,6 @@ class BuildingManager(Manager, IManagerMediator):
             Maximum amount of gas buildings that can be built at once
         geyser :
             The geyser to build the gas building on
-
-        Returns
-        -------
-
         """
         pending_geysers: List[Unit] = [
             self.building_tracker[tag][TARGET]
@@ -416,6 +412,7 @@ class BuildingManager(Manager, IManagerMediator):
         worker: Unit,
         structure_type: UnitID,
         pos: Point2,
+        assign_role: bool = True,
         building_purpose: BuildingPurpose = BuildingPurpose.NORMAL_BUILDING,
     ) -> bool:
         """Other classes may call this to have a specific worker build a structure.
@@ -428,6 +425,8 @@ class BuildingManager(Manager, IManagerMediator):
             What type of structure to build.
         pos :
             Where the structure should be placed.
+        assign_role :
+            Auto assign BUILDING UnitRole?
         building_purpose :
             Why the structure is being placed.
 
@@ -448,7 +447,8 @@ class BuildingManager(Manager, IManagerMediator):
             BUILDING_PURPOSE: building_purpose,
             STRUCTURE_ORDER_COMPLETE: True,
         }
-        self.manager_mediator.assign_role(tag=worker.tag, role=UnitRole.BUILDING)
+        if assign_role:
+            self.manager_mediator.assign_role(tag=worker.tag, role=UnitRole.BUILDING)
         return True
 
     @staticmethod
@@ -459,10 +459,6 @@ class BuildingManager(Manager, IManagerMediator):
         ----------
         structure :
             The structure that took damage.
-
-        Returns
-        -------
-
         """
         if structure.type_id in CREEP_TUMOR_TYPES:
             return

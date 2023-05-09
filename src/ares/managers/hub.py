@@ -4,25 +4,27 @@
 
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
-from consts import DEBUG, UnitRole
-from custom_bot_ai import CustomBotAI
-from managers.ability_tracker_manager import AbilityTrackerManager
-from managers.building_manager import BuildingManager
-from managers.data_manager import DataManager
-from managers.manager_mediator import ManagerMediator
-from managers.path_manager import PathManager
-from managers.production_manager import ProductionManager
-from managers.resource_manager import ResourceManager
-from managers.strategy_manager import StrategyManager
-from managers.terrain_manager import TerrainManager
-from managers.unit_cache_manager import UnitCacheManager
-from managers.unit_memory_manager import UnitMemoryManager
-from managers.unit_role_manager import UnitRoleManager
 from sc2.data import Result
 from sc2.unit import Unit
 
+from ares.consts import DEBUG, UnitRole
+from ares.custom_bot_ai import CustomBotAI
+from ares.managers.ability_tracker_manager import AbilityTrackerManager
+from ares.managers.building_manager import BuildingManager
+from ares.managers.data_manager import DataManager
+from ares.managers.manager_mediator import ManagerMediator
+from ares.managers.path_manager import PathManager
+from ares.managers.placement_manager import PlacementManager
+from ares.managers.production_manager import ProductionManager
+from ares.managers.resource_manager import ResourceManager
+from ares.managers.strategy_manager import StrategyManager
+from ares.managers.terrain_manager import TerrainManager
+from ares.managers.unit_cache_manager import UnitCacheManager
+from ares.managers.unit_memory_manager import UnitMemoryManager
+from ares.managers.unit_role_manager import UnitRoleManager
+
 if TYPE_CHECKING:
-    from ..managers.manager import Manager
+    from ares.managers.manager import Manager
 
 
 class Hub:
@@ -116,6 +118,12 @@ class Hub:
             if not unit_memory_manager
             else unit_memory_manager
         )
+        self.placement_manager: PlacementManager = PlacementManager(
+            ai, config, self.manager_mediator
+        )
+        self.terrain_manager: TerrainManager = TerrainManager(
+            ai, config, self.manager_mediator
+        )
         self.path_manager: PathManager = (
             PathManager(ai, config, self.manager_mediator)
             if not path_manager
@@ -160,6 +168,7 @@ class Hub:
             self.building_manager,  # must be updated before production manager
             self.production_manager,
             self.ability_tracker_manager,
+            self.placement_manager,
         ]
 
         if additional_managers:
@@ -200,6 +209,7 @@ class Hub:
         self.unit_role_manager.clear_role(unit_tag)
         # remove dead townhalls and workers
         self.resource_manager.on_unit_destroyed(unit_tag)
+        self.placement_manager.on_building_destroyed(unit_tag)
 
         if unit_tag in self.building_manager.building_tracker:
             self.building_manager.remove_unit(unit_tag)
@@ -253,12 +263,17 @@ class Hub:
         ----------
         unit :
             The Unit that took damage
-
-        Returns
-        -------
-
         """
         pass
+
+    def on_building_started(self, unit: Unit) -> None:
+        """On structure starting
+
+        Parameters
+        ----------
+        unit :
+        """
+        self.placement_manager.on_building_started(unit)
 
     async def update_managers(self, iteration: int) -> None:
         """Update managers, reset grids, and draw any debugs.

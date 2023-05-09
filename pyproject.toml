@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ares-sc2"
-version = "0.5.0"
+version = "0.9.0"
 description = ""
 authors = ["Tom Kerr <tomkerrdev@gmail.com>, Paul <paul@ares.com>"]
 readme = "README.md"
@@ -15,6 +15,7 @@ burnysc2 = { git = "https://github.com/august-k/python-sc2", branch = "develop" 
 PyYAML = "6.0"
 cython = "^0.29.33"
 tqdm = "^4.64.1"
+scikit-learn = "^1.2.2"
 
 [tool.poetry.group.docs]
 optional = true

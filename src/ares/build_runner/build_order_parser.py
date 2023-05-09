@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
+from loguru import logger
 from sc2.data import Race
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_data import Cost
@@ -55,11 +56,21 @@ class BuildOrderParser:
         for raw_step in self.raw_build_order:
             commands: list[str] = raw_step.split(" ")
             assert (
-                len(commands) <= 3
+                len(commands) <= 4
             ), f"Build order strings should contain 3 or less words, got: {raw_step}"
 
+            # supply at which to start
+            try:
+                supply: int = int(commands[0])
+            except ValueError:
+                logger.warning(
+                    f"""{raw_step} should begin with an integer supply count,
+                    found {commands[0]}, setting supply target to 1"""
+                )
+                supply: int = 1
+
             # this is the main command of a build order step (worker, gas, expand etc)
-            command: str = commands[0].upper()
+            command: str = commands[1].upper()
 
             # if a user passed a command matching a UnitTypeID enum key
             # then automatically handle that
@@ -68,21 +79,21 @@ class BuildOrderParser:
                 if unit_id_command in ALL_STRUCTURES:
                     step: BuildOrderStep = self._generate_structure_build_step(
                         unit_id_command
-                    )
+                    )()
                 else:
                     step: BuildOrderStep = self._generate_unit_build_step(
                         unit_id_command
-                    )
+                    )()
             except Exception:
                 assert BuildOrderOptions.contains_key(
                     command
                 ), f"Unrecognized build order command, got: {command}"
                 step: BuildOrderStep = self.build_order_step_dict[
                     BuildOrderOptions[command]
-                ]
+                ]()
 
             # check if user passed a target in, ie. ``expand @ natural``
-            if len(commands) == 3:
+            if len(commands) == 4:
                 target = commands[-1].upper()
                 try:
                     step.target = UnitID[target]
@@ -92,6 +103,7 @@ class BuildOrderParser:
                     ), f"Unrecognized build option target, got: {target}"
                     step.target = BuildOrderTargetOptions[target]
 
+            step.start_at_supply = supply
             build_order.append(step)
 
         return build_order
@@ -108,7 +120,7 @@ class BuildOrderParser:
         """
         min_minerals_for_expand: int = 185 if self.ai.race == Race.Zerg else 285
         return {
-            BuildOrderOptions.CHRONO: BuildOrderStep(
+            BuildOrderOptions.CHRONO: lambda: BuildOrderStep(
                 command=AbilityId.EFFECT_CHRONOBOOST,
                 start_condition=lambda: lambda: any(
                     [t.energy >= 50 for t in self.ai.townhalls]
@@ -120,7 +132,7 @@ class BuildOrderParser:
                     ]
                 ),
             ),
-            BuildOrderOptions.EXPAND: BuildOrderStep(
+            BuildOrderOptions.EXPAND: lambda: BuildOrderStep(
                 command=self.ai.base_townhall_type,
                 start_condition=lambda: self.ai.minerals >= min_minerals_for_expand,
                 end_condition=lambda: self.ai.structures.filter(
@@ -128,7 +140,7 @@ class BuildOrderParser:
                     and s.type_id == self.ai.base_townhall_type
                 ),
             ),
-            BuildOrderOptions.GAS: BuildOrderStep(
+            BuildOrderOptions.GAS: lambda: BuildOrderStep(
                 command=self.ai.gas_type,
                 start_condition=lambda: self.ai.minerals >= 0
                 if self.ai.race == Race.Zerg
@@ -138,7 +150,14 @@ class BuildOrderParser:
                     and s.type_id == self.ai.gas_type
                 ),
             ),
-            BuildOrderOptions.SUPPLY: BuildOrderStep(
+            BuildOrderOptions.ORBITAL: lambda: BuildOrderStep(
+                command=AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
+                start_condition=lambda: self.ai.minerals >= 150
+                and self.ai.tech_requirement_progress(UnitID.ORBITALCOMMAND) == 1.0
+                and self.ai.townhalls.filter(lambda th: th.is_ready and th.is_idle),
+                end_condition=lambda: True,
+            ),
+            BuildOrderOptions.SUPPLY: lambda: BuildOrderStep(
                 command=self.ai.supply_type,
                 start_condition=lambda: self.ai.can_afford(self.ai.supply_type)
                 if self.ai.race == Race.Zerg
@@ -152,7 +171,7 @@ class BuildOrderParser:
                     )
                 ),
             ),
-            BuildOrderOptions.WORKER: BuildOrderStep(
+            BuildOrderOptions.WORKER: lambda: BuildOrderStep(
                 self.ai.worker_type,
                 lambda: self._can_train_unit(self.ai.worker_type),
                 # confident the start condition will auto make the end condition == True
@@ -160,7 +179,7 @@ class BuildOrderParser:
             ),
         }
 
-    def _generate_structure_build_step(self, structure_id: UnitID) -> BuildOrderStep:
+    def _generate_structure_build_step(self, structure_id: UnitID) -> Callable:
         """Generic method to add any structure to a build order.
 
         Parameters
@@ -174,7 +193,7 @@ class BuildOrderParser:
             A new build step to put in a build order.
         """
         cost: Cost = self.ai.calculate_cost(structure_id)
-        return BuildOrderStep(
+        return lambda: BuildOrderStep(
             command=structure_id,
             start_condition=lambda: self.ai.minerals >= cost.minerals - 75,
             end_condition=lambda: self.ai.structures.filter(
@@ -183,7 +202,7 @@ class BuildOrderParser:
             ),
         )
 
-    def _generate_unit_build_step(self, unit_id: UnitID) -> BuildOrderStep:
+    def _generate_unit_build_step(self, unit_id: UnitID) -> Callable:
         """Generic method to add any unit to a build order.
 
         Parameters
@@ -196,7 +215,7 @@ class BuildOrderParser:
         BuildOrderStep :
             A new build step to put in a build order.
         """
-        return BuildOrderStep(
+        return lambda: BuildOrderStep(
             command=unit_id,
             start_condition=lambda: self.ai.can_afford(unit_id)
             and self.ai.all_own_units.filter(
