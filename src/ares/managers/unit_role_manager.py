@@ -126,13 +126,15 @@ class UnitRoleManager(Manager, IManagerMediator):
         # This is a workaround to realtime overseers keeping their SCOUTING role from
         # overlord
         # TODO: Fix the root cause of this bug and remove this `if realtime` block
-        if self.ai.realtime and iteration % 8 == 0:
-            overseers: Units = self.manager_mediator.get_units_from_role(
-                role=UnitRole.SCOUTING, unit_type=UnitID.OVERSEER
-            )
-            # Bots should assign appropriately once overseers have defending role
-            for overseer in overseers:
-                self.assign_role(overseer.tag, UnitRole.DEFENDING)
+        # TODO: This was an Eris fix, commented out for now to be investigated later
+        # if self.ai.realtime and iteration % 8 == 0:
+        #     overseers: Units = self.manager_mediator.get_units_from_role(
+        #         role=UnitRole.SCOUTING, unit_type=UnitID.OVERSEER
+        #     )
+        #     # Bots should assign appropriately once overseers have defending role
+        #     for overseer in overseers:
+        #         self.assign_role(overseer.tag, UnitRole.DEFENDING)
+        pass
 
     def get_assigned_units(self) -> None:
         """Create set of all tags that have been assigned to a role.
@@ -427,9 +429,13 @@ class UnitRoleManager(Manager, IManagerMediator):
         # get set of tags of units with the role
         unit_with_role_tags: Set[int] = self.unit_role_dict[role.name]
         # get the tags of units of the type
-        units_of_type_tags: Set[int] = self.manager_mediator.manager_request(
+        own_cached_army_dict = self.manager_mediator.manager_request(
             ManagerName.UNIT_CACHE_MANAGER, ManagerRequestType.GET_CACHED_OWN_ARMY_DICT
-        )[unit_type].tags
+        )
+        if unit_type not in own_cached_army_dict:
+            return []
+
+        units_of_type_tags: Set[int] = own_cached_army_dict[unit_type].tags
         # take the intersection of the sets to get the shared tags
         # this will be the units of the specified type with the specified role
         if not restrict_to:
