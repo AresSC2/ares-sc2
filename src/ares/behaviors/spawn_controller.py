@@ -110,10 +110,10 @@ class SpawnController(Behavior):
         for unit_type_id, army_comp_info in sorted(
             army_comp_dict.items(), key=lambda x: x[1].get("priority", int(0))
         ):
-            assert isinstance(
-                unit_type_id, UnitID
-            ), f"army_composition_dict expects UnitTypeId type as keys, " \
-               f"got {type(unit_type_id)}"
+            assert isinstance(unit_type_id, UnitID), (
+                f"army_composition_dict expects UnitTypeId type as keys, "
+                f"got {type(unit_type_id)}"
+            )
             priority: int = army_comp_info["priority"]
             assert 0 <= priority < 11, (
                 f"Priority for {unit_type_id} is set to {priority},"
