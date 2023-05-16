@@ -4,7 +4,9 @@
 import math
 from typing import Dict, List, Tuple
 
+from loguru import logger
 from sc2.bot_ai import BotAI
+from sc2.constants import EQUIVALENTS_FOR_TECH_PROGRESS
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
@@ -13,6 +15,7 @@ from sc2.units import Units
 from ares.consts import ALL_STRUCTURES
 from ares.dicts.turn_rate import TURN_RATE
 from ares.dicts.unit_data import UNIT_DATA
+from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 
 class CustomBotAI(BotAI):
@@ -155,7 +158,7 @@ class CustomBotAI(BotAI):
 
         # Time it will take for unit to move in range of target
         distance = (
-            unit.position.distance_to(target)
+            unit.distance_to(target)
             - unit.radius
             - target.radius
             - self.range_vs_target(unit, target)
@@ -164,6 +167,48 @@ class CustomBotAI(BotAI):
         move_time = distance / ((unit.real_speed + 1e-16) * 1.4)
 
         return step_time + turn_time + move_time >= unit.weapon_cooldown / 22.4
+
+    def tech_ready_for_unit(self, unit_type: UnitID) -> bool:
+        """
+        Similar to python-sc2's `tech_requirement_progress` but this one specializes
+        in units and simply returns a boolean.
+        Since tech_requirement_progress is not reliable for non-structures.
+
+        Parameters
+        ----------
+        unit_type :
+            Unit type id we want to check if tech is ready for.
+
+        Returns
+        -------
+        bool :
+            Indicating tech is ready.
+        """
+        if unit_type not in UNIT_TECH_REQUIREMENT:
+            logger.warning(f"{unit_type} not in UNIT_TECH_REQUIREMENT dictionary")
+            return True
+
+        tech_buildings_required: set[UnitID] = UNIT_TECH_REQUIREMENT[unit_type]
+
+        for tech_building_id in tech_buildings_required:
+            to_check = [tech_building_id]
+            # check for alternatives structures
+            # for example gateway might be a requirement, but we might only have warpgates
+            if tech_building_id in EQUIVALENTS_FOR_TECH_PROGRESS:
+                to_check.append(
+                    next(iter(EQUIVALENTS_FOR_TECH_PROGRESS[tech_building_id]))
+                )
+
+            if not any(
+                [
+                    s
+                    for s in self.structures
+                    if s.type_id == tech_building_id and s.is_ready
+                ]
+            ):
+                return False
+
+        return True
 
     @staticmethod
     def angle_diff(a, b) -> float:

@@ -23,7 +23,7 @@ class Mining(Behavior):
     flee_at_health_perc : float, optional
         If worker is in danger, at what health perc should it flee (default is 0.5).
     keep_safe : bool, optional
-        Should workers flee if they are in danger (default is True).
+        Workers flee if they are in danger? (default is True).
     long_distance_mine : bool, optional
         If worker has nothing to do, can it long distance mine (default is True).
     mineral_boost : bool, optional
