@@ -1549,6 +1549,35 @@ class ManagerMediator(IManagerMediator):
             ManagerName.UNIT_CACHE_MANAGER, ManagerRequestType.GET_OWN_STRUCTURES_DICT
         )
 
+    def get_own_unit_count(self, **kwargs) -> int:
+        """Get the dictionary of own structure types to the units themselves.
+
+        UnitCacheManager
+
+        Other Parameters
+        -----
+        unit_type_id : UnitID
+            Unit type to count.
+        include_alias : bool
+            Check aliases. (default=True)
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+
+        Returns
+        -------
+        int :
+            Total count of this unit including aliases if specified.
+
+        """
+        return self.manager_request(
+            ManagerName.UNIT_CACHE_MANAGER,
+            ManagerRequestType.GET_OWN_UNIT_COUNT,
+            **kwargs,
+        )
+
     def get_units_from_tags(self, **kwargs) -> List[Unit]:
         """Get a `list` of `Unit` objects corresponding to the given tags.
 
