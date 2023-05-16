@@ -832,6 +832,7 @@ class ManagerMediator(IManagerMediator):
         ----------
         kwargs :
             (See Other Parameters)
+
         Returns
         ----------
         bool :

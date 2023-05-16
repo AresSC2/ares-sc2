@@ -1,8 +1,10 @@
-.md-sidebar--primary {
-  min-width: 350px;
-}
+@media screen and (min-width: 1200px) {
+  .md-sidebar--primary {
+      min-width: 350px;
+    }
 
-.md-nav__list {
-  min-width: 350px;
+    .md-nav__list {
+      min-width: 350px;
+    }
 }
 

@@ -12,8 +12,10 @@ class MyBot(AresBot):
         self.register_behavior(Mining())
 ```
 
-Typical behavior usage
-
 ::: ares.behaviors.mining
+    options:
+        show_root_heading: true
+
+::: ares.behaviors.spawn_controller
     options:
         show_root_heading: true

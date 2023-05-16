@@ -14,7 +14,7 @@ from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 
 @dataclass
 class SpawnController(Behavior):
-    """Handle worker mining control.
+    """Handle spawning army compositions.
 
     Example bot code:
     ```
@@ -64,7 +64,7 @@ class SpawnController(Behavior):
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         """Execute the spawn controller task (Called from `behavior_executioner.py`).
 
-        Handle unit production as per the .........
+        Handle unit production in respect to the army_composition_dict.
 
         Parameters
         ----------
@@ -189,6 +189,8 @@ class SpawnController(Behavior):
         for unit in self.__build_dict:
             mediator.clear_role(tag=unit.tag)
             unit.train(self.__build_dict[unit])
+
+        return True
 
     def _add_to_build_dict(
         self,
