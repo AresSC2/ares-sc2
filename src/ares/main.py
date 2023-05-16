@@ -43,6 +43,8 @@ from ares.consts import (
     WORKER_TYPES,
     UnitTreeQueryType,
     race_supply,
+    ADD_ONS,
+    TECHLAB_TYPES,
 )
 from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
@@ -602,7 +604,12 @@ class AresBot(CustomBotAI):
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_structure(unit_obj)
             self.structures.append(unit_obj)
-            if unit_type in race_townhalls[self.race]:
+            if unit_type in ADD_ONS:
+                if unit_type in TECHLAB_TYPES:
+                    self.techlab_tags.add(unit_obj.tag)
+                else:
+                    self.reactor_tags.add(unit_obj.tag)
+            elif unit_type in race_townhalls[self.race]:
                 self.townhalls.append(unit_obj)
                 if unit_obj.is_ready:
                     self.ready_townhalls.append(unit_obj)
