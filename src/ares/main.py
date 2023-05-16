@@ -24,6 +24,7 @@ from ares.behaviors.behavior import Behavior
 from ares.build_runner.build_order_runner import BuildOrderRunner
 from ares.config_parser import ConfigParser
 from ares.consts import (
+    ADD_ONS,
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
     BANNED_PHRASES,
@@ -38,13 +39,12 @@ from ares.consts import (
     SHADE_COMMENCED,
     SHADE_DURATION,
     SHADE_OWNER,
+    TECHLAB_TYPES,
     UNITS_TO_AVOID_TYPES,
     USE_DATA,
     WORKER_TYPES,
     UnitTreeQueryType,
     race_supply,
-    ADD_ONS,
-    TECHLAB_TYPES,
 )
 from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES

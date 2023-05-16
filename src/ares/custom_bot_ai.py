@@ -193,7 +193,7 @@ class CustomBotAI(BotAI):
         for tech_building_id in tech_buildings_required:
             to_check = [tech_building_id]
             # check for alternatives structures
-            # for example gateway might be a requirement, but we might only have warpgates
+            # for example gateway might be a requirement, but we might have warpgates
             if tech_building_id in EQUIVALENTS_FOR_TECH_PROGRESS:
                 to_check.append(
                     next(iter(EQUIVALENTS_FOR_TECH_PROGRESS[tech_building_id]))

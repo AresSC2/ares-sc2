@@ -3,13 +3,13 @@ from math import isclose
 
 from sc2.data import Race
 from sc2.dicts.unit_train_build_abilities import TRAIN_INFO
+from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_data import Cost
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares import Behavior, AresBot, ManagerMediator
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
+from ares import AresBot, Behavior, ManagerMediator
 
 
 @dataclass
@@ -51,7 +51,7 @@ class SpawnController(Behavior):
 
     """
 
-    army_composition_dict: dict[UnitID: dict[str:float, str:int]]
+    army_composition_dict: dict[UnitID : dict[str:float, str:int]]
     freeflow_mode: bool = False
     ignore_proportions_below_unit_count: int = 14
     over_produce_on_low_tech: bool = True
@@ -112,7 +112,8 @@ class SpawnController(Behavior):
         ):
             assert isinstance(
                 unit_type_id, UnitID
-            ), f"army_composition_dict expects UnitTypeId type as keys, got {type(unit_type_id)}"
+            ), f"army_composition_dict expects UnitTypeId type as keys, " \
+               f"got {type(unit_type_id)}"
             priority: int = army_comp_info["priority"]
             assert 0 <= priority < 11, (
                 f"Priority for {unit_type_id} is set to {priority},"
@@ -144,16 +145,13 @@ class SpawnController(Behavior):
             build_structures: list[Unit] = self._get_build_structures(
                 ai, build_from_dict, UNIT_TRAINED_FROM[unit_type_id], unit_type_id
             )
-            # there is no possible way to build this unit, skip even if it's higher priority
+            # there is no possible way to build this unit, skip even if higher priority
             if len(build_structures) == 0:
                 continue
 
             # everything is in place to build this unit, but can't afford to do so
             # break out the loop, so we don't spend resources on lower priority units
-            if (
-                not self.freeflow_mode
-                and not ai.can_afford(unit_type_id)
-            ):
+            if not self.freeflow_mode and not ai.can_afford(unit_type_id):
                 if self.freeflow_mode:
                     continue
                 else:
