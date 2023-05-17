@@ -543,6 +543,13 @@ MAIN_COMBAT_ROLES: Set[UnitRole] = {
     UnitRole.DEFENDING,
 }
 
+TECHLAB_TYPES: set[UnitID] = {
+    UnitID.BARRACKSTECHLAB,
+    UnitID.FACTORYTECHLAB,
+    UnitID.STARPORTTECHLAB,
+    UnitID.TECHLAB,
+}
+
 TOWNHALL_TYPES: Set[UnitID] = {
     UnitID.HATCHERY,
     UnitID.LAIR,
