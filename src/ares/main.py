@@ -24,6 +24,7 @@ from ares.behaviors.behavior import Behavior
 from ares.build_runner.build_order_runner import BuildOrderRunner
 from ares.config_parser import ConfigParser
 from ares.consts import (
+    ADD_ONS,
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
     BANNED_PHRASES,
@@ -38,6 +39,7 @@ from ares.consts import (
     SHADE_COMMENCED,
     SHADE_DURATION,
     SHADE_OWNER,
+    TECHLAB_TYPES,
     UNITS_TO_AVOID_TYPES,
     USE_DATA,
     WORKER_TYPES,
@@ -602,7 +604,12 @@ class AresBot(CustomBotAI):
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_structure(unit_obj)
             self.structures.append(unit_obj)
-            if unit_type in race_townhalls[self.race]:
+            if unit_type in ADD_ONS:
+                if unit_type in TECHLAB_TYPES:
+                    self.techlab_tags.add(unit_obj.tag)
+                else:
+                    self.reactor_tags.add(unit_obj.tag)
+            elif unit_type in race_townhalls[self.race]:
                 self.townhalls.append(unit_obj)
                 if unit_obj.is_ready:
                     self.ready_townhalls.append(unit_obj)

@@ -20,6 +20,7 @@ from ares.consts import (
     UnitTreeQueryType,
 )
 from ares.dicts.does_not_use_larva import DOES_NOT_USE_LARVA
+from ares.dicts.unit_alias import UNIT_ALIAS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -72,6 +73,9 @@ class UnitCacheManager(Manager, IManagerMediator):
             ),
             ManagerRequestType.GET_OWN_STRUCTURES_DICT: lambda kwargs: (
                 self.own_structures_dict
+            ),
+            ManagerRequestType.GET_OWN_UNIT_COUNT: lambda kwargs: (
+                self.get_own_unit_count(**kwargs)
             ),
             ManagerRequestType.GET_UNITS_FROM_TAGS: lambda kwargs: (
                 self.get_units_from_tags(**kwargs)
@@ -443,3 +447,46 @@ class UnitCacheManager(Manager, IManagerMediator):
             distances=60,
             query_type=UnitTreeQueryType.AllEnemy,
         )[0]
+
+    def get_own_unit_count(
+        self, unit_type_id: UnitID, include_alias=True, include_pending: bool = True
+    ) -> int:
+        """Get unit count, should include alias if specified.
+
+        Examples:
+        ```
+        self.get_own_unit_count(UnitID.SIEGETANK, include_alias=True)
+        Returns count for UnitID.SIEGETANK + UnitID.SIEGETANKSIEGED
+
+        self.get_own_unit_count(UnitID.ZERGLING, include_alias=True)
+        Returns count for UnitID.ZERGLING + UnitID.ZERGLINGBURROWED
+        ```
+
+        Parameters
+        ----------
+        unit_type_id :
+            Tags of the units to retrieve.
+        include_alias : default True
+            Get other alias of this unit too (siegetank -> siegetanksieged).
+        include_pending : default
+            Count pending units.
+
+        Returns
+        -------
+        int :
+            Total number of unit_type_id.
+        """
+        army_dict: dict[UnitID, Units] = self.own_army_dict
+        num_units: int = 0
+        if unit_type_id in army_dict:
+            num_units: int = len(army_dict[unit_type_id])
+
+        if include_alias and unit_type_id in UNIT_ALIAS:
+            alias: UnitID = UNIT_ALIAS[unit_type_id]
+            if alias in army_dict:
+                num_units += len(army_dict[UNIT_ALIAS[unit_type_id]])
+
+        if include_pending:
+            num_units += int(self.ai.already_pending(unit_type_id))
+
+        return num_units
