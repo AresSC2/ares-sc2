@@ -153,7 +153,7 @@ class SpawnController(Behavior):
             if not ai.can_afford(unit_type_id):
                 if self.freeflow_mode:
                     continue
-                # break out the loop, so we don't spend resources on lower priority units
+                # break out the loop, don't spend resources on lower priority units
                 else:
                     check_proportion = False
                     break
