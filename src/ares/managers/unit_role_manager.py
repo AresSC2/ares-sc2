@@ -8,8 +8,6 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.consts import (
-    ALL_STRUCTURES,
-    CHANGELING_TYPES,
     UNIT_TYPES_WITH_NO_ROLE,
     ManagerName,
     ManagerRequestType,
@@ -163,18 +161,8 @@ class UnitRoleManager(Manager, IManagerMediator):
         if unit.type_id in UNIT_TYPES_WITH_NO_ROLE:
             return
         if unit.tag not in self.all_assigned_tags:
-            # structures that we treat as "combat" units
-            if unit.type_id in self.ZERG_STATIC_DEFENCE:
-                self.assign_role(unit.tag, UnitRole.DEFENDING)
-            elif unit.type_id in ALL_STRUCTURES:
-                self.assign_role(unit.tag, UnitRole.IDLE)
-            elif unit.type_id == self.ai.worker_type:
+            if unit.type_id == self.ai.worker_type:
                 self.assign_role(unit.tag, UnitRole.GATHERING)
-            elif unit.type_id in CHANGELING_TYPES or unit.type_id == UnitID.OVERLORD:
-                self.assign_role(unit.tag, UnitRole.SCOUTING)
-            # all combat units should be ready to defend the main threat by default
-            else:
-                self.assign_role(unit.tag, UnitRole.DEFENDING)
 
     def assign_role(self, tag: int, role: UnitRole) -> None:
         """Assign a unit a role.

@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def cy_is_position_safe(
     grid: np.ndarray, position: tuple[int, int], weight_safety_limit: float
 ) -> bool:

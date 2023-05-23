@@ -1,6 +1,8 @@
 import numpy as np
+
 cimport numpy as cnp
 from cython cimport boundscheck, wraparound
+
 
 @boundscheck(False)
 @wraparound(False)

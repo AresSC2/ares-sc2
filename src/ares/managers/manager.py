@@ -2,10 +2,12 @@
 
 """
 from abc import ABCMeta, abstractmethod
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any, Dict
 
-from sc2.bot_ai import BotAI
 from sc2.units import Units
+
+if TYPE_CHECKING:
+    from ares import AresBot
 
 from ares.consts import ManagerName, ManagerRequestType
 from ares.managers.manager_mediator import ManagerMediator
@@ -27,7 +29,7 @@ class Manager(metaclass=ABCMeta):
 
     """
 
-    def __init__(self, ai: BotAI, config: Dict, mediator: ManagerMediator) -> None:
+    def __init__(self, ai: "AresBot", config: Dict, mediator: ManagerMediator) -> None:
         """Set up the manager.
 
         Parameters
@@ -44,7 +46,7 @@ class Manager(metaclass=ABCMeta):
 
         """
         super().__init__()
-        self.ai: BotAI = ai
+        self.ai: AresBot = ai
         self.config: Dict = config
         self.manager_mediator: ManagerMediator = mediator
         self.empty_units: Units = Units([], self.ai)

@@ -1,5 +1,6 @@
 from cython cimport boundscheck, wraparound
 
+
 cdef double euclidean_distance_squared(
         (float, float) p1,
         (float, float) p2
