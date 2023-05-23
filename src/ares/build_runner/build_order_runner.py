@@ -59,7 +59,6 @@ class BuildOrderRunner:
         Runs a specific build order step.
     """
 
-    chosen_opening: str
     CONSTANT_WORKER_PRODUCTION: str = "ConstantWorkerProduction"
     REQUIRES_TOWNHALL_COMMANDS: set = {
         AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
@@ -77,6 +76,7 @@ class BuildOrderRunner:
         self.config: dict = config
         self.mediator: ManagerMediator = mediator
         self.constant_worker_production: bool = False
+        self._chosen_opening: str = chosen_opening
         if BUILDS in self.config:
             build: list[str] = config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
             self.constant_worker_production = config[BUILDS][chosen_opening][
@@ -102,6 +102,16 @@ class BuildOrderRunner:
             True if the opening build is completed, False otherwise.
         """
         return self._opening_build_completed
+
+    @property
+    def chosen_opening(self) -> str:
+        """
+        Returns
+        -------
+        str
+            Get the name of the opening (same name as declared in builds.yml file).
+        """
+        return self._chosen_opening
 
     async def run_build(self) -> None:
         """
