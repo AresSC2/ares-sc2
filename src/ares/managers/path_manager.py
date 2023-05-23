@@ -48,6 +48,7 @@ from ares.consts import (
     ManagerName,
     ManagerRequestType,
 )
+from ares.cython_extensions.combat_utils import cy_is_position_safe
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
@@ -597,10 +598,7 @@ class PathManager(Manager, IManagerMediator):
             True if the position is considered safe, False otherwise.
 
         """
-        position = position.rounded
-        weight: float = grid[position.x, position.y]
-        # np.inf check if drone is pathing near a spore crawler
-        return weight == np.inf or weight <= weight_safety_limit
+        return cy_is_position_safe(grid, position.rounded, weight_safety_limit)
 
     def reset_grids(self, iteration: int) -> None:
         """Get fresh grids so that the influence can be updated.
