@@ -14,18 +14,18 @@ theme:
     - content.code.copy
   language: en
   palette:
-    - scheme: default
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
-      primary: teal
-      accent: purple
     - scheme: slate
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
       primary: teal
       accent: lime
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: teal
+      accent: purple
 
 markdown_extensions:
   - toc:
@@ -36,7 +36,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Tutorials: tutorials.md
-  - Behaviors: behaviors.md
+  - CombatBehaviors: combat_behaviors.md
+  - MacroBehaviors: macro_behaviors.md
   - Manager Mediator: mediator.md
   - Dev Guide: dev-guide.md
   - Managers: managers.md

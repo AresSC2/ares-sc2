@@ -12,10 +12,11 @@ class MyBot(AresBot):
         self.register_behavior(Mining())
 ```
 
-::: ares.behaviors.mining
+::: ares.behaviors.macro.mining
     options:
         show_root_heading: true
 
-::: ares.behaviors.spawn_controller
+::: ares.behaviors.macro.spawn_controller
     options:
         show_root_heading: true
+
