@@ -1,0 +1,40 @@
+from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+from sc2.position import Point2
+from sc2.unit import Unit
+
+from ares.behaviors.combat import CombatBehavior
+from ares.managers.manager_mediator import ManagerMediator
+
+if TYPE_CHECKING:
+    from ares import AresBot
+
+
+@dataclass
+class DropCargo(CombatBehavior):
+    """Handle releasing cargo from a container.
+
+    Medivacs, WarpPrism, Overlords, Nydus.
+
+    Attributes
+    ----------
+    unit : Unit
+        The container unit.
+    target : Point2
+        The target position where to drop the cargo.
+    """
+
+    unit: Unit
+    target: Point2
+
+    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+        """
+        TODO: Expand logic as needed, initial working version.
+        """
+        # no action executed
+        if self.unit.cargo_used == 0:
+            return False
+
+        ai.do_unload_container(self.unit.tag)
+        return True

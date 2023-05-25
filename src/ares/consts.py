@@ -331,11 +331,23 @@ class UnitRole(str, Enum):
     BASE_DEFENDER = "BASE_DEFENDER"  # units split off to defend expansions
     BUILDING = "BUILDING"  # workers that have been assigned to create a building
     DEFENDING = "DEFENDING"  # units in a combat zone near one of our bases
+    DROP_SHIP = "DROP_SHIP"  # medivacs / prism/ dropperlord
+    DROP_UNITS_ATTACKING = (
+        "DROP_UNITS_ATTACKING"  # units dropped off, that now need to attack
+    )
+    DROP_UNITS_TO_LOAD = "DROP_UNITS_TO_LOAD"  # units that require picking up
     GATHERING = "GATHERING"  # workers that are mining
     HARASSING = "HARASSING"  # units that are harassing
     IDLE = "IDLE"  # not doing anything
     PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # does not get reassigned automatically
     SCOUTING = "SCOUTING"
+    # control groups, use for anything not specified
+    CONTROL_GROUP_ONE = "CONTROL_GROUP_ONE"
+    CONTROL_GROUP_TWO = "CONTROL_GROUP_TWO"
+    CONTROL_GROUP_THREE = "CONTROL_GROUP_THREE"
+    CONTROL_GROUP_FOUR = "CONTROL_GROUP_FOUR"
+    CONTROL_GROUP_FIVE = "CONTROL_GROUP_FIVE"
+    CONTROL_GROUP_SIX = "CONTROL_GROUP_SIX"
 
 
 class UnitTreeQueryType(str, Enum):
@@ -483,6 +495,12 @@ DETECTORS: Set[UnitID] = {
     UnitID.OVERSEER,
     UnitID.OVERSEERSIEGEMODE,
     UnitID.SPORECRAWLER,
+}
+
+DROP_ROLES: set[UnitRole] = {
+    UnitRole.DROP_SHIP,
+    UnitRole.DROP_UNITS_TO_LOAD,
+    UnitRole.DROP_UNITS_ATTACKING,
 }
 
 EGG_BUTTON_NAMES: Set[str] = {"Drone", "Overlord"}

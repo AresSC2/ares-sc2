@@ -5,6 +5,9 @@ import math
 from typing import Dict, List, Tuple
 
 from loguru import logger
+from s2clientprotocol import raw_pb2 as raw_pb
+from s2clientprotocol import sc2api_pb2 as sc_pb
+from s2clientprotocol import ui_pb2 as ui_pb
 from sc2.bot_ai import BotAI
 from sc2.constants import EQUIVALENTS_FOR_TECH_PROGRESS
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -291,3 +294,41 @@ class CustomBotAI(BotAI):
             return unit.air_range
         else:
             return unit.ground_range
+
+    async def unload_by_tag(self, container: Unit, unit_tag: int) -> None:
+        """Unload a unit from a container based on its tag. Thanks, Sasha!"""
+        index: int = 0
+        # noinspection PyProtectedMember
+        if not container._proto.passengers:
+            return
+        # noinspection PyProtectedMember
+        for index, passenger in enumerate(container._proto.passengers):
+            if passenger.tag == unit_tag:
+                break
+            # noinspection PyProtectedMember
+            if index == len(container._proto.passengers) - 1:
+                logger.warning(f"Can't find passenger {unit_tag}")
+                return
+
+        await self.unload_container(container, index)
+
+    async def unload_container(self, container_tag: int, index: int = 0) -> None:
+        # noinspection PyProtectedMember
+        await self.client._execute(
+            action=sc_pb.RequestAction(
+                actions=[
+                    sc_pb.Action(
+                        action_raw=raw_pb.ActionRaw(
+                            unit_command=raw_pb.ActionRawUnitCommand(
+                                ability_id=0, unit_tags=[container_tag]
+                            )
+                        )
+                    ),
+                    sc_pb.Action(
+                        action_ui=ui_pb.ActionUI(
+                            cargo_panel=ui_pb.ActionCargoPanelUnload(unit_index=index)
+                        )
+                    ),
+                ]
+            )
+        )

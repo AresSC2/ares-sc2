@@ -105,6 +105,11 @@ class AresBot(CustomBotAI):
         self.WORKER_TYPES = WORKER_TYPES | {UnitID.DRONEBURROWED}
         self.supply_type: UnitID = UnitID.OVERLORD
 
+        self._drop_unload_actions: list[tuple[int, int]] = []
+
+    def do_unload_container(self, container_tag: int, index: int = 0) -> None:
+        self._drop_unload_actions.append((container_tag, index))
+
     # noinspection PyFinal
     def _prepare_units(self):
         """Tweak of _prepare_units to include memory units in cached distances and some
@@ -358,6 +363,11 @@ class AresBot(CustomBotAI):
         self.actual_iteration += 1
         if self.chat_debug:
             await self.chat_debug.parse_commands()
+
+    async def _after_step(self) -> int:
+        await super(AresBot, self)._after_step()
+        for drop_action in self._drop_unload_actions:
+            await self.unload_container(drop_action[0], drop_action[1])
 
     def register_behavior(self, behavior: Behavior) -> None:
         """Register behavior.
@@ -747,6 +757,8 @@ class AresBot(CustomBotAI):
         self.enemy_vs_ground_static_defense: Units = Units([], self)
         self.friendly_parasitic_bomb_positions: List[Point2] = []
         self.enemy_parasitic_bomb_positions: List[Point2] = []
+
+        self._drop_unload_actions = []
 
     def _should_add_unit(self, unit: RawUnit) -> bool:
         """Whether the given unit should be tracked.
