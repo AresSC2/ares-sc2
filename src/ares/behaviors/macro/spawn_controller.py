@@ -9,8 +9,9 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares import AresBot, ManagerMediator
+from ares import AresBot
 from ares.behaviors.macro import MacroBehavior
+from ares.managers.manager_mediator import ManagerMediator
 
 
 @dataclass
