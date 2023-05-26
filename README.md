@@ -7,5 +7,20 @@
 
 [Documentation](https://aressc2.github.io/ares-sc2/index.html)
 
-To install for development:
-`poetry install --with docs lint test semver notebook`
+If you're interested in creating a bot with `ares-sc2` we recommend following the instructions on the
+[`ares-sc2-starter-bot` repo](https://github.com/AresSC2/ares-sc2-starter-bot).
+
+Set up environment and mandatory packages to run `ares-sc2`
+
+`poetry install`
+
+Try running the basic test bot, it will place a random race and speed mine with 12 workers:
+
+`poetry run python run.py`
+
+Install optional dependencies for development as needed:
+`poetry install --only docs`
+`poetry install --only lint`
+`poetry install --only test`
+`poetry install --only semver`
+`poetry install --only notebook`

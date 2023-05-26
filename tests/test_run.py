@@ -1,18 +1,29 @@
-"""See if the AresBot starts."""
+"""
+See if the AresBot starts.
+
+Starts as a random race and speed mines with 12 workers.
+
+"""
 
 import random
 import sys
 from os import path
+from os.path import abspath, dirname
 from pathlib import Path
 from typing import List
 
 import yaml
-from ladder import run_ladder_game
+
+d = dirname(dirname(abspath(__file__)))
+sys.path.append(f"{d}\\")
+sys.path.append(f"{d}\\src")
+
 from sc2 import maps
 from sc2.data import AIBuild, Difficulty, Race
 from sc2.main import run_game
 from sc2.player import Bot, Computer
 
+from src.ares.behaviors.macro.mining import Mining
 from src.ares.main import AresBot
 
 # change if non default setup / linux
@@ -22,6 +33,12 @@ CONFIG_FILE: str = "config.yml"
 MAP_FILE_EXT: str = "SC2Map"
 MY_BOT_NAME: str = "AresTestBot"
 MY_BOT_RACE: str = "Random"
+
+
+class TestBot(AresBot):
+    async def on_step(self, iteration: int) -> None:
+        await super(TestBot, self).on_step(iteration)
+        self.register_behavior(Mining())
 
 
 def main():
@@ -39,40 +56,34 @@ def main():
             if MY_BOT_RACE in config:
                 race = Race[config[MY_BOT_RACE].title()]
 
-    bot1 = Bot(race, AresBot(), bot_name)
+    bot1 = Bot(race, TestBot(), bot_name)
 
-    if "--LadderServer" in sys.argv:
-        # Ladder game started by LadderManager
-        print("Starting ladder game...")
-        result, opponentid = run_ladder_game(bot1)
-        print(result, " against opponent ", opponentid)
-    else:
-        # Local game
-        map_list: List[str] = [
-            p.name.replace(f".{MAP_FILE_EXT}", "")
-            for p in Path(MAPS_PATH).glob(f"*.{MAP_FILE_EXT}")
-            if p.is_file()
-        ]
-        # alternative example code if finding the map path is problematic
-        # map_list: List[str] = [
-        #     "BerlingradAIE",
-        #     "InsideAndOutAIE",
-        #     "MoondanceAIE",
-        #     "StargazersAIE",
-        #     "WaterfallAIE",
-        #     "HardwireAIE",
-        # ]
+    # Local game
+    map_list: List[str] = [
+        p.name.replace(f".{MAP_FILE_EXT}", "")
+        for p in Path(MAPS_PATH).glob(f"*.{MAP_FILE_EXT}")
+        if p.is_file()
+    ]
+    # alternative example code if finding the map path is problematic
+    # map_list: List[str] = [
+    #     "BerlingradAIE",
+    #     "InsideAndOutAIE",
+    #     "MoondanceAIE",
+    #     "StargazersAIE",
+    #     "WaterfallAIE",
+    #     "HardwireAIE",
+    # ]
 
-        random_race = random.choice([Race.Zerg, Race.Terran, Race.Protoss])
-        print("Starting local game...")
-        run_game(
-            maps.get(random.choice(map_list)),
-            [
-                bot1,
-                Computer(random_race, Difficulty.CheatInsane, ai_build=AIBuild.Rush),
-            ],
-            realtime=False,
-        )
+    random_race = random.choice([Race.Zerg, Race.Terran, Race.Protoss])
+    print("Starting local game...")
+    run_game(
+        maps.get(random.choice(map_list)),
+        [
+            bot1,
+            Computer(random_race, Difficulty.CheatInsane, ai_build=AIBuild.Rush),
+        ],
+        realtime=False,
+    )
 
 
 # Start game

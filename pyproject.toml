@@ -10,7 +10,7 @@ repository = "https://github.com/AresSC2/ares-sc2"
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.9, <3.10"
+python = ">=3.11, <3.12"
 burnysc2 = { git = "https://github.com/august-k/python-sc2", branch = "develop" }
 PyYAML = "6.0"
 cython = "^0.29.33"
