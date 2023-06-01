@@ -264,7 +264,7 @@ scipy = "^1.7.1"
 type = "git"
 url = "https://github.com/august-k/python-sc2"
 reference = "develop"
-resolved_reference = "f5c4d87c51f4a8cdc493fad11624844ec66ff5bb"
+resolved_reference = "254cfe0cfef766ecc1c74a278de68efc28717570"
 
 [[package]]
 name = "certifi"
