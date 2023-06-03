@@ -20,6 +20,7 @@ sys.path.append(f"{d}\\src")
 
 from sc2 import maps
 from sc2.data import AIBuild, Difficulty, Race
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.main import run_game
 from sc2.player import Bot, Computer
 
@@ -36,6 +37,9 @@ MY_BOT_RACE: str = "Random"
 
 
 class TestBot(AresBot):
+    async def on_start(self) -> None:
+        await super(TestBot, self).on_start()
+
     async def on_step(self, iteration: int) -> None:
         await super(TestBot, self).on_step(iteration)
         self.register_behavior(Mining())

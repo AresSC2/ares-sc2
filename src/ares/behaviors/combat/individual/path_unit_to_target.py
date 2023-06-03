@@ -6,6 +6,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.behaviors.combat import CombatBehavior
+from ares.cython_extensions.geometry import cy_distance_to
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
@@ -52,7 +53,7 @@ class PathUnitToTarget(CombatBehavior):
     danger_threshold: float = 5.0
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        distance_to_target: float = self.unit.distance_to(self.target)
+        distance_to_target: float = cy_distance_to(self.unit.position, self.target)
         # no action executed
         if distance_to_target < self.success_at_distance:
             return False

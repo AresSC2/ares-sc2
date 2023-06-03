@@ -4,6 +4,7 @@
 from typing import TYPE_CHECKING, Dict, Optional
 
 from sc2.ids.ability_id import AbilityId
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.unit import Unit
 
 from ares.consts import ManagerName, ManagerRequestType
@@ -61,7 +62,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
                 self.update_unit_to_ability_dict(**kwargs)
             ),
         }
-        # make a copy so we don't mess with anything when updating Medivac cds
+        # make a copy, so we don't mess with anything when updating Medivac cds
         self.ability_frame_cd_dict: Dict[
             AbilityId, int
         ] = ABILITY_FRAME_COOL_DOWN.copy()
@@ -125,9 +126,6 @@ class AbilityTrackerManager(Manager, IManagerMediator):
                 autocast.
                 Battery Overcharge and Strategic Recall (Nexus) are not included because
                 they have global CDs.
-            Terran:
-                Widow Mines are not included because their ability is based on firing
-                rather than bot input.
 
         Parameters
         ----------
@@ -138,11 +136,14 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         -------
 
         """
-        # tag: int = unit.tag
-        # unit_type: UnitID = unit.type_id
-        # current_frame: int = self.ai.state.game_loop
-        if unit.tag not in self.unit_to_ability_dict:
-            pass
+        tag: int = unit.tag
+        unit_type: UnitID = unit.type_id
+        current_frame: int = self.ai.state.game_loop
+        if tag not in self.unit_to_ability_dict:
+            if unit_type == UnitID.WIDOWMINE:
+                self.unit_to_ability_dict[tag] = {
+                    AbilityId.WIDOWMINEATTACK_WIDOWMINEATTACK: current_frame
+                }
             # Protoss
             # if unit_type == UnitID.ADEPT:
             #     self.unit_to_ability_dict[tag] = {

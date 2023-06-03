@@ -4,8 +4,8 @@ cimport numpy as np
 from cython cimport boundscheck, wraparound
 from libc.math cimport atan2, cos, floor, sin
 
-# from sklearn.cluster import DBSCAN
-
+from sc2.units import Units
+from sklearn.cluster import DBSCAN
 
 DEF ANGLE_STEP = .314159  # the angle step for iteration in radians
 
@@ -145,48 +145,6 @@ cpdef get_neighbors8((float, float) point):
             neighbors[idx] = (x + i, y + j)
             idx += 1
     return set(neighbors)
-
-
-# cpdef tuple group_by_spatial(
-#     object ai,
-#     object units,
-#     float distance = 0.5,
-#     unsigned int min_samples = 1
-# ):
-#     """
-#     Use DBSCAN to group units. Returns grouped units and the tags of units that were not placed in a group.
-#     """
-#     if not units:
-#         return [], set()
-#
-#     cdef:
-#         np.ndarray[np.int64_t, ndim = 1] clustering_labels
-#         np.ndarray[np.double_t, ndim = 2] vectors
-#         list groups, ungrouped_unit_tags
-#         int label
-#         unsigned int index, groups_length, min_range, max_range
-#
-#     vectors = np.array([[unit.position.x, unit.position.y] for unit in units])
-#     clustering_labels = DBSCAN(eps=distance, algorithm='kd_tree', min_samples=min_samples).fit(vectors).labels_
-#     groups = []
-#     min_range = 0
-#     max_range = len(clustering_labels)
-#     ungrouped_unit_tags = []
-#
-#     for index in range(min_range, max_range):
-#         unit = units[index]
-#         label = clustering_labels[index]
-#         if label == -1:
-#             # not part of a group
-#             ungrouped_unit_tags.append(unit.tag)
-#             continue
-#         groups_length = len(groups)
-#         if label >= groups_length:
-#             groups.append([unit])
-#         else:
-#             groups[label].append(unit)
-#
-#     return [Units(raw, ai) for raw in groups], set(ungrouped_unit_tags)
 
 
 cpdef int last_index_with_value(
