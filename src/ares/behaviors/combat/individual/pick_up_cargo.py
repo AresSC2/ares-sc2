@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 import numpy as np
 from sc2.ids.ability_id import AbilityId
@@ -9,6 +9,7 @@ from sc2.units import Units
 
 from ares.behaviors.combat import CombatBehavior
 from ares.consts import UnitRole
+from ares.cython_extensions.geometry import cy_distance_to
 from ares.cython_extensions.units_utils import cy_closest_to
 from ares.dicts.pickup_range import PICKUP_RANGE
 from ares.managers.manager_mediator import ManagerMediator
@@ -38,7 +39,7 @@ class PickUpCargo(CombatBehavior):
 
     unit: Unit
     grid: np.ndarray
-    pickup_targets: Units
+    pickup_targets: Union[Units, list[Unit]]
     cargo_switch_to_role: UnitRole = UnitRole.DROP_UNITS_ATTACKING
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
@@ -52,7 +53,7 @@ class PickUpCargo(CombatBehavior):
 
         unit_pos: Point2 = self.unit.position
         target: Unit = cy_closest_to(unit_pos, self.pickup_targets)
-        distance: float = self.unit.distance_to(target)
+        distance: float = cy_distance_to(self.unit.position, target.position)
 
         if distance <= PICKUP_RANGE[self.unit.type_id]:
             self.unit(AbilityId.SMART, target)

@@ -203,35 +203,3 @@ def translate_point_along_line(
 
     """
     ...
-
-def group_by_spatial(
-    ai: "BotAI", units: "Units", distance: float = 0.5, min_samples: int = 1
-) -> Tuple[List["Units"], Set[int]]:
-    """Use DBSCAN to group units. Returns grouped units and the tags of units that
-    were not placed in a group.
-
-    See https://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html
-    for additional information on distance and min_samples.
-
-    Parameters
-    ----------
-    ai :
-        Bot object used for creating `Units` objects
-    units :
-        Units to form groups from
-    distance :
-        DBSCAN eps (essentially the maximum distance between units for them to be
-        considered as part of the same group)
-    min_samples :
-        DBSCAN min_samples (essentially the number of other units that need to be
-        around a unit for that unit to start forming a group)
-
-    Returns
-    -------
-    Tuple[List["Units"], Set[int]] :
-        Tuple of:
-            List of `Units` objects representing the groups formed
-            Set of tags of the `Unit`s that were not placed into a group
-
-    """
-    ...

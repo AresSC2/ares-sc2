@@ -3,9 +3,12 @@ import numpy as np
 def cy_is_position_safe(
     grid: np.ndarray, position: tuple[int, int], weight_safety_limit: float
 ) -> bool:
-    """Given a list of points, add each point's neighbors for ease of ignoring.
+    """Given a grid of influence, check if the given position is above weight_safety_limit.
 
-    Typically used if a tile needs a 3x3 square centered on it to be blocked out
+    627 ns ± 3.12 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+
+    Python alternative:
+    4.02 µs ± 20.4 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
 
     Parameters
     ----------
