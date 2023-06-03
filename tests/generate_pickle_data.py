@@ -6,30 +6,24 @@ TODO: Make this pickle `ares` specific stuff (manager hub?) so we can run tests.
 import lzma
 import os
 import pickle
+import sys
+from os.path import abspath, dirname
 from typing import Set
 
 from loguru import logger
 from s2clientprotocol import sc2api_pb2 as sc_pb
-
 from sc2 import maps
 from sc2.bot_ai import BotAI
 from sc2.data import Difficulty, Race
-from sc2.game_data import GameData
-from sc2.game_info import GameInfo
-from sc2.game_state import GameState
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.main import run_game
 from sc2.player import Bot, Computer
 from sc2.protocol import ProtocolError
-import sys
-from os.path import abspath, dirname
 
 # This allows Ares to be imported
 d = dirname(dirname(abspath(__file__)))
 sys.path.append(f"{d}\\")
 sys.path.append(f"{d}\\src")
-
-from ares import AresBot
 
 
 class ExporterBot(BotAI):
@@ -74,11 +68,6 @@ class ExporterBot(BotAI):
         raw_game_info = await self.client._execute(game_info=sc_pb.RequestGameInfo())
 
         raw_observation = self.state.response_observation
-
-        # To test if this data is convertable in the first place
-        _game_data = GameData(raw_game_data.data)
-        _game_info = GameInfo(raw_game_info.game_info)
-        _game_state = GameState(raw_observation)
 
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         try:
@@ -145,7 +134,8 @@ def main():
             file_path = bot.get_pickle_file_path()
             if os.path.isfile(file_path):
                 logger.warning(
-                    f"Pickle file for map {map_} was already generated. Skipping. If you wish to re-generate files, please remove them first."
+                    f"Pickle file for map {map_} was already generated. Skipping."
+                    f" If you wish to re-generate files, please remove them first."
                 )
                 continue
             logger.info(f"Creating pickle file for map {map_} ...")
@@ -160,7 +150,8 @@ def main():
         except Exception as e:
             logger.exception(f"Caught unknown exception: {e}")
             logger.error(
-                f"Map {map_} could not be found, so pickle files for that map could not be generated. Error: {e}"
+                f"Map {map_} could not be found, so pickle "
+                f"files for that map could not be generated. Error: {e}"
             )
 
 

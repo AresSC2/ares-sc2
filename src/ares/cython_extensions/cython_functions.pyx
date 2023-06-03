@@ -4,9 +4,8 @@ cimport numpy as np
 from cython cimport boundscheck, wraparound
 from libc.math cimport atan2, cos, floor, sin
 
-from sklearn.cluster import DBSCAN
 from sc2.units import Units
-
+from sklearn.cluster import DBSCAN
 
 DEF ANGLE_STEP = .314159  # the angle step for iteration in radians
 

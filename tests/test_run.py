@@ -20,9 +20,9 @@ sys.path.append(f"{d}\\src")
 
 from sc2 import maps
 from sc2.data import AIBuild, Difficulty, Race
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.main import run_game
 from sc2.player import Bot, Computer
-from sc2.ids.unit_typeid import UnitTypeId
 
 from src.ares.behaviors.macro.mining import Mining
 from src.ares.main import AresBot

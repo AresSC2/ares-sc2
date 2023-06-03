@@ -7,4 +7,5 @@ per-file-ignores =
 exclude =
     MapAnalyzer
     sc2_helper
+    tests/generate_pickle_data.py.py
     tests/test_run.py
