@@ -21,6 +21,7 @@ ABILITY_FRAME_COOL_DOWN: Dict = {
     AbilityId.LOCKON_LOCKON: int(22.4 * 4.3) + 6,
     AbilityId.KD8CHARGE_KD8CHARGE: int(22.4 * 14) + 6,
     AbilityId.TACNUKESTRIKE_NUKECALLDOWN: int(22.4 * 14) + 6,
+    AbilityId.WIDOWMINEATTACK_WIDOWMINEATTACK: int(22.4 * 29) + 6,
     AbilityId.YAMATO_YAMATOGUN: int(22.4 * 71) + 6,
     # Zerg
     AbilityId.CAUSTICSPRAY_CAUSTICSPRAY: int(22.4 * 32.14) + 6,

@@ -118,6 +118,54 @@ class ManagerMediator(IManagerMediator):
     """
 
     """
+    AbilityTrackerManager
+    """
+
+    @property
+    def get_unit_to_ability_dict(self) -> dict[int, Any]:
+        """Get a dictionary containing unit tag, to ability frame cooldowns.
+
+        AbilityTrackerManager.
+
+        Returns
+        -------
+        Dict[int, Any] :
+            Unit tag to abilities and the next frame they can be casted.
+
+        """
+        return self.manager_request(
+            ManagerName.ABILITY_TRACKER_MANAGER,
+            ManagerRequestType.GET_UNIT_TO_ABILITY_DICT,
+        )
+
+    def update_unit_to_ability_dict(self, **kwargs):
+        """Update tracking to reflect ability usage.
+
+        After a unit uses an ability it should call this to update the frame the
+        ability will next be available
+
+        AbilityTrackerManager.
+
+        Other Parameters
+        ----------
+        ability :
+            The AbilityId that was used.
+        unit_tag :
+            The tag of the Unit that used the ability
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+
+        """
+        return self.manager_request(
+            ManagerName.ABILITY_TRACKER_MANAGER,
+            ManagerRequestType.UPDATE_UNIT_TO_ABILITY_DICT,
+            **kwargs,
+        )
+
+    """
     BuildingManager
     """
 

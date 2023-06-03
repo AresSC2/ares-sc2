@@ -310,6 +310,7 @@ class ManagerRequestType(str, Enum):
 class ManagerName(str, Enum):
     """The names of the various managers."""
 
+    ABILITY_TRACKER_MANAGER = "AbilityTrackerManager"
     BUILDING_MANAGER = "BuildingManager"
     COMBAT_MANAGER = "CombatManager"
     DATA_MANAGER = "DataManager"
