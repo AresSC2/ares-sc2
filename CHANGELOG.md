@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.14.0 (2023-06-07)
+### Feature
+
+* Add climber grid with mediator request ([`c9b58e6`](https://github.com/AresSC2/ares-sc2/commit/c9b58e604b3cac61db6eef24f4f541fdbb7c2a72))
+
 ## v0.13.0 (2023-06-03)
 ### Feature
 
