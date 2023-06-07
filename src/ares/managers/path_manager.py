@@ -126,6 +126,7 @@ class PathManager(Manager, IManagerMediator):
             ManagerRequestType.GET_GROUND_AVOIDANCE_GRID: lambda kwargs: (
                 self.ground_avoidance_grid
             ),
+            ManagerRequestType.GET_CLIMBER_GRID: lambda kwargs: self.climber_grid,
             ManagerRequestType.GET_GROUND_GRID: lambda kwargs: self.ground_grid,
             ManagerRequestType.GET_MAP_DATA: lambda kwargs: self.map_data,
             ManagerRequestType.GET_PRIORITY_GROUND_AVOIDANCE_GRID: lambda kwargs: (
@@ -145,6 +146,7 @@ class PathManager(Manager, IManagerMediator):
         self.air_vs_ground_grid: np.ndarray = self.map_data.get_air_vs_ground_grid(
             default_weight=AIR_VS_GROUND_DEFAULT
         )
+        self.climber_grid: np.ndarray = self.map_data.get_climber_grid()
         self.ground_grid: np.ndarray = self.map_data.get_pyastar_grid()
         # tiles without creep are listed as unpathable
         self.creep_ground_grid: np.ndarray = self.map_data.get_pyastar_grid()
@@ -155,6 +157,7 @@ class PathManager(Manager, IManagerMediator):
         )
 
         self._cached_clean_ground_grid: np.ndarray = self.ground_grid.copy()
+        self._cached_climber_grid: np.ndarray = self.climber_grid.copy()
         # avoidance grids will contain influence for things our units should avoid
         self.air_avoidance_grid: np.ndarray = self._cached_clean_air_grid.copy()
         self.ground_avoidance_grid: np.ndarray = self._cached_clean_ground_grid.copy()
@@ -326,14 +329,13 @@ class PathManager(Manager, IManagerMediator):
 
         """
 
-        grid = self.map_data.add_cost_to_multiple_grids(
+        return self.map_data.add_cost_to_multiple_grids(
             position=(int(pos.x), int(pos.y)),
             radius=unit_range,
             grids=grids,
             weight=int(weight) * self.config[PATHING][COST_MULTIPLIER],
             initial_default_weights=initial_default_weights,
         )
-        return grid
 
     def find_closest_safe_spot(
         self, from_pos: Point2, grid: np.ndarray, radius: int = 15
@@ -614,6 +616,7 @@ class PathManager(Manager, IManagerMediator):
         """
         self.air_grid = self._cached_clean_air_grid.copy()
         self.air_vs_ground_grid = self._cached_clean_air_vs_ground_grid.copy()
+        self.climber_grid = self._cached_climber_grid.copy()
         self.ground_grid = self._cached_clean_ground_grid.copy()
         self.air_avoidance_grid = self._cached_clean_air_grid.copy()
         self.ground_avoidance_grid = self._cached_clean_ground_grid.copy()
@@ -625,6 +628,7 @@ class PathManager(Manager, IManagerMediator):
         #   Only if this is faster then updating the grid!
         if iteration % 8 == 0:
             self._cached_clean_ground_grid = self.map_data.get_pyastar_grid()
+            self._cached_climber_grid = self.map_data.get_climber_grid()
 
     def add_unit_influence(self, enemy: Unit) -> None:
         """Add influence to the relevant grid.
@@ -679,6 +683,7 @@ class PathManager(Manager, IManagerMediator):
             # blinding cloud
             if effect.id == EffectId.BLINDINGCLOUDCP:
                 (
+                    self.climber_grid,
                     self.ground_grid,
                     self.ground_avoidance_grid,
                 ) = self.add_cost_to_multiple_grids(
@@ -686,7 +691,7 @@ class PathManager(Manager, IManagerMediator):
                     effect_values[BLINDING_CLOUD][COST],
                     effect_values[BLINDING_CLOUD][RANGE]
                     + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                    [self.ground_grid, self.ground_avoidance_grid],
+                    [self.climber_grid, self.ground_grid, self.ground_avoidance_grid],
                 )
             # liberator siege
             elif effect.id in {
@@ -694,6 +699,7 @@ class PathManager(Manager, IManagerMediator):
                 EffectId.LIBERATORTARGETMORPHPERSISTENT,
             }:
                 (
+                    self.climber_grid,
                     self.ground_grid,
                     # self.ground_avoidance_grid,
                 ) = self.add_cost_to_multiple_grids(
@@ -701,12 +707,13 @@ class PathManager(Manager, IManagerMediator):
                     effect_values[LIBERATOR_ZONE][COST],
                     effect_values[LIBERATOR_ZONE][RANGE]
                     + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                    [self.ground_grid],
+                    [self.climber_grid, self.ground_grid],
                 )
             # lurker spines
             elif effect.id == EffectId.LURKERMP:
                 for pos in effect.positions:
                     (
+                        self.climber_grid,
                         self.ground_grid,
                         self.ground_avoidance_grid,
                     ) = self.add_cost_to_multiple_grids(
@@ -714,7 +721,11 @@ class PathManager(Manager, IManagerMediator):
                         effect_values[LURKER_SPINE][COST],
                         effect_values[LURKER_SPINE][RANGE]
                         + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                        [self.ground_grid, self.ground_avoidance_grid],
+                        [
+                            self.climber_grid,
+                            self.ground_grid,
+                            self.ground_avoidance_grid,
+                        ],
                     )
             # nukes
             elif effect.id == EffectId.NUKEPERSISTENT:
@@ -727,6 +738,7 @@ class PathManager(Manager, IManagerMediator):
                 (
                     self.air_grid,
                     self.air_vs_ground_grid,
+                    self.climber_grid,
                     self.ground_grid,
                     self.air_avoidance_grid,
                     self.ground_avoidance_grid,
@@ -739,6 +751,7 @@ class PathManager(Manager, IManagerMediator):
                     [
                         self.air_grid,
                         self.air_vs_ground_grid,
+                        self.climber_grid,
                         self.ground_grid,
                         self.air_avoidance_grid,
                         self.ground_avoidance_grid,
@@ -786,12 +799,18 @@ class PathManager(Manager, IManagerMediator):
             (
                 self.air_grid,
                 self.air_vs_ground_grid,
+                self.climber_grid,
                 self.ground_grid,
             ) = self.add_cost_to_multiple_grids(
                 structure.position,
                 22,
                 7 + self.config[PATHING][RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid, self.ground_grid],
+                [
+                    self.air_grid,
+                    self.air_vs_ground_grid,
+                    self.climber_grid,
+                    self.ground_grid,
+                ],
             )
         elif structure.type_id == UnitID.MISSILETURRET:
             s_range: int = 8 if self.ai.time > 540 else 7
@@ -814,20 +833,26 @@ class PathManager(Manager, IManagerMediator):
             (
                 self.air_grid,
                 self.air_vs_ground_grid,
+                self.climber_grid,
                 self.ground_grid,
             ) = self.add_cost_to_multiple_grids(
                 structure.position,
                 22,
                 6 + self.config[PATHING][RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid, self.ground_grid],
+                [
+                    self.air_grid,
+                    self.air_vs_ground_grid,
+                    self.climber_grid,
+                    self.ground_grid,
+                ],
             )
         elif structure.type_id == UnitID.PLANETARYFORTRESS:
             s_range: int = 7 if self.ai.time > 400 else 6
-            self.ground_grid = self.add_cost(
+            (self.climber_grid, self.ground_grid,) = self.add_cost_to_multiple_grids(
                 structure.position,
                 28,
                 s_range + self.config[PATHING][RANGE_BUFFER],
-                self.ground_grid,
+                [self.climber_grid, self.ground_grid],
             )
         elif structure.type_id == UnitID.AUTOTURRET:
             self._add_cost_to_all_grids(structure, WEIGHT_COSTS[UnitID.AUTOTURRET])
@@ -848,6 +873,7 @@ class PathManager(Manager, IManagerMediator):
             self._add_cost_to_all_grids(unit, WEIGHT_COSTS[unit.type_id])
         elif unit.type_id == UnitID.DISRUPTORPHASED:
             (
+                self.climber_grid,
                 self.ground_avoidance_grid,
                 self.ground_grid,
                 self.priority_ground_avoidance_grid,
@@ -856,6 +882,7 @@ class PathManager(Manager, IManagerMediator):
                 weight=1000,
                 unit_range=8 + self.config[PATHING][EFFECTS_RANGE_BUFFER],
                 grids=[
+                    self.climber_grid,
                     self.ground_avoidance_grid,
                     self.ground_grid,
                     self.priority_ground_avoidance_grid,
@@ -863,6 +890,7 @@ class PathManager(Manager, IManagerMediator):
             )
         elif unit.type_id == UnitID.BANELING:
             (
+                self.climber_grid,
                 self.ground_avoidance_grid,
                 self.ground_grid,
                 self.priority_ground_avoidance_grid,
@@ -871,6 +899,7 @@ class PathManager(Manager, IManagerMediator):
                 weight=WEIGHT_COSTS[UnitID.BANELING][GROUND_COST],
                 unit_range=WEIGHT_COSTS[UnitID.BANELING][GROUND_RANGE],
                 grids=[
+                    self.climber_grid,
                     self.ground_avoidance_grid,
                     self.ground_grid,
                     self.priority_ground_avoidance_grid,
@@ -880,20 +909,20 @@ class PathManager(Manager, IManagerMediator):
         elif unit.type_id == UnitID.INFESTOR and unit.energy >= 75:
             self._add_cost_to_all_grids(unit, WEIGHT_COSTS[UnitID.INFESTOR])
         elif unit.type_id == UnitID.ORACLE and unit.energy >= 25:
-            self.ground_grid = self.add_cost(
+            self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
                 unit.position,
                 self.config[PATHING][UNITS][ORACLE][GROUND_COST],
                 self.config[PATHING][UNITS][ORACLE][GROUND_RANGE]
                 + self.config[PATHING][RANGE_BUFFER],
-                self.ground_grid,
+                [self.climber_grid, self.ground_grid],
             )
         # melee units
         elif unit.ground_range < 2:
-            self.ground_grid = self.add_cost(
+            self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
                 unit.position,
                 unit.ground_dps,
                 2 + self.config[PATHING][RANGE_BUFFER],
-                self.ground_grid,
+                [self.climber_grid, self.ground_grid],
             )
         elif unit.can_attack_air:
             self.air_grid, self.air_vs_ground_grid = self.add_cost_to_multiple_grids(
@@ -903,11 +932,11 @@ class PathManager(Manager, IManagerMediator):
                 [self.air_grid, self.air_vs_ground_grid],
             )
         elif unit.can_attack_ground:
-            self.ground_grid = self.add_cost(
+            self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
                 unit.position,
                 unit.ground_dps,
                 unit.ground_range + self.config[PATHING][RANGE_BUFFER],
-                self.ground_grid,
+                [self.climber_grid, self.ground_grid],
             )
 
     def _add_cost_to_all_grids(self, unit: Unit, weight_values: Dict) -> None:
@@ -931,6 +960,7 @@ class PathManager(Manager, IManagerMediator):
             (
                 self.air_grid,
                 self.air_vs_ground_grid,
+                self.climber_grid,
                 self.ground_grid,
                 self.ground_avoidance_grid,
                 self.air_avoidance_grid,
@@ -942,6 +972,7 @@ class PathManager(Manager, IManagerMediator):
                 [
                     self.air_grid,
                     self.air_vs_ground_grid,
+                    self.climber_grid,
                     self.ground_grid,
                     self.ground_avoidance_grid,
                     self.air_avoidance_grid,
@@ -957,12 +988,18 @@ class PathManager(Manager, IManagerMediator):
             (
                 self.air_grid,
                 self.air_vs_ground_grid,
+                self.climber_grid,
                 self.ground_grid,
             ) = self.add_cost_to_multiple_grids(
                 unit.position,
                 weight_values[AIR_COST],
                 weight_values[AIR_RANGE] + self.config[PATHING][RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid, self.ground_grid],
+                [
+                    self.air_grid,
+                    self.air_vs_ground_grid,
+                    self.climber_grid,
+                    self.ground_grid,
+                ],
             )
         # ground values are different, so add cost separately
         else:
@@ -977,11 +1014,14 @@ class PathManager(Manager, IManagerMediator):
                     [self.air_grid, self.air_vs_ground_grid],
                 )
             if weight_values[GROUND_RANGE] > 0:
-                self.ground_grid = self.add_cost(
+                (
+                    self.air_grid,
+                    self.air_vs_ground_grid,
+                ) = self.add_cost_to_multiple_grids(
                     unit.position,
                     weight_values[GROUND_COST],
                     weight_values[GROUND_RANGE] + self.config[PATHING][RANGE_BUFFER],
-                    self.ground_grid,
+                    [self.climber_grid, self.ground_grid],
                 )
 
     def _add_delayed_effect(
@@ -1061,6 +1101,7 @@ class PathManager(Manager, IManagerMediator):
                 (
                     self.air_grid,
                     self.air_vs_ground_grid,
+                    self.climber_grid,
                     self.ground_grid,
                     self.air_avoidance_grid,
                     self.ground_avoidance_grid,
@@ -1072,6 +1113,7 @@ class PathManager(Manager, IManagerMediator):
                     [
                         self.air_grid,
                         self.air_vs_ground_grid,
+                        self.climber_grid,
                         self.ground_grid,
                         self.air_avoidance_grid,
                         self.ground_avoidance_grid,

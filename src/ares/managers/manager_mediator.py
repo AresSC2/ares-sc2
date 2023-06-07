@@ -671,6 +671,22 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
+    def get_climber_grid(self) -> np.ndarray:
+        """Get the climber ground pathing grid for reapers and colossus.
+
+        ClimberManager
+
+        Returns
+        -------
+        np.ndarray :
+            The climber pathing grid.
+
+        """
+        return self.manager_request(
+            ManagerName.PATH_MANAGER, ManagerRequestType.GET_CLIMBER_GRID
+        )
+
+    @property
     def get_forcefield_positions(self) -> List[Point2]:
         """Get positions of forcefields.
 
