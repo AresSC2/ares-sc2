@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.15.0 (2023-06-13)
+### Feature
+
+* Add unit pending to cython notebook ([`0580017`](https://github.com/AresSC2/ares-sc2/commit/0580017870f28392b8d1c806b1440599d76795b5))
+
 ## v0.14.0 (2023-06-07)
 ### Feature
 
