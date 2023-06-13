@@ -59,7 +59,7 @@ class BuildOrderRunner:
         Runs a specific build order step.
     """
 
-    CONSTANT_WORKER_PRODUCTION: str = "ConstantWorkerProduction"
+    CONSTANT_WORKER_PRODUCTION_TILL: str = "ConstantWorkerProductionTill"
     REQUIRES_TOWNHALL_COMMANDS: set = {
         AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
         AbilityId.UPGRADETOPLANETARYFORTRESS_PLANETARYFORTRESS,
@@ -75,12 +75,12 @@ class BuildOrderRunner:
         self.ai = ai
         self.config: dict = config
         self.mediator: ManagerMediator = mediator
-        self.constant_worker_production: bool = False
+        self.constant_worker_production_till: int = 0
         self._chosen_opening: str = chosen_opening
         if BUILDS in self.config:
             build: list[str] = config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
-            self.constant_worker_production = config[BUILDS][chosen_opening][
-                self.CONSTANT_WORKER_PRODUCTION
+            self.constant_worker_production_till = config[BUILDS][chosen_opening][
+                self.CONSTANT_WORKER_PRODUCTION_TILL
             ]
         else:
             build: list[str] = []
@@ -184,7 +184,9 @@ class BuildOrderRunner:
                         self.current_step_started = True
             elif command == AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND:
                 if available_ccs := [
-                    th for th in self.ai.townhalls if th.is_idle and th.is_ready
+                    th
+                    for th in self.ai.townhalls
+                    if th.is_idle and th.is_ready and th.type_id == UnitID.COMMANDCENTER
                 ]:
                     available_ccs[0](AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND)
                     self.current_step_started = True

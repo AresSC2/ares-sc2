@@ -62,8 +62,6 @@ cpdef list find_building_locations(
     64.8 µs ± 4.05 µs per loop (mean ± std. dev. of 1000 runs, 10 loops each)
     """
     cdef:
-        # unsigned int i = 0
-        # unsigned int j = 0
         unsigned int _x = 0
         unsigned int _y = 0
         unsigned int valid_idx = 0
@@ -77,16 +75,15 @@ cpdef list find_building_locations(
         (float, float) [500] valid_spots
         (float, float) center
         float half_width = building_width / 2
-        cdef bint avoid = 0
+        unsigned int creep_check = 0 if avoid_creep else 1
+        Py_ssize_t i, j
 
-    cdef Py_ssize_t i, j
     for i in range(x_min, x_max + 1):
         for j in range(y_min, y_max + 1):
-            if points_to_avoid_grid[j][i] == 0 and creep_grid[j][i] == 0 and placement_grid[j][i] == 1 and pathing_grid[j][i] == 1:
+            if points_to_avoid_grid[j][i] == 0 and creep_grid[j][i] == creep_check and placement_grid[j][i] == 1 and pathing_grid[j][i] == 1:
                 to_convolve[i - x_min][j - y_min] = 0
 
     cdef unsigned char[:, :] result = convolve2d(to_convolve, kernel, mode="valid")
-    cdef Py_ssize_t k, l
 
     for i in range(0, result.shape[0], x_stride):
         for j in range(0, result.shape[1], y_stride):

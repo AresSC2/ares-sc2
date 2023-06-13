@@ -58,6 +58,7 @@ class SpawnController(MacroBehavior):
     ignore_proportions_below_unit_count: int = 14
     over_produce_on_low_tech: bool = True
 
+    # key: Unit that should get a build order, value: what UnitID to build
     __build_dict: dict[Unit, UnitID] = field(default_factory=dict)
     # already used tags
     __excluded_structure_tags: set[int] = field(default_factory=set)
@@ -92,10 +93,16 @@ class SpawnController(MacroBehavior):
         assert isinstance(
             army_comp_dict, dict
         ), f"self.army_composition_dict should be dict type, got {type(army_comp_dict)}"
-
-        current_army: Units = ai.units([*army_comp_dict])
-        num_total_units: int = len(current_army)
         own_army_dict: dict[UnitID:Units] = mediator.get_own_army_dict
+
+        # get the current standing army based on the army comp dict
+        # note we don't consider units outside the army comp dict
+        # current_army: Units = Units([], ai)
+        unit_types: list[UnitID] = [*army_comp_dict]
+        num_total_units: int = 0
+        for unit_type in unit_types:
+            num_total_units += mediator.get_own_unit_count(unit_type_id=unit_type)
+
         structures_dict: dict[UnitID:Units] = mediator.get_own_structures_dict
         build_from_dict: dict[UnitID:Units] = structures_dict
         if ai.race == Race.Zerg:
@@ -134,7 +141,7 @@ class SpawnController(MacroBehavior):
             units_ready_to_build.append(unit_type_id)
 
             num_this_unit: int = mediator.get_own_unit_count(unit_type_id=unit_type_id)
-            current_proportion: float = num_this_unit / (num_total_units + 1)
+            current_proportion: float = num_this_unit / (num_total_units + 1e-16)
             # already have enough of this unit type
             if (
                 not self.freeflow_mode

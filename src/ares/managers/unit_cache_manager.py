@@ -3,6 +3,7 @@
 """
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 
+from loguru import logger
 from sc2.game_data import AbilityData
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -19,6 +20,7 @@ from ares.consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
+from ares.cython_extensions.general_utils import cy_unit_pending
 from ares.dicts.does_not_use_larva import DOES_NOT_USE_LARVA
 from ares.dicts.unit_alias import UNIT_ALIAS
 from ares.managers.manager import Manager
@@ -108,7 +110,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
 
@@ -229,6 +231,11 @@ class UnitCacheManager(Manager, IManagerMediator):
             if delete_from_dict:
                 try:
                     self.enemy_army_dict[enemy_unit.type_id].remove(enemy_unit)
+                except KeyError:
+                    logger.warning(
+                        f"Attempted to remove {enemy_unit.type_id} "
+                        f"from enemy_army_dict but there are none recorded."
+                    )
                 except ValueError:
                     pass
 
@@ -487,6 +494,6 @@ class UnitCacheManager(Manager, IManagerMediator):
                 num_units += len(army_dict[UNIT_ALIAS[unit_type_id]])
 
         if include_pending:
-            num_units += int(self.ai.already_pending(unit_type_id))
+            num_units += cy_unit_pending(self.ai, unit_type_id)
 
         return num_units

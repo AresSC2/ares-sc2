@@ -4,7 +4,7 @@ will likely be breaking changes in the future
 # Typical Usage
 ```py
 from ares import AresBot
-from ares.behaviors.mining import Mining
+from ares.behaviors.macro.mining import Mining
 
 class MyBot(AresBot):
     async def on_step(self, iteration: int) -> None:
