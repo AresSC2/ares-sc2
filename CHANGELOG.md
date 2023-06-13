@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.16.1 (2023-06-13)
+### Fix
+
+* Change to new constant_worker_production_till ([`c37ed11`](https://github.com/AresSC2/ares-sc2/commit/c37ed11d71b2fb2d879e376131d022dd2d691fb1))
+
 ## v0.16.0 (2023-06-13)
 ### Feature
 
