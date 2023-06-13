@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.16.0 (2023-06-13)
+### Feature
+
+* Cython unit pending function ([`f0bacb5`](https://github.com/AresSC2/ares-sc2/commit/f0bacb543bc3aa84f99afa2b2dffdd6bf33d22db))
+
+### Fix
+
+* Only attempt orbital upgrade from command center ([`8b67862`](https://github.com/AresSC2/ares-sc2/commit/8b67862727620c50df46ea06b0874895bc1035d3))
+* Spawn controller accounts for alias units ([`22989b4`](https://github.com/AresSC2/ares-sc2/commit/22989b42af223166c61fac6222f25e8376affb33))
+
 ## v0.15.0 (2023-06-13)
 ### Feature
 
