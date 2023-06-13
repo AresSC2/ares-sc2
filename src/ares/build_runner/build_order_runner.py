@@ -36,7 +36,7 @@ class BuildOrderRunner:
     ----------
     ai : AresBot
         The AI that the build order is for.
-    chosen_opening : str
+    _chosen_opening : str
         The name of the opening being used for the build order.
     config : dict
         The configuration dictionary for the AI.
@@ -128,7 +128,7 @@ class BuildOrderRunner:
             self._opening_build_completed = True
             return
 
-        if self.constant_worker_production:
+        if self.ai.supply_workers < self.constant_worker_production_till:
             self._produce_workers()
 
     async def do_step(self, step: BuildOrderStep) -> None:
