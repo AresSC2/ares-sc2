@@ -189,6 +189,7 @@ class PlacementManager(Manager, IManagerMediator):
         offset: float = self.BUILDING_SIZE_ENUM_TO_RADIUS[size]
         origin_x: int = int(position[0] - offset)
         origin_y: int = int(position[1] - offset)
+
         size: tuple[int, int] = self.BUILDING_SIZE_ENUM_TO_TUPLE[size]
         return can_place_structure(
             (origin_x, origin_y),
