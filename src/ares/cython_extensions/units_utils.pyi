@@ -51,7 +51,9 @@ def cy_closest_to(position: Point2, units: Units) -> Unit:
     """
     ...
 
-def cy_in_attack_range(unit: Unit, units: Union[Units, list[Unit]], bonus_distance: float = 0.0) -> list[Unit]:
+def cy_in_attack_range(
+    unit: Unit, units: Union[Units, list[Unit]], bonus_distance: float = 0.0
+) -> list[Unit]:
     """Find all units that unit can shoot at.
 
     7.28 µs ± 26.3 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)

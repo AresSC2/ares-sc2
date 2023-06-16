@@ -1,8 +1,11 @@
 from cython cimport boundscheck, wraparound
+
 import numpy as np
 from sklearn.cluster import DBSCAN
+
 from ares.cython_extensions.geometry import cy_distance_to
 from ares.dicts.unit_data import UNIT_DATA
+
 cimport numpy as cnp
 
 UNIT_DATA_INT_KEYS = {k.value: v for k, v in UNIT_DATA.items()}
