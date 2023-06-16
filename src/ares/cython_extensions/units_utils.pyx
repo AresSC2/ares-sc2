@@ -1,7 +1,11 @@
 from cython cimport boundscheck, wraparound
 import numpy as np
 from sklearn.cluster import DBSCAN
+from ares.cython_extensions.geometry import cy_distance_to
+from ares.dicts.unit_data import UNIT_DATA
 cimport numpy as cnp
+
+UNIT_DATA_INT_KEYS = {k.value: v for k, v in UNIT_DATA.items()}
 
 
 cdef double euclidean_distance_squared(
@@ -27,7 +31,7 @@ cpdef (double, double) cy_center(object units):
         sum_x += position[0]
         sum_y += position[1]
 
-    return (sum_x / num_units, sum_y / num_units)
+    return sum_x / num_units, sum_y / num_units
 
 @boundscheck(False)
 @wraparound(False)
@@ -57,6 +61,51 @@ cpdef object cy_closest_to((float, float) position, object units):
             closest = unit
 
     return closest
+
+@boundscheck(False)
+@wraparound(False)
+cpdef list cy_in_attack_range(object unit, object units, double bonus_distance = 0.0):
+    if not unit.can_attack:
+        return []
+
+    cdef:
+        unsigned int x, len_units, type_id_int
+        double dist, air_range, ground_range, radius, other_u_radius
+        (float, float) unit_pos, other_unit_pos
+        bint other_unit_flying, can_shoot_air, can_shoot_ground
+
+    can_shoot_air = unit.can_attack_air
+    can_shoot_ground = unit.can_attack_ground
+    len_units = len(units)
+    returned_units = []
+    unit_pos = unit.position
+    radius = unit.radius
+    air_range = unit.air_range
+    ground_range = unit.ground_range
+
+    for x in range(len_units):
+        u = units[x]
+        # this is faster than getting the UnitTypeID
+        type_id_int = unit._proto.unit_type
+        unit_data = UNIT_DATA_INT_KEYS.get(type_id_int, None)
+        if unit_data:
+            other_unit_flying = unit_data["flying"]
+            other_unit_pos = u.position
+            other_u_radius = u.radius
+            dist = cy_distance_to(unit_pos, other_unit_pos)
+
+            # type_id_int == 4 is colossus
+            if can_shoot_air and (other_unit_flying or type_id_int == 4):
+                if dist <= air_range + radius + other_u_radius + bonus_distance:
+                    returned_units.append(u)
+                    # already added, no need to attempt logic below
+                    continue
+
+            if can_shoot_ground and not other_unit_flying:
+                if dist <= ground_range + radius + other_u_radius + bonus_distance:
+                    returned_units.append(u)
+
+    return returned_units
 
 @boundscheck(False)  # turn off bounds-checking for entire function
 @wraparound(False)  # turn off negative index wrapping for entire function

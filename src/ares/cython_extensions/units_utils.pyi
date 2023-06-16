@@ -1,3 +1,5 @@
+from typing import Union
+
 import numpy as np
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -45,6 +47,30 @@ def cy_closest_to(position: Point2, units: Units) -> Unit:
     -------
     Unit :
         Unit closest to `position`.
+
+    """
+    ...
+
+def cy_in_attack_range(unit: Unit, units: Union[Units, list[Unit]], bonus_distance: float = 0.0) -> list[Unit]:
+    """Find all units that unit can shoot at.
+
+    7.28 µs ± 26.3 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+
+    python-sc2's `units.in_attack_range_of(unit)` alternative:
+    30.4 µs ± 271 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+    Parameters
+    ----------
+    unit :
+        Position to measure distance from.
+    units :
+        Collection of units we want to check.
+    bonus_distance :
+
+    Returns
+    -------
+    list[Unit] :
+        Units that are in attack range of `unit`.
 
     """
     ...
