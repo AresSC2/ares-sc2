@@ -41,6 +41,6 @@ class KeepUnitSafe(CombatBehavior):
                 unit=self.unit,
                 grid=self.grid,
                 target=safe_spot,
-                success_at_distance=2.0,
+                success_at_distance=0.0,
             )
             return path.execute(ai, config, mediator)

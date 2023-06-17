@@ -551,32 +551,6 @@ class PathManager(Manager, IManagerMediator):
         """
         return self.map_data.pathfind(start, target, grid, sensitivity=sensitivity)
 
-    async def move_towards_safe_spot(
-        self, unit: Unit, grid: np.ndarray, radius: int = 7
-    ) -> None:
-        """Convenience method for moving a unit because it's needed often.
-
-        TODO: examine whether this should be here. It might be better to keep moving
-            units inside combat classes
-
-        Parameters
-        ----------
-        unit :
-            The unit to move.
-        grid :
-            The grid to use for pathing queries.
-        radius :
-            Search distance for the safe spot.
-
-        Returns
-        -------
-
-        """
-
-        safe_spot: Point2 = self.find_closest_safe_spot(unit.position, grid, radius)
-        move_to: Point2 = self.find_path_next_point(unit.position, safe_spot, grid)
-        unit.move(move_to)
-
     @staticmethod
     def is_position_safe(
         grid: np.ndarray,
@@ -1015,8 +989,8 @@ class PathManager(Manager, IManagerMediator):
                 )
             if weight_values[GROUND_RANGE] > 0:
                 (
-                    self.air_grid,
-                    self.air_vs_ground_grid,
+                    self.climber_grid,
+                    self.ground_grid,
                 ) = self.add_cost_to_multiple_grids(
                     unit.position,
                     weight_values[GROUND_COST],

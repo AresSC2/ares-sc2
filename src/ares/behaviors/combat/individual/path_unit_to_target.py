@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class PathUnitToTarget(CombatBehavior):
-    """Path a unit to it's target destination.
+    """Path a unit to its target destination.
 
     TODO: Add attack enemy in range logic / parameter
         Not added yet since that may be it's own Behavior
@@ -28,7 +28,7 @@ class PathUnitToTarget(CombatBehavior):
         2D Grid to path on.
     target : Point2
         Target destination.
-    success_at_distance : float (default: 8.0)
+    success_at_distance : float (default: 0.0)
         If unit has got this close, consider path behavior complete.
     sensitivity : int (default: 5)
         Path precision.
@@ -45,7 +45,7 @@ class PathUnitToTarget(CombatBehavior):
     unit: Unit
     grid: np.ndarray
     target: Point2
-    success_at_distance: float = 8.0
+    success_at_distance: float = 0.0
     sensitivity: int = 5
     smoothing: bool = False
     sense_danger: bool = True
