@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v0.17.0 (2023-06-17)
+### Feature
+
+* Implement new unit behaviors ([`d51aec1`](https://github.com/AresSC2/ares-sc2/commit/d51aec1f97746ea4953b98454b575bcad8abd7c0))
+* Attack_ready / pick_enemy_target cython functions ([`e00a9b7`](https://github.com/AresSC2/ares-sc2/commit/e00a9b721a9b2f60192b554e86e44f40ee2c928f))
+* Cython in_attack_range function ([`9490bfe`](https://github.com/AresSC2/ares-sc2/commit/9490bfe8a6f9775203984afa8bbd851a153d1457))
+* Update cython notebook ([`6c4b5c7`](https://github.com/AresSC2/ares-sc2/commit/6c4b5c7cd7b0c8cfe1366ee4de14dc9f05d16c20))
+* Include additional unit data ([`f549462`](https://github.com/AresSC2/ares-sc2/commit/f54946222e348cc6c87d25ac9880bcca05c43f1b))
+
+### Fix
+
+* Influence updated correctly ([`b0f15ec`](https://github.com/AresSC2/ares-sc2/commit/b0f15ec31bb6406cddab9de57e78582ff5538bb2))
+
 ## v0.16.1 (2023-06-13)
 ### Fix
 
