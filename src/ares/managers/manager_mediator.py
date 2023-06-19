@@ -971,6 +971,10 @@ class ManagerMediator(IManagerMediator):
             Location to get the closest workers to.
         force_close : bool
             Select the available worker closest to `target_position` if True.
+        select_persistent_builder :
+            If True we can select the persistent_builder if it's available.
+        only_select_persistent_builder :
+            If True, don't find an alternative worker
 
         Parameters
         ----------

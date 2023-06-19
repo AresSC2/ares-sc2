@@ -36,6 +36,7 @@ from ares.consts import (
     ManagerRequestType,
     UnitRole,
 )
+from ares.cython_extensions.geometry import cy_distance_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -171,7 +172,12 @@ class BuildingManager(Manager, IManagerMediator):
         -------
 
         """
-        tags_to_remove: Set[int] = set()
+        dead_tags_to_remove: set[int] = set()
+        tags_to_remove: set[int] = set()
+        structures_dict: dict[
+            UnitID, Units
+        ] = self.manager_mediator.get_own_structures_dict
+
         for worker_tag in self.building_tracker:
             if self.config[DEBUG] and self.building_tracker[worker_tag][TARGET]:
                 self.ai.draw_text_on_world(
@@ -179,18 +185,18 @@ class BuildingManager(Manager, IManagerMediator):
                     "BUILDING TARGET",
                 )
 
-            if workers := self.ai.workers.filter(lambda u: u.tag == worker_tag):
-                worker: Unit = workers[0]
-            else:
-                tags_to_remove.add(worker_tag)
+            target: Point2 = self.building_tracker[worker_tag][TARGET]
+            worker = self.ai.unit_tag_dict.get(worker_tag, None)
+            if not worker:
+                dead_tags_to_remove.add(worker_tag)
                 continue
 
             # leave the worker alone
+            # TODO: Low health scv could flee in this if block
             if worker.is_constructing_scv:
                 continue
 
             structure_id: UnitID = self.building_tracker[worker_tag][ID]
-            target: Point2 = self.building_tracker[worker_tag][TARGET]
 
             # check if we are finished with the building worker
             if close_structures := self.ai.structures.filter(
@@ -203,18 +209,6 @@ class BuildingManager(Manager, IManagerMediator):
                     tags_to_remove.add(worker_tag)
                     continue
 
-            # TODO: Revisit this, logic not ideal for scvs
-            #   Added block above as an alternative for now but doesn't deal with
-            #   items stuck in the building tracker
-            # check if an order has been stuck in the building tracker for too long
-            # if (
-            #     self.ai.time
-            #     > self.building_tracker[worker_tag][TIME_ORDER_COMMENCED]
-            #     + self.config[BUILDING][CANCEL_ORDER]
-            # ):
-            #     tags_to_remove.add(worker_tag)
-            #     continue
-
             # this happens if no target location is available eg: all expansions taken
             if not target:
                 tags_to_remove.add(worker_tag)
@@ -223,13 +217,11 @@ class BuildingManager(Manager, IManagerMediator):
             # TODO: find the maximum distance so we don't have to keep adjusting this
             distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
 
-            # rasper: I put this here to build right away, because it bugs out sometimes
-            # if trying to path
             # TODO: fix this so worker paths to building
             if structure_id in GAS_BUILDINGS and self.ai.can_afford(structure_id):
                 worker.build_gas(target)
 
-            elif worker.distance_to(target) > distance:
+            elif cy_distance_to(worker.position, target.position) > distance:
                 point: Point2 = self.manager_mediator.find_path_next_point(
                     start=worker.position,
                     target=target.position,
@@ -238,6 +230,17 @@ class BuildingManager(Manager, IManagerMediator):
                 worker.move(point)
 
             else:
+                # handle scv going to an unfinished structure
+                if self.ai.race == Race.Terran and structure_id in structures_dict:
+                    if existing_unfinished_structure := structures_dict[
+                        structure_id
+                    ].filter(
+                        lambda s: s.type_id == structure_id
+                        and cy_distance_to(s.position, target.position) < 1.5
+                    ):
+                        worker(AbilityId.SMART, existing_unfinished_structure[0])
+                        continue
+
                 if (
                     (not worker.is_constructing_scv or worker.is_idle)
                     and self.ai.can_afford(structure_id)
@@ -250,6 +253,13 @@ class BuildingManager(Manager, IManagerMediator):
             if tag in self.manager_mediator.get_unit_role_dict[UnitRole.BUILDING]:
                 self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
 
+        for tag in dead_tags_to_remove:
+            position: Point2 = self.building_tracker[tag][TARGET]
+            if new_worker := self.manager_mediator.select_worker(
+                target_position=position, force_close=True
+            ):
+                self.building_tracker[new_worker.tag] = self.building_tracker.pop(tag)
+
     def remove_unit(self, tag: int) -> None:
         """Remove dead units from building tracker.
 
@@ -258,7 +268,8 @@ class BuildingManager(Manager, IManagerMediator):
         tag :
             Tag of the unit to remove
         """
-        self.building_tracker.pop(tag, None)
+        if tag in self.building_tracker:
+            self.building_tracker.pop(tag)
 
     async def construct_gas(
         self, max_building: int = 1, geyser: Optional[Unit] = None

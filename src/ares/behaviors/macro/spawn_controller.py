@@ -137,7 +137,15 @@ class SpawnController(MacroBehavior):
             if not ai.tech_ready_for_unit(unit_type_id):
                 continue
 
-            # keep track of which unit types the tech is ready for
+            # get all idle build structures/units we can create this unit from
+            build_structures: list[Unit] = self._get_build_structures(
+                ai, build_from_dict, UNIT_TRAINED_FROM[unit_type_id], unit_type_id
+            )
+            # there is no possible way to build this unit, skip even if higher priority
+            if len(build_structures) == 0:
+                continue
+
+            # keep track of which unit types the build_structures/ tech is ready for
             units_ready_to_build.append(unit_type_id)
 
             num_this_unit: int = mediator.get_own_unit_count(unit_type_id=unit_type_id)
@@ -148,14 +156,6 @@ class SpawnController(MacroBehavior):
                 and num_total_units > self.ignore_proportions_below_unit_count
                 and current_proportion >= target_proportion
             ):
-                continue
-
-            # get all idle build structures/units we can create this unit from
-            build_structures: list[Unit] = self._get_build_structures(
-                ai, build_from_dict, UNIT_TRAINED_FROM[unit_type_id], unit_type_id
-            )
-            # there is no possible way to build this unit, skip even if higher priority
-            if len(build_structures) == 0:
                 continue
 
             # everything is in place to build this unit, but can't afford to do so
