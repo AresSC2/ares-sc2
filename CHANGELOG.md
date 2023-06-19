@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v0.18.0 (2023-06-19)
+### Feature
+
+* Handle missing workers in building tracker ([`3dabbc8`](https://github.com/AresSC2/ares-sc2/commit/3dabbc8f55f38b47d3a4466e13f48327aa656f46))
+
+### Fix
+
+* Pick enemy target returns the correct value ([`6965a6d`](https://github.com/AresSC2/ares-sc2/commit/6965a6d809b986d937b17f7f69e785daf4c8934a))
+* Reorder spawn logic so unit is built if only one possible spawn option ([`14431e7`](https://github.com/AresSC2/ares-sc2/commit/14431e7432f30c6ec66cdcf4b54bfe73e6945df6))
+
+### Performance
+
+* Make use of cython functions in mining ([`6d39fb8`](https://github.com/AresSC2/ares-sc2/commit/6d39fb813e6ceeaef8ce1eaaf5b462e821a7c6f4))
+
 ## v0.17.0 (2023-06-17)
 ### Feature
 
