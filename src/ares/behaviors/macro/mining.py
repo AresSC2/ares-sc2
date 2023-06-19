@@ -172,7 +172,7 @@ class Mining(MacroBehavior):
                         worker,
                         worker_to_th,
                         worker_position,
-                        resource_position
+                        resource_position,
                     )
                 else:
                     townhall: Unit = ai.townhalls.closest_to(resource)
@@ -188,7 +188,12 @@ class Mining(MacroBehavior):
             # nowhere for this worker to go, long distance mining
             elif self.long_distance_mine and ai.minerals:
                 self._long_distance_mining(
-                    ai, mediator, grid, worker, mineral_patch_to_list_of_workers, worker_position
+                    ai,
+                    mediator,
+                    grid,
+                    worker,
+                    mineral_patch_to_list_of_workers,
+                    worker_position,
                 )
 
             # this worker really has nothing to do, keep it safe at least
@@ -333,7 +338,7 @@ class Mining(MacroBehavior):
         worker,
         worker_tag_to_townhall_tag,
         worker_position: Point2,
-        target_position: Point2
+        target_position: Point2,
     ) -> None:
         """Perform the trick so that worker does not decelerate.
 
