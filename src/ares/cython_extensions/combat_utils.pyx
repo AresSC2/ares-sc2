@@ -131,4 +131,4 @@ cpdef object cy_pick_enemy_target(object enemies):
             lowest_health = total_health
             returned_unit = unit
 
-    return unit
+    return returned_unit
