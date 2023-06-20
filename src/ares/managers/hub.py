@@ -16,7 +16,6 @@ from ares.managers.path_manager import PathManager
 from ares.managers.placement_manager import PlacementManager
 from ares.managers.production_manager import ProductionManager
 from ares.managers.resource_manager import ResourceManager
-from ares.managers.strategy_manager import StrategyManager
 from ares.managers.terrain_manager import TerrainManager
 from ares.managers.unit_cache_manager import UnitCacheManager
 from ares.managers.unit_memory_manager import UnitMemoryManager
@@ -47,7 +46,6 @@ class Hub:
         placement_manager: PlacementManager = None,
         path_manager: PathManager = None,
         terrain_manager: TerrainManager = None,
-        strategy_manager: StrategyManager = None,
         resource_manager: ResourceManager = None,
         building_manager: BuildingManager = None,
         production_manager: ProductionManager = None,
@@ -79,8 +77,6 @@ class Hub:
             Optional PathManager override
         terrain_manager :
             Optional TerrainManager override
-        strategy_manager :
-            Optional StrategyManager override
         resource_manager :
             Optional ResourceManager override
         building_manager :
@@ -136,11 +132,6 @@ class Hub:
             if not terrain_manager
             else terrain_manager
         )
-        self.strategy_manager: StrategyManager = (
-            StrategyManager(ai, config, self.manager_mediator)
-            if not strategy_manager
-            else strategy_manager
-        )
         self.resource_manager: ResourceManager = (
             ResourceManager(ai, config, self.manager_mediator)
             if not resource_manager
@@ -164,7 +155,6 @@ class Hub:
             self.unit_cache_manager,
             self.unit_memory_manager,
             self.path_manager,
-            self.strategy_manager,
             self.terrain_manager,
             self.resource_manager,
             self.building_manager,  # must be updated before production manager

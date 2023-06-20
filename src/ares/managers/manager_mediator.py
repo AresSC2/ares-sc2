@@ -993,76 +993,6 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
-    """
-    StrategyManager
-    """
-
-    def can_win_fight(self, **kwargs) -> EngagementResult:
-        """Use the combat simulator to predict if our units can beat the enemy units.
-
-        Returns an Enum so that thresholds can be easily adjusted and it may be easier
-        to read the results in other code.
-
-        StrategyManager
-
-        Warnings
-        --------
-        The combat simulator has some bugs in it that I'm not able to fix since they're
-        in the Rust code. Notable bugs include Missile Turrets shooting Hydralisks and
-        45 SCVs killing a Mutalisk. To get around this, you can filter out units that
-        shouldn't be included, such as not including SCVs when seeing if the Mutalisks
-        can win a fight (this creates its own problems due to the bounce, but I don't
-        believe the bounce is included in the simulation). The simulator isn't perfect,
-        but I think it's still usable. My recommendation is to use it cautiously and
-        only when all units involved can attack each other. It definitely doesn't factor
-        good micro in, so anything involving spell casters is probably a bad idea.
-
-        Other Parameters
-        ----------
-        own_units : Units
-            Friendly units to us in the simulation.
-        enemy_units : Units
-            Enemy units to us in the simulation.
-        timing_adjust : bool
-            Take distance between units into account.
-        good_positioning : bool
-            Assume units are positioned reasonably.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
-
-        Returns
-        -------
-        EngagementResult :
-            Predicted result of the engagement.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER,
-            ManagerRequestType.CAN_WIN_FIGHT,
-            **kwargs,
-        )
-
-    @property
-    def get_enemy_at_home(self) -> bool:
-        """Get whether the enemy is near their main or natural base.
-
-        StrategyManager
-
-        Returns
-        -------
-        bool :
-            True if the enemy army center mass is near their main or natural base, False
-            otherwise.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER,
-            ManagerRequestType.GET_ENEMY_AT_HOME,
-        )
-
     @property
     def get_mineral_target_dict(self) -> dict[int, Point2]:
         """Get position in front of each mineral.
@@ -1081,54 +1011,6 @@ class ManagerMediator(IManagerMediator):
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
             ManagerRequestType.GET_MINERAL_TARGET_DICT,
-        )
-
-    @property
-    def get_offensive_attack_target(self) -> Point2:
-        """Get the current offensive attack target.
-
-        StrategyManager
-
-        Returns
-        -------
-        Point2 :
-            The current offensive attack target.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_OFFENSIVE_ATTACK_TARGET
-        )
-
-    @property
-    def get_rally_point(self) -> Point2:
-        """Get the rally point for units.
-
-        StrategyManager
-
-        Returns
-        -------
-        Point2 :
-            Position to use as a rally point.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_RALLY_POINT
-        )
-
-    @property
-    def get_should_be_offensive(self) -> bool:
-        """Get whether we should launch an offensive attack.
-
-        StrategyManager
-
-        Returns
-        -------
-        bool :
-            True if we should launch an attack, False otherwise.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_SHOULD_BE_OFFENSIVE
         )
 
     """
