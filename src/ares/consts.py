@@ -29,16 +29,21 @@ COST_MULTIPLIER: str = "CostMultiplier"
 CYCLE: str = "Cycle"
 DANGER_THRESHOLD: str = "DangerThreshold"
 DANGER_TILES: str = "DangerTiles"
+DISTANCES: str = "Distances"
 DEBUG: str = "Debug"
 DEBUG_GAME_STEP: str = "DebugGameStep"
 DEBUG_OPTIONS: str = "DebugOptions"
 DEBUG_SPAWN: str = "DebugSpawn"
 EFFECTS: str = "Effects"
 EFFECTS_RANGE_BUFFER: str = "EffectsRangeBuffer"
+FLYING_ENEMY_LEAVING_BASES: str = "FlyingEnemyLeavingBases"
+FLYING_ENEMY_NEAR_BASES: str = "FlyingEnemyNearBases"
 GAME_STEP: str = "GameStep"
 GROUND: str = "Ground"
 GROUND_AVOIDANCE: str = "GroundAvoidance"
 GROUND_COST: str = "GroundCost"
+GROUND_ENEMY_LEAVING_BASES: str = "GroundEnemyLeavingBases"
+GROUND_ENEMY_NEAR_BASES: str = "GroundEnemyNearBases"
 GROUND_RANGE: str = "GroundRange"
 LIBERATOR_ZONE: str = "LiberatorZone"
 LURKER_SPINE: str = "LurkerSpine"
@@ -209,6 +214,13 @@ class ManagerRequestType(str, Enum):
     # DataManager
     GET_CHOSEN_OPENING = "GET_CHOSEN_OPENING"
 
+    # EnemyToBaseManager
+    GET_FLYING_ENEMY_NEAR_BASES = "GET_FLYING_ENEMY_NEAR_BASES"
+    GET_GROUND_ENEMY_NEAR_BASES = "GET_GROUND_ENEMY_NEAR_BASES"
+    GET_MAIN_AIR_THREATS_NEAR_TOWNHALL = "GET_MAIN_AIR_THREATS_NEAR_TOWNHALL"
+    GET_MAIN_GROUND_THREATS_NEAR_TOWNHALL = "GET_MAIN_GROUND_THREATS_NEAR_TOWNHALL"
+    GET_TH_TAG_WITH_LARGEST_GROUND_THREAT = "GET_TH_TAG_WITH_LARGEST_GROUND_THREAT"
+
     # PathManager
     FIND_LOW_PRIORITY_PATH = "FIND_LOW_PRIORITY_PATH"
     FIND_LOWEST_COST_POINTS = "FIND_LOWEST_COST_POINTS"
@@ -246,13 +258,6 @@ class ManagerRequestType(str, Enum):
     REMOVE_WORKER_FROM_MINERAL = "REMOVE_WORKER_FROM_MINERAL"
     SELECT_WORKER = "SELECT_WORKER"
     SET_WORKERS_PER_GAS = "SET_WORKERS_PER_GAS"
-
-    # StrategyManager
-    CAN_WIN_FIGHT = "CAN_WIN_FIGHT"
-    GET_ENEMY_AT_HOME = "GET_ENEMY_AT_HOME"
-    GET_OFFENSIVE_ATTACK_TARGET = "GET_OFFENSIVE_ATTACK_TARGET"
-    GET_RALLY_POINT = "GET_RALLY_POINT"
-    GET_SHOULD_BE_OFFENSIVE = "GET_SHOULD_BE_OFFENSIVE"
 
     # TerrainManager
     BUILDING_POSITION_BLOCKED_BY_BURROWED_UNIT = (
@@ -315,11 +320,11 @@ class ManagerName(str, Enum):
     BUILDING_MANAGER = "BuildingManager"
     COMBAT_MANAGER = "CombatManager"
     DATA_MANAGER = "DataManager"
+    ENEMY_TO_BASE_MANAGER = "EnemyToBaseManager"
     PATH_MANAGER = "PathManager"
     PLACEMENT_MANAGER = "PlacementManager"
     PRODUCTION_MANAGER = "ProductionManager"
     RESOURCE_MANAGER = "ResourceManager"
-    STRATEGY_MANAGER = "StrategyManager"
     TERRAIN_MANAGER = "TerrainManager"
     UNIT_CACHE_MANAGER = "UnitCacheManager"
     UNIT_MEMORY_MANAGER = "UnitMemoryManager"

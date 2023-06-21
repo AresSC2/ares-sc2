@@ -9,7 +9,7 @@ DebugOptions:
     ChatDebug: True
     DebugSpawn: False
     ShowPathingCost: False
-    ShowBuildingFormation: True
+    ShowBuildingFormation: False
     ResourceDebug: False
 
 Chat:
@@ -18,13 +18,10 @@ Chat:
     FlankChat: True
 
 Distances:
-    FlyingEnemyNearBases:
-        EarlyGame: 20
-    GroundEnemyNearBases:
-        EarlyGame: 14
-        MidGame: 20
-    GroundEnemyLeavingBases: 24
-    FlyingEnemyLeavingBases: 22
+    FlyingEnemyNearBases: 20.
+    GroundEnemyNearBases: 15.
+    GroundEnemyLeavingBases: 24.
+    FlyingEnemyLeavingBases: 22.
 
 Building:
     # how many seconds before giving up on a construction order?

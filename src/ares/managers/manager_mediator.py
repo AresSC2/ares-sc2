@@ -297,6 +297,125 @@ class ManagerMediator(IManagerMediator):
             ManagerName.COMBAT_MANAGER, ManagerRequestType.GET_SQUAD_CLOSE_TO_TARGET
         )
 
+    def remove_tag_from_squads(self, **kwargs) -> None:
+        """Remove the given tag from unit squads.
+
+        Combat Manager
+
+        Other Parameters
+        -----
+        tag : int
+            The tag of the unit to remove from squads.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+        """
+        return self.manager_request(
+            ManagerName.COMBAT_MANAGER,
+            ManagerRequestType.REMOVE_TAG_FROM_SQUADS,
+            **kwargs,
+        )
+
+    """
+    EnemyToBaseManager
+    """
+
+    @property
+    def get_flying_enemy_near_bases(self) -> dict[int, set[int]]:
+        """Get dictionary containing flying enemy near townhalls.
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        dict[int, set[int]] :
+            A dictionary where the integer key is a townhall tag.
+            And the value contains a set of ints cotianing enemy tags
+            near this base.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_FLYING_ENEMY_NEAR_BASES,
+        )
+
+    @property
+    def get_ground_enemy_near_bases(self, **kwargs) -> dict[int, set[int]]:
+        """Get dictionary containing ground enemy near townhalls.
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        dict[int, set[int]] :
+            A dictionary where the integer key is a townhall tag.
+            And the value contains a set of ints cotianing enemy tags
+            near this base.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_GROUND_ENEMY_NEAR_BASES,
+            **kwargs,
+        )
+
+    @property
+    def get_main_air_threats_near_townhall(self) -> Units:
+        """Get the main enemy air force near one of our bases.
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        Units :
+            The largest enemy air force near our bases.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_MAIN_AIR_THREATS_NEAR_TOWNHALL,
+        )
+
+    @property
+    def get_main_ground_threats_near_townhall(self) -> Units:
+        """Get the main enemy ground force near one of our bases.
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        Units :
+            The largest enemy ground force near our bases.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_MAIN_GROUND_THREATS_NEAR_TOWNHALL,
+        )
+
+    @property
+    def get_th_tag_with_largest_ground_threat(self) -> int:
+        """Get the tag of our townhall with the largest enemy ground force nearby.
+
+        WARNING: This will remember the townhall tag even if enemy has gone.
+        Do not use this to detect enemy at a base.
+        Use `get_main_ground_threats_near_townhall`
+        Or `get_ground_enemy_near_bases` instead
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        Units :
+            The largest enemy ground force near our bases.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_TH_TAG_WITH_LARGEST_GROUND_THREAT,
+        )
+
+    """
+    ResourceManager
+    """
+
     @property
     def get_mineral_patch_to_list_of_workers(self) -> Dict[int, Set[int]]:
         """Get a dictionary containing mineral tag to worker tags
@@ -405,27 +524,6 @@ class ManagerMediator(IManagerMediator):
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
             ManagerRequestType.REMOVE_GAS_BUILDING,
-            **kwargs,
-        )
-
-    def remove_tag_from_squads(self, **kwargs) -> None:
-        """Remove the given tag from unit squads.
-
-        Combat Manager
-
-        Other Parameters
-        -----
-        tag : int
-            The tag of the unit to remove from squads.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
-        """
-        return self.manager_request(
-            ManagerName.COMBAT_MANAGER,
-            ManagerRequestType.REMOVE_TAG_FROM_SQUADS,
             **kwargs,
         )
 
@@ -993,76 +1091,6 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
-    """
-    StrategyManager
-    """
-
-    def can_win_fight(self, **kwargs) -> EngagementResult:
-        """Use the combat simulator to predict if our units can beat the enemy units.
-
-        Returns an Enum so that thresholds can be easily adjusted and it may be easier
-        to read the results in other code.
-
-        StrategyManager
-
-        Warnings
-        --------
-        The combat simulator has some bugs in it that I'm not able to fix since they're
-        in the Rust code. Notable bugs include Missile Turrets shooting Hydralisks and
-        45 SCVs killing a Mutalisk. To get around this, you can filter out units that
-        shouldn't be included, such as not including SCVs when seeing if the Mutalisks
-        can win a fight (this creates its own problems due to the bounce, but I don't
-        believe the bounce is included in the simulation). The simulator isn't perfect,
-        but I think it's still usable. My recommendation is to use it cautiously and
-        only when all units involved can attack each other. It definitely doesn't factor
-        good micro in, so anything involving spell casters is probably a bad idea.
-
-        Other Parameters
-        ----------
-        own_units : Units
-            Friendly units to us in the simulation.
-        enemy_units : Units
-            Enemy units to us in the simulation.
-        timing_adjust : bool
-            Take distance between units into account.
-        good_positioning : bool
-            Assume units are positioned reasonably.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
-
-        Returns
-        -------
-        EngagementResult :
-            Predicted result of the engagement.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER,
-            ManagerRequestType.CAN_WIN_FIGHT,
-            **kwargs,
-        )
-
-    @property
-    def get_enemy_at_home(self) -> bool:
-        """Get whether the enemy is near their main or natural base.
-
-        StrategyManager
-
-        Returns
-        -------
-        bool :
-            True if the enemy army center mass is near their main or natural base, False
-            otherwise.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER,
-            ManagerRequestType.GET_ENEMY_AT_HOME,
-        )
-
     @property
     def get_mineral_target_dict(self) -> dict[int, Point2]:
         """Get position in front of each mineral.
@@ -1081,54 +1109,6 @@ class ManagerMediator(IManagerMediator):
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
             ManagerRequestType.GET_MINERAL_TARGET_DICT,
-        )
-
-    @property
-    def get_offensive_attack_target(self) -> Point2:
-        """Get the current offensive attack target.
-
-        StrategyManager
-
-        Returns
-        -------
-        Point2 :
-            The current offensive attack target.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_OFFENSIVE_ATTACK_TARGET
-        )
-
-    @property
-    def get_rally_point(self) -> Point2:
-        """Get the rally point for units.
-
-        StrategyManager
-
-        Returns
-        -------
-        Point2 :
-            Position to use as a rally point.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_RALLY_POINT
-        )
-
-    @property
-    def get_should_be_offensive(self) -> bool:
-        """Get whether we should launch an offensive attack.
-
-        StrategyManager
-
-        Returns
-        -------
-        bool :
-            True if we should launch an attack, False otherwise.
-
-        """
-        return self.manager_request(
-            ManagerName.STRATEGY_MANAGER, ManagerRequestType.GET_SHOULD_BE_OFFENSIVE
         )
 
     """

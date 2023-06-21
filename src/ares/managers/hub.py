@@ -7,16 +7,16 @@ from typing import TYPE_CHECKING, Dict, List, Optional, Union
 from sc2.data import Result
 from sc2.unit import Unit
 
-from ares.consts import DEBUG, UnitRole
+from ares.consts import DEBUG
 from ares.managers.ability_tracker_manager import AbilityTrackerManager
 from ares.managers.building_manager import BuildingManager
 from ares.managers.data_manager import DataManager
+from ares.managers.enemy_to_base_manager import EnemyToBaseManager
 from ares.managers.manager_mediator import ManagerMediator
 from ares.managers.path_manager import PathManager
 from ares.managers.placement_manager import PlacementManager
 from ares.managers.production_manager import ProductionManager
 from ares.managers.resource_manager import ResourceManager
-from ares.managers.strategy_manager import StrategyManager
 from ares.managers.terrain_manager import TerrainManager
 from ares.managers.unit_cache_manager import UnitCacheManager
 from ares.managers.unit_memory_manager import UnitMemoryManager
@@ -40,6 +40,7 @@ class Hub:
         config: Dict,
         manager_mediator: ManagerMediator,
         data_manager: DataManager = None,
+        enemy_to_base_manager: EnemyToBaseManager = None,
         unit_cache_manager: UnitCacheManager = None,
         ability_tracker_manager: AbilityTrackerManager = None,
         unit_role_manager: UnitRoleManager = None,
@@ -47,7 +48,6 @@ class Hub:
         placement_manager: PlacementManager = None,
         path_manager: PathManager = None,
         terrain_manager: TerrainManager = None,
-        strategy_manager: StrategyManager = None,
         resource_manager: ResourceManager = None,
         building_manager: BuildingManager = None,
         production_manager: ProductionManager = None,
@@ -65,6 +65,8 @@ class Hub:
             ManagerMediator class for inter-Manager communication
         data_manager :
             Optional DataManager override
+        enemy_to_base_manager :
+            Optional EnemyToBaseManager override
         unit_cache_manager :
             Optional UnitCacheManager override
         ability_tracker_manager :
@@ -79,8 +81,6 @@ class Hub:
             Optional PathManager override
         terrain_manager :
             Optional TerrainManager override
-        strategy_manager :
-            Optional StrategyManager override
         resource_manager :
             Optional ResourceManager override
         building_manager :
@@ -136,11 +136,6 @@ class Hub:
             if not terrain_manager
             else terrain_manager
         )
-        self.strategy_manager: StrategyManager = (
-            StrategyManager(ai, config, self.manager_mediator)
-            if not strategy_manager
-            else strategy_manager
-        )
         self.resource_manager: ResourceManager = (
             ResourceManager(ai, config, self.manager_mediator)
             if not resource_manager
@@ -156,21 +151,26 @@ class Hub:
             if not production_manager
             else production_manager
         )
+        self.enemy_to_base_manager: EnemyToBaseManager = (
+            EnemyToBaseManager(ai, config, self.manager_mediator)
+            if not enemy_to_base_manager
+            else enemy_to_base_manager
+        )
 
         # in order of priority
-        self.managers: List["Manager"] = [
+        self.managers: list["Manager"] = [
             self.data_manager,
             self.unit_role_manager,
             self.unit_cache_manager,
             self.unit_memory_manager,
             self.path_manager,
-            self.strategy_manager,
             self.terrain_manager,
             self.resource_manager,
             self.building_manager,  # must be updated before production manager
             self.production_manager,
             self.ability_tracker_manager,
             self.placement_manager,
+            self.enemy_to_base_manager,
         ]
 
         if additional_managers:
@@ -291,77 +291,3 @@ class Hub:
 
         # we have finished with the grids, reset them before the next step
         self.path_manager.reset_grids(iteration)
-
-        if self.debug:
-            self._debug_draw()
-
-    def _debug_draw(self) -> None:
-        """Draw debug information to the screen.
-
-        Returns
-        -------
-
-        """
-        # left hand side
-        self.ai.client.debug_text_screen(
-            f"Workers per gas: \
-            {str(self.resource_manager.workers_per_gas)}",
-            pos=(0.05, 0.14),
-            size=13,
-            color=(0, 255, 255),
-        )
-
-        self.ai.client.debug_text_screen(
-            "UNIT ROLE TAGS",
-            pos=(0.05, 0.28),
-            size=13,
-            color=(0, 255, 255),
-        )
-        self.ai.client.debug_text_screen(
-            f"Base Defenders: \
-            {str(self.unit_role_manager.unit_role_dict[UnitRole.BASE_DEFENDER])}",
-            pos=(0.05, 0.30),
-            size=13,
-            color=(0, 255, 255),
-        )
-
-        # right hand side
-        self.ai.client.debug_text_screen(
-            f"Enemy Army Value: {self.unit_cache_manager.enemy_army_value}",
-            pos=(0.85, 0.1),
-            size=13,
-            color=(0, 255, 255),
-        )
-        self.ai.client.debug_text_screen(
-            f"Ready Army Value: {self.unit_cache_manager.ready_army_value}",
-            pos=(0.85, 0.11),
-            size=13,
-            color=(0, 255, 255),
-        )
-        self.ai.client.debug_text_screen(
-            f"Total Army Value: {self.unit_cache_manager.own_army_value}",
-            pos=(0.85, 0.12),
-            size=13,
-            color=(0, 255, 255),
-        )
-
-        self.ai.client.debug_text_screen(
-            f"Mineral collection rate: {self.ai.state.score.collection_rate_minerals}",
-            pos=(0.85, 0.17),
-            size=13,
-            color=(0, 255, 255),
-        )
-
-        self.ai.client.debug_text_screen(
-            f"Vespene collection rate: {self.ai.state.score.collection_rate_vespene}",
-            pos=(0.85, 0.18),
-            size=13,
-            color=(0, 255, 255),
-        )
-
-        self.ai.client.debug_text_screen(
-            f"Workers per gas: {self.resource_manager.workers_per_gas}",
-            pos=(0.85, 0.2),
-            size=13,
-            color=(0, 255, 255),
-        )
