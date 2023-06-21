@@ -74,10 +74,6 @@ class PlacementManager(Manager, IManagerMediator):
             Dictionary with the data from the configuration file
         mediator :
             ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-
         """
         super(PlacementManager, self).__init__(ai, config, mediator)
 

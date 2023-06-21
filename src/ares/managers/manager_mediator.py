@@ -297,6 +297,125 @@ class ManagerMediator(IManagerMediator):
             ManagerName.COMBAT_MANAGER, ManagerRequestType.GET_SQUAD_CLOSE_TO_TARGET
         )
 
+    def remove_tag_from_squads(self, **kwargs) -> None:
+        """Remove the given tag from unit squads.
+
+        Combat Manager
+
+        Other Parameters
+        -----
+        tag : int
+            The tag of the unit to remove from squads.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+        """
+        return self.manager_request(
+            ManagerName.COMBAT_MANAGER,
+            ManagerRequestType.REMOVE_TAG_FROM_SQUADS,
+            **kwargs,
+        )
+
+    """
+    EnemyToBaseManager
+    """
+
+    @property
+    def get_flying_enemy_near_bases(self) -> dict[int, set[int]]:
+        """Get dictionary containing flying enemy near townhalls.
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        dict[int, set[int]] :
+            A dictionary where the integer key is a townhall tag.
+            And the value contains a set of ints cotianing enemy tags
+            near this base.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_FLYING_ENEMY_NEAR_BASES,
+        )
+
+    @property
+    def get_ground_enemy_near_bases(self, **kwargs) -> dict[int, set[int]]:
+        """Get dictionary containing ground enemy near townhalls.
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        dict[int, set[int]] :
+            A dictionary where the integer key is a townhall tag.
+            And the value contains a set of ints cotianing enemy tags
+            near this base.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_GROUND_ENEMY_NEAR_BASES,
+            **kwargs,
+        )
+
+    @property
+    def get_main_air_threats_near_townhall(self) -> Units:
+        """Get the main enemy air force near one of our bases.
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        Units :
+            The largest enemy air force near our bases.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_MAIN_AIR_THREATS_NEAR_TOWNHALL,
+        )
+
+    @property
+    def get_main_ground_threats_near_townhall(self) -> Units:
+        """Get the main enemy ground force near one of our bases.
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        Units :
+            The largest enemy ground force near our bases.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_MAIN_GROUND_THREATS_NEAR_TOWNHALL,
+        )
+
+    @property
+    def get_th_tag_with_largest_ground_threat(self) -> int:
+        """Get the tag of our townhall with the largest enemy ground force nearby.
+
+        WARNING: This will remember the townhall tag even if enemy has gone.
+        Do not use this to detect enemy at a base.
+        Use `get_main_ground_threats_near_townhall`
+        Or `get_ground_enemy_near_bases` instead
+
+        EnemyToBase Manager
+
+        Returns
+        -------
+        Units :
+            The largest enemy ground force near our bases.
+        """
+        return self.manager_request(
+            ManagerName.ENEMY_TO_BASE_MANAGER,
+            ManagerRequestType.GET_TH_TAG_WITH_LARGEST_GROUND_THREAT,
+        )
+
+    """
+    ResourceManager
+    """
+
     @property
     def get_mineral_patch_to_list_of_workers(self) -> Dict[int, Set[int]]:
         """Get a dictionary containing mineral tag to worker tags
@@ -405,27 +524,6 @@ class ManagerMediator(IManagerMediator):
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
             ManagerRequestType.REMOVE_GAS_BUILDING,
-            **kwargs,
-        )
-
-    def remove_tag_from_squads(self, **kwargs) -> None:
-        """Remove the given tag from unit squads.
-
-        Combat Manager
-
-        Other Parameters
-        -----
-        tag : int
-            The tag of the unit to remove from squads.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
-        """
-        return self.manager_request(
-            ManagerName.COMBAT_MANAGER,
-            ManagerRequestType.REMOVE_TAG_FROM_SQUADS,
             **kwargs,
         )
 
