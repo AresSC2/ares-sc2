@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.19.0 (2023-06-21)
+### Feature
+
+* Add enemy to base manager ([`b06b52c`](https://github.com/AresSC2/ares-sc2/commit/b06b52c29e6ea629c173c5a26e0250b871275aeb))
+
 ## v0.18.0 (2023-06-19)
 ### Feature
 
