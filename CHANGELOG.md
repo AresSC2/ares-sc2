@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v0.20.0 (2023-06-22)
+### Feature
+
+* Mining workers have basic self defence ([`27ec3a5`](https://github.com/AresSC2/ares-sc2/commit/27ec3a5b2a836193fa8745d786a746334fe7c000))
+
+### Fix
+
+* Scv can actually resume building unfinished structure ([`8ecf85b`](https://github.com/AresSC2/ares-sc2/commit/8ecf85b51d1797b04c047183a8fb9db8dca600ce))
+* Grids are reset after step is complete, not during ([`e3f635d`](https://github.com/AresSC2/ares-sc2/commit/e3f635d860fcc5fe0cb055474f668fb28a03f2bb))
+
 ## v0.19.0 (2023-06-21)
 ### Feature
 
