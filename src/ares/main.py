@@ -369,6 +369,8 @@ class AresBot(CustomBotAI):
         for drop_action in self._drop_unload_actions:
             await self.unload_container(drop_action[0], drop_action[1])
 
+        self.manager_hub.path_manager.reset_grids(self.actual_iteration)
+
     def register_behavior(self, behavior: Behavior) -> None:
         """Register behavior.
 

@@ -11,8 +11,9 @@ from sc2.units import Units
 from ares import AresBot
 from ares.behaviors.macro import MacroBehavior
 from ares.consts import MINING, TOWNHALL_DISTANCE_FACTOR, UnitRole, UnitTreeQueryType
+from ares.cython_extensions.combat_utils import cy_attack_ready, cy_pick_enemy_target
 from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.units_utils import cy_closest_to
+from ares.cython_extensions.units_utils import cy_closest_to, cy_in_attack_range
 from ares.managers.manager_mediator import ManagerMediator
 
 TOWNHALL_RADIUS: float = 2.5
@@ -106,10 +107,16 @@ class Mining(MacroBehavior):
         worker_to_th: dict[int, int] = mediator.get_worker_tag_to_townhall_tag
         # for each mineral tag, get the position in front of the mineral
         min_target: dict[int, Point2] = mediator.get_mineral_target_dict
+        main_enemy_ground_threats: Optional[Units] = None
+        if self.self_defence_active:
+            main_enemy_ground_threats = mediator.get_main_ground_threats_near_townhall
 
         for worker in workers:
             worker_position: Point2 = worker.position
             worker_tag: int = worker.tag
+            resource: Optional[Unit] = None
+            resource_position: Optional[Point2] = None
+            resource_tag: int = -1
 
             # keeping worker safe is first priority
             if self.keep_safe and (
@@ -126,17 +133,21 @@ class Mining(MacroBehavior):
 
             assigned_mineral_patch: bool = worker_tag in worker_to_mineral_patch_dict
             assigned_gas_building: bool = worker_tag in worker_to_geyser_dict
-
-            # do we have record of this worker? If so mine from the relevant resource
+            dist_to_resource: float = 15.0
             if assigned_mineral_patch or assigned_gas_building:
                 resource_tag: int = (
                     worker_to_mineral_patch_dict[worker_tag]
                     if assigned_mineral_patch
                     else worker_to_geyser_dict[worker.tag]
                 )
-                resource: Optional[Unit] = resources_dict.get(resource_tag, None)
-
-                if not resource:
+                if _resource := resources_dict.get(resource_tag, None):
+                    resource_position = _resource.position
+                    resource_tag = _resource.tag
+                    resource = _resource
+                    dist_to_resource = cy_distance_to(
+                        worker_position, resource_position
+                    )
+                else:
                     # Mined out or no vision? Remove it
                     if assigned_mineral_patch:
                         mediator.remove_mineral_field(mineral_field_tag=resource_tag)
@@ -144,11 +155,15 @@ class Mining(MacroBehavior):
                         mediator.remove_gas_building(gas_building_tag=resource_tag)
                     continue
 
-                resource_position = resource.position
-                worker_dist: float = cy_distance_to(worker_position, resource_position)
+            if main_enemy_ground_threats and self._worker_attacking_enemy(
+                ai, dist_to_resource, worker
+            ):
+                continue
 
+            # do we have record of this worker? If so mine from the relevant resource
+            if assigned_mineral_patch or assigned_gas_building:
                 # we are far away, path to min field to avoid enemies
-                if worker_dist > 6.0 and not worker.is_carrying_resource:
+                if dist_to_resource > 6.0 and not worker.is_carrying_resource:
                     worker.move(
                         path_find(
                             start=worker_position,
@@ -489,3 +504,16 @@ class Mining(MacroBehavior):
                     continue
                 safe_fields.append(mf)
         return Units(safe_fields, ai)
+
+    @staticmethod
+    def _worker_attacking_enemy(
+        ai: AresBot, dist_to_resource: float, worker: Unit
+    ) -> bool:
+        if not worker.is_collecting or dist_to_resource > 1.0:
+            if enemies := cy_in_attack_range(worker, ai.enemy_units):
+                target: Unit = cy_pick_enemy_target(enemies)
+
+                if cy_attack_ready(ai, worker, target):
+                    worker.attack(target)
+                    return True
+        return False

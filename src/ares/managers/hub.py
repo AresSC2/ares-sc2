@@ -288,6 +288,3 @@ class Hub:
         """
         for manager in self.managers:
             await manager.update(iteration)
-
-        # we have finished with the grids, reset them before the next step
-        self.path_manager.reset_grids(iteration)
