@@ -217,6 +217,18 @@ class BuildingManager(Manager, IManagerMediator):
             # TODO: find the maximum distance so we don't have to keep adjusting this
             distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
 
+            # if terran, check for unfinished structure
+            existing_unfinished_structure: Optional[Unit] = None
+            if self.ai.race == Race.Terran and structure_id in structures_dict:
+                if existing_unfinished_structures := structures_dict[
+                    structure_id
+                ].filter(
+                    lambda s: s.type_id == structure_id
+                    and cy_distance_to(s.position, target.position) < 1.5
+                ):
+                    existing_unfinished_structure = existing_unfinished_structures[0]
+                    distance = 4.5
+
             # TODO: fix this so worker paths to building
             if structure_id in GAS_BUILDINGS and self.ai.can_afford(structure_id):
                 worker.build_gas(target)
@@ -231,15 +243,9 @@ class BuildingManager(Manager, IManagerMediator):
 
             else:
                 # handle scv going to an unfinished structure
-                if self.ai.race == Race.Terran and structure_id in structures_dict:
-                    if existing_unfinished_structure := structures_dict[
-                        structure_id
-                    ].filter(
-                        lambda s: s.type_id == structure_id
-                        and cy_distance_to(s.position, target.position) < 1.5
-                    ):
-                        worker(AbilityId.SMART, existing_unfinished_structure[0])
-                        continue
+                if existing_unfinished_structure:
+                    worker(AbilityId.SMART, existing_unfinished_structure)
+                    continue
 
                 if (
                     (not worker.is_constructing_scv or worker.is_idle)
@@ -259,6 +265,9 @@ class BuildingManager(Manager, IManagerMediator):
                 target_position=position, force_close=True
             ):
                 self.building_tracker[new_worker.tag] = self.building_tracker.pop(tag)
+                self.manager_mediator.assign_role(
+                    tag=new_worker.tag, role=UnitRole.BUILDING
+                )
 
     def remove_unit(self, tag: int) -> None:
         """Remove dead units from building tracker.
