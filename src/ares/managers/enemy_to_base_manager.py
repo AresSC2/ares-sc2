@@ -60,8 +60,8 @@ class EnemyToBaseManager(Manager, IManagerMediator):
                 lambda kwargs: self.flying_enemy_near_bases
             ),
             ManagerRequestType.GET_GROUND_ENEMY_NEAR_BASES: (
-                lambda kwargs: self.ground_enemy_near_bases)
-            ,
+                lambda kwargs: self.ground_enemy_near_bases
+            ),
             ManagerRequestType.GET_MAIN_AIR_THREATS_NEAR_TOWNHALL: (
                 lambda kwargs: self.main_enemy_air_threats_near_townhall
             ),
