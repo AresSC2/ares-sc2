@@ -32,13 +32,12 @@ from ares.consts import (
     TARGET,
     TIME_ORDER_COMMENCED,
     BuildingPurpose,
+    BuildingSize,
     ManagerName,
     ManagerRequestType,
     UnitRole,
-    BuildingSize,
 )
 from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.placement_solver import can_place_structure
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 

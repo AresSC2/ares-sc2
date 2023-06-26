@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
+
 from sc2.unit import Unit
 
 from ares.behaviors.combat import CombatBehavior

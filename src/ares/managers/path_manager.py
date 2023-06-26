@@ -822,10 +822,7 @@ class PathManager(Manager, IManagerMediator):
             )
         elif structure.type_id == UnitID.PLANETARYFORTRESS:
             s_range: int = 7 if self.ai.time > 400 else 6
-            (
-                self.climber_grid,
-                self.ground_grid,
-            ) = self.add_cost_to_multiple_grids(
+            (self.climber_grid, self.ground_grid,) = self.add_cost_to_multiple_grids(
                 structure.position,
                 28,
                 s_range + self.config[PATHING][RANGE_BUFFER],
