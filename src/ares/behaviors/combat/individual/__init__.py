@@ -6,4 +6,5 @@ from ares.behaviors.combat.individual.path_unit_to_target import PathUnitToTarge
 from ares.behaviors.combat.individual.pick_up_cargo import PickUpCargo
 from ares.behaviors.combat.individual.shoot_target_in_range import ShootTargetInRange
 from ares.behaviors.combat.individual.stutter_unit_back import StutterUnitBack
+from ares.behaviors.combat.individual.stutter_unit_forward import StutterUnitForward
 from ares.behaviors.combat.individual.use_ability import UseAbility

@@ -5,6 +5,14 @@ will likely be breaking changes in the future
     options:
         show_root_heading: true
 
+::: ares.behaviors.combat.individual.a_move
+    options:
+        show_root_heading: true
+
+::: ares.behaviors.combat.individual.attack_target
+    options:
+        show_root_heading: true
+
 ::: ares.behaviors.combat.individual.drop_cargo
     options:
         show_root_heading: true
@@ -18,6 +26,18 @@ will likely be breaking changes in the future
         show_root_heading: true
 
 ::: ares.behaviors.combat.individual.pick_up_cargo
+    options:
+        show_root_heading: true
+
+::: ares.behaviors.combat.individual.stutter_unit_back
+    options:
+        show_root_heading: true
+
+::: ares.behaviors.combat.individual.stutter_unit_forward
+    options:
+        show_root_heading: true
+
+::: ares.behaviors.combat.individual.use_ability
     options:
         show_root_heading: true
 

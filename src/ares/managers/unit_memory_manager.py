@@ -207,7 +207,6 @@ class UnitMemoryManager(Manager, IManagerMediator):
                         # change snapshot for burrowed units
                         # noinspection PyProtectedMember
                         snap._proto.is_burrowed = True
-                        snap.cache.clear()
                 else:
                     self.clear_unit_cache(memory_tags_to_remove, unit_tag)
 

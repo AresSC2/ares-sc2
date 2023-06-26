@@ -258,6 +258,7 @@ class PlacementManager(Manager, IManagerMediator):
                 and not potential_placements[placement]["worker_on_route"]
                 and self.can_place_structure(placement, building_size)
             ]
+            # TODO: Handle this by finding a different base location
             if len(available) == 0:
                 logger.warning(
                     f"No available {building_size} found near location: {base_location}"
@@ -600,8 +601,17 @@ class PlacementManager(Manager, IManagerMediator):
             two_by_two = self.placements_dict[location][BuildingSize.TWO_BY_TWO]
             z = self.ai.get_terrain_height(location)
             z = -16 + 32 * z / 255
+
             for placement in three_by_three:
-                self.ai.draw_text_on_world(Point2(placement), f"{placement}")
+                info = self.placements_dict[location][BuildingSize.THREE_BY_THREE][
+                    placement
+                ]
+                position: Point2 = Point2(placement)
+                available: bool = info["available"]
+                worker_on_route: bool = info["worker_on_route"]
+                self.ai.draw_text_on_world(
+                    position, f"{placement} A: {available}, WOR: {worker_on_route}"
+                )
                 pos_min = Point3((placement.x - 1.5, placement.y - 1.5, z))
                 pos_max = Point3((placement.x + 1.5, placement.y + 1.5, z + 2))
                 self.ai.client.debug_box_out(pos_min, pos_max, Point3((255, 0, 0)))
@@ -611,6 +621,15 @@ class PlacementManager(Manager, IManagerMediator):
                     self.ai.client.debug_box_out(pos_min, pos_max, Point3((0, 255, 0)))
 
             for placement in two_by_two:
+                info = self.placements_dict[location][BuildingSize.TWO_BY_TWO][
+                    placement
+                ]
+                position: Point2 = Point2(placement)
+                available: bool = info["available"]
+                worker_on_route: bool = info["worker_on_route"]
+                self.ai.draw_text_on_world(
+                    position, f"{placement} A: {available}, WOR: {worker_on_route}"
+                )
                 pos_min = Point3((placement.x - 1.0, placement.y - 1.0, z))
                 pos_max = Point3((placement.x + 1.0, placement.y + 1.0, z + 1))
                 self.ai.client.debug_box_out(pos_min, pos_max, Point3((0, 0, 255)))

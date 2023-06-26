@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 from sc2.unit import Unit
 
 from ares.behaviors.combat import CombatBehavior
+from ares.behaviors.combat.individual import AttackTarget
+from ares.cython_extensions.combat_utils import cy_attack_ready
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
@@ -11,8 +13,8 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class AttackTarget(CombatBehavior):
-    """Shoot a target.
+class StutterUnitForward(CombatBehavior):
+    """Shoot at the target if possible, else move back.
 
     Attributes
     ----------
@@ -24,15 +26,11 @@ class AttackTarget(CombatBehavior):
 
     unit: Unit
     target: Unit
-    extra_range: float = 0.0
 
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        """Attack something.
-
-        WARNING: This always returns True, so combat logic should
-        reflect this.
+        """Shoot at the target if possible, else kite back.
 
         Parameters
         ----------
@@ -50,6 +48,10 @@ class AttackTarget(CombatBehavior):
         bool :
             CombatBehavior carried out an action.
         """
-
-        self.unit.attack(self.target)
-        return True
+        unit = self.unit
+        target = self.target
+        if not target.is_memory and cy_attack_ready(ai, unit, target):
+            return AttackTarget(unit=unit, target=target).execute(ai, config, mediator)
+        else:
+            unit.move(target.position)
+            return True

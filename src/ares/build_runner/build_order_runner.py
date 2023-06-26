@@ -234,11 +234,11 @@ class BuildOrderRunner:
         """
         if structure_type in GAS_BUILDINGS:
             existing_gas_buildings: Units = self.ai.all_units(GAS_BUILDINGS)
-            available_geysers: Units = self.ai.vespene_geyser.filter(
+            if available_geysers := self.ai.vespene_geyser.filter(
                 lambda g: not existing_gas_buildings.closer_than(5.0, g)
                 and self.ai.townhalls.closer_than(12.0, g)
-            )
-            return available_geysers.closest_to(self.ai.start_location)
+            ):
+                return available_geysers.closest_to(self.ai.start_location)
         elif structure_type == self.ai.base_townhall_type:
             return await self.ai.get_next_expansion()
         elif self.ai.race == Race.Terran:
