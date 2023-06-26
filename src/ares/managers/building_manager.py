@@ -35,8 +35,10 @@ from ares.consts import (
     ManagerName,
     ManagerRequestType,
     UnitRole,
+    BuildingSize,
 )
 from ares.cython_extensions.geometry import cy_distance_to
+from ares.cython_extensions.placement_solver import can_place_structure
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -225,6 +227,7 @@ class BuildingManager(Manager, IManagerMediator):
                 ].filter(
                     lambda s: s.type_id == structure_id
                     and cy_distance_to(s.position, target.position) < 1.5
+                    and s.build_progress < 1.0
                 ):
                     existing_unfinished_structure = existing_unfinished_structures[0]
                     distance = 4.5
@@ -246,6 +249,25 @@ class BuildingManager(Manager, IManagerMediator):
                 if existing_unfinished_structure:
                     worker(AbilityId.SMART, existing_unfinished_structure)
                     continue
+
+                # handle blocked positions
+                # TODO: extend this for all races
+                #   When placement_manager is implemented for all races
+                if self.ai.race == Race.Terran and structure_id not in GAS_BUILDINGS:
+                    size: BuildingSize = (
+                        BuildingSize.TWO_BY_TWO
+                        if structure_id == UnitID.SUPPLYDEPOT
+                        else BuildingSize.THREE_BY_THREE
+                    )
+                    if not self.manager_mediator.can_place_structure(
+                        position=target.position, size=size
+                    ):
+                        self.building_tracker[worker_tag][
+                            TARGET
+                        ] = self.manager_mediator.request_building_placement(
+                            base_location=self.ai.start_location, building_size=size
+                        )
+                        continue
 
                 if (
                     (not worker.is_constructing_scv or worker.is_idle)
