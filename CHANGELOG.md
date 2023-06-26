@@ -2,6 +2,23 @@
 
 <!--next-version-placeholder-->
 
+## v0.21.0 (2023-06-26)
+### Feature
+
+* Add stutter unit forward behavior ([`2477818`](https://github.com/AresSC2/ares-sc2/commit/247781882492ed9644a68355991ee530b6a145f2))
+* Building manager handles blocked buildings ([`de9b793`](https://github.com/AresSC2/ares-sc2/commit/de9b793e14587ba6f70de4b2614be962518978e7))
+* Improve debug drawings of building formation ([`5c43385`](https://github.com/AresSC2/ares-sc2/commit/5c43385668f56c2411ede0f3151eb50a9940712b))
+* Reduce influence range of melee units ([`5a0655f`](https://github.com/AresSC2/ares-sc2/commit/5a0655f53eddbe1c8551b129cc09c5433a4dfc39))
+
+### Fix
+
+* Remove call to an attribute that doesn't exist ([`a4504d1`](https://github.com/AresSC2/ares-sc2/commit/a4504d11c652f2731cc61082b27ae2832246ba49))
+* Check geyser exists before building ([`ef17730`](https://github.com/AresSC2/ares-sc2/commit/ef1773074652a426896ccc6a6f06b40c92849ae3))
+
+### Documentation
+
+* Add missing behaviors ([`3a44264`](https://github.com/AresSC2/ares-sc2/commit/3a4426468d6b25a628f8963bedccdc810fb847da))
+
 ## v0.20.0 (2023-06-22)
 ### Feature
 
