@@ -12,7 +12,7 @@ from ares import AresBot
 from ares.behaviors.macro import MacroBehavior
 from ares.consts import MINING, TOWNHALL_DISTANCE_FACTOR, UnitRole, UnitTreeQueryType
 from ares.cython_extensions.combat_utils import cy_attack_ready, cy_pick_enemy_target
-from ares.cython_extensions.geometry import cy_distance_to
+from ares.cython_extensions.geometry import cy_distance_to, cy_towards
 from ares.cython_extensions.units_utils import cy_closest_to, cy_in_attack_range
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -388,8 +388,8 @@ class Mining(MacroBehavior):
         if target.is_mineral_field:
             resource_target_pos: Point2 = mineral_target_dict.get(target_position)
         else:
-            resource_target_pos: Point2 = target_position.towards(
-                worker, TOWNHALL_RADIUS * 1.21
+            resource_target_pos: Point2 = Point2(
+                cy_towards(target_position, worker.position, TOWNHALL_RADIUS * 1.21)
             )
 
         closest_th: Unit = cy_closest_to(worker_position, ai.townhalls)
@@ -408,15 +408,20 @@ class Mining(MacroBehavior):
         ) < 2:
             townhall: Optional[Unit] = None
             if worker.tag in worker_tag_to_townhall_tag:
-                townhall: Unit = ai.structures.by_tag(
-                    worker_tag_to_townhall_tag[worker.tag]
+                townhall: Unit = ai.unit_tag_dict.get(
+                    worker_tag_to_townhall_tag[worker.tag], None
                 )
+
             if not townhall:
                 townhall: Unit = closest_th
 
             target_pos: Point2 = townhall.position
-            target_pos = target_pos.towards(
-                worker, TOWNHALL_RADIUS * distance_to_townhall_factor
+            target_pos: Point2 = Point2(
+                cy_towards(
+                    target_pos,
+                    worker_position,
+                    TOWNHALL_RADIUS * distance_to_townhall_factor,
+                )
             )
 
             if 0.75 < cy_distance_to(worker_position, target_pos) < 2:
