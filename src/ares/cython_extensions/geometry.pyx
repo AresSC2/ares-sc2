@@ -1,5 +1,6 @@
 from libc.math cimport sqrt
 
+
 cpdef double cy_distance_to(
         (float, float) p1,
         (float, float) p2
