@@ -164,3 +164,18 @@ cpdef tuple group_by_spatial(
             groups[label].append(unit)
 
     return groups, ungrouped_unit_tags
+
+cpdef list cy_sorted_by_distance_to(object units, (float, float) position, bint reverse=False):
+    cdef:
+        unsigned int len_units = len(units)
+        cnp.ndarray[cnp.npy_double, ndim=1] distances = np.empty(len_units)
+        # TODO: couldn't get this to work, so no speedup for `indices` currently
+        # cnp.ndarray[cnp.npy_double, ndim=1] indices = np.empty(len_units)
+        unsigned int i, j
+
+    for i in range(len_units):
+        distances[i] = euclidean_distance_squared(units[i].position, position)
+
+    indices = distances.argsort()
+
+    return [units[j] for j in indices]

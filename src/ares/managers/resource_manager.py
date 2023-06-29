@@ -23,6 +23,7 @@ from ares.consts import (
     UnitRole,
     UnitTreeQueryType,
 )
+from ares.cython_extensions.units_utils import cy_sorted_by_distance_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -149,12 +150,16 @@ class ResourceManager(Manager, IManagerMediator):
         for townhall in townhalls:
             if self.ai.mineral_field:
                 # we want workers on closest mineral patch first
-                minerals_sorted: Units = self.ai.mineral_field.filter(
-                    lambda mf: mf.is_visible
-                    and not mf.is_snapshot
-                    and mf.distance_to(townhall) < 10
-                    and len(self.mineral_patch_to_list_of_workers.get(mf.tag, [])) < 2
-                ).sorted_by_distance_to(townhall)
+                minerals_sorted: Units = cy_sorted_by_distance_to(
+                    self.ai.mineral_field.filter(
+                        lambda mf: mf.is_visible
+                        and not mf.is_snapshot
+                        and mf.distance_to(townhall) < 10
+                        and len(self.mineral_patch_to_list_of_workers.get(mf.tag, []))
+                        < 2
+                    ),
+                    townhall.position,
+                )
 
                 if minerals_sorted:
                     available_minerals.extend(minerals_sorted)
@@ -362,10 +367,13 @@ class ResourceManager(Manager, IManagerMediator):
             and not w.is_carrying_resource
         ):
             # find townhalls with plenty of mineral patches
-            townhalls: Units = self.ai.townhalls.filter(
-                lambda th: th.is_ready
-                and self.ai.mineral_field.closer_than(10, th).amount >= 8
-            ).sorted_by_distance_to(target_position)
+            townhalls: Units = cy_sorted_by_distance_to(
+                self.ai.townhalls.filter(
+                    lambda th: th.is_ready
+                    and self.ai.mineral_field.closer_than(10, th).amount >= 8
+                ),
+                target_position,
+            )
             # seems there are no townhalls with plenty of resources, don't be fussy at
             # this point
             if not townhalls:
@@ -375,9 +383,9 @@ class ResourceManager(Manager, IManagerMediator):
             # townhall that way there is a good chance we pick a worker at a far mineral
             # patch
             for townhall in townhalls:
-                minerals_sorted_by_distance: Units = self.ai.mineral_field.closer_than(
-                    10, townhall
-                ).sorted_by_distance_to(townhall)
+                minerals_sorted_by_distance: Units = cy_sorted_by_distance_to(
+                    self.ai.mineral_field.closer_than(10, townhall), townhall.position
+                )
                 for mineral in reversed(minerals_sorted_by_distance):
                     # we have record of the patch, with some worker tags saved
                     if mineral.tag in self.mineral_patch_to_list_of_workers:
@@ -602,15 +610,17 @@ class ResourceManager(Manager, IManagerMediator):
         -------
 
         """
-        sorted_minerals: Units = minerals.sorted_by_distance_to(self.ai.start_location)
+        sorted_minerals: list[Unit] = cy_sorted_by_distance_to(
+            minerals, self.ai.start_location
+        )
         assigned_workers: Set[int] = set()
         for i, mineral in enumerate(sorted_minerals):
-            leftover_workers: Units = workers.tags_not_in(
-                assigned_workers
-            ).sorted_by_distance_to(mineral)
+            leftover_workers: list[Unit] = cy_sorted_by_distance_to(
+                workers.tags_not_in(assigned_workers), mineral.position
+            )
             # closest 4 patches assign 2 drones, then one on each
             take: int = 2 if i <= 3 else 1
-            new_workers: Units = leftover_workers.take(take)
+            new_workers: list[Unit] = leftover_workers[:take]
             for w in new_workers:
                 self._assign_worker_to_patch(mineral, w)
                 assigned_workers.add(w.tag)

@@ -114,3 +114,29 @@ def group_by_spatial(
 
     """
     ...
+
+def cy_sorted_by_distance_to(
+    units: Union[Units, list[Unit]], position: Point2, reverse: bool = False
+) -> list[Unit]:
+    """Sort units by distance to `position`
+
+    33.7 µs ± 190 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
+
+    python-sc2's `units.sorted_by_distance_to(position)` alternative:
+    246 µs ± 830 ns per loop (mean ± std. dev. of 7 runs, 1,000 loops each)
+
+    Parameters
+    ----------
+    units :
+        Units we want to sort.
+    position :
+        Sort by distance to this position.
+    reverse :
+        Not currently used.
+    Returns
+    -------
+    list[Unit] :
+        Units sorted by distance to position.
+
+    """
+    ...
