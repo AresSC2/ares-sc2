@@ -895,7 +895,7 @@ class PathManager(Manager, IManagerMediator):
             self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
                 unit.position,
                 unit.ground_dps,
-                2,
+                self.config[PATHING][RANGE_BUFFER],
                 [self.climber_grid, self.ground_grid],
             )
         elif unit.can_attack_air:

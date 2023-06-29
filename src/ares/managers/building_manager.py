@@ -198,7 +198,7 @@ class BuildingManager(Manager, IManagerMediator):
                 continue
 
             structure_id: UnitID = self.building_tracker[worker_tag][ID]
-            
+
             # this happens if no target location is available eg: all expansions taken
             if not target:
                 tags_to_remove.add(worker_tag)
