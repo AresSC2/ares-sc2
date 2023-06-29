@@ -31,6 +31,31 @@ def cy_attack_ready(ai: AresBot, unit: Unit, target: Unit) -> bool:
     """
     ...
 
+def cy_is_facing(unit: Unit, other_unit: Unit, angle_error: float = 0.05) -> bool:
+    """Given a grid of influence, check if the given position is above weight_safety_limit.
+
+    323 ns ± 3.93 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
+
+    Python-sc2's `unit.is_facing(other_unit)` alternative:
+    2.94 µs ± 8 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)
+
+    Parameters
+    ----------
+    unit :
+        2D grid to check with influence.
+    other_unit :
+        Position converted to x/y integers.
+    angle_error :
+        At what threshold is this position deemed unsafe.
+
+    Returns
+    -------
+    bool :
+        True if unit is facing other_unit.
+
+    """
+    ...
+
 def cy_is_position_safe(
     grid: np.ndarray, position: tuple[int, int], weight_safety_limit: float
 ) -> bool:

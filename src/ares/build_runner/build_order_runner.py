@@ -213,7 +213,7 @@ class BuildOrderRunner:
 
     async def get_position(
         self, structure_type: UnitID, target: Optional[str]
-    ) -> Union[Point2, Unit]:
+    ) -> Union[Point2, Unit, None]:
         """Convert a position command from the build order to an actual location.
         Examples
         --------

@@ -199,10 +199,15 @@ class BuildingManager(Manager, IManagerMediator):
 
             structure_id: UnitID = self.building_tracker[worker_tag][ID]
 
+            # this happens if no target location is available eg: all expansions taken
+            if not target:
+                tags_to_remove.add(worker_tag)
+                continue
+
             # check if we are finished with the building worker
             if close_structures := self.ai.structures.filter(
                 lambda s: s.type_id == structure_id
-                and s.distance_to(target.position) < 1.0
+                and cy_distance_to(s.position, target.position) < 1.0
             ):
                 structure: Unit = close_structures[0]
                 target_progress: float = 1.0 if self.ai.race == Race.Terran else 0.01

@@ -44,6 +44,22 @@ cdef double range_vs_target(unit, target):
 End of `cdef` functions
 """
 
+cpdef bint cy_is_facing(unit, other_unit, double angle_error=0.05):
+    cdef:
+        (double, double) p1 = unit.position
+        (double, double) p2 = other_unit.position
+        double angle, angle_difference
+        double unit_facing = unit.facing
+
+    angle = atan2(
+        p2[1] - p1[1],
+        p2[0] - p1[0],
+    )
+    if angle < 0:
+        angle += pi * 2
+    angle_difference = fabs(angle - unit_facing)
+    return angle_difference < angle_error
+
 cpdef bint cy_attack_ready(bot, unit, target):
     """
     Determine whether the unit can attack the target by the time the unit faces the target.
