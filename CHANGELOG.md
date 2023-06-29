@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v0.22.0 (2023-06-29)
+### Feature
+
+* Point2 towards cython function ([`91d41f1`](https://github.com/AresSC2/ares-sc2/commit/91d41f1024aa1d52a0929061b7028084f0cb012d))
+* Unit is facing cython function ([`11759c1`](https://github.com/AresSC2/ares-sc2/commit/11759c1c6d5bde94b6da750241835ffd41968096))
+* Sorted by distance to cython function ([`f511a9e`](https://github.com/AresSC2/ares-sc2/commit/f511a9e6b4ff780fab74f82bb878ae7d6860ae3e))
+
+### Fix
+
+* Increase influence range for melee units ([`e675c3c`](https://github.com/AresSC2/ares-sc2/commit/e675c3c72c4bd456932b62835fc6e919e863c72a))
+* Remove from builder tracker if no target ([`134184e`](https://github.com/AresSC2/ares-sc2/commit/134184e4852bf4e0acd84734cdbb2cb7db46117f))
+
 ## v0.21.0 (2023-06-26)
 ### Feature
 
