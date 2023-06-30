@@ -5,7 +5,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-def cy_center(units: Units) -> tuple[float, float]:
+def cy_center(units: Union[Units, list[Unit]]) -> tuple[float, float]:
     """
     54.2 µs ± 137 ns per loop (mean ± std. dev. of 7 runs, 10,000 loops each)
 

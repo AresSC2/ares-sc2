@@ -150,7 +150,7 @@ class ResourceManager(Manager, IManagerMediator):
         for townhall in townhalls:
             if self.ai.mineral_field:
                 # we want workers on closest mineral patch first
-                minerals_sorted: Units = cy_sorted_by_distance_to(
+                minerals_sorted: list[Unit] = cy_sorted_by_distance_to(
                     self.ai.mineral_field.filter(
                         lambda mf: mf.is_visible
                         and not mf.is_snapshot
@@ -367,12 +367,12 @@ class ResourceManager(Manager, IManagerMediator):
             and not w.is_carrying_resource
         ):
             # find townhalls with plenty of mineral patches
-            townhalls: Units = cy_sorted_by_distance_to(
+            townhalls: list[Unit] = cy_sorted_by_distance_to(
                 self.ai.townhalls.filter(
                     lambda th: th.is_ready
                     and self.ai.mineral_field.closer_than(10, th).amount >= 8
                 ),
-                target_position,
+                target_position.position,
             )
             # seems there are no townhalls with plenty of resources, don't be fussy at
             # this point
@@ -383,7 +383,7 @@ class ResourceManager(Manager, IManagerMediator):
             # townhall that way there is a good chance we pick a worker at a far mineral
             # patch
             for townhall in townhalls:
-                minerals_sorted_by_distance: Units = cy_sorted_by_distance_to(
+                minerals_sorted_by_distance: list[Unit] = cy_sorted_by_distance_to(
                     self.ai.mineral_field.closer_than(10, townhall), townhall.position
                 )
                 for mineral in reversed(minerals_sorted_by_distance):
