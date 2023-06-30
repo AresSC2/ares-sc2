@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.22.1 (2023-06-30)
+### Fix
+
+* Ensure Point2 is passed to cy_sorted_by_distance_to ([`6b4ff8c`](https://github.com/AresSC2/ares-sc2/commit/6b4ff8cfd412d06831bfb29fc205c6949683bbde))
+
 ## v0.22.0 (2023-06-29)
 ### Feature
 
