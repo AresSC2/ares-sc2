@@ -55,6 +55,7 @@ line-profiler = "^4.0.3"
 [build-system]
 requires = ["poetry-core", "Cython", "numpy", "setuptools"]
 build-backend = "poetry.core.masonry.api"
+build = { exclude = ["dist/*", "build/*"] }
 
 [tool.poetry.build]
 generate-setup-file = false
