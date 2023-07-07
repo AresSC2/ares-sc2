@@ -149,6 +149,18 @@ class BuildOrderRunner:
             if command in ADD_ONS:
                 self.current_step_started = True
             elif command in ALL_STRUCTURES:
+
+                # TODO: Replace this nasty fix when protoss placement formation is done
+                #   Prevents slow `find_placement` spam when there are no pylons
+                if (
+                    self.ai.race == Race.Protoss
+                    and command not in {UnitID.NEXUS, UnitID.PYLON, UnitID.ASSIMILATOR}
+                    and not self.ai.structures.filter(
+                        lambda s: s.type_id == UnitID.PYLON and s.is_ready
+                    )
+                ):
+                    return
+
                 if worker := self.mediator.select_worker(
                     target_position=self.current_build_position,
                     force_close=True,
