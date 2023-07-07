@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.22.2 (2023-07-07)
+### Fix
+
+* Prevent find placement spam when there are no pylons ([`ea8dfe1`](https://github.com/AresSC2/ares-sc2/commit/ea8dfe18bf89e5c4dc6729fb83e6177cb0e73fa8))
+
 ## v0.22.1 (2023-06-30)
 ### Fix
 
