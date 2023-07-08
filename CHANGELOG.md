@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.23.0 (2023-07-08)
+### Feature
+
+* Add worker kiting behavior ([`318eeab`](https://github.com/AresSC2/ares-sc2/commit/318eeabee6c7897ea55e17ce4d2104d19973bc38))
+
 ## v0.22.2 (2023-07-07)
 ### Fix
 
