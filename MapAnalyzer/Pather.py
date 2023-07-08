@@ -10,7 +10,7 @@ from MapAnalyzer.exceptions import OutOfBoundsException, PatherNoPointsException
 from MapAnalyzer.Region import Region
 from MapAnalyzer.utils import change_destructable_status_in_grid
 
-from .cext import astar_path, astar_path_with_nyduses
+from .cext import astar_path, astar_path_with_nyduses, clockwise_astar_path
 from .destructibles import *
 
 if TYPE_CHECKING:
@@ -83,16 +83,6 @@ class MapAnalyzerPather:
                 change_destructable_status_in_grid(self.default_grid, dest, 0)
                 change_destructable_status_in_grid(self.default_grid_nodestr, dest, 1)
 
-        # set each geyser as non pathable, these don't update during the game
-        for geyser in self.map_data.bot.vespene_geyser:
-            left_bottom = geyser.position.offset((-1.5, -1.5))
-            x_start = int(left_bottom[0])
-            y_start = int(left_bottom[1])
-            x_end = int(x_start + 3)
-            y_end = int(y_start + 3)
-            self.default_grid[x_start:x_end, y_start:y_end] = 0
-            self.default_grid_nodestr[x_start:x_end, y_start:y_end] = 0
-
         for mineral in self.map_data.bot.mineral_field:
             self.minerals_included[mineral.position] = mineral
             x1 = int(mineral.position[0])
@@ -103,6 +93,36 @@ class MapAnalyzerPather:
             self.default_grid[x2, y] = 0
             self.default_grid_nodestr[x1, y] = 0
             self.default_grid_nodestr[x2, y] = 0
+
+        # track all the gas corners to later remove them for walling purposes
+        all_corners = []
+
+        # set each geyser as non pathable, these don't update during the game
+        for geyser in self.map_data.bot.vespene_geyser:
+            left_bottom = geyser.position.offset((-1.5, -1.5))
+            x_start = int(left_bottom[0])
+            y_start = int(left_bottom[1])
+            x_end = int(x_start + 3)
+            y_end = int(y_start + 3)
+
+            all_corners.extend(
+                [
+                    (x_start, y_start),
+                    (x_start, y_end - 1),
+                    (x_end - 1, y_start),
+                    (x_end - 1, y_end - 1),
+                ]
+            )
+
+            self.default_grid[x_start:x_end, y_start:y_end] = 0
+            self.default_grid_nodestr[x_start:x_end, y_start:y_end] = 0
+
+        # create walling grid by removing gas corners
+        self.default_walling_grid = self.default_grid.copy()
+        self.default_walling_grid_nodestr = self.default_grid_nodestr.copy()
+        for corner in all_corners:
+            self.default_walling_grid[corner] = 1
+            self.default_walling_grid_nodestr[corner] = 1
 
     def set_connectivity_graph(self):
         connectivity_graph = {}
@@ -289,6 +309,12 @@ class MapAnalyzerPather:
         else:
             return self.default_grid_nodestr.copy()
 
+    def get_base_walling_grid(self, include_destructables: bool = True) -> ndarray:
+        if include_destructables:
+            return self.default_walling_grid.copy()
+        else:
+            return self.default_walling_grid_nodestr.copy()
+
     def get_climber_grid(
         self, default_weight: float = 1, include_destructables: bool = True
     ) -> ndarray:
@@ -329,6 +355,18 @@ class MapAnalyzerPather:
         self, default_weight: float = 1, include_destructables: bool = True
     ) -> ndarray:
         grid = self.get_base_pathing_grid(include_destructables)
+        grid = self._add_non_pathables_ground(
+            grid=grid, include_destructables=include_destructables
+        )
+
+        grid = np.where(grid != 0, default_weight, np.inf).astype(np.float32)
+        return grid
+
+    def get_walling_grid(
+        self, default_weight: float = 1, include_destructables: bool = True
+    ) -> np.ndarray:
+        """Retrieve the walling grid"""
+        grid = self.get_base_walling_grid(include_destructables)
         grid = self._add_non_pathables_ground(
             grid=grid, include_destructables=include_destructables
         )
@@ -378,6 +416,60 @@ class MapAnalyzerPather:
             return skipped_path
         else:
             logger.debug(f"No Path found s{start}, g{goal}")
+            return None
+
+    def clockwise_pathfind(
+        self,
+        start: Tuple[float, float],
+        goal: Tuple[float, float],
+        origin: Tuple[float, float],
+        grid: Optional[ndarray] = None,
+        large: bool = False,
+        smoothing: bool = False,
+        sensitivity: int = 1,
+    ) -> Optional[List[Point2]]:
+        if grid is None:
+            logger.warning("Using the default pyastar grid as no grid was provided.")
+            grid = self.get_pyastar_grid()
+
+        if start is not None and goal is not None and origin is not None:
+            origin = round(origin[0]), round(origin[1])
+            rounded_start = round(start[0]), round(start[1])
+            rounded_start = self.find_eligible_point(
+                rounded_start, grid, self.terrain_height, 10
+            )
+            if start == goal:
+                # looping path, move one tile counterclockwise
+                x_mod = 1 if rounded_start[1] < origin[1] else -1
+                y_mod = 1 if rounded_start[0] > origin[0] else -1
+                goal = rounded_start[0] + x_mod, rounded_start[1] + y_mod
+            else:
+                goal = round(goal[0]), round(goal[1])
+            goal = self.find_eligible_point(goal, grid, self.terrain_height, 10)
+        else:
+            logger.warning(PatherNoPointsException(start=start, goal=goal))
+            return None
+
+        # find_eligible_point didn't find any pathable nodes nearby
+        if start is None or goal is None or origin is None:
+            return None
+
+        path = clockwise_astar_path(grid, rounded_start, goal, origin, large, smoothing)
+
+        if path is not None:
+            # Remove the starting point from the path.
+            # Make sure the goal node is the last node even if we are
+            # skipping points
+            complete_path = list(map(Point2, path))
+            skipped_path = complete_path[0:-1:sensitivity]
+            if skipped_path:
+                skipped_path.pop(0)
+
+            skipped_path.append(complete_path[-1])
+
+            return skipped_path
+        else:
+            logger.debug(f"No Path found s{start}, g{goal}, o{origin}")
             return None
 
     def pathfind_with_nyduses(
