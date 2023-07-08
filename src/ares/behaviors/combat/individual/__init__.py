@@ -8,3 +8,4 @@ from ares.behaviors.combat.individual.shoot_target_in_range import ShootTargetIn
 from ares.behaviors.combat.individual.stutter_unit_back import StutterUnitBack
 from ares.behaviors.combat.individual.stutter_unit_forward import StutterUnitForward
 from ares.behaviors.combat.individual.use_ability import UseAbility
+from ares.behaviors.combat.individual.worker_kite_back import WorkerKiteBack

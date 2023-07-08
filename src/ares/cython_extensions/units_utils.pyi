@@ -26,7 +26,9 @@ def cy_center(units: Union[Units, list[Unit]]) -> tuple[float, float]:
     """
     ...
 
-def cy_closest_to(position: Point2, units: Union[Units, list[Unit]]) -> Unit:
+def cy_closest_to(
+    position: Union[Point2, tuple[float, float]], units: Union[Units, list[Unit]]
+) -> Unit:
     """Iterate through `units` to find closest to `position`.
 
     14.3 µs ± 135 ns per loop (mean ± std. dev. of 7 runs, 100,000 loops each)

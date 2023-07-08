@@ -37,7 +37,7 @@ Mining:
     GeyserDistanceFactor: 1.05
     GeyserThreshold: 0.05
     MineralDistanceFactor: 1.25
-    TownhallDistanceFactor: 1.08
+    TownhallDistanceFactor: 1.11
 
 Pathing:
     # amount of extra buffer to add to unit/structure ranges

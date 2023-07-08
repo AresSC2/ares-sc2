@@ -38,6 +38,7 @@ from ares.consts import (
     UnitRole,
 )
 from ares.cython_extensions.geometry import cy_distance_to
+from ares.cython_extensions.units_utils import cy_center, cy_closest_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -345,12 +346,6 @@ class BuildingManager(Manager, IManagerMediator):
             for th in self.ai.townhalls:
                 if th.build_progress < progress:
                     continue
-                # early game only take gas at spawn or natural
-                if self.ai.time < 260 and (
-                    th.distance_to(self.ai.start_location) > 10
-                    and th.distance_to(self.manager_mediator.get_own_nat) > 10
-                ):
-                    continue
 
                 possible_geysers: Units = Units([], self.ai)
 
@@ -375,10 +370,16 @@ class BuildingManager(Manager, IManagerMediator):
                 else:
                     # target geyser closest to mf so worker doesn't have to move as far
                     if close_mf := self.ai.mineral_field.filter(
-                        lambda mf: mf.distance_to(possible_geysers.center) < 12.0
+                        lambda mf: cy_distance_to(
+                            mf.position, cy_center(possible_geysers)
+                        )
+                        < 12.0
                     ):
                         target_geyser: Unit = possible_geysers.closest_to(
                             close_mf.center
+                        )
+                        target_geyser: Unit = cy_closest_to(
+                            cy_center(close_mf), possible_geysers
                         )
                     else:
                         target_geyser: Unit = possible_geysers.first
