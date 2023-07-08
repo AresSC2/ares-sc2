@@ -23,7 +23,7 @@ from ares.consts import (
     UnitRole,
     UnitTreeQueryType,
 )
-from ares.cython_extensions.units_utils import cy_sorted_by_distance_to
+from ares.cython_extensions.units_utils import cy_closest_to, cy_sorted_by_distance_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -331,6 +331,7 @@ class ResourceManager(Manager, IManagerMediator):
             Selected worker, if available.
 
         """
+        target_position = target_position.position
         # maybe we can quickly select the persistent worker
         if select_persistent_builder:
             persistent_workers: Units = self.manager_mediator.get_units_from_role(
@@ -360,7 +361,7 @@ class ResourceManager(Manager, IManagerMediator):
             list(self.worker_to_mineral_patch_dict) + list(self.worker_to_geyser_dict)
         )
         if unassigned_workers and not force_close:
-            return unassigned_workers.closest_to(target_position)
+            return cy_closest_to(target_position, unassigned_workers)
 
         if available_workers := workers.filter(
             lambda w: w.tag in self.worker_to_mineral_patch_dict
@@ -372,12 +373,12 @@ class ResourceManager(Manager, IManagerMediator):
                     lambda th: th.is_ready
                     and self.ai.mineral_field.closer_than(10, th).amount >= 8
                 ),
-                target_position.position,
+                target_position,
             )
             # seems there are no townhalls with plenty of resources, don't be fussy at
             # this point
             if not townhalls:
-                return available_workers.closest_to(target_position)
+                return cy_closest_to(target_position, available_workers)
 
             # go through townhalls, we loop through the min fields by distance to
             # townhall that way there is a good chance we pick a worker at a far mineral
@@ -394,7 +395,9 @@ class ResourceManager(Manager, IManagerMediator):
                                 lambda w: w.tag
                                 in self.mineral_patch_to_list_of_workers[mineral.tag]
                             ):
-                                worker: Unit = close_workers.closest_to(target_position)
+                                worker: Unit = cy_closest_to(
+                                    target_position, close_workers
+                                )
                                 self.remove_worker_from_mineral(worker.tag)
                                 return worker
 
@@ -413,7 +416,7 @@ class ResourceManager(Manager, IManagerMediator):
                             return worker
 
             # somehow got here without finding a worker, any worker will do
-            worker: Unit = available_workers.closest_to(target_position)
+            worker: Unit = cy_closest_to(target_position, available_workers)
             self.remove_worker_from_mineral(worker.tag)
             return worker
 
@@ -502,9 +505,9 @@ class ResourceManager(Manager, IManagerMediator):
                     if worker.tag not in self.geyser_to_list_of_workers[gas.tag]:
                         self.geyser_to_list_of_workers[gas.tag].add(worker.tag)
                 self.worker_to_geyser_dict[worker.tag] = gas.tag
-                self.worker_tag_to_townhall_tag[
-                    worker.tag
-                ] = self.ai.townhalls.closest_to(gas).tag
+                self.worker_tag_to_townhall_tag[worker.tag] = cy_closest_to(
+                    gas.position, self.ai.townhalls
+                ).tag
                 # if this drone was collecting minerals, we need to remove it
                 self.remove_worker_from_mineral(worker.tag)
                 break
@@ -550,14 +553,14 @@ class ResourceManager(Manager, IManagerMediator):
                 continue
 
             if self.ai.time < 120:
-                mineral: Unit = _minerals.closest_to(worker)
+                mineral: Unit = cy_closest_to(worker.position, _minerals)
             else:
                 # find the closest mineral, then find the nearby minerals that are
                 # closest to the townhall
-                closest_mineral: Unit = _minerals.closest_to(worker)
+                closest_mineral: Unit = cy_closest_to(worker.position, _minerals)
                 nearby_minerals: Units = _minerals.closer_than(10, closest_mineral)
-                th: Unit = self.ai.townhalls.closest_to(closest_mineral)
-                mineral: Unit = nearby_minerals.closest_to(th)
+                th: Unit = cy_closest_to(closest_mineral.position, self.ai.townhalls)
+                mineral: Unit = cy_closest_to(th.position, nearby_minerals)
 
             if len(self.mineral_patch_to_list_of_workers.get(mineral.tag, [])) < 2:
                 self._assign_worker_to_patch(mineral, worker)
@@ -589,8 +592,8 @@ class ResourceManager(Manager, IManagerMediator):
             if worker_tag not in self.mineral_patch_to_list_of_workers[mineral_tag]:
                 self.mineral_patch_to_list_of_workers[mineral_tag].add(worker_tag)
         self.worker_to_mineral_patch_dict[worker_tag] = mineral_tag
-        self.worker_tag_to_townhall_tag[worker_tag] = self.ai.townhalls.closest_to(
-            mineral_field
+        self.worker_tag_to_townhall_tag[worker_tag] = cy_closest_to(
+            mineral_field.position, self.ai.townhalls
         ).tag
 
     def _assign_initial_workers(self, minerals: Units, workers: Units) -> None:

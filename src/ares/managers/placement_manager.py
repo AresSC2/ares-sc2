@@ -18,6 +18,7 @@ from ares.consts import (
     ManagerRequestType,
 )
 from ares.cython_extensions.cython_functions import get_bounding_box
+from ares.cython_extensions.geometry import cy_distance_to
 from ares.cython_extensions.placement_solver import (
     can_place_structure,
     find_building_locations,
@@ -242,7 +243,7 @@ class PlacementManager(Manager, IManagerMediator):
             if base_location in self.placements_dict
             else min(
                 self.placements_dict.keys(),
-                key=lambda k: k.distance_to(base_location),
+                key=lambda k: cy_distance_to(k, base_location),
             )
         )
 
@@ -267,7 +268,7 @@ class PlacementManager(Manager, IManagerMediator):
 
             # get closest available by default
             final_placement: Point2 = min(
-                available, key=lambda k: k.distance_to(base_location)
+                available, key=lambda k: cy_distance_to(k, base_location)
             )
             # if wall placement is requested swap final_placement is possible
             if wall:
@@ -277,7 +278,7 @@ class PlacementManager(Manager, IManagerMediator):
                     if self.placements_dict[location][building_size][a]["is_wall"]
                 ]:
                     final_placement = min(
-                        available, key=lambda k: k.distance_to(base_location)
+                        available, key=lambda k: cy_distance_to(k, base_location)
                     )
 
             if reserve_placement:
