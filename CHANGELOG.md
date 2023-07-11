@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.23.1 (2023-07-11)
+### Performance
+
+* Replace dict.get() calls in mining ([`a295a35`](https://github.com/AresSC2/ares-sc2/commit/a295a35bca227b4a9d09010aea9f250c5cd1c076))
+
 ## v0.23.0 (2023-07-08)
 ### Feature
 
