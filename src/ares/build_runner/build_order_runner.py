@@ -149,7 +149,6 @@ class BuildOrderRunner:
             if command in ADD_ONS:
                 self.current_step_started = True
             elif command in ALL_STRUCTURES:
-
                 # TODO: Replace this nasty fix when protoss placement formation is done
                 #   Prevents slow `find_placement` spam when there are no pylons
                 if (

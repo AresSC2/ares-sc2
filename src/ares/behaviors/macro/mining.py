@@ -138,16 +138,18 @@ class Mining(MacroBehavior):
                 resource_tag: int = (
                     worker_to_mineral_patch_dict[worker_tag]
                     if assigned_mineral_patch
-                    else worker_to_geyser_dict[worker.tag]
+                    else worker_to_geyser_dict[worker_tag]
                 )
-                if _resource := resources_dict.get(resource_tag, None):
+                # using try except is faster than dict.get()
+                try:
+                    _resource = resources_dict[resource_tag]
                     resource_position = _resource.position
                     resource_tag = _resource.tag
                     resource = _resource
                     dist_to_resource = cy_distance_to(
                         worker_position, resource_position
                     )
-                else:
+                except KeyError:
                     # Mined out or no vision? Remove it
                     if assigned_mineral_patch:
                         mediator.remove_mineral_field(mineral_field_tag=resource_tag)
@@ -386,10 +388,10 @@ class Mining(MacroBehavior):
         """
 
         if target.is_mineral_field:
-            resource_target_pos: Point2 = mineral_target_dict.get(target_position)
+            resource_target_pos: Point2 = mineral_target_dict[target_position]
         else:
             resource_target_pos: Point2 = Point2(
-                cy_towards(target_position, worker.position, TOWNHALL_RADIUS * 1.21)
+                cy_towards(target_position, worker_position, TOWNHALL_RADIUS * 1.21)
             )
 
         closest_th: Unit = cy_closest_to(worker_position, ai.townhalls)
@@ -406,16 +408,15 @@ class Mining(MacroBehavior):
         elif (worker.is_returning or worker.is_carrying_resource) and len(
             worker.orders
         ) < 2:
-            townhall: Optional[Unit] = None
-            if worker.tag in worker_tag_to_townhall_tag:
-                townhall: Unit = ai.unit_tag_dict.get(
-                    worker_tag_to_townhall_tag[worker.tag], None
-                )
-
-            if not townhall:
+            try:
+                townhall: Unit = ai.unit_tag_dict[
+                    worker_tag_to_townhall_tag[worker.tag]
+                ]
+            except KeyError:
                 townhall: Unit = closest_th
 
             target_pos: Point2 = townhall.position
+
             target_pos: Point2 = Point2(
                 cy_towards(
                     target_pos,
