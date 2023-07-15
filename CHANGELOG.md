@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.24.0 (2023-07-15)
+### Feature
+
+* Mining optimization ([`c5a7d72`](https://github.com/AresSC2/ares-sc2/commit/c5a7d72091b3de352956a98335058c165fef65f8))
+
 ## v0.23.1 (2023-07-11)
 ### Performance
 
