@@ -176,7 +176,8 @@ class Mining(MacroBehavior):
                         )
                     )
 
-                # fix realtime bug where worker is stuck with a move command but already returned minerals
+                # fix realtime bug where worker is stuck with a move command
+                # but already returned minerals
                 elif (
                     len(worker.orders) == 1
                     and worker.orders[0].ability.id == AbilityId.MOVE
