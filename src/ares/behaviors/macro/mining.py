@@ -16,7 +16,9 @@ from ares.cython_extensions.geometry import cy_distance_to, cy_towards
 from ares.cython_extensions.units_utils import cy_closest_to, cy_in_attack_range
 from ares.managers.manager_mediator import ManagerMediator
 
-TOWNHALL_RADIUS: float = 2.5
+TOWNHALL_RADIUS: float = 2.75
+# how far from townhall should we return speed miners to
+TOWNHALL_TARGET: float = TOWNHALL_RADIUS * 1.21
 WORKER_TYPES: set[UnitID] = {UnitID.DRONE, UnitID.PROBE, UnitID.SCV, UnitID.MULE}
 
 
@@ -174,8 +176,16 @@ class Mining(MacroBehavior):
                         )
                     )
 
-                # shift worker to correct resource if it ends up on wrong one
-                elif worker.is_gathering and worker.order_target != resource_tag:
+                # fix realtime bug where worker is stuck with a move command
+                # but already returned minerals
+                elif (
+                    len(worker.orders) == 1
+                    and worker.orders[0].ability.id == AbilityId.MOVE
+                    and worker.order_target
+                    == cy_closest_to(worker_position, ai.ready_townhalls).tag
+                    # shift worker to correct resource if it ends up on wrong one
+                ) or (worker.is_gathering and worker.order_target != resource_tag):
+                    # target being the mineral
                     worker(AbilityId.SMART, resource)
 
                 elif (self.mineral_boost and assigned_mineral_patch) or (
@@ -382,16 +392,13 @@ class Mining(MacroBehavior):
             Pass in for optimization purposes.
         target_position :
             Pass in for optimization purposes.
-        Returns
-        -------
-
         """
 
-        if target.is_mineral_field:
+        if target.is_mineral_field or target.is_vespene_geyser:
             resource_target_pos: Point2 = mineral_target_dict[target_position]
         else:
             resource_target_pos: Point2 = Point2(
-                cy_towards(target_position, worker_position, TOWNHALL_RADIUS * 1.21)
+                cy_towards(target_position, worker_position, TOWNHALL_TARGET)
             )
 
         closest_th: Unit = cy_closest_to(worker_position, ai.townhalls)
