@@ -612,6 +612,9 @@ class AresBot(CustomBotAI):
         self.all_own_units.append(unit_obj)
         if unit_type in UNITS_TO_AVOID_TYPES:
             units_to_avoid_list.append(unit_obj)
+        else:
+            self.all_own_units_slim.append(unit_obj)
+
         if unit_type in ALL_STRUCTURES:
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_structure(unit_obj)
@@ -738,6 +741,8 @@ class AresBot(CustomBotAI):
         self.ready_townhalls: Units = Units([], self)
         self.gas_buildings: Units = Units([], self)
         self.all_own_units: Units = Units([], self)
+        # don't include tumors
+        self.all_own_units_slim: Units = Units([], self)
         self.enemy_units: Units = Units([], self)
         self.enemy_structures: Units = Units([], self)
         self.enemy_workers: Units = Units([], self)
