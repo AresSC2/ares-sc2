@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.25.0 (2023-07-17)
+### Feature
+
+* All own units slim ([`274bba7`](https://github.com/AresSC2/ares-sc2/commit/274bba71c95db3d9eb6ef15cbc72b73d3fdde76e))
+
 ## v0.24.0 (2023-07-15)
 ### Feature
 
