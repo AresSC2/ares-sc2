@@ -96,8 +96,8 @@ class PlacementManager(Manager, IManagerMediator):
         # main dict where all data is organised
         # {base_loc: 3x3: {building_pos: (2, 2), taken: False, is_wall: True}, {...}
         #            2x2: {building_pos: (5, 5), taken: True, is_wall: False}, {...}}
-        self.placements_dict: dict[Point2 : dict[BuildingSize:dict]] = dict()
-        self.race_to_building_solver_method: dict[Race:Callable] = {
+        self.placements_dict: dict[Point2, dict[BuildingSize, dict]] = dict()
+        self.race_to_building_solver_method: dict[Race, Callable] = {
             Race.Terran: lambda: self._solve_terran_building_formation(),
             Race.Protoss: lambda: self._solve_protoss_building_formation(),
             Race.Zerg: lambda: self._solve_zerg_building_formation(),
@@ -106,7 +106,7 @@ class PlacementManager(Manager, IManagerMediator):
         self.structure_tag_to_base_location: dict[int, Point2] = dict()
         # this prevents iterating through all bases to check workers on route
         # key: Unique placement location, value: main base location
-        self.worker_on_route_tracker: dict[Point2:Point2] = dict()
+        self.worker_on_route_tracker: dict[Point2, Point2] = dict()
         self.WORKER_ON_ROUTE_TIMEOUT: float = self.config[PLACEMENT][
             WORKER_ON_ROUTE_TIMEOUT
         ]
