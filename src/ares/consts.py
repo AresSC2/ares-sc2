@@ -367,7 +367,7 @@ class UnitTreeQueryType(str, Enum):
 
 
 """Sets"""
-ADD_ONS: dict[UnitID:UnitID] = {
+ADD_ONS: dict[UnitID, UnitID] = {
     UnitID.BARRACKSREACTOR: UnitID.BARRACKS,
     UnitID.FACTORYTECHREACTOR: UnitID.FACTORY,
     UnitID.STARPORTREACTOR: UnitID.STARPORT,

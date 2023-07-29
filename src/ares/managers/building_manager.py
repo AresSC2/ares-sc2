@@ -32,7 +32,6 @@ from ares.consts import (
     TARGET,
     TIME_ORDER_COMMENCED,
     BuildingPurpose,
-    BuildingSize,
     ManagerName,
     ManagerRequestType,
     UnitRole,
@@ -256,21 +255,16 @@ class BuildingManager(Manager, IManagerMediator):
                     continue
 
                 # handle blocked positions
-                # TODO: extend this for all races
-                #   When placement_manager is implemented for all races
-                if self.ai.race == Race.Terran and structure_id not in GAS_BUILDINGS:
-                    size: BuildingSize = (
-                        BuildingSize.TWO_BY_TWO
-                        if structure_id == UnitID.SUPPLYDEPOT
-                        else BuildingSize.THREE_BY_THREE
-                    )
+                # TODO: extend this for Zerg
+                if self.ai.race != Race.Zerg and structure_id not in GAS_BUILDINGS:
                     if not self.manager_mediator.can_place_structure(
-                        position=target.position, size=size
+                        position=target.position, structure_type=structure_id
                     ):
                         self.building_tracker[worker_tag][
                             TARGET
                         ] = self.manager_mediator.request_building_placement(
-                            base_location=self.ai.start_location, building_size=size
+                            base_location=self.ai.start_location,
+                            structure_type=structure_id,
                         )
                         continue
 

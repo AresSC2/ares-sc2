@@ -3,13 +3,17 @@ from typing import TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Optiona
 
 import numpy as np
 from loguru import logger
+from sc2.constants import ALL_GAS
 from sc2.data import Race
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
+from sc2.units import Units
 
 from ares.consts import (
     DEBUG,
     DEBUG_OPTIONS,
+    GAS_BUILDINGS,
     PLACEMENT,
     SHOW_BUILDING_FORMATION,
     WORKER_ON_ROUTE_TIMEOUT,
@@ -18,11 +22,13 @@ from ares.consts import (
     ManagerRequestType,
 )
 from ares.cython_extensions.cython_functions import get_bounding_box
+from ares.cython_extensions.general_utils import cy_pylon_matrix_covers
 from ares.cython_extensions.geometry import cy_distance_to
 from ares.cython_extensions.placement_solver import (
     can_place_structure,
     find_building_locations,
 )
+from ares.dicts.structure_to_building_size import STRUCTURE_TO_BUILDING_SIZE
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -90,8 +96,8 @@ class PlacementManager(Manager, IManagerMediator):
         # main dict where all data is organised
         # {base_loc: 3x3: {building_pos: (2, 2), taken: False, is_wall: True}, {...}
         #            2x2: {building_pos: (5, 5), taken: True, is_wall: False}, {...}}
-        self.placements_dict: dict[Point2 : dict[BuildingSize:dict]] = dict()
-        self.race_to_building_solver_method: dict[Race:Callable] = {
+        self.placements_dict: dict[Point2, dict[BuildingSize, dict]] = dict()
+        self.race_to_building_solver_method: dict[Race, Callable] = {
             Race.Terran: lambda: self._solve_terran_building_formation(),
             Race.Protoss: lambda: self._solve_protoss_building_formation(),
             Race.Zerg: lambda: self._solve_zerg_building_formation(),
@@ -100,7 +106,7 @@ class PlacementManager(Manager, IManagerMediator):
         self.structure_tag_to_base_location: dict[int, Point2] = dict()
         # this prevents iterating through all bases to check workers on route
         # key: Unique placement location, value: main base location
-        self.worker_on_route_tracker: dict[Point2:Point2] = dict()
+        self.worker_on_route_tracker: dict[Point2, Point2] = dict()
         self.WORKER_ON_ROUTE_TIMEOUT: float = self.config[PLACEMENT][
             WORKER_ON_ROUTE_TIMEOUT
         ]
@@ -163,7 +169,7 @@ class PlacementManager(Manager, IManagerMediator):
         logger.info(f"Solved placement formation in {(finish - start)*1000} ms")
 
     def can_place_structure(
-        self, position: Point2, size: BuildingSize, include_addon: bool = False
+        self, position: Point2, structure_type: UnitID, include_addon: bool = False
     ) -> bool:
         """Check if structure can be placed at a given position.
 
@@ -173,8 +179,8 @@ class PlacementManager(Manager, IManagerMediator):
         ----------
         position : Point2
             The intended building position.
-        size : BuildingSize
-            Size of intended structure.
+        structure_type : UnitID
+            Structure we are trying to place.
         include_addon : bool, optional
             For Terran structures, check addon will place too.
 
@@ -183,6 +189,18 @@ class PlacementManager(Manager, IManagerMediator):
         bool :
             Indicating if structure can be placed at given position.
         """
+        assert structure_type in STRUCTURE_TO_BUILDING_SIZE, (
+            f"{structure_type}, " f"not present in STRUCTURE_TO_BUILDING_SIZE dict"
+        )
+
+        if structure_type in GAS_BUILDINGS:
+            pos: Point2 = position.position
+            existing_gas_buildings: Units = self.ai.all_units.filter(
+                lambda u: u.type_id in ALL_GAS and cy_distance_to(pos, u.position) < 3.5
+            )
+            return len(existing_gas_buildings) == 0
+
+        size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[structure_type]
         offset: float = self.BUILDING_SIZE_ENUM_TO_RADIUS[size]
         origin_x: int = int(position[0] - offset)
         origin_y: int = int(position[1] - offset)
@@ -201,22 +219,22 @@ class PlacementManager(Manager, IManagerMediator):
     def request_building_placement(
         self,
         base_location: Point2,
-        building_size: BuildingSize,
+        structure_type: UnitID,
         wall: bool = False,
         find_alternative: bool = True,
         reserve_placement: bool = True,
+        within_psionic_matrix: bool = False,
+        pylon_build_progress: float = 1.0,
     ) -> Optional[Point2]:
         """Given a base location and building size find an available placement.
-        TODO: Implement find_alternative parameter where method will find a nearby
-            placement if none available at `base_location`
 
         Parameters
         ----------
         base_location : Point2
             The general area where the placement should be near.
             This should be a expansion location.
-        building_size : BuildingSize
-            Size of intended structure.
+        structure_type : UnitID
+            Structure type requested.
         wall : bool, optional
             Request a wall structure placement.
             Will find alternative if no wall placements available.
@@ -224,8 +242,12 @@ class PlacementManager(Manager, IManagerMediator):
             If no placements available at base_location, find
             alternative at nearby base.
         reserve_placement : bool, optional
-            Reserve this booking for a while, so another customer doesnt
+            Reserve this booking for a while, so another customer doesn't
             request it.
+        within_psionic_matrix : bool, optional
+            Protoss specific -> calculated position have power?
+        pylon_build_progress : float, optional (default = 1.0)
+            Only relevant if `within_psionic_matrix = True`
 
         Returns
         ----------
@@ -234,15 +256,20 @@ class PlacementManager(Manager, IManagerMediator):
 
         """
         assert (
-            self.ai.race == Race.Terran
-        ), "`request_building_placement` only currently supported for Terran"
+            self.ai.race != Race.Zerg
+        ), "`request_building_placement` not supported for Zerg"
+        assert (
+            structure_type in STRUCTURE_TO_BUILDING_SIZE
+        ), f"{structure_type} not found in STRUCTURE_TO_BUILDING_SIZE dict"
 
+        base_locations: set[Point2] = set(self.placements_dict.keys())
+        building_size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[structure_type]
         # find base location in placements_dict, or find closest
         location: Point2 = (
             base_location
             if base_location in self.placements_dict
             else min(
-                self.placements_dict.keys(),
+                base_locations,
                 key=lambda k: cy_distance_to(k, base_location),
             )
         )
@@ -257,20 +284,46 @@ class PlacementManager(Manager, IManagerMediator):
                 for placement in potential_placements
                 if potential_placements[placement]["available"]
                 and not potential_placements[placement]["worker_on_route"]
-                and self.can_place_structure(placement, building_size)
+                and self.can_place_structure(placement, structure_type)
             ]
-            # TODO: Handle this by finding a different base location
+            # no available placements at base_location
             if len(available) == 0:
-                logger.warning(
-                    f"No available {building_size} found near location: {base_location}"
+                if not find_alternative:
+                    logger.warning(
+                        f"No available {building_size} found near location:"
+                        f" {base_location}"
+                    )
+                    return
+                base_locations.remove(location)
+                location = min(
+                    base_locations,
+                    key=lambda k: cy_distance_to(k, base_location),
                 )
-                return
+                logger.warning(
+                    f"No available {building_size} found near location: "
+                    f"{base_location}, trying near {location}"
+                )
+                potential_placements: dict[Point2:dict] = self.placements_dict[
+                    location
+                ][building_size]
+                available: list[Point2] = [
+                    placement
+                    for placement in potential_placements
+                    if potential_placements[placement]["available"]
+                    and not potential_placements[placement]["worker_on_route"]
+                    and self.can_place_structure(placement, building_size)
+                ]
+                if len(available) == 0:
+                    logger.warning(
+                        f"No available {building_size} found near location: {location}"
+                    )
+                    return
 
             # get closest available by default
             final_placement: Point2 = min(
                 available, key=lambda k: cy_distance_to(k, base_location)
             )
-            # if wall placement is requested swap final_placement is possible
+            # if wall placement is requested swap final_placement if possible
             if wall:
                 if available := [
                     a
@@ -280,6 +333,30 @@ class PlacementManager(Manager, IManagerMediator):
                     final_placement = min(
                         available, key=lambda k: cy_distance_to(k, base_location)
                     )
+            # prioritize production pylons if they exist
+            elif structure_type == UnitID.PYLON:
+                if available := [
+                    a
+                    for a in available
+                    if self.placements_dict[location][building_size][a][
+                        "production_pylon"
+                    ]
+                    # don't wall in, user should intentionally pass wall parameter
+                    and not self.placements_dict[location][building_size][a]["is_wall"]
+                ]:
+                    final_placement = min(
+                        available, key=lambda k: cy_distance_to(k, base_location)
+                    )
+
+            if self.ai.race == Race.Protoss and within_psionic_matrix:
+                final_placement = self._fine_placement_near_pylon(
+                    available, base_location, pylon_build_progress
+                )
+                if not final_placement:
+                    logger.warning(
+                        f"Can't find placement near pylon near {base_location}."
+                    )
+                    return
 
             if reserve_placement:
                 self.worker_on_route_tracker[final_placement] = location
@@ -290,6 +367,39 @@ class PlacementManager(Manager, IManagerMediator):
 
         else:
             logger.warning(f"No {building_size} present in placement bookkeeping.")
+
+    def _fine_placement_near_pylon(
+        self,
+        available: list[Point2],
+        base_location: Point2,
+        pylon_build_progress: float,
+    ) -> Optional[Point2]:
+        pylons = self.manager_mediator.get_own_structures_dict[UnitID.PYLON]
+        # first we check for ready pylons
+        if available := [
+            a
+            for a in available
+            if cy_pylon_matrix_covers(
+                a,
+                pylons,
+                self.ai.game_info.terrain_height.data_numpy,
+                pylon_build_progress=1.0,
+            )
+        ]:
+            return min(available, key=lambda k: cy_distance_to(k, base_location))
+        # then check for those in progress
+        else:
+            if available := [
+                a
+                for a in available
+                if cy_pylon_matrix_covers(
+                    a,
+                    pylons,
+                    self.ai.game_info.terrain_height.data_numpy,
+                    pylon_build_progress=pylon_build_progress,
+                )
+            ]:
+                return min(available, key=lambda k: cy_distance_to(k, base_location))
 
     def on_building_started(self, unit: Unit) -> None:
         """On structure starting, update placements_dict with this new information.
@@ -444,56 +554,7 @@ class PlacementManager(Manager, IManagerMediator):
             # calculate the wall positions first
             if el == self.ai.start_location:
                 max_dist = 22
-                ramp = self.ai.main_base_ramp
-                self.placements_dict[el][BuildingSize.THREE_BY_THREE][
-                    ramp.barracks_correct_placement
-                ] = {
-                    "available": True,
-                    "has_addon": False,
-                    "is_wall": True,
-                    "building_tag": 0,
-                    "worker_on_route": False,
-                    "time_requested": 0.0,
-                }
-                depot_positions = [pos for pos in ramp.corner_depots]
-                self.placements_dict[el][BuildingSize.TWO_BY_TWO][
-                    depot_positions[0]
-                ] = {
-                    "available": True,
-                    "has_addon": False,
-                    "is_wall": True,
-                    "building_tag": 0,
-                    "worker_on_route": False,
-                    "time_requested": 0.0,
-                }
-                self.placements_dict[el][BuildingSize.TWO_BY_TWO][
-                    depot_positions[1]
-                ] = {
-                    "available": True,
-                    "has_addon": False,
-                    "is_wall": True,
-                    "building_tag": 0,
-                    "worker_on_route": False,
-                    "time_requested": 0.0,
-                }
-                ramp_rax_x = int(ramp.barracks_correct_placement.x - 1.5)
-                ramp_rax_y = int(ramp.barracks_correct_placement.y - 1.5)
-                depot_wall_1_x = int(depot_positions[0].x - 1.0)
-                depot_wall_1_y = int(depot_positions[0].y - 1.0)
-                depot_wall_2_x = int(depot_positions[1].x - 1.0)
-                depot_wall_2_y = int(depot_positions[1].y - 1.0)
-
-                self.points_to_avoid_grid[
-                    ramp_rax_y : ramp_rax_y + 3, ramp_rax_x : ramp_rax_x + 5
-                ] = 1
-                self.points_to_avoid_grid[
-                    depot_wall_1_y : depot_wall_1_y + 2,
-                    depot_wall_1_x : depot_wall_1_x + 2,
-                ] = 1
-                self.points_to_avoid_grid[
-                    depot_wall_2_y : depot_wall_2_y + 2,
-                    depot_wall_2_x : depot_wall_2_x + 2,
-                ] = 1
+                self._calculate_main_ramp_placements(el)
 
             area_points: set[
                 tuple[int, int]
@@ -524,16 +585,9 @@ class PlacementManager(Manager, IManagerMediator):
                 if self.ai.get_terrain_height(point2_pos) == self.ai.get_terrain_height(
                     el
                 ):
-                    self.placements_dict[el][BuildingSize.THREE_BY_THREE][
-                        point2_pos
-                    ] = {
-                        "available": True,
-                        "has_addon": False,
-                        "is_wall": False,
-                        "building_tag": 0,
-                        "worker_on_route": False,
-                        "time_requested": 0.0,
-                    }
+                    self._add_placement_position(
+                        BuildingSize.THREE_BY_THREE, el, point2_pos
+                    )
                     # move back to top left corner of 3x3, so we can add to avoid grid
                     avoid_x = int(x - 1.5)
                     avoid_y = int(y - 1.5)
@@ -569,14 +623,9 @@ class PlacementManager(Manager, IManagerMediator):
                 if self.ai.get_terrain_height(point2_pos) == self.ai.get_terrain_height(
                     el
                 ):
-                    self.placements_dict[el][BuildingSize.TWO_BY_TWO][point2_pos] = {
-                        "available": True,
-                        "has_addon": False,
-                        "is_wall": False,
-                        "building_tag": 0,
-                        "worker_on_route": False,
-                        "time_requested": 0.0,
-                    }
+                    self._add_placement_position(
+                        BuildingSize.TWO_BY_TWO, el, point2_pos
+                    )
                     # move back to top left corner of 2x2, so we can add to avoid grid
                     avoid_x = int(x - 1.0)
                     avoid_y = int(y - 1.0)
@@ -585,12 +634,207 @@ class PlacementManager(Manager, IManagerMediator):
                     ] = 1
 
     def _solve_protoss_building_formation(self):
-        # TODO: Implement protoss placements
-        pass
+        """Solve Protoss building placements for every expansion location.
+
+        The following pseudo logic is applied:
+        for every expansion location:
+            - get_area_points_near_location (flood fill)
+            - use a convolution pass to find 2x2 production pylons
+                set a high x and y stride to space these out
+            - run a convolution pass to find 3x3 placements
+                this is for gateway, robo, stargate, forge etc
+            - run a convolution pass to squeeze in extra 2x2 placements
+                this is for supply pylons, cannons, shield batteries
+            - add found locations to `self.placements_dict`
+        """
+        creep_grid: np.ndarray = self.ai.state.creep.data_numpy
+        placement_grid: np.ndarray = self.ai.game_info.placement_grid.data_numpy
+        # Note: use MapAnalyzers pathing grid to get rocks etc
+        pathing_grid: np.ndarray = self.manager_mediator.get_ground_grid.astype(
+            np.uint8
+        ).T
+        for el in self.ai.expansion_locations_list:
+            self.placements_dict[el] = {}
+            self.placements_dict[el][BuildingSize.TWO_BY_TWO] = {}
+            self.placements_dict[el][BuildingSize.THREE_BY_THREE] = {}
+            # avoid building within 9 distance of el
+            start_x: int = int(el.x - 4.5)
+            start_y: int = int(el.y - 4.5)
+            self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
+            max_dist = 16
+            # calculate the wall positions first
+            if el == self.ai.start_location:
+                max_dist = 22
+                self._calculate_main_ramp_placements(el)
+
+            area_points: set[
+                tuple[int, int]
+            ] = self.manager_mediator.get_flood_fill_area(
+                start_point=el, max_dist=max_dist
+            )
+            raw_x_bounds, raw_y_bounds = get_bounding_box(area_points)
+
+            # find production pylon positions first
+            production_pylon_positions = find_building_locations(
+                kernel=np.ones((2, 2), dtype=np.uint8),
+                x_stride=6,
+                y_stride=6,
+                x_bounds=raw_x_bounds,
+                y_bounds=raw_y_bounds,
+                creep_grid=creep_grid,
+                placement_grid=placement_grid,
+                pathing_grid=pathing_grid,
+                points_to_avoid_grid=self.points_to_avoid_grid,
+                building_width=2,
+                building_height=2,
+                avoid_creep=True,
+            )
+
+            for pos in production_pylon_positions:
+                x: float = pos[0]
+                y: float = pos[1]
+                point2_pos: Point2 = Point2((x, y))
+                if self.ai.get_terrain_height(point2_pos) == self.ai.get_terrain_height(
+                    el
+                ):
+                    self._add_placement_position(
+                        BuildingSize.TWO_BY_TWO, el, point2_pos, True
+                    )
+                    # move back to top left corner of 2x2, so we can add to avoid grid
+                    avoid_x = int(x - 1.0)
+                    avoid_y = int(y - 1.0)
+                    self.points_to_avoid_grid[
+                        avoid_y : avoid_y + 2, avoid_x : avoid_x + 2
+                    ] = 1
+
+            # increase distance from townhall that should be avoided
+            start_x: int = int(el.x - 4.5)
+            start_y: int = int(el.y - 4.5)
+            self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
+            three_by_three_positions = find_building_locations(
+                kernel=np.ones((3, 3), dtype=np.uint8),
+                x_stride=3,
+                y_stride=3,
+                x_bounds=raw_x_bounds,
+                y_bounds=raw_y_bounds,
+                creep_grid=creep_grid,
+                placement_grid=placement_grid,
+                pathing_grid=pathing_grid,
+                points_to_avoid_grid=self.points_to_avoid_grid,
+                building_width=3,
+                building_height=3,
+                avoid_creep=True,
+            )
+            for pos in three_by_three_positions:
+                x: float = pos[0]
+                y: float = pos[1]
+                point2_pos: Point2 = Point2((x, y))
+                if self.ai.get_terrain_height(point2_pos) == self.ai.get_terrain_height(
+                    el
+                ):
+                    self._add_placement_position(
+                        BuildingSize.THREE_BY_THREE, el, point2_pos
+                    )
+                    # move back to top left corner of 3x3, so we can add to avoid grid
+                    avoid_x = int(x - 1.5)
+                    avoid_y = int(y - 1.5)
+                    self.points_to_avoid_grid[
+                        avoid_y : avoid_y + 3, avoid_x : avoid_x + 3
+                    ] = 1
+
+            # find extra 2x2 last
+            two_by_two_positions = find_building_locations(
+                kernel=np.ones((2, 2), dtype=np.uint8),
+                x_stride=2,
+                y_stride=2,
+                x_bounds=raw_x_bounds,
+                y_bounds=raw_y_bounds,
+                creep_grid=creep_grid,
+                placement_grid=placement_grid,
+                pathing_grid=pathing_grid,
+                points_to_avoid_grid=self.points_to_avoid_grid,
+                building_width=2,
+                building_height=2,
+                avoid_creep=True,
+            )
+            for pos in two_by_two_positions:
+                x: float = pos[0]
+                y: float = pos[1]
+                point2_pos: Point2 = Point2((x, y))
+                if self.ai.get_terrain_height(point2_pos) == self.ai.get_terrain_height(
+                    el
+                ):
+                    self._add_placement_position(
+                        BuildingSize.TWO_BY_TWO, el, point2_pos
+                    )
 
     def _solve_zerg_building_formation(self):
         # TODO: Implement zerg placements
         pass
+
+    def _add_placement_position(
+        self,
+        building_size: BuildingSize,
+        expansion_location: Point2,
+        position: Point2,
+        production_pylon: bool = False,
+        wall: bool = False,
+    ) -> None:
+        """Add calculated position to placements dict."""
+        self.placements_dict[expansion_location][building_size][position] = {
+            "available": True,
+            "has_addon": False,
+            "is_wall": wall,
+            "building_tag": 0,
+            "worker_on_route": False,
+            "time_requested": 0.0,
+            "production_pylon": production_pylon,
+        }
+
+    def _calculate_main_ramp_placements(self, el: Point2) -> None:
+        set_production_pylon: bool = self.ai.race == Race.Protoss
+        ramp = self.ai.main_base_ramp
+        center_pos: Point2 = (
+            ramp.barracks_correct_placement
+            if self.ai.race == Race.Terran
+            else ramp.barracks_in_middle
+        )
+        self._add_placement_position(
+            BuildingSize.THREE_BY_THREE, el, center_pos, wall=True
+        )
+        corner_positions = [pos for pos in ramp.corner_depots]
+        self._add_placement_position(
+            BuildingSize.TWO_BY_TWO,
+            el,
+            corner_positions[0],
+            wall=True,
+            production_pylon=set_production_pylon,
+        )
+        self._add_placement_position(
+            BuildingSize.TWO_BY_TWO,
+            el,
+            corner_positions[1],
+            wall=True,
+            production_pylon=set_production_pylon,
+        )
+        ramp_3x3_x = int(ramp.barracks_correct_placement.x - 1.5)
+        ramp_3x3_y = int(ramp.barracks_correct_placement.y - 1.5)
+        corner_wall_1_x = int(corner_positions[0].x - 1.0)
+        corner_wall_1_y = int(corner_positions[0].y - 1.0)
+        corner_wall_2_x = int(corner_positions[1].x - 1.0)
+        corner_wall_2_y = int(corner_positions[1].y - 1.0)
+
+        self.points_to_avoid_grid[
+            ramp_3x3_y : ramp_3x3_y + 3, ramp_3x3_x : ramp_3x3_x + 5
+        ] = 1
+        self.points_to_avoid_grid[
+            corner_wall_1_y : corner_wall_1_y + 2,
+            corner_wall_1_x : corner_wall_1_x + 2,
+        ] = 1
+        self.points_to_avoid_grid[
+            corner_wall_2_y : corner_wall_2_y + 2,
+            corner_wall_2_x : corner_wall_2_x + 2,
+        ] = 1
 
     async def _draw_building_placements(self):
         """Draw all found building placements.
@@ -608,11 +852,7 @@ class PlacementManager(Manager, IManagerMediator):
                     placement
                 ]
                 position: Point2 = Point2(placement)
-                available: bool = info["available"]
-                worker_on_route: bool = info["worker_on_route"]
-                self.ai.draw_text_on_world(
-                    position, f"{placement} A: {available}, WOR: {worker_on_route}"
-                )
+                self.ai.draw_text_on_world(position, f"{placement}")
                 pos_min = Point3((placement.x - 1.5, placement.y - 1.5, z))
                 pos_max = Point3((placement.x + 1.5, placement.y + 1.5, z + 2))
                 self.ai.client.debug_box_out(pos_min, pos_max, Point3((255, 0, 0)))
@@ -626,14 +866,14 @@ class PlacementManager(Manager, IManagerMediator):
                     placement
                 ]
                 position: Point2 = Point2(placement)
-                available: bool = info["available"]
-                worker_on_route: bool = info["worker_on_route"]
-                self.ai.draw_text_on_world(
-                    position, f"{placement} A: {available}, WOR: {worker_on_route}"
-                )
+                self.ai.draw_text_on_world(position, f"{placement}")
                 pos_min = Point3((placement.x - 1.0, placement.y - 1.0, z))
                 pos_max = Point3((placement.x + 1.0, placement.y + 1.0, z + 1))
-                self.ai.client.debug_box_out(pos_min, pos_max, Point3((0, 0, 255)))
+                if info["production_pylon"]:
+                    colour = Point3((0, 255, 0))
+                else:
+                    colour = Point3((0, 0, 255))
+                self.ai.client.debug_box_out(pos_min, pos_max, colour)
 
     def _track_requested_placements(self) -> None:
         """Track requested placements, and check if they should be made available.

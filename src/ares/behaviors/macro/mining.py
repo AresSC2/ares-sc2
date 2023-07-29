@@ -181,6 +181,7 @@ class Mining(MacroBehavior):
                 elif (
                     len(worker.orders) == 1
                     and worker.orders[0].ability.id == AbilityId.MOVE
+                    and ai.ready_townhalls
                     and worker.order_target
                     == cy_closest_to(worker_position, ai.ready_townhalls).tag
                     # shift worker to correct resource if it ends up on wrong one

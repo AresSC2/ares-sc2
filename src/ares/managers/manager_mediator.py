@@ -148,9 +148,9 @@ class ManagerMediator(IManagerMediator):
 
         Other Parameters
         ----------
-        ability :
+        ability : AbilityId
             The AbilityId that was used.
-        unit_tag :
+        unit_tag : int
             The tag of the Unit that used the ability
 
         Parameters
@@ -948,8 +948,8 @@ class ManagerMediator(IManagerMediator):
         ----------
         position : Point2
             The intended building position.
-        size : BuildingSize
-            Size of intended structure.
+        structure_type : UnitID
+            Structure type we want to place.
         include_addon : bool, optional
             For Terran structures, check addon will place too.
 
@@ -957,6 +957,7 @@ class ManagerMediator(IManagerMediator):
         ----------
         kwargs :
             (See Other Parameters)
+
         Returns
         ----------
         bool :
@@ -978,8 +979,8 @@ class ManagerMediator(IManagerMediator):
         base_location : Point2
             The general area where the placement should be near.
             This should be a expansion location.
-        building_size : BuildingSize
-            Size of intended structure.
+        structure_type : UnitID
+            Structure type requested.
         wall : bool, optional
             Request a wall structure placement.
             Will find alternative if no wall placements available.
@@ -989,6 +990,8 @@ class ManagerMediator(IManagerMediator):
         reserve_placement : bool, optional
             Reserve this booking for a while, so another customer doesnt
             request it.
+        within_psionic_matrix : bool, optional
+            Protoss specific -> calculated position have power?
 
         Parameters
         ----------
@@ -1069,9 +1072,9 @@ class ManagerMediator(IManagerMediator):
             Location to get the closest workers to.
         force_close : bool
             Select the available worker closest to `target_position` if True.
-        select_persistent_builder :
+        select_persistent_builder : bool
             If True we can select the persistent_builder if it's available.
-        only_select_persistent_builder :
+        only_select_persistent_builder : bool
             If True, don't find an alternative worker
 
         Parameters

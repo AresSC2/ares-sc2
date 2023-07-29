@@ -1,9 +1,52 @@
+from cython cimport boundscheck, wraparound
+
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_info import Race
 from sc2.ids.unit_typeid import UnitTypeId
 
 from ares.dicts.does_not_use_larva import DOES_NOT_USE_LARVA
 
+
+cdef double cy_distance_to(
+        (double, double) p1,
+        (double, double) p2
+):
+    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+
+@boundscheck(False)
+@wraparound(False)
+cpdef bint cy_pylon_matrix_covers(
+        (double, double) position,
+        object pylons,
+        const unsigned char[:, :] height_grid,
+        double pylon_build_progress = 1.0
+    ):
+
+    cdef:
+        unsigned int x = int(position[0])
+        unsigned int y = int(position[1])
+        unsigned int len_pylons = len(pylons)
+        unsigned int position_height = height_grid[y, x]
+        (double, double) pylon_position
+        unsigned int pylon_height, i, _x, _y
+        # range + pylon radius
+        double pylon_powered_distance = 6.5#  + 1.125
+
+
+    for i in range(len_pylons):
+        pylon = pylons[i]
+        pylon_position = pylon.position
+        _x = int(pylon_position[0])
+        _y = int(pylon_position[1])
+        pylon_height = height_grid[_y, _x]
+        if (
+          pylon.build_progress >= pylon_build_progress
+          and pylon_height >= position_height
+          and cy_distance_to(position, pylon_position) < pylon_powered_distance
+        ):
+          return True
+
+    return False
 
 cpdef unsigned int cy_unit_pending(object bot, object unit_type):
     cdef:
