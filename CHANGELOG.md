@@ -2,6 +2,21 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.0 (2023-07-29)
+
+### Feature
+
+* Protoss structure formation ([`2d7bb94`](https://github.com/AresSC2/ares-sc2/commit/2d7bb9432c47577b55e86daba9c4ad8c0a4da875))
+* Cython pylon matrix covers function ([`d0b11a5`](https://github.com/AresSC2/ares-sc2/commit/d0b11a58f32c754a3c26e80a7e088ae8f625d5c8))
+
+### Fix
+
+* Check for ready townhalls before indexing ([`7a2444a`](https://github.com/AresSC2/ares-sc2/commit/7a2444ab08026962deda14ac04fd086de9c53fe5))
+
+### Breaking
+
+* `request_building_placement` and `can_place` accept structure_type argument rather then building_size ([`2d7bb94`](https://github.com/AresSC2/ares-sc2/commit/2d7bb9432c47577b55e86daba9c4ad8c0a4da875))
+
 ## v0.25.0 (2023-07-17)
 ### Feature
 
