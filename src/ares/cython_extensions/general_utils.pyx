@@ -1,9 +1,11 @@
 from cython cimport boundscheck, wraparound
+
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_info import Race
 from sc2.ids.unit_typeid import UnitTypeId
 
 from ares.dicts.does_not_use_larva import DOES_NOT_USE_LARVA
+
 
 cdef double cy_distance_to(
         (double, double) p1,

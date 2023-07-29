@@ -22,10 +22,10 @@ from ares.consts import (
     BUILDS,
     GAS_BUILDINGS,
     OPENING_BUILD_ORDER,
-    BuildingSize,
     BuildOrderTargetOptions,
     UnitRole,
 )
+from ares.dicts.structure_to_building_size import STRUCTURE_TO_BUILDING_SIZE
 
 
 class BuildOrderRunner:
@@ -149,17 +149,6 @@ class BuildOrderRunner:
             if command in ADD_ONS:
                 self.current_step_started = True
             elif command in ALL_STRUCTURES:
-                # TODO: Replace this nasty fix when protoss placement formation is done
-                #   Prevents slow `find_placement` spam when there are no pylons
-                if (
-                    self.ai.race == Race.Protoss
-                    and command not in {UnitID.NEXUS, UnitID.PYLON, UnitID.ASSIMILATOR}
-                    and not self.ai.structures.filter(
-                        lambda s: s.type_id == UnitID.PYLON and s.is_ready
-                    )
-                ):
-                    return
-
                 if worker := self.mediator.select_worker(
                     target_position=self.current_build_position,
                     force_close=True,
@@ -252,16 +241,18 @@ class BuildOrderRunner:
                 return available_geysers.closest_to(self.ai.start_location)
         elif structure_type == self.ai.base_townhall_type:
             return await self.ai.get_next_expansion()
-        elif self.ai.race == Race.Terran:
-            size: BuildingSize = (
-                BuildingSize.TWO_BY_TWO
-                if structure_type == UnitID.SUPPLYDEPOT
-                else BuildingSize.THREE_BY_THREE
+        elif self.ai.race != Race.Zerg:
+            within_psionic_matrix: bool = (
+                self.ai.race == Race.Protoss
+                and structure_type in STRUCTURE_TO_BUILDING_SIZE
+                and structure_type != UnitID.PYLON
             )
             return self.mediator.request_building_placement(
                 base_location=self.ai.start_location,
-                building_size=size,
+                structure_type=structure_type,
                 wall=target == BuildOrderTargetOptions.RAMP,
+                within_psionic_matrix=within_psionic_matrix,
+                pylon_build_progress=0.5,
             )
         else:
             if target == BuildOrderTargetOptions.RAMP:
@@ -309,7 +300,7 @@ class BuildOrderRunner:
                 self.assigned_persistent_worker = True
                 move_to: Point2 = self.mediator.request_building_placement(
                     base_location=self.ai.start_location,
-                    building_size=BuildingSize.TWO_BY_TWO,
+                    structure_type=UnitID.SUPPLYDEPOT,
                     wall=True,
                     reserve_placement=False,
                 )

@@ -948,8 +948,8 @@ class ManagerMediator(IManagerMediator):
         ----------
         position : Point2
             The intended building position.
-        size : BuildingSize
-            Size of intended structure.
+        structure_type : UnitID
+            Structure type we want to place.
         include_addon : bool, optional
             For Terran structures, check addon will place too.
 
@@ -978,8 +978,8 @@ class ManagerMediator(IManagerMediator):
         base_location : Point2
             The general area where the placement should be near.
             This should be a expansion location.
-        building_size : BuildingSize
-            Size of intended structure.
+        structure_type : UnitID
+            Structure type requested.
         wall : bool, optional
             Request a wall structure placement.
             Will find alternative if no wall placements available.
@@ -989,6 +989,8 @@ class ManagerMediator(IManagerMediator):
         reserve_placement : bool, optional
             Reserve this booking for a while, so another customer doesnt
             request it.
+        within_psionic_matrix : bool, optional
+            Protoss specific -> calculated position have power?
 
         Parameters
         ----------
