@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.0 (2023-07-31)
+
+### Feature
+
+* Timeout building worker if taking too long ([`98c9d72`](https://github.com/AresSC2/ares-sc2/commit/98c9d726d838105e2ad7d0a21817ffee1b1b5a34))
+* Auto supply behavior ([`ccd053c`](https://github.com/AresSC2/ares-sc2/commit/ccd053c662fe3380173ef678993c044e7999bdab))
+* Build structure behavior ([`b7d3b02`](https://github.com/AresSC2/ares-sc2/commit/b7d3b022c22aeab633bb6284780a7de0a898dc57))
+
 ## v1.0.0 (2023-07-29)
 
 ### Feature
