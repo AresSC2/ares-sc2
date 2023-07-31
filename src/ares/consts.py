@@ -376,6 +376,16 @@ ADD_ONS: dict[UnitID, UnitID] = {
     UnitID.STARPORTTECHLAB: UnitID.STARPORT,
 }
 
+ALL_PRODUCTION_STRUCTURES: Set[UnitID] = {
+    UnitID.BARRACKS,
+    UnitID.FACTORY,
+    UnitID.STARPORT,
+    UnitID.GATEWAY,
+    UnitID.WARPGATE,
+    UnitID.ROBOTICSFACILITY,
+    UnitID.STARGATE,
+}
+
 ALL_STRUCTURES: Set[UnitID] = {
     UnitID.ARMORY,
     UnitID.ASSIMILATOR,
@@ -601,7 +611,7 @@ UNITS_TO_IGNORE: Set[UnitID] = set()
 UNIT_TYPES_WITH_NO_ROLE: Set[UnitID] = set()
 WORKER_TYPES: Set[UnitID] = {UnitID.DRONE, UnitID.PROBE, UnitID.SCV}
 
-race_supply: dict[Race, UnitID] = {
+RACE_SUPPLY: dict[Race, UnitID] = {
     Race.Protoss: UnitID.PYLON,
     Race.Terran: UnitID.SUPPLYDEPOT,
     Race.Zerg: UnitID.OVERLORD,

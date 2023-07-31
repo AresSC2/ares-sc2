@@ -1,13 +1,12 @@
 from dataclasses import dataclass
 
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.data import Race
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
-from ares.managers.manager_mediator import ManagerMediator
 
 from ares import AresBot
-
 from ares.behaviors.macro.macro_behavior import MacroBehavior
+from ares.managers.manager_mediator import ManagerMediator
 
 
 @dataclass
@@ -37,7 +36,9 @@ class BuildStructure(MacroBehavior):
             ai.race != Race.Zerg
         ), "BuildStructure Behavior not currently supported for Zerg."
 
-        within_psionic_matrix: bool = ai.race == Race.Protoss and self.structure_id != UnitID.PYLON
+        within_psionic_matrix: bool = (
+            ai.race == Race.Protoss and self.structure_id != UnitID.PYLON
+        )
 
         if placement := mediator.request_building_placement(
             base_location=self.base_location,

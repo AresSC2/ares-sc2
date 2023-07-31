@@ -198,6 +198,7 @@ class SpawnController(MacroBehavior):
             did_action = True
             mediator.clear_role(tag=unit.tag)
             unit.train(self.__build_dict[unit])
+            ai.num_larva_left -= 1
 
         return did_action
 
@@ -301,9 +302,13 @@ class SpawnController(MacroBehavior):
             List of structures / units where this unit could possibly be spawned from.
         """
         build_from_tags: list[int] = []
+        using_larva: bool = False
         for structure_type in structure_unit_types:
             if structure_type not in build_from_dict:
                 continue
+
+            if structure_type == UnitID.LARVA:
+                using_larva = True
 
             build_from: Units = build_from_dict[structure_type]
             requires_techlab: bool = TRAIN_INFO[structure_type][unit_type].get(
@@ -348,4 +353,8 @@ class SpawnController(MacroBehavior):
                 key=lambda structure: -1 * (structure.add_on_tag in ai.reactor_tags)
                 + 1 * (structure.add_on_tag in ai.techlab_tags),
             )
+        # limit build structures to number of larva left
+        if ai.race == Race.Zerg and using_larva:
+            build_structures = build_structures[: ai.num_larva_left]
+
         return build_structures
