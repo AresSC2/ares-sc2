@@ -63,6 +63,8 @@ class BuildingManager(Manager, IManagerMediator):
 
     """
 
+    BUILDING_WORKER_TIMEOUT: float = 120.0
+
     def __init__(
         self,
         ai: "AresBot",
@@ -185,6 +187,15 @@ class BuildingManager(Manager, IManagerMediator):
                     Point2(self.building_tracker[worker_tag][TARGET].position),
                     "BUILDING TARGET",
                 )
+
+            if (
+                self.ai.race != Race.Terran
+                and self.ai.time
+                > self.building_tracker[worker_tag][TIME_ORDER_COMMENCED]
+                + self.BUILDING_WORKER_TIMEOUT
+            ):
+                tags_to_remove.add(worker_tag)
+                continue
 
             target: Point2 = self.building_tracker[worker_tag][TARGET]
             worker = self.ai.unit_tag_dict.get(worker_tag, None)

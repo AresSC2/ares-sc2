@@ -36,6 +36,7 @@ from ares.consts import (
     GAME_STEP,
     IGNORE_DESTRUCTABLES,
     IGNORE_IN_COST_DICT,
+    RACE_SUPPLY,
     SHADE_COMMENCED,
     SHADE_DURATION,
     SHADE_OWNER,
@@ -44,7 +45,6 @@ from ares.consts import (
     USE_DATA,
     WORKER_TYPES,
     UnitTreeQueryType,
-    race_supply,
 )
 from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
@@ -104,6 +104,7 @@ class AresBot(CustomBotAI):
         self.actual_iteration: int = 0
         self.WORKER_TYPES = WORKER_TYPES | {UnitID.DRONEBURROWED}
         self.supply_type: UnitID = UnitID.OVERLORD
+        self.num_larva_left: int = 0
 
         self._drop_unload_actions: list[tuple[int, int]] = []
 
@@ -201,18 +202,12 @@ class AresBot(CustomBotAI):
         self.enemy_vs_ground_static_defense = Units(
             enemy_vs_ground_static_defense_list, self
         )
+        self.num_larva_left = len(self.larva)
 
         if update_managers:
             self._update_memory_units(index)
 
-        # Force distance calculation and caching on all units using scipy pdist or cdist
-        # TODO: Check which one is actually faster,
-        #   it's always set to 2 currently so no need to keep checking the if/elif
         _ = self._cdist
-        # if self.distance_calculation_method == 1:
-        #     _ = self._pdist
-        # elif self.distance_calculation_method in {2, 3}:
-        #     _ = self._cdist
 
     async def on_before_start(self) -> None:
         """Train a drone and split workers before managers are set up
@@ -234,7 +229,7 @@ class AresBot(CustomBotAI):
 
         self.gas_type = race_gas[self.race]
         self.worker_type = race_worker[self.race]
-        self.supply_type = race_supply[self.race]
+        self.supply_type = RACE_SUPPLY[self.race]
         if self.race != Race.Zerg:
             self.base_townhall_type = (
                 UnitID.COMMANDCENTER if self.race == Race.Terran else UnitID.NEXUS
