@@ -15,7 +15,6 @@ from ares.managers.enemy_to_base_manager import EnemyToBaseManager
 from ares.managers.manager_mediator import ManagerMediator
 from ares.managers.path_manager import PathManager
 from ares.managers.placement_manager import PlacementManager
-from ares.managers.production_manager import ProductionManager
 from ares.managers.resource_manager import ResourceManager
 from ares.managers.terrain_manager import TerrainManager
 from ares.managers.unit_cache_manager import UnitCacheManager
@@ -50,7 +49,6 @@ class Hub:
         terrain_manager: TerrainManager = None,
         resource_manager: ResourceManager = None,
         building_manager: BuildingManager = None,
-        production_manager: ProductionManager = None,
         additional_managers: Optional[List["Manager"]] = None,
     ) -> None:
         """Initialise Manager objects and set update priority.
@@ -85,8 +83,6 @@ class Hub:
             Optional ResourceManager override
         building_manager :
             Optional BuildingManager override
-        production_manager :
-            Optional ProductionManager override
         additional_managers :
             Additional custom managers
 
@@ -146,11 +142,6 @@ class Hub:
             if not building_manager
             else building_manager
         )
-        self.production_manager: ProductionManager = (
-            ProductionManager(ai, config, self.manager_mediator)
-            if not production_manager
-            else production_manager
-        )
         self.enemy_to_base_manager: EnemyToBaseManager = (
             EnemyToBaseManager(ai, config, self.manager_mediator)
             if not enemy_to_base_manager
@@ -166,8 +157,7 @@ class Hub:
             self.path_manager,
             self.terrain_manager,
             self.resource_manager,
-            self.building_manager,  # must be updated before production manager
-            self.production_manager,
+            self.building_manager,
             self.ability_tracker_manager,
             self.placement_manager,
             self.enemy_to_base_manager,

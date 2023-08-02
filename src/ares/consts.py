@@ -609,6 +609,13 @@ UNITS_TO_AVOID_TYPES: Set[UnitID] = {
 
 UNITS_TO_IGNORE: Set[UnitID] = set()
 UNIT_TYPES_WITH_NO_ROLE: Set[UnitID] = set()
+ALL_WORKER_TYPES: Set[UnitID] = {
+    UnitID.DRONE,
+    UnitID.DRONEBURROWED,
+    UnitID.MULE,
+    UnitID.PROBE,
+    UnitID.SCV,
+}
 WORKER_TYPES: Set[UnitID] = {UnitID.DRONE, UnitID.PROBE, UnitID.SCV}
 
 RACE_SUPPLY: dict[Race, UnitID] = {
