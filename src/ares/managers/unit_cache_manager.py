@@ -1,9 +1,10 @@
 """Cache armies for better and faster tracking.
 
 """
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
+from collections import defaultdict
+from typing import TYPE_CHECKING, Any, Dict, List, Set, Union
 
-from loguru import logger
+from sc2.data import Race
 from sc2.game_data import AbilityData
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -12,8 +13,11 @@ from sc2.units import Units
 
 from ares.cache import property_cache_once_per_frame
 from ares.consts import (
+    ALL_STRUCTURES,
+    ALL_WORKER_TYPES,
     CREEP_TUMOR_TYPES,
     EGG_BUTTON_NAMES,
+    TOWNHALL_TYPES,
     UNITS_TO_IGNORE,
     WORKER_TYPES,
     ManagerName,
@@ -93,11 +97,11 @@ class UnitCacheManager(Manager, IManagerMediator):
         # keep a dict of units for fast lookup
         # caution: this is for bookkeeping only,
         # don't use distance checks here for example
-        self.enemy_army_dict: dict[UnitID, Units] = dict()
-        self.own_army_dict: dict[UnitID, Units] = dict()
+        self.enemy_army_dict: defaultdict[UnitID, list] = defaultdict(list)
+        self.own_army_dict: defaultdict[UnitID, list] = defaultdict(list)
         # used for assigning roles to locusts, may not be useful
-        self.old_own_army: dict[UnitID, Units] = dict()
-        self.own_structures_dict: dict[UnitID, Units] = dict()
+        self.old_own_army: defaultdict[UnitID, list] = defaultdict(list)
+        self.own_structures_dict: defaultdict[UnitID, list] = defaultdict(list)
         self.own_structure_tags: Set = set()
         # keep track of units that get removed, so they can be deleted from memory units
         self.removed_units: Units = Units([], ai)
@@ -167,8 +171,10 @@ class UnitCacheManager(Manager, IManagerMediator):
         return value
 
     @property
-    def own_army_value(self) -> int:
+    def own_army_value(self, include_queens: bool = False) -> int:
         """Combined mineral and vespene cost of our own army.
+
+        TODO: Add pending units for Terran and Protoss
 
         Returns
         -------
@@ -178,20 +184,48 @@ class UnitCacheManager(Manager, IManagerMediator):
         """
         value: int = 0
         for unit in self.own_army:
-            if unit.type_id in WORKER_TYPES:
+            type_id: UnitID = unit.type_id
+            if type_id in ALL_WORKER_TYPES:
                 continue
-            if unit.type_id == UnitID.EGG:
+            if type_id == UnitID.EGG:
                 egg_building: AbilityData = unit.orders[0].ability
                 if egg_building.button_name not in EGG_BUTTON_NAMES:
                     value += egg_building.cost.minerals + egg_building.cost.vespene
             else:
-                unit_cost = self.ai.calculate_unit_value(unit.type_id)
+                unit_cost = self.ai.calculate_unit_value(type_id)
                 value += unit_cost.minerals + unit_cost.vespene
+
+        # iterate through T/P structures and count pending units
+        if self.ai.race != Race.Zerg:
+            for s in self.ai.structures.filter(
+                lambda _s: _s.orders
+                and _s.is_ready
+                and _s.type_id not in TOWNHALL_TYPES
+            ):
+                try:
+                    order: UnitID = UnitID[s.orders[0].ability.button_name.upper()]
+                    if order not in ALL_STRUCTURES:
+                        unit_cost = self.ai.calculate_unit_value(order)
+                        value += unit_cost.minerals + unit_cost.vespene
+                except Exception:
+                    pass
+
+        # count queens if Z
+        elif include_queens:
+            value += 150 * len(
+                [
+                    th
+                    for th in self.ai.townhalls
+                    if th.orders
+                    and th.orders[0].ability.button_name.upper() == UnitID.QUEEN.name
+                ]
+            )
+
         return value
 
     @property
     def ready_army_value(self) -> int:
-        """Combined mineral and vespene cost of our own army excluding units in eggs.
+        """Combined mineral and vespene cost of our own army excluding pending units.
 
         Returns
         -------
@@ -229,15 +263,7 @@ class UnitCacheManager(Manager, IManagerMediator):
             if unit_tag in self.enemy_worker_tags:
                 self.enemy_workers.remove(enemy_unit)
             if delete_from_dict:
-                try:
-                    self.enemy_army_dict[enemy_unit.type_id].remove(enemy_unit)
-                except KeyError:
-                    logger.warning(
-                        f"Attempted to remove {enemy_unit.type_id} "
-                        f"from enemy_army_dict but there are none recorded."
-                    )
-                except ValueError:
-                    pass
+                self.enemy_army_dict[enemy_unit.type_id].remove(enemy_unit)
 
     def clear_store_dicts(self) -> None:
         """Clear dictionaries for storing units.
@@ -270,7 +296,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         -------
 
         """
-        enemy_army_dict: dict[UnitID, Units] = self.enemy_army_dict
+        enemy_army_dict: dict[UnitID, list] = self.enemy_army_dict
         tag: int = enemy.tag
         type_id: UnitID = enemy.type_id
 
@@ -281,10 +307,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         # never seen this unit before
         if tag not in self.enemy_army_tags:
             self.enemy_army.append(enemy)
-            if type_id in enemy_army_dict:
-                enemy_army_dict[enemy.type_id].append(enemy)
-            else:
-                enemy_army_dict[enemy.type_id] = Units([enemy], self.ai)
+            enemy_army_dict[enemy.type_id].append(enemy)
 
             if enemy.type_id in WORKER_TYPES and tag not in self.enemy_worker_tags:
                 self.enemy_workers.append(enemy)
@@ -296,8 +319,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         else:
             # This first part handles units that have morphed from something
             if type_id in DOES_NOT_USE_LARVA or type_id == UnitID.HELLIONTANK:
-                enemy_unit: Optional[Unit] = self.ai.unit_tag_dict.get(tag, None)
-                if enemy_unit:
+                if enemy_unit := self.ai.unit_tag_dict.get(tag, None):
                     self.enemy_tags_to_remove.add(tag)
                     self.removed_units.append(enemy_unit)
                 # we want this unit appended no matter what (we might not have seen the
@@ -345,13 +367,9 @@ class UnitCacheManager(Manager, IManagerMediator):
 
         """
         type_id: UnitID = unit.type_id
-        if type_id in self.own_army_dict:
-            self.own_army_dict[type_id].append(unit)
-        else:
-            self.own_army_dict[type_id] = Units([unit], self.ai)
-        if unit.type_id in UNITS_TO_IGNORE:
-            return
-        self.own_army.append(unit)
+        self.own_army_dict[type_id].append(unit)
+        if unit.type_id not in UNITS_TO_IGNORE:
+            self.own_army.append(unit)
 
     def store_own_structure(self, unit: Unit) -> None:
         """Store friendly structure.
@@ -370,10 +388,8 @@ class UnitCacheManager(Manager, IManagerMediator):
         type_id: UnitID = unit.type_id
         if type_id not in CREEP_TUMOR_TYPES:
             self.own_structure_tags.add(type_id)
-        if type_id in self.own_structures_dict:
-            self.own_structures_dict[unit.type_id].append(unit)
-        else:
-            self.own_structures_dict[unit.type_id] = Units([unit], self.ai)
+
+        self.own_structures_dict[unit.type_id].append(unit)
 
     def get_units_from_tags(self, tags: Union[List[int], Set[int]]) -> List[Unit]:
         """Get a `list` of `Unit` objects corresponding to the given tags.
@@ -393,51 +409,6 @@ class UnitCacheManager(Manager, IManagerMediator):
                 unit = self.ai.unit_tag_dict[tag]
                 retrieved_tags.append(unit)
         return retrieved_tags
-
-    # def _calculate_enemy_army_center_mass(
-    #     self, units: Units, distance: int = 12
-    # ) -> Tuple[int, Point2]:
-    #     """Find the point containing the largest amount of the enemy army.
-    #
-    #     Parameters
-    #     ----------
-    #     units :
-    #         Units to find the center mass of.
-    #     distance :
-    #         How far way units can be to be considered part of the mass.
-    #
-    #     Returns
-    #     -------
-    #     Tuple[int, Point2] :
-    #         First element is the number of units found in the mass.
-    #         Second element is the position of the center mass.
-    #
-    #     """
-    #     max_units_found: int = 0
-    #     position: Point2 = self.ai.enemy_start_locations[0]
-    #     if units:
-    #         max_units_found, position = find_center_mass(units, distance, position)
-    #         position = Point2(position)
-    #     return max_units_found, position
-
-    @property_cache_once_per_frame
-    def enemy_bunkers_near_spawn(self) -> Optional[Units]:
-        """Find enemy bunkers near our spawn.
-
-        Returns
-        -------
-        Optional[Units] :
-            Enemy bunkers near our spawn, if any.
-
-        """
-        return self.enemy_near_spawn.filter(
-            lambda u: u.type_id == UnitID.BUNKER
-            and (
-                self.ai.get_terrain_z_height(u.position)
-                == self.ai.get_terrain_z_height(self.ai.start_location)
-                or u.distance_to(self.manager_mediator.get_own_nat) < 16
-            )
-        )
 
     @property_cache_once_per_frame
     def enemy_near_spawn(self) -> Units:
@@ -483,15 +454,12 @@ class UnitCacheManager(Manager, IManagerMediator):
         int :
             Total number of unit_type_id.
         """
-        army_dict: dict[UnitID, Units] = self.own_army_dict
-        num_units: int = 0
-        if unit_type_id in army_dict:
-            num_units: int = len(army_dict[unit_type_id])
+        army_dict: dict[UnitID, list[UnitID]] = self.own_army_dict
+
+        num_units: int = len(army_dict[unit_type_id])
 
         if include_alias and unit_type_id in UNIT_ALIAS:
-            alias: UnitID = UNIT_ALIAS[unit_type_id]
-            if alias in army_dict:
-                num_units += len(army_dict[UNIT_ALIAS[unit_type_id]])
+            num_units += len(army_dict[UNIT_ALIAS[unit_type_id]])
 
         if include_pending:
             num_units += cy_unit_pending(self.ai, unit_type_id)

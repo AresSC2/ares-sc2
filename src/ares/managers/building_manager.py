@@ -237,13 +237,13 @@ class BuildingManager(Manager, IManagerMediator):
             # if terran, check for unfinished structure
             existing_unfinished_structure: Optional[Unit] = None
             if self.ai.race == Race.Terran and structure_id in structures_dict:
-                if existing_unfinished_structures := structures_dict[
-                    structure_id
-                ].filter(
-                    lambda s: s.type_id == structure_id
+                if existing_unfinished_structures := [
+                    s
+                    for s in structures_dict[structure_id]
+                    if s.type_id == structure_id
                     and cy_distance_to(s.position, target.position) < 1.5
                     and s.build_progress < 1.0
-                ):
+                ]:
                     existing_unfinished_structure = existing_unfinished_structures[0]
                     distance = 4.5
 

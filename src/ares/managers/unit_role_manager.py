@@ -415,21 +415,17 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         """
         # get set of tags of units with the role
-        unit_with_role_tags: Set[int] = self.unit_role_dict[role.name]
+        unit_with_role_tags: set[int] = self.unit_role_dict[role.name]
         # get the tags of units of the type
-        own_cached_army_dict = self.manager_mediator.manager_request(
-            ManagerName.UNIT_CACHE_MANAGER, ManagerRequestType.GET_CACHED_OWN_ARMY_DICT
-        )
-        if unit_type not in own_cached_army_dict:
-            return []
+        own_cached_army_dict = self.manager_mediator.get_own_army_dict
 
-        units_of_type_tags: Set[int] = own_cached_army_dict[unit_type].tags
+        units_of_type_tags: set[int] = {u.tag for u in own_cached_army_dict[unit_type]}
         # take the intersection of the sets to get the shared tags
         # this will be the units of the specified type with the specified role
         if not restrict_to:
-            shared_tags: Set[int] = unit_with_role_tags & units_of_type_tags
+            shared_tags: set[int] = unit_with_role_tags & units_of_type_tags
         else:
-            shared_tags: Set[int] = (
+            shared_tags: set[int] = (
                 unit_with_role_tags & units_of_type_tags & restrict_to.tags
             )
         # get the List[Unit] from UnitCacheManager
