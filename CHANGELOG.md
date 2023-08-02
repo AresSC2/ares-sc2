@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.0 (2023-08-02)
+
+### Feature
+
+* Own army value works correctly for all races ([`70e7d3b`](https://github.com/AresSC2/ares-sc2/commit/70e7d3bded41ec43cbe52d9b89f5488864d1ba4f))
+
 ## v1.1.0 (2023-07-31)
 
 ### Feature
