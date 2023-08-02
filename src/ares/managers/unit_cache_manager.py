@@ -167,8 +167,10 @@ class UnitCacheManager(Manager, IManagerMediator):
         return value
 
     @property
-    def own_army_value(self) -> int:
+    def own_army_value(self, include_queens: bool = False) -> int:
         """Combined mineral and vespene cost of our own army.
+
+        TODO: Add pending units for Terran and Protoss
 
         Returns
         -------
@@ -178,15 +180,43 @@ class UnitCacheManager(Manager, IManagerMediator):
         """
         value: int = 0
         for unit in self.own_army:
-            if unit.type_id in WORKER_TYPES:
+            type_id: UnitID = unit.type_id
+            if type_id in ALL_WORKER_TYPES:
                 continue
-            if unit.type_id == UnitID.EGG:
+            if type_id == UnitID.EGG:
                 egg_building: AbilityData = unit.orders[0].ability
                 if egg_building.button_name not in EGG_BUTTON_NAMES:
                     value += egg_building.cost.minerals + egg_building.cost.vespene
             else:
-                unit_cost = self.ai.calculate_unit_value(unit.type_id)
+                unit_cost = self.ai.calculate_unit_value(type_id)
                 value += unit_cost.minerals + unit_cost.vespene
+
+        # iterate through T/P structures and count pending units
+        if self.ai.race != Race.Zerg:
+            for s in self.ai.structures.filter(
+                lambda _s: _s.orders
+                and _s.is_ready
+                and _s.type_id not in TOWNHALL_TYPES
+            ):
+                try:
+                    order: UnitID = UnitID[s.orders[0].ability.button_name.upper()]
+                    if order not in ALL_STRUCTURES:
+                        unit_cost = self.ai.calculate_unit_value(order)
+                        value += unit_cost.minerals + unit_cost.vespene
+                except Exception:
+                    pass
+
+        # count queens if Z
+        elif include_queens:
+            value += 150 * len(
+                [
+                    th
+                    for th in self.ai.townhalls
+                    if th.orders
+                    and th.orders[0].ability.button_name.upper() == UnitID.QUEEN.name
+                ]
+            )
+
         return value
 
     @property
