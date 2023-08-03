@@ -503,17 +503,20 @@ class BuildingManager(Manager, IManagerMediator):
             return False
 
         tag: int = worker.tag
-        self.building_tracker[tag] = {
-            ID: structure_type,
-            TARGET: pos,
-            TIME_ORDER_COMMENCED: self.ai.time,
-            BUILDING_PURPOSE: building_purpose,
-            STRUCTURE_ORDER_COMPLETE: True,
-        }
-        self.building_counter[self.building_tracker[tag][ID]] += 1
-        if assign_role:
-            self.manager_mediator.assign_role(tag=tag, role=UnitRole.BUILDING)
-        return True
+        if tag not in self.building_tracker:
+            self.building_tracker[tag] = {
+                ID: structure_type,
+                TARGET: pos,
+                TIME_ORDER_COMMENCED: self.ai.time,
+                BUILDING_PURPOSE: building_purpose,
+                STRUCTURE_ORDER_COMPLETE: True,
+            }
+
+            self.building_counter[self.building_tracker[tag][ID]] += 1
+            if assign_role:
+                self.manager_mediator.assign_role(tag=tag, role=UnitRole.BUILDING)
+            return True
+        return False
 
     @staticmethod
     async def on_structure_took_damage(structure: Unit) -> None:
