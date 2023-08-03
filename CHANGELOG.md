@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.1 (2023-08-03)
+
+### Fix
+
+* Accurate tracking of building counter ([`39a1a29`](https://github.com/AresSC2/ares-sc2/commit/39a1a2953f3beb700686003ee99714a3184b2359))
+* Pass correct argument to `can_place_structure` ([`6ee0b93`](https://github.com/AresSC2/ares-sc2/commit/6ee0b9388292121bccf793ec4713c6ec9c85f32c))
+
 ## v1.2.0 (2023-08-02)
 
 ### Feature
