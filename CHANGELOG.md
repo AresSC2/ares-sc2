@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.2 (2023-08-03)
+
+### Fix
+
+* Only add to building tracker if worker tag is not present ([`3a2046d`](https://github.com/AresSC2/ares-sc2/commit/3a2046d046e22447181d5342e2d87d23c6ddfef0))
+* Safer auto supply ([`d762f4a`](https://github.com/AresSC2/ares-sc2/commit/d762f4a045a16550483f98a12a7c818d8d74b7e6))
+
 ## v1.2.1 (2023-08-03)
 
 ### Fix
