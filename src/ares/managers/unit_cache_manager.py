@@ -262,7 +262,10 @@ class UnitCacheManager(Manager, IManagerMediator):
                 self.enemy_army.remove(enemy_unit)
             if unit_tag in self.enemy_worker_tags:
                 self.enemy_workers.remove(enemy_unit)
-            if delete_from_dict:
+            if (
+                delete_from_dict
+                and enemy_unit in self.enemy_army_dict[enemy_unit.type_id]
+            ):
                 self.enemy_army_dict[enemy_unit.type_id].remove(enemy_unit)
 
     def clear_store_dicts(self) -> None:
