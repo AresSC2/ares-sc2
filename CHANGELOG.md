@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.3 (2023-08-03)
+
+### Fix
+
+* Check enemy unit is in dict before removing ([`2016484`](https://github.com/AresSC2/ares-sc2/commit/201648412637dd5fee39b24127d50c48bbf85d90))
+
 ## v1.2.2 (2023-08-03)
 
 ### Fix
