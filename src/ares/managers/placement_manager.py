@@ -311,7 +311,7 @@ class PlacementManager(Manager, IManagerMediator):
                     for placement in potential_placements
                     if potential_placements[placement]["available"]
                     and not potential_placements[placement]["worker_on_route"]
-                    and self.can_place_structure(placement, building_size)
+                    and self.can_place_structure(placement, structure_type)
                 ]
                 if len(available) == 0:
                     logger.warning(
