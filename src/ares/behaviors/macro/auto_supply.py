@@ -87,10 +87,9 @@ class AutoSupply(MacroBehavior):
                     and s.build_progress == 1.0
                 )
             )
-            if (
-                supply_left <= 2 * num_production_structures
-                and pending_supply_units < math.ceil(num_production_structures / 2)
-            ):
+            if supply_left <= max(
+                2 * num_production_structures, 6
+            ) and pending_supply_units < math.ceil(num_production_structures / 2):
                 num: int = (
                     math.ceil(num_production_structures / 2) - pending_supply_units
                 )
