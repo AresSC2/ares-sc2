@@ -149,10 +149,6 @@ class BuildingManager(Manager, IManagerMediator):
         -------
 
         """
-        self.building_counter = defaultdict(int)
-        for tag in self.building_tracker:
-            self.building_counter[self.building_tracker[tag][ID]] += 1
-
         await self._handle_construction_orders()
 
         # check if a worker has the Building task but isn't being told to build anything
@@ -287,6 +283,7 @@ class BuildingManager(Manager, IManagerMediator):
                     worker.build(structure_id, target)
 
         for tag in tags_to_remove:
+            self.building_counter[self.building_tracker[tag][ID]] -= 1
             self.building_tracker.pop(tag, None)
             if tag in self.manager_mediator.get_unit_role_dict[UnitRole.BUILDING]:
                 self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
@@ -310,6 +307,7 @@ class BuildingManager(Manager, IManagerMediator):
             Tag of the unit to remove
         """
         if tag in self.building_tracker:
+            self.building_counter[self.building_tracker[tag][ID]] -= 1
             self.building_tracker.pop(tag)
 
     async def construct_gas(
@@ -504,15 +502,17 @@ class BuildingManager(Manager, IManagerMediator):
         if not pos or not worker:
             return False
 
-        self.building_tracker[worker.tag] = {
+        tag: int = worker.tag
+        self.building_tracker[tag] = {
             ID: structure_type,
             TARGET: pos,
             TIME_ORDER_COMMENCED: self.ai.time,
             BUILDING_PURPOSE: building_purpose,
             STRUCTURE_ORDER_COMPLETE: True,
         }
+        self.building_counter[self.building_tracker[tag][ID]] += 1
         if assign_role:
-            self.manager_mediator.assign_role(tag=worker.tag, role=UnitRole.BUILDING)
+            self.manager_mediator.assign_role(tag=tag, role=UnitRole.BUILDING)
         return True
 
     @staticmethod
