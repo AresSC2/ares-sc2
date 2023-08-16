@@ -27,7 +27,6 @@ from ares.consts import (
     ADD_ONS,
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
-    BANNED_PHRASES,
     CHAT_DEBUG,
     DEBUG,
     DEBUG_GAME_STEP,
@@ -35,7 +34,6 @@ from ares.consts import (
     DEBUG_SPAWN,
     GAME_STEP,
     IGNORE_DESTRUCTABLES,
-    IGNORE_IN_COST_DICT,
     RACE_SUPPLY,
     SHADE_COMMENCED,
     SHADE_DURATION,
@@ -47,11 +45,11 @@ from ares.consts import (
     UnitTreeQueryType,
 )
 from ares.custom_bot_ai import CustomBotAI
+from ares.dicts.cost_dict import COST_DICT
 from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
 from ares.dicts.enemy_vs_ground_static_defense_ranges import (
     ENEMY_VS_GROUND_STATIC_DEFENSE_TYPES,
 )
-from ares.dicts.unit_data import UNIT_DATA
 from ares.managers.hub import Hub
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -285,16 +283,7 @@ class AresBot(CustomBotAI):
                 self.manager_hub.terrain_manager.own_nat,
                 self.manager_hub.terrain_manager.enemy_third,
             )
-        self.cost_dict: Dict[UnitID, Cost] = {
-            unit_id: self.calculate_cost(unit_id)
-            for unit_id in UNIT_DATA
-            if (
-                unit_id not in IGNORE_IN_COST_DICT
-                and not any(
-                    [banned_phrase in unit_id.name for banned_phrase in BANNED_PHRASES]
-                )
-            )
-        }
+        self.cost_dict: Dict[UnitID, Cost] = COST_DICT
 
     async def register_managers(self) -> None:
         """Register standard and custom managers.

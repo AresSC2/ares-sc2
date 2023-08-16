@@ -89,7 +89,7 @@ class UnitCacheManager(Manager, IManagerMediator):
             ManagerRequestType.GET_REMOVED_UNITS: lambda kwargs: self.removed_units,
         }
         self.enemy_army: Units = Units([], ai)
-        self.enemy_army_center_mass: Point2 = self.ai.enemy_start_locations[0]
+        self.enemy_army_center_mass: Point2 = self.ai.game_info.map_center
         self.enemy_workers: Units = Units([], ai)
         self.own_army: Units = Units([], ai)
         self.enemy_army_tags: Set[int] = set()
