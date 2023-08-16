@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.0 (2023-08-16)
+
+### Feature
+
+* Support arcade style maps ([`2d5e6b2`](https://github.com/AresSC2/ares-sc2/commit/2d5e6b2c4faa7148802d07b717441ab475484cb4))
+
+### Documentation
+
+* Major overhaul of all the documentation ([`eba0281`](https://github.com/AresSC2/ares-sc2/commit/eba0281b26ef786382a86aee1a5ecc8a7b76f208))
+
 ## v1.2.3 (2023-08-03)
 
 ### Fix
