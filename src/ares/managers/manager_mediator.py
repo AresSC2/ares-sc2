@@ -13,7 +13,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 from scipy.spatial import KDTree
 
-from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
+from ares.consts import ManagerName, ManagerRequestType, UnitRole
 from MapAnalyzer import MapData
 
 

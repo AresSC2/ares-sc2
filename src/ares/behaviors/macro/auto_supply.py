@@ -32,6 +32,7 @@ class AutoSupply(MacroBehavior):
         If can't afford supply but it's required, return true?
         Useful if creating a `MacroPlan`
     """
+
     base_location: Point2
     return_true_if_supply_required: bool = True
 

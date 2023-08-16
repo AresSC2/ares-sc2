@@ -9,7 +9,7 @@ def can_place_structure(
     avoid_creep: bool,
     include_addon: bool,
 ) -> bool:
-    """ Simulate whether a structure can be placed at `building_origin`
+    """Simulate whether a structure can be placed at `building_origin`
 
     Parameters
     ----------
@@ -41,7 +41,7 @@ def find_building_locations(
     building_height: int,
     avoid_creep: bool,
 ) -> list[tuple[int, int]]:
-    """ Use convolution to find building placements in an area.
+    """Use convolution to find building placements in an area.
     Used by `placement_manager`
 
     Parameters
