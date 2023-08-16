@@ -142,15 +142,14 @@ class TerrainManager(Manager, IManagerMediator):
         -------
 
         """
-        self.own_expansions: List[
-            Tuple[Point2, float]
-        ] = await self._calculate_expansion_path_distances(self.ai.start_location)
+        if self.ai.enemy_start_locations:
+            self.own_expansions = await self._calculate_expansion_path_distances(
+                self.ai.start_location
+            )
 
-        self.enemy_expansions: List[
-            Tuple[Point2, float]
-        ] = await self._calculate_expansion_path_distances(
-            self.ai.enemy_start_locations[0]
-        )
+            self.enemy_expansions = await self._calculate_expansion_path_distances(
+                self.ai.enemy_start_locations[0]
+            )
 
         self.map_data = self.manager_mediator.manager_request(
             ManagerName.PATH_MANAGER, ManagerRequestType.GET_MAP_DATA

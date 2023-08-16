@@ -61,3 +61,6 @@ class ShootTargetInRange(CombatBehavior):
 
         if cy_attack_ready(ai, self.unit, enemy_target):
             self.unit.attack(enemy_target)
+            return True
+
+        return False
