@@ -62,7 +62,7 @@ class PathManager(Manager, IManagerMediator):
     """Manager for handling paths.
 
     All unit pathing should be done here
-    This also exposes SC2MapAnalyzer api through `self.map_data`
+    This also exposes SC2MapAnalyzer api_reference through `self.map_data`
 
     """
 

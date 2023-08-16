@@ -20,6 +20,16 @@ class PathUnitToTarget(CombatBehavior):
     TODO: Add attack enemy in range logic / parameter
         Not added yet since that may be it's own Behavior
 
+    Example:
+    ```py
+    from ares.behaviors.combat import PathUnitToTarget
+
+    unit: Unit
+    grid: np.ndarray = self.mediator.get_ground_grid
+    target: Point2 = self.game_info.map_center
+    self.register_behavior(PathUnitToTarget(unit, grid, target))
+    ```
+
     Attributes
     ----------
     unit : Unit

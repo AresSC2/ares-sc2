@@ -18,6 +18,15 @@ if TYPE_CHECKING:
 class KeepUnitSafe(CombatBehavior):
     """Get a unit to safety based on the influence grid passed in.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import KeepUnitSafe
+
+    unit: Unit
+    grid: np.ndarray = self.mediator.get_ground_grid
+    self.register_behavior(KeepUnitSafe(unit, grid))
+    ```
+
     Attributes
     ----------
     unit : Unit

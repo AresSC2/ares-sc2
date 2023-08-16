@@ -20,9 +20,18 @@ def cy_pylon_matrix_covers(
     1.85 µs ± 8.72 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
 
     Example:
-    `can_place_structure_here: bool = cy_pylon_matrix_covers(
-        structure_position, self.structures(UnitTypeId.PYLON), self.game_info.terrain_height.data_numpy
-    )`
+    ```py
+    from ares.cython_functions.general_utils import cy_pylon_matrix_covers
+
+    # check if start location is powered by pylon
+    position = self.start_location
+
+    can_place_structure_here: bool = cy_pylon_matrix_covers(
+        position,
+        self.structures(UnitTypeId.PYLON),
+        self.game_info.terrain_height.data_numpy
+    )
+    ```
 
     Parameters
     ----------
@@ -45,6 +54,14 @@ def cy_unit_pending(ai: "AresBot", unit_type: UnitID) -> int:
     """Check how many unit_type are pending.
 
     Faster unit specific alternative to `python-sc2`'s `already_pending`
+
+    Example:
+    ```py
+    from ares.cython_functions.general_utils import cy_unit_pending
+    from sc2.ids.unit_typeid import UnitTypeId
+
+    num_marines_pending: int = cy_unit_pending(UnitTypeId.MARINE)
+    ```
 
     453 ns ± 9.35 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
 

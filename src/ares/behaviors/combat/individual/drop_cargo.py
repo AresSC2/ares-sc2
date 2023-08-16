@@ -17,6 +17,15 @@ class DropCargo(CombatBehavior):
 
     Medivacs, WarpPrism, Overlords, Nydus.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import DropCargo
+
+    unit: Unit
+    target: Unit
+    self.register_behavior(DropCargo(unit, target))
+    ```
+
     Attributes
     ----------
     unit : Unit
@@ -29,9 +38,7 @@ class DropCargo(CombatBehavior):
     target: Point2
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        """
-        TODO: Expand logic as needed, initial working version.
-        """
+        # TODO: Expand logic as needed, initial working version.
         # no action executed
         if self.unit.cargo_used == 0:
             return False

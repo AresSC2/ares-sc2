@@ -1,16 +1,18 @@
-# Tutorials
 
 ## Build Runner System
 The Build Runner System is a tool that enables swift build prototyping through a configuration file. 
-Optional data usage can be incorporated to maintain build history.
+Optional data usage can be incorporated to maintain build history. IMPORTANT: The build runner system
+is designed only for curating optimized build orders in the first few minutes of the game. Your bot 
+should switch to dynamic behavior after completion, checked via ```self.build_order_runner.opening_completed```.
 
 ### Declaring openings
-To initiate the Build Runner, a `<my_race_lowercase>_builds.yml` file should be included in the root directory of your bot project. 
+To initiate the Build Runner, a `<my_race_lowercase>_builds.yml` file should be included in the root directory of 
+your bot project. [Check starter-bot for example](https://github.com/AresSC2/ares-sc2-starter-bot)
 If you are playing as the Random race, then a yml file must be declared for each race that you wish ares to handle 
 openings and/or data management for.
 
 Below is an example of a valid yml file. (`protoss_builds.yml`)
-```yml
+```yaml
 # Save the game opening and result to disk?
 # Setting to `True` allows Ares to select a new opening after defeat
 UseData: True
@@ -54,21 +56,21 @@ BuildChoices:
 
 Builds:
     WorkerBuild:
-        ConstantWorkerProduction: True
+        ConstantWorkerProductionTill: 22
         OpeningBuildOrder:
             - 12 chrono @ nexus
             - 14 pylon @ ramp
             - 16 gateway
     FastExpand:
-        ConstantWorkerProduction: False
+        ConstantWorkerProductionTill: 0
         OpeningBuildOrder:
             ['12 worker', '13 worker', '14 supply', '14 worker', '14 chrono @ nexus',
              '15 worker', '15 gateway', '16 worker', '17 expand', '17 worker', '17 zealot']
 
 ```
 
-Note the two different ways of declaring builds. Turning `ConstantWorkerProduction` on allows a readable
-build order but may be undesirable in a fine-tuned build. 
+Note the two different ways of declaring builds. Turning `ConstantWorkerProductionTill` on allows a readable
+build order but may be undesirable in a fine-tuned build. (setting to 0 disables)
 Each build order statement should begin with a supply count, the step will not commence till
 the supply is equal or greater than this supply. Therefore, if this is not important, or you're not sure put a low value.
 ie. `["14 pylon", "1 gateway"]` will work just as well.
@@ -93,7 +95,7 @@ class BuildOrderOptions(str, Enum):
     WORKER = "WORKER"
 ```
 
-Additionally, strings may contain targets such as '14 pylon @ ramp', where the third word should contain the target 
+Additionally, strings may contain targets such as '14 pylon @ ramp', where the last word should contain the target 
 command. The following targets are currently supported:
 ```python
 class BuildOrderTargetOptions(str, Enum):
@@ -121,65 +123,3 @@ Retrieve the opening build name using the following method call:
 
 This method will return a string value containing the name of the currently selected build from the 
 `<my_race_lowercase>_builds.yml` file.
-
-## Custom Combat Maneuvers
-Combat Behaviors serve as essential components for constructing intricate unit and group control strategies. 
-These behaviors act as modular elements that can be combined to create bespoke combat maneuvers. 
-To facilitate the process of creating army behaviors, a practical aid called the `CombatManeuver` helper 
-class is made available.
-
-To illustrate the concept, consider the following example that demonstrates the execution of a mine drop:
-```python
-from ares import AresBot
-from ares.behaviors.combat import CombatManeuver
-from ares.behaviors.combat.individual import (
-    DropCargo,
-    KeepUnitSafe,
-    PathUnitToTarget,
-    PickUpCargo,
-)
-from sc2.unit import Unit
-from sc2.units import Units
-import numpy as np
-
-class MyBot(AresBot):
-    async def on_step(self, iteration: int) -> None:
-        # retrieve medivac and mines_to_pickup and pass to method
-        # left out here for clarity
-        self.do_medivac_mine_drop(medivac, mines_to_pickup)
-        
-    def do_medivac_mine_drop(self, medivac: Unit, mines_to_pickup: Units) -> None:
-        # initialize a new CombatManeuver
-        mine_drop: CombatManeuver = CombatManeuver()
-        # get a grid for the medivac to path on
-        air_grid: np.ndarray = self.mediator.get_air_grid
-        # first priority is picking up units
-        mine_drop.add(
-            PickUpCargo(unit=medivac, grid=air_grid, pickup_targets=mines_to_pickup)
-        )
-        # if there is cargo, path to target and drop them off
-        if medivac.has_cargo:
-            # path
-            mine_drop.add(
-                PathUnitToTarget(
-                    unit=medivac,
-                    grid=air_grid,
-                    target=self.enemy_start_locations[0],
-                )
-            )
-            # drop off the mines
-            mine_drop.add(DropCargo(unit=medivac, target=medivac.position))
-        # no cargo and no units to pick up, stay safe
-        else:
-            mine_drop.add(KeepUnitSafe(unit=medivac, grid=air_grid))
-        
-        # finally register this maneuver to be executed
-        self.register_behavior(mine_drop)
-```
-
-Combat Behaviors can also be executed individually if required:
-```python
-self.register_behavior(KeepUnitSafe(unit=medivac, grid=air_grid))
-```
-
-

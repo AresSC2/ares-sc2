@@ -16,6 +16,20 @@ if TYPE_CHECKING:
 class UseAbility(CombatBehavior):
     """A-Move a unit to a target.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import UseAbility
+    from sc2.ids.ability_id import AbilityId
+
+    unit: Unit
+    target: Union[Unit, Point2]
+    self.register_behavior(
+        UseAbility(
+            AbilityId.FUNGALGROWTH_FUNGALGROWTH, unit, target
+        )
+    )
+    ```
+
     Attributes
     ----------
     ability : AbilityId
@@ -33,27 +47,7 @@ class UseAbility(CombatBehavior):
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        """Use an ability with optional target.
-
-        WARNING: This always returns True, so combat logic should
-        reflect this.
-
-        Parameters
-        ----------
-        ai : AresBot
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        **kwargs :
-            None
-
-        Returns
-        -------
-        bool :
-            CombatBehavior carried out an action.
-        """
+        AbilityId.FUNGALGROWTH_FUNGALGROWTH
         if self.target:
             self.unit(self.ability, self.target)
         else:

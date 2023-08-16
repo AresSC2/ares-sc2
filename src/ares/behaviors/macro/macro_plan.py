@@ -16,7 +16,7 @@ class MacroPlan(Behavior):
     Idea here is to put macro behaviors in priority order.
 
     Example:
-    ```
+    ```py
     from ares.behaviors.macro import MacroPlan
     from ares.behaviors.macro import (
         AutoSupply,
@@ -28,7 +28,6 @@ class MacroPlan(Behavior):
     macro_plan: MacroPlan = MacroPlan()
 
     # then add behaviors in the order they should be executed
-    macro_plan.add(Mining())
     macro_plan.add(AutoSupply())
     macro.plan.add(SpawnController(army_composition_dict=self.army_comp))
 
