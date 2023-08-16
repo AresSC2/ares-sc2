@@ -15,6 +15,13 @@ if TYPE_CHECKING:
 class AMove(CombatBehavior):
     """A-Move a unit to a target.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import AMove
+
+    self.register_behavior(AMove(unit, self.game_info.map_center))
+    ```
+
     Attributes
     ----------
     unit : Unit
@@ -27,4 +34,5 @@ class AMove(CombatBehavior):
     target: Union[Point2, Unit]
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        return self.unit.attack(self.target)
+        self.unit.attack(self.target)
+        return True

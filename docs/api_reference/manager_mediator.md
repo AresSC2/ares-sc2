@@ -6,6 +6,6 @@ which can be accessed via `self.mediator`. For example:
 ground_grid: np.ndarray = self.mediator.get_ground_grid
 ```
 
-::: ares.managers.manager_mediator
+::: ares.managers.manager_mediator.ManagerMediator
     options:
-        show_root_heading: true
+        show_bases : false

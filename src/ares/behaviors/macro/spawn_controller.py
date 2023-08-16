@@ -19,7 +19,7 @@ class SpawnController(MacroBehavior):
     """Handle spawning army compositions.
 
     Example bot code:
-    ```
+    ```py
     from ares.behaviors.spawn_controller import SpawnController
 
     # Note: This does not try to build production facilities and
@@ -65,24 +65,6 @@ class SpawnController(MacroBehavior):
     __supply_available: float = 0.0
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
-        """Execute the spawn controller task (Called from `behavior_executioner.py`).
-
-        Handle unit production in respect to the army_composition_dict.
-
-        Parameters
-        ----------
-        ai :
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-        bool :
-            bool indicating if this task was executed.
-        """
         # Nothing can be spawned for less than 25 min (ravager), prevent code execution
         if ai.minerals < 25:
             return False

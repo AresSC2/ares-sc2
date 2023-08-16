@@ -20,6 +20,15 @@ class ShootTargetInRange(CombatBehavior):
     TODO: Currently only picks lowest health.
         Might want to pick best one shot KO for example
 
+    Example:
+    ```py
+    from ares.behaviors.combat import ShootTargetInRange
+
+    unit: Unit
+    target: Unit
+    self.register_behavior(ShootTargetInRange(unit, target))
+    ```
+
     Attributes
     ----------
     unit: Unit
@@ -38,25 +47,6 @@ class ShootTargetInRange(CombatBehavior):
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        """Try to shoot something if we can.
-
-        Parameters
-        ----------
-        ai : AresBot
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        **kwargs :
-            None
-
-        Returns
-        -------
-        bool :
-            CombatBehavior carried out an action.
-        """
-
         if not self.targets:
             return False
 

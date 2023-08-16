@@ -11,10 +11,20 @@ from ares.managers.manager_mediator import ManagerMediator
 
 @dataclass
 class BuildStructure(MacroBehavior):
-    """Handle worker mining control.
+    """Handy behavior for Terran and Protoss.
+    Especially combined with `Mining` and ares built in placement solver.
+    Finds an ideal mining worker, and an available precalculated placement.
+    Then removes worker from mining records and provides a new role.
 
-    Note: Could technically be `CombatBehavior`, but is treated here as a
-    MacroBehavior since many tasks are carried out.
+
+    Example:
+    ```py
+    from ares.behaviors.macro import BuildStructure
+
+    self.register_behavior(
+        BuildStructure(self.start_location, UnitTypeId.BARRACKS)
+    )
+    ```
 
     Attributes
     ----------

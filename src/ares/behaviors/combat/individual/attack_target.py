@@ -14,6 +14,15 @@ if TYPE_CHECKING:
 class AttackTarget(CombatBehavior):
     """Shoot a target.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import AttackTarget
+
+    unit: Unit
+    target: Unit
+    self.register_behavior(AttackTarget(unit, target))
+    ```
+
     Attributes
     ----------
     unit: Unit
@@ -29,27 +38,5 @@ class AttackTarget(CombatBehavior):
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        """Attack something.
-
-        WARNING: This always returns True, so combat logic should
-        reflect this.
-
-        Parameters
-        ----------
-        ai : AresBot
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        **kwargs :
-            None
-
-        Returns
-        -------
-        bool :
-            CombatBehavior carried out an action.
-        """
-
         self.unit.attack(self.target)
         return True

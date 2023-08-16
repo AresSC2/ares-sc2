@@ -318,12 +318,10 @@ class ManagerName(str, Enum):
 
     ABILITY_TRACKER_MANAGER = "AbilityTrackerManager"
     BUILDING_MANAGER = "BuildingManager"
-    COMBAT_MANAGER = "CombatManager"
     DATA_MANAGER = "DataManager"
     ENEMY_TO_BASE_MANAGER = "EnemyToBaseManager"
     PATH_MANAGER = "PathManager"
     PLACEMENT_MANAGER = "PlacementManager"
-    PRODUCTION_MANAGER = "ProductionManager"
     RESOURCE_MANAGER = "ResourceManager"
     TERRAIN_MANAGER = "TerrainManager"
     UNIT_CACHE_MANAGER = "UnitCacheManager"

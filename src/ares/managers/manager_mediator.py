@@ -13,7 +13,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 from scipy.spatial import KDTree
 
-from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
+from ares.consts import ManagerName, ManagerRequestType, UnitRole
 from MapAnalyzer import MapData
 
 
@@ -239,83 +239,6 @@ class ManagerMediator(IManagerMediator):
         """
         return self.manager_request(
             ManagerName.BUILDING_MANAGER, ManagerRequestType.GET_BUILDING_TRACKER_DICT
-        )
-
-    """
-    CombatManager
-    """
-
-    @property
-    def get_position_of_main_attacking_squad(self) -> Point2:
-        """Get the position of the main attacking squad.
-
-        CombatManager
-
-        Returns
-        -------
-        Point2 :
-            Position of the main attacking squad.
-
-        """
-        return self.manager_request(
-            ManagerName.COMBAT_MANAGER,
-            ManagerRequestType.GET_POSITION_OF_MAIN_ATTACKING_SQUAD,
-        )
-
-    @property
-    def get_predicted_main_fight_result(self) -> EngagementResult:
-        """Return the combat sim result between each player's main force.
-
-        Find the main army for each force, and check the combat sim.
-
-        CombatManager
-
-        Returns
-        -------
-        EngagementResult :
-            Predicted combat result between friendly and enemy main forces.
-
-        """
-        return self.manager_request(
-            ManagerName.COMBAT_MANAGER,
-            ManagerRequestType.GET_PREDICTED_MAIN_FIGHT_RESULT,
-        )
-
-    @property
-    def get_attack_squad_engage_target(self) -> bool:
-        """Should the attack squad engage the target?
-
-        Combat Manager
-
-        Returns
-        -------
-        bool :
-            True if the attack squad should engage their target, False otherwise.
-
-        """
-        return self.manager_request(
-            ManagerName.COMBAT_MANAGER, ManagerRequestType.GET_SQUAD_CLOSE_TO_TARGET
-        )
-
-    def remove_tag_from_squads(self, **kwargs) -> None:
-        """Remove the given tag from unit squads.
-
-        Combat Manager
-
-        Other Parameters
-        -----
-        tag : int
-            The tag of the unit to remove from squads.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
-        """
-        return self.manager_request(
-            ManagerName.COMBAT_MANAGER,
-            ManagerRequestType.REMOVE_TAG_FROM_SQUADS,
-            **kwargs,
         )
 
     """

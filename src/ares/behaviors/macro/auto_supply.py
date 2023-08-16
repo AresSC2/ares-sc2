@@ -15,6 +15,24 @@ from ares.managers.manager_mediator import ManagerMediator
 
 @dataclass
 class AutoSupply(MacroBehavior):
+    """Automatically build supply, works for all races.
+
+    Example:
+    ```py
+    from ares.behaviors.macro import AutoSupply
+
+    self.register_behavior(AutoSupply(self.start_location))
+    ```
+
+    Attributes
+    ----------
+    base_location : Point2
+        The base location where supply should be built.
+    return_true_if_supply_required : bool
+        If can't afford supply but it's required, return true?
+        Useful if creating a `MacroPlan`
+    """
+
     base_location: Point2
     return_true_if_supply_required: bool = True
 

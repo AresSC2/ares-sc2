@@ -29,6 +29,13 @@ class Mining(MacroBehavior):
     Note: Could technically be `CombatBehavior`, but is treated here as a
     MacroBehavior since many tasks are carried out.
 
+    Example:
+    ```py
+    from ares.behaviors.macro import Mining
+
+    self.register_behavior(Mining())
+    ```
+
     Attributes
     ----------
     flee_at_health_perc : float, optional
@@ -61,26 +68,6 @@ class Mining(MacroBehavior):
     safe_long_distance_mineral_fields: Optional[Units] = None
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
-        """Execute the mining task (Called from `behavior_executioner.py`).
-
-        Depending on the attributes passed, carry out mining tasks based
-        on the bookkeeping found inside `resource_manager`. No need to
-        manually call this.
-
-        Parameters
-        ----------
-        ai :
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-        bool :
-            bool indicating if this task was executed (always `True` here).
-        """
         workers: Units = mediator.get_units_from_role(
             role=UnitRole.GATHERING,
             unit_type=ai.worker_type,

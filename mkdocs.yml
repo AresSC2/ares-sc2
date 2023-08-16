@@ -2,59 +2,99 @@ site_name: Ares SC2
 
 theme:
   name: material
+  favicon: assets/favicon.ico
+  palette:
+  - scheme: default
+    primary: blue grey
+    accent: indigo
+    toggle:
+      icon: material/lightbulb
+      name: Switch to dark mode
+  - scheme: slate
+    primary: blue grey
+    accent: indigo
+    toggle:
+      icon: material/lightbulb-outline
+      name: Switch to light mode
   features:
-    - navigation.tabs
-    - navigation.sections
-    - toc.integrate
-    - navigation.top
     - search.suggest
     - search.highlight
     - content.tabs.link
-    - content.code.annotation
-    - content.code.copy
+    - content.code.annotate
+    - navigation.indexes
+  icon:
+    repo: fontawesome/brands/github-alt
   language: en
-  palette:
-    - scheme: slate
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
-      primary: teal
-      accent: lime
-    - scheme: default
-      toggle:
-        icon: material/toggle-switch-off-outline
-        name: Switch to dark mode
-      primary: teal
-      accent: purple
+
+repo_name: ares-sc2
+repo_url: https://github.com/AresSC2/ares-sc2
+
+nav:
+  - Start here: index.md
+  - Tutorials:
+      - tutorials/index.md
+      - Build Runner: tutorials/build_runner.md
+      - Combat Maneuver Example: tutorials/combat_maneuver_example.md
+      - Creating Custom Behaviors: tutorials/custom_behaviors.md
+      - Config File: tutorials/config_file.md
+      - Installation: tutorials/installation.md
+      - Tips and Tricks: tutorials/tips_and_tricks.md
+  - API Reference:
+      - api_reference/index.md
+      - Behaviors:
+          - api_reference/behaviors/index.md
+          - Combat Behaviors: api_reference/behaviors/combat_behaviors.md
+          - Macro Behaviors: api_reference/behaviors/macro_behaviors.md
+      - Cython Extensions:
+          - api_reference/cython_extensions/index.md
+          - Combat Utils: api_reference/cython_extensions/combat_utils.md
+          - General Utils: api_reference/cython_extensions/general_utils.md
+          - Geometry: api_reference/cython_extensions/geometry.md
+          - Placement Solver: api_reference/cython_extensions/placement_solver.md
+          - Units Utils: api_reference/cython_extensions/units_utils.md
+      - api_reference/manager_mediator.md
+
+  - Contributing:
+      - contributing/index.md
 
 markdown_extensions:
   - toc:
       baselevel: 1
       permalink: true
-      toc_depth: 4
-
-nav:
-  - Home: index.md
-  - Tutorials: tutorials.md
-  - CombatBehaviors: combat_behaviors.md
-  - MacroBehaviors: macro_behaviors.md
-  - Manager Mediator: mediator.md
-  - Dev Guide: dev-guide.md
-  - Managers: managers.md
+      toc_depth: 3
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
 
 # to navigate with `/site` content correctly
 use_directory_urls: false
 
 plugins:
-  - search:
+  - search
   - mkdocstrings:
+      watch: [src]
       handlers:
         python:
           paths: [src]
           selection:
             docstring_style: numpy
+          rendering:
+            show_root_heading: false
+            show_root_full_path: false
+            heading_level: 2
+            merge_init_into_class: true
+            show_signature_annotations: false
+            separate_signature: true
+            show_root_toc_entry: false
 
 extra_css:
   - stylesheets/extra.css
-
-repo_url: https://github.com/AresSC2/ares-sc2

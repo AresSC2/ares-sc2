@@ -9,6 +9,18 @@ from ares import AresBot
 def cy_attack_ready(ai: AresBot, unit: Unit, target: Unit) -> bool:
     """Check if the unit is ready to attack the target.
 
+    Takes into account turn rate and unit speeds
+
+    Example:
+    ```py
+    from ares.cython_extensions.combat_utils import cy_attack_ready
+
+    worker = self.workers[0]
+    target = self.enemy_units[0]
+
+    attack_ready: bool = cy_attack_ready(self, worker, target)
+    ```
+
     1.46 µs ± 5.45 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
 
     Python alternative:
@@ -33,6 +45,16 @@ def cy_attack_ready(ai: AresBot, unit: Unit, target: Unit) -> bool:
 
 def cy_is_facing(unit: Unit, other_unit: Unit, angle_error: float = 0.05) -> bool:
     """Given a grid of influence, check if the given position is above weight_safety_limit.
+
+    Example:
+    ```py
+    from ares.cython_extensions.combat_utils import cy_is_facing
+
+    unit = self.workers[0]
+    other_unit = self.enemy_units[0]
+
+    is_facing: bool = cy_is_facing(unit, other_unit)
+    ```
 
     323 ns ± 3.93 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
 
@@ -61,6 +83,16 @@ def cy_is_position_safe(
 ) -> bool:
     """Given a grid of influence, check if the given position is above weight_safety_limit.
 
+    Example:
+    ```py
+    from ares.cython_extensions.combat_utils import cy_is_position_safe
+
+    grid = self.mediator.get_ground_grid
+    unit = self.workers[0]
+
+    is_safe: bool = cy_is_position_safe(grid, unit.position)
+    ```
+
     627 ns ± 3.12 ns per loop (mean ± std. dev. of 7 runs, 1,000,000 loops each)
 
     Python alternative:
@@ -85,6 +117,15 @@ def cy_is_position_safe(
 
 def cy_pick_enemy_target(enemies: Union[Units, list[Unit]]) -> Unit:
     """Pick the best thing to shoot at out of all enemies.
+
+    Example:
+    ```py
+    from ares.cython_extensions.combat_utils import cy_pick_enemy_target
+
+    enemies = self.enemy_units
+
+    target = cy_pick_enemy_target(enemies)
+    ```
 
     TODO: If there are multiple units that can be killed, pick the highest value one
         Unit parameter to allow for this in the future.

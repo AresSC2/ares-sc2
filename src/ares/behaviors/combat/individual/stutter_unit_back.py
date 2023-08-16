@@ -18,6 +18,15 @@ if TYPE_CHECKING:
 class StutterUnitBack(CombatBehavior):
     """Shoot at the target if possible, else move back.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import StutterUnitBack
+
+    unit: Unit
+    target: Unit
+    self.register_behavior(StutterUnitBack(unit, target))
+    ```
+
     Attributes
     ----------
     unit: Unit
@@ -32,32 +41,17 @@ class StutterUnitBack(CombatBehavior):
 
     unit: Unit
     target: Unit
-    kite_via_pathing: bool = False
+    kite_via_pathing: bool = True
     grid: Optional[np.ndarray] = None
 
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        """Shoot at the target if possible, else kite back.
-
-        Parameters
-        ----------
-        ai : AresBot
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        **kwargs :
-            None
-
-        Returns
-        -------
-        bool :
-            CombatBehavior carried out an action.
-        """
         unit = self.unit
         target = self.target
+        if self.kite_via_pathing and self.grid is None:
+            self.grid = mediator.get_ground_grid
+
         if not target.is_memory and cy_attack_ready(ai, unit, target):
             return AttackTarget(unit=unit, target=target).execute(ai, config, mediator)
         elif self.kite_via_pathing and self.grid is not None:

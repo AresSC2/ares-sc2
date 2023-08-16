@@ -16,6 +16,15 @@ if TYPE_CHECKING:
 class StutterUnitForward(CombatBehavior):
     """Shoot at the target if possible, else move back.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import StutterUnitForward
+
+    unit: Unit
+    target: Unit
+    self.register_behavior(StutterUnitForward(unit, target))
+    ```
+
     Attributes
     ----------
     unit: Unit
@@ -30,24 +39,6 @@ class StutterUnitForward(CombatBehavior):
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        """Shoot at the target if possible, else kite back.
-
-        Parameters
-        ----------
-        ai : AresBot
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        **kwargs :
-            None
-
-        Returns
-        -------
-        bool :
-            CombatBehavior carried out an action.
-        """
         unit = self.unit
         target = self.target
         if not target.is_memory and cy_attack_ready(ai, unit, target):

@@ -7,6 +7,13 @@ def cy_distance_to(
 ) -> float:
     """Check distance between two Point2 positions.
 
+    Example:
+    ```py
+    from ares.cython_functions.geometry import cy_distance_to
+
+    dist: float = cy_distance_to(self.start_location, self.game_info.map_center)
+    ```
+
     cy_distance_to(Point2, Point2)
     157 ns ± 2.69 ns per loop (mean ± std. dev. of 7 runs, 10,000,000 loops each)
 
@@ -36,6 +43,17 @@ def cy_towards(
     start_pos: Point2, target_pos: Point2, distance: float
 ) -> tuple[float, float]:
     """Get position from start_pos towards target_pos based on distance.
+
+    Example:
+    ```py
+    from ares.cython_functions.geometry import cy_towards
+
+    new_pos: Tuple[float, float] = cy_towards(
+        self.start_location,
+        self.game_info.map_center,
+        12.0
+    )
+    ```
 
     Note: For performance reasons this returns the point2 as a tuple, if a
     python-sc2 Point2 is required it's up to the user to convert it.

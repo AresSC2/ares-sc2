@@ -24,13 +24,23 @@ class PickUpCargo(CombatBehavior):
 
     Medivacs, WarpPrism, Overlords, Nydus.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import PickUpCargo
+
+    unit: Unit # medivac for example
+    grid: np.ndarray = self.mediator.get_ground_grid
+    pickup_targets: Union[Units, list[Unit]] = self.workers
+    self.register_behavior(PickUpCargo(unit, grid, pickup_targets))
+    ```
+
     Attributes
     ----------
     unit : Unit
         The container unit.
     grid : np.ndarray
         Pathing grid for container unit.
-    pickup_targets : Point2
+    pickup_targets : Union[Units, list[Unit]]
         Units we want to load into the container.
     cargo_switch_to_role : UnitRole (default: UnitRole.DROP_UNITS_ATTACKING)
         Sometimes useful to switch cargo tp new role

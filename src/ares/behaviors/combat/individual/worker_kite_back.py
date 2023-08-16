@@ -20,6 +20,19 @@ class WorkerKiteBack(CombatBehavior):
     This is similar to stutter unit back, but takes advantage of
     mineral walking.
 
+    Example:
+    ```py
+    from ares.behaviors.combat import WorkerKiteBack
+
+    unit: Unit
+    target: Unit
+    self.register_behavior(
+        WorkerKiteBack(
+            unit, target
+        )
+    )
+    ```
+
     Attributes
     ----------
     unit: Unit
@@ -34,24 +47,6 @@ class WorkerKiteBack(CombatBehavior):
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        """Attack the target if possible, else mineral walk back.
-
-        Parameters
-        ----------
-        ai : AresBot
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        **kwargs :
-            None
-
-        Returns
-        -------
-        bool :
-            CombatBehavior carried out an action.
-        """
         unit = self.unit
         target = self.target
         if not target.is_memory and cy_attack_ready(ai, unit, target):
