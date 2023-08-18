@@ -105,6 +105,7 @@ class AresBot(CustomBotAI):
         self.num_larva_left: int = 0
 
         self._drop_unload_actions: list[tuple[int, int]] = []
+        self.arcade_mode: bool = False
 
     def do_unload_container(self, container_tag: int, index: int = 0) -> None:
         self._drop_unload_actions.append((container_tag, index))
@@ -235,6 +236,7 @@ class AresBot(CustomBotAI):
         else:
             self.base_townhall_type = UnitID.HATCHERY
 
+
     async def on_start(self) -> None:
         """Set up game step, managers, and information that requires game data
 
@@ -256,6 +258,9 @@ class AresBot(CustomBotAI):
                 if not self.config[DEBUG]
                 else self.config[DEBUG_GAME_STEP]
             )
+
+        if not self.enemy_start_locations or not self.townhalls:
+            self.arcade_mode = True
 
         await self.register_managers()
 

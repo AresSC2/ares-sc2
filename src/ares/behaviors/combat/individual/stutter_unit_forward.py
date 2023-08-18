@@ -41,7 +41,7 @@ class StutterUnitForward(CombatBehavior):
     ) -> bool:
         unit = self.unit
         target = self.target
-        if not target.is_memory and cy_attack_ready(ai, unit, target):
+        if cy_attack_ready(ai, unit, target):
             return AttackTarget(unit=unit, target=target).execute(ai, config, mediator)
         else:
             unit.move(target.position)
