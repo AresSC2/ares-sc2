@@ -236,7 +236,6 @@ class AresBot(CustomBotAI):
         else:
             self.base_townhall_type = UnitID.HATCHERY
 
-
     async def on_start(self) -> None:
         """Set up game step, managers, and information that requires game data
 
