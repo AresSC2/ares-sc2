@@ -140,7 +140,7 @@ class PathManager(Manager, IManagerMediator):
         }
 
         self.debug: bool = self.config[DEBUG]
-        self.map_data: MapData = MapData(ai, arcade=not self.ai.enemy_start_locations)
+        self.map_data: MapData = MapData(ai, arcade=self.ai.arcade_mode)
 
         self.air_grid: np.ndarray = self.map_data.get_clean_air_grid()
         self.air_vs_ground_grid: np.ndarray = self.map_data.get_air_vs_ground_grid(

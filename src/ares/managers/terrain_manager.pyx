@@ -142,7 +142,7 @@ class TerrainManager(Manager, IManagerMediator):
         -------
 
         """
-        if self.ai.enemy_start_locations:
+        if not self.ai.arcade_mode:
             self.own_expansions = await self._calculate_expansion_path_distances(
                 self.ai.start_location
             )

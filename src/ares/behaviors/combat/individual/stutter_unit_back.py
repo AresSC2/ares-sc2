@@ -52,7 +52,7 @@ class StutterUnitBack(CombatBehavior):
         if self.kite_via_pathing and self.grid is None:
             self.grid = mediator.get_ground_grid
 
-        if not target.is_memory and cy_attack_ready(ai, unit, target):
+        if cy_attack_ready(ai, unit, target):
             return AttackTarget(unit=unit, target=target).execute(ai, config, mediator)
         elif self.kite_via_pathing and self.grid is not None:
             return KeepUnitSafe(unit=unit, grid=self.grid).execute(ai, config, mediator)

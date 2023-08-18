@@ -151,7 +151,7 @@ class PlacementManager(Manager, IManagerMediator):
             The current game iteration.
 
         """
-        if not self.ai.enemy_start_locations:
+        if self.ai.arcade_mode:
             return
 
         # occasionally check if worker on route locations can be unlocked
@@ -163,7 +163,7 @@ class PlacementManager(Manager, IManagerMediator):
 
     async def initialise(self) -> None:
         """Calculate building formations on game commencement."""
-        if not self.ai.enemy_start_locations:
+        if self.ai.arcade_mode:
             return
 
         self.points_to_avoid_grid = np.zeros(
