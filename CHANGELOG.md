@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.0 (2023-08-18)
+
+### Feature
+
+* Improve arcade map detection ([`c774f7a`](https://github.com/AresSC2/ares-sc2/commit/c774f7a963d7da9bfa38ccc74fad612aabf70fc8))
+
 ## v1.3.0 (2023-08-16)
 
 ### Feature
