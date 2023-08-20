@@ -31,7 +31,6 @@ from ares.consts import (
     DEBUG,
     DEBUG_GAME_STEP,
     DEBUG_OPTIONS,
-    DEBUG_SPAWN,
     GAME_STEP,
     IGNORE_DESTRUCTABLES,
     RACE_SUPPLY,
@@ -261,7 +260,7 @@ class AresBot(CustomBotAI):
         if not self.enemy_start_locations or not self.townhalls:
             self.arcade_mode = True
 
-        await self.register_managers()
+        self.register_managers()
 
         self.build_order_runner: BuildOrderRunner = BuildOrderRunner(
             self,
@@ -278,18 +277,9 @@ class AresBot(CustomBotAI):
 
             self.chat_debug = ChatDebug(self)
 
-        if self.config[DEBUG] and self.config[DEBUG_OPTIONS][DEBUG_SPAWN]:
-            from debug_spawn import DebugSpawn
-
-            debug_spawn: DebugSpawn = DebugSpawn(self)
-            await debug_spawn.spawn(
-                self.manager_hub.terrain_manager.enemy_nat,
-                self.manager_hub.terrain_manager.own_nat,
-                self.manager_hub.terrain_manager.enemy_third,
-            )
         self.cost_dict: Dict[UnitID, Cost] = COST_DICT
 
-    async def register_managers(self) -> None:
+    def register_managers(self) -> None:
         """Register standard and custom managers.
 
         Override in your bot class if you wish to use custom managers.
@@ -315,7 +305,7 @@ class AresBot(CustomBotAI):
         """
         manager_mediator: ManagerMediator = ManagerMediator()
         self.manager_hub = Hub(self, self.config, manager_mediator)
-        await self.manager_hub.init_managers()
+        self.manager_hub.init_managers()
 
     async def on_step(self, iteration: int) -> None:
         """Play the game

@@ -124,7 +124,7 @@ class DataManager(Manager, IManagerMediator):
         """
         return self.manager_requests_dict[request](kwargs)
 
-    async def initialise(self) -> None:
+    def initialise(self) -> None:
         if BUILD_CHOICES in self.config:
             if self.config[USE_DATA]:
                 self._get_opponent_data(self.ai.opponent_id)

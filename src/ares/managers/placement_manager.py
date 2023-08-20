@@ -161,7 +161,7 @@ class PlacementManager(Manager, IManagerMediator):
         if self.config[DEBUG] and self.config[DEBUG_OPTIONS][SHOW_BUILDING_FORMATION]:
             await self._draw_building_placements()
 
-    async def initialise(self) -> None:
+    def initialise(self) -> None:
         """Calculate building formations on game commencement."""
         if self.ai.arcade_mode:
             return
