@@ -38,6 +38,7 @@ mypy = "^0.991"
 [tool.poetry.group.test.dependencies]
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
+pytest-asyncio = "^0.21.1"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.4.2"
@@ -68,6 +69,12 @@ exclude_lines = [
 [tool.pytest.ini_options]
 testpaths = ["src", "tests"]
 addopts = "-p no:cacheprovider" # deactivating pytest caching.
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+    # note the use of single quote below to denote "raw" strings in TOML
+    'ignore:function ham\(\) is deprecated:DeprecationWarning',
+]
 
 [tool.isort]
 profile = "black"
@@ -111,3 +118,4 @@ upload_to_pypi = false
 upload_to_release = false
 hvcs = "github"
 commit_message = "{version} [skip ci]" # skip triggering ci pipelines for version commits
+
