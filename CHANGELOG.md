@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.5.0 (2023-08-21)
+
+### Feature
+
+* Built AreBot object from pickled files ([`d09f0fd`](https://github.com/AresSC2/ares-sc2/commit/d09f0fdffa85d546cae341c9ed670d584e5514ed))
+
 ## v1.4.0 (2023-08-18)
 
 ### Feature
