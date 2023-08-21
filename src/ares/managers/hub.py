@@ -170,7 +170,7 @@ class Hub:
         # manager mediator needs a reference to all the managers
         self.manager_mediator.add_managers(self.managers)
 
-    async def init_managers(self) -> None:
+    def init_managers(self) -> None:
         """Intialise manager data that requires the game to have started.
 
         Some Managers require information, such as enemy base locations, that isn't
@@ -182,7 +182,7 @@ class Hub:
 
         """
         for manager in self.managers:
-            await manager.initialise()
+            manager.initialise()
 
     async def on_unit_destroyed(self, unit_tag: int) -> None:
         """Call the manager functions to handle destroyed units.

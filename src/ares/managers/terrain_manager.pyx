@@ -135,7 +135,7 @@ class TerrainManager(Manager, IManagerMediator):
         # needed a place to track spines until the spine positioning manager is done
         self.base_defense_spine_positions: Dict[Point2, int] = {}
 
-    async def initialise(self) -> None:
+    def initialise(self) -> None:
         """Calculate expansion locations from own and enemy perspective.
 
         Returns
@@ -143,11 +143,11 @@ class TerrainManager(Manager, IManagerMediator):
 
         """
         if not self.ai.arcade_mode:
-            self.own_expansions = await self._calculate_expansion_path_distances(
+            self.own_expansions = self._calculate_expansion_path_distances(
                 self.ai.start_location
             )
 
-            self.enemy_expansions = await self._calculate_expansion_path_distances(
+            self.enemy_expansions = self._calculate_expansion_path_distances(
                 self.ai.enemy_start_locations[0]
             )
 
@@ -523,7 +523,7 @@ class TerrainManager(Manager, IManagerMediator):
                 self.positions_blocked_by_enemy_burrowed_units.append(position)
                 return position
 
-    async def _calculate_expansion_path_distances(
+    def _calculate_expansion_path_distances(
         self, from_pos: Point2
     ) -> List[Tuple[Point2, float]]:
         """Calculates pathing distances to all expansions on the map
@@ -545,13 +545,14 @@ class TerrainManager(Manager, IManagerMediator):
 
         """
         expansion_distances: List[Tuple[Point2, float]] = []
+        grid: np.ndarray = self.manager_mediator.get_ground_grid
         for el in self.ai.expansion_locations_list:
             if from_pos.distance_to(el) < self.ai.EXPANSION_GAP_THRESHOLD:
                 continue
 
-            distance = await self.ai.client.query_pathing(from_pos, el)
-            if distance:
-                expansion_distances.append((el, distance))
+            if path := self.manager_mediator.get_map_data_object.pathfind(from_pos, el, grid):
+                expansion_distances.append((el, len(path)))
+
         # sort by path length to each expansion
         expansion_distances = sorted(expansion_distances, key=lambda x: x[1])
         return expansion_distances

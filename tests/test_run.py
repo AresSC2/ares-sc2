@@ -36,6 +36,8 @@ MY_BOT_RACE: str = "Random"
 
 
 class TestBot(AresBot):
+    __test__ = False
+
     async def on_start(self) -> None:
         await super(TestBot, self).on_start()
 

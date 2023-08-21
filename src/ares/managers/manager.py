@@ -51,7 +51,7 @@ class Manager(metaclass=ABCMeta):
         self.manager_mediator: ManagerMediator = mediator
         self.empty_units: Units = Units([], self.ai)
 
-    async def initialise(self) -> None:
+    def initialise(self) -> None:
         """Supply the manager with information that requires the game to have launched.
 
         Returns

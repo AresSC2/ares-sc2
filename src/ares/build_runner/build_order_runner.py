@@ -169,7 +169,7 @@ class BuildOrderRunner:
                             assign_role=worker.tag
                             in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
                         )
-            elif type(command) == UnitID and command not in ALL_STRUCTURES:
+            elif isinstance(command, UnitID) and command not in ALL_STRUCTURES:
                 self.current_step_started = True
                 self.ai.train(command)
 
@@ -277,7 +277,7 @@ class BuildOrderRunner:
             Unit of the structure type if found.
         """
         # this block is currently for chrono
-        if type(target) == UnitID:
+        if isinstance(target, UnitID):
             if valid_structures := self.ai.structures.filter(
                 lambda s: s.build_progress == 1.0 and s.type_id == target
             ):

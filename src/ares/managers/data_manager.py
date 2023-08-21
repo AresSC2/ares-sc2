@@ -124,7 +124,7 @@ class DataManager(Manager, IManagerMediator):
         """
         return self.manager_requests_dict[request](kwargs)
 
-    async def initialise(self) -> None:
+    def initialise(self) -> None:
         if BUILD_CHOICES in self.config:
             if self.config[USE_DATA]:
                 self._get_opponent_data(self.ai.opponent_id)
@@ -204,7 +204,7 @@ class DataManager(Manager, IManagerMediator):
         # only write results once
         if self.data_saved:
             return
-        if type(result) != str:
+        if not isinstance(result, str):
             result_id: int = 1
             if result == Result.Victory:
                 result_id = 2
