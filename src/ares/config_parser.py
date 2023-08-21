@@ -78,7 +78,7 @@ class ConfigParser:
             if value_type == dict and k in user_config:
                 config[k] = internal_config[k] | user_config[k]
 
-            elif k in user_config and type(user_config[k]) == value_type:
+            elif k in user_config and isinstance(user_config[k], value_type):
                 config[k] = user_config[k]
 
         return config

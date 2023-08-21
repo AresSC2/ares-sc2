@@ -204,7 +204,7 @@ class DataManager(Manager, IManagerMediator):
         # only write results once
         if self.data_saved:
             return
-        if type(result) != str:
+        if not isinstance(result, str):
             result_id: int = 1
             if result == Result.Victory:
                 result_id = 2
