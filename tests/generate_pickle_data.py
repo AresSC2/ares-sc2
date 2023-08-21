@@ -8,17 +8,17 @@ import os
 import pickle
 import sys
 from os.path import abspath, dirname
-from typing import Set
+from typing import Optional
 
 from loguru import logger
 from s2clientprotocol import sc2api_pb2 as sc_pb
 from sc2 import maps
-from sc2.bot_ai import BotAI
 from sc2.data import Difficulty, Race
-from sc2.ids.unit_typeid import UnitTypeId
 from sc2.main import run_game
 from sc2.player import Bot, Computer
 from sc2.protocol import ProtocolError
+
+from ares import AresBot
 
 # This allows Ares to be imported
 d = dirname(dirname(abspath(__file__)))
@@ -26,17 +26,21 @@ sys.path.append(f"{d}\\")
 sys.path.append(f"{d}\\src")
 
 
-class ExporterBot(BotAI):
-    def __init__(self):
-        BotAI.__init__(self)
+class ExporterBot(AresBot):
+    def __init__(self, game_step_override: Optional[int] = None):
+        super().__init__(game_step_override)
         self.map_name: str = None
 
     async def on_step(self, iteration):
+        await super(ExporterBot, self).on_step(iteration)
         if iteration == 4:
             # file_path = self.get_pickle_file_path()
             # logger.info(f"Saving pickle file to {file_path}.xz")
             # await self.store_data_to_file(file_path)
             #
+            file_path = self.get_pickle_file_path()
+            logger.info(f"Saving pickle file to {file_path}.xz")
+            await self.store_data_to_file(file_path)
             await self.client.leave()
 
     def get_combat_file_path(self) -> str:
@@ -77,54 +81,52 @@ class ExporterBot(BotAI):
             print(e)
 
     async def on_start(self):
-
-        file_path = self.get_pickle_file_path()
-        logger.info(f"Saving pickle file to {file_path}.xz")
-        await self.store_data_to_file(file_path)
-
+        await super(ExporterBot, self).on_start()
         # Make map visible
         await self.client.debug_show_map()
         await self.client.debug_control_enemy()
         await self.client.debug_god()
 
         # Spawn one of each unit
-        valid_units: Set[UnitTypeId] = {
-            UnitTypeId(unit_id)
-            for unit_id, data in self.game_data.units.items()
-            if data._proto.race != Race.NoRace
-            and data._proto.race != Race.Random
-            and data._proto.available
-            # Dont cloak units
-            and UnitTypeId(unit_id) != UnitTypeId.MOTHERSHIP
-            and (
-                data._proto.mineral_cost
-                or data._proto.movement_speed
-                or data._proto.weapons
-            )
-        }
-
-        # Create units for self
-        await self.client.debug_create_unit(
-            [[valid_unit, 1, self.start_location, 1] for valid_unit in valid_units]
-        )
-        # Create units for enemy
-        await self.client.debug_create_unit(
-            [
-                [valid_unit, 1, self.enemy_start_locations[0], 2]
-                for valid_unit in valid_units
-            ]
-        )
+        # TODO: Create some scenarios to test units here
+        #   This current logic, means all pathing breaks in pickle tests
+        # valid_units: Set[UnitTypeId] = {
+        #     UnitTypeId(unit_id)
+        #     for unit_id, data in self.game_data.units.items()
+        #     if data._proto.race != Race.NoRace
+        #     and data._proto.race != Race.Random
+        #     and data._proto.available
+        #     # Dont cloak units
+        #     and UnitTypeId(unit_id) != UnitTypeId.MOTHERSHIP
+        #     and (
+        #         data._proto.mineral_cost
+        #         or data._proto.movement_speed
+        #         or data._proto.weapons
+        #     )
+        # }
+        #
+        # # Create units for self
+        # await self.client.debug_create_unit(
+        #     [[valid_unit, 1, self.start_location, 1] for valid_unit in valid_units]
+        # )
+        # # Create units for enemy
+        # await self.client.debug_create_unit(
+        #     [
+        #         [valid_unit, 1, self.enemy_start_locations[0], 2]
+        #         for valid_unit in valid_units
+        #     ]
+        # )
 
 
 def main():
 
     maps_ = [
-        "BerlingradAIE",
-        "InsideAndOutAIE",
-        "MoondanceAIE",
-        "StargazersAIE",
-        "WaterfallAIE",
-        "HardwireAIE",
+        "GresvanAIE",
+        "GoldenauraAIE",
+        "InfestationStationAIE",
+        "RoyalBloodAIE",
+        "DragonScalesAIE",
+        "AncientCisternAIE",
     ]
 
     for map_ in maps_:
