@@ -337,17 +337,17 @@ class AresBot(CustomBotAI):
         await self.manager_hub.update_managers(self.actual_iteration)
         if not self.build_order_runner.build_completed:
             await self.build_order_runner.run_build()
-        self.behavior_executioner.execute()
+
         self.actual_iteration += 1
         if self.chat_debug:
             await self.chat_debug.parse_commands()
 
     async def _after_step(self) -> int:
-        await super(AresBot, self)._after_step()
+        self.behavior_executioner.execute()
         for drop_action in self._drop_unload_actions:
             await self.unload_container(drop_action[0], drop_action[1])
-
         self.manager_hub.path_manager.reset_grids(self.actual_iteration)
+        return await super(AresBot, self)._after_step()
 
     def register_behavior(self, behavior: Behavior) -> None:
         """Register behavior.
