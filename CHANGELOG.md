@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.7.0 (2023-09-10)
+
+### Feature
+
+* Reduce repetitive actions in mining and building ([`0cb9085`](https://github.com/AresSC2/ares-sc2/commit/0cb9085a57edd7f116e88d7f4799c888d219d758))
+
 ## v1.6.0 (2023-09-10)
 
 ### Feature
