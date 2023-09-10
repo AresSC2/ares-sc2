@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.5.1 (2023-09-10)
+
+### Fix
+
+* Behaviors execute on correct frame ([`636c57b`](https://github.com/AresSC2/ares-sc2/commit/636c57b67dd0cce8a7dc392aadb53daacc7f4e18))
+
 ## v1.5.0 (2023-08-21)
 
 ### Feature
