@@ -49,14 +49,16 @@ class SpawnController(MacroBehavior):
     over_produce_on_low_tech : bool (default True)
         If there is only tech available for one unit, this will allow this
         unit to be constantly produced.
-
-
+    ignored_build_from_tags : set[int]
+        Prevent spawn controller from morphing from these tags
+        Example: Prevent selecting barracks that needs to build an addon
     """
 
     army_composition_dict: dict[UnitID, dict[str, float, str, int]]
     freeflow_mode: bool = False
     ignore_proportions_below_unit_count: int = 14
     over_produce_on_low_tech: bool = True
+    ignored_build_from_tags: set[int] = field(default_factory=set)
 
     # key: Unit that should get a build order, value: what UnitID to build
     __build_dict: dict[Unit, UnitID] = field(default_factory=dict)
@@ -327,7 +329,11 @@ class SpawnController(MacroBehavior):
                     ]
                 )
 
-        build_structures: list[Unit] = [ai.unit_tag_dict[u] for u in build_from_tags]
+        build_structures: list[Unit] = [
+            ai.unit_tag_dict[u]
+            for u in build_from_tags
+            if u not in self.ignored_build_from_tags
+        ]
         # sort build structures with reactors first
         if ai.race == Race.Terran:
             build_structures = sorted(

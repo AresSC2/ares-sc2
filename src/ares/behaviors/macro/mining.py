@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Callable, Optional
 
 import numpy as np
@@ -66,6 +66,7 @@ class Mining(MacroBehavior):
     workers_per_gas: int = 3
     self_defence_active: bool = True
     safe_long_distance_mineral_fields: Optional[Units] = None
+    locked_action_tags: dict[int, float] = field(default_factory=dict)
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         workers: Units = mediator.get_units_from_role(
@@ -190,15 +191,7 @@ class Mining(MacroBehavior):
                         resource_position,
                     )
                 else:
-                    townhall: Unit = ai.townhalls.closest_to(resource)
-                    if assigned_gas_building and (
-                        (
-                            worker.order_target != resource_tag
-                            and worker.order_target != townhall.tag
-                        )
-                        or not worker.is_collecting
-                    ):
-                        worker.gather(resource)
+                    self._do_standard_mining(ai, worker, resource)
 
             # nowhere for this worker to go, long distance mining
             elif self.long_distance_mine and ai.minerals:
@@ -246,6 +239,37 @@ class Mining(MacroBehavior):
         worker.move(
             mediator.find_closest_safe_spot(from_pos=worker_position, grid=grid)
         )
+
+    def _do_standard_mining(self, ai: AresBot, worker: Unit, resource: Unit) -> None:
+        worker_tag: int = worker.tag
+        # prevent spam clicking workers on patch to reduce APM
+        if worker_tag in self.locked_action_tags:
+            if ai.time > self.locked_action_tags[worker_tag] + 0.5:
+                self.locked_action_tags.pop(worker_tag)
+            return
+        # moved worker from gas
+        if worker.is_carrying_vespene and resource.is_mineral_field:
+            worker.return_resource()
+        else:
+            # work out when we need to issue command to mine resource
+            if worker.is_idle or (
+                worker.distance_to(resource) > 9.0
+                and worker.order_target
+                and worker.order_target != resource
+            ):
+                worker.gather(resource)
+                return
+
+            # force worker to stay on correct resource
+            # in game auto mining will sometimes shift worker
+            if (
+                not worker.is_carrying_minerals
+                and not worker.is_carrying_vespene
+                and worker.order_target != resource.tag
+            ):
+                worker.gather(resource)
+                # to reduce apm we prevent spam clicking on same mineral
+                self.locked_action_tags[worker_tag] = ai.time
 
     def _long_distance_mining(
         self,
