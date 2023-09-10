@@ -329,7 +329,11 @@ class SpawnController(MacroBehavior):
                     ]
                 )
 
-        build_structures: list[Unit] = [ai.unit_tag_dict[u] for u in build_from_tags if u not in self.ignored_build_from_tags]
+        build_structures: list[Unit] = [
+            ai.unit_tag_dict[u]
+            for u in build_from_tags
+            if u not in self.ignored_build_from_tags
+        ]
         # sort build structures with reactors first
         if ai.race == Race.Terran:
             build_structures = sorted(
