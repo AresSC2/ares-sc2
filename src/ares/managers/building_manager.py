@@ -248,11 +248,18 @@ class BuildingManager(Manager, IManagerMediator):
                 worker.build_gas(target)
 
             elif cy_distance_to(worker.position, target.position) > distance:
+                order_target: Union[int, Point2, None] = worker.order_target
                 point: Point2 = self.manager_mediator.find_path_next_point(
                     start=worker.position,
                     target=target.position,
                     grid=self.manager_mediator.get_ground_grid,
                 )
+                if (
+                    order_target
+                    and isinstance(order_target, Point2)
+                    and order_target == point
+                ):
+                    continue
                 worker.move(point)
 
             else:
