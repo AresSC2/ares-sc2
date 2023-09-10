@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.6.0 (2023-09-10)
+
+### Feature
+
+* Improve standard mining ([`9db655c`](https://github.com/AresSC2/ares-sc2/commit/9db655c2df274b77ba7ba0f3f52a77d29efce75a))
+
 ## v1.5.1 (2023-09-10)
 
 ### Fix
