@@ -250,6 +250,7 @@ class Mining(MacroBehavior):
         # moved worker from gas
         if worker.is_carrying_vespene and resource.is_mineral_field:
             worker.return_resource()
+            self.locked_action_tags[worker_tag] = ai.time
         else:
             # work out when we need to issue command to mine resource
             if worker.is_idle or (
@@ -258,6 +259,7 @@ class Mining(MacroBehavior):
                 and worker.order_target != resource
             ):
                 worker.gather(resource)
+                self.locked_action_tags[worker_tag] = ai.time
                 return
 
             # force worker to stay on correct resource
@@ -300,6 +302,9 @@ class Mining(MacroBehavior):
         -------
 
         """
+        if worker.is_gathering:
+            return
+
         completed_bases: Units = ai.townhalls.ready
         # there is nowhere to return resources!
         if not completed_bases:
@@ -349,9 +354,13 @@ class Mining(MacroBehavior):
                     )
                     worker.move(move_to)
                 elif ai.mineral_field:
+                    if worker.order_target and worker.order_target == target_mineral:
+                        return
                     worker.gather(target_mineral)
         # worker is travelling back to a ready townhall
         else:
+            if worker.is_returning:
+                return
             return_base: Unit = cy_closest_to(worker_position, completed_bases)
             return_base_position: Point2 = return_base.position
             if (
