@@ -1,6 +1,8 @@
 import importlib
 import lzma
 import pickle
+import sys
+from os.path import dirname, abspath
 from unittest.mock import patch
 
 from sc2.bot_ai import BotAI
@@ -8,9 +10,13 @@ from sc2.client import Client
 from sc2.game_data import GameData
 from sc2.game_info import GameInfo
 from sc2.game_state import GameState
-
-from src.ares import AresBot
 from tests.mock_config import MOCK_CONFIG
+
+d = dirname(dirname(abspath(__file__)))
+sys.path.append(f"{d}\\")
+sys.path.append(f"{d}\\src")
+
+from ares import AresBot
 
 
 async def build_bot_object_from_pickle_data(path_to_pickle_date) -> AresBot:
