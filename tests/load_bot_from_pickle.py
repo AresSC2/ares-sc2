@@ -45,6 +45,7 @@ async def build_bot_object_from_pickle_data(path_to_pickle_date) -> AresBot:
         ares = importlib.import_module("ares.main")
         bot.__class__ = ares.AresBot
         bot.config = MOCK_CONFIG
+        bot.unit_tag_dict = {}
         bot.arcade_mode = False
         bot.register_managers()
     return bot

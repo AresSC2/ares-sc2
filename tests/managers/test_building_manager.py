@@ -7,7 +7,6 @@ from sc2.unit import Unit
 from ares import AresBot
 from ares.consts import UnitRole
 from ares.managers.building_manager import BuildingManager
-from tests.load_bot_from_pickle import build_bot_object_from_pickle_data
 
 pytest_plugins = ("pytest_asyncio",)
 
@@ -18,27 +17,15 @@ MAPS: list[Path] = [
 ]
 
 
-def pytest_generate_tests(metafunc):
-    idlist = []
-    argvalues = []
-    for scenario in metafunc.cls.scenarios:
-        idlist.append(scenario[0])
-        items = scenario[1].items()
-        argnames = [x[0] for x in items]
-        argvalues.append(([x[1] for x in items]))
-    metafunc.parametrize(argnames, argvalues, ids=idlist, scope="class")
-
-
+@pytest.mark.parametrize("bot", MAPS, indirect=True)
 class TestBuildingManager:
     scenarios = [(map_path.name, {"map_path": map_path}) for map_path in MAPS]
 
-    @pytest.mark.asyncio
-    async def test_add_to_build_tracker(self, map_path: Path):
+    def test_add_to_build_tracker(self, bot: AresBot, event_loop):
         """
         Test that we found some placements at every expansion
         """
         # arrange
-        bot: AresBot = await build_bot_object_from_pickle_data(map_path)
         building_manager: BuildingManager = bot.manager_hub.building_manager
         worker: Unit = bot.workers[0]
 
