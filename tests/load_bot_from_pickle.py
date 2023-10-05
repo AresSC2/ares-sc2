@@ -9,7 +9,7 @@ from sc2.game_data import GameData
 from sc2.game_info import GameInfo
 from sc2.game_state import GameState
 
-from ares import AresBot
+from src.ares import AresBot
 from tests.mock_config import MOCK_CONFIG
 
 
