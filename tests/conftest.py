@@ -1,6 +1,12 @@
 import asyncio
+import sys
+from os.path import abspath, dirname
 
 import pytest_asyncio
+
+d = dirname(dirname(abspath(__file__)))
+sys.path.append(f"{d}\\")
+sys.path.append(f"{d}\\src")
 
 from tests.load_bot_from_pickle import build_bot_object_from_pickle_data
 

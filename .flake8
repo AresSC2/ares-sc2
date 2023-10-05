@@ -9,3 +9,4 @@ exclude =
     sc2_helper
     tests/generate_pickle_data.py.py
     tests/test_run.py
+    tests/conftest.py
