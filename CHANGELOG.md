@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.7.1 (2023-10-06)
+
+### Fix
+
+* Add src to sys path in load pickle file ([`425eafd`](https://github.com/AresSC2/ares-sc2/commit/425eafdeb0a5bf597a0af5d005aa25451218a6fe))
+* Import for Ares when building from pickle ([`b2ea79b`](https://github.com/AresSC2/ares-sc2/commit/b2ea79b299f0345b5e750af74a3c4ae02c9b7a38))
+
 ## v1.7.0 (2023-09-10)
 
 ### Feature
