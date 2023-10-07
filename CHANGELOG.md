@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.7.2 (2023-10-07)
+
+### Fix
+
+* Prevent stuck build runner ([`51c01bb`](https://github.com/AresSC2/ares-sc2/commit/51c01bb0c4b502c234201a6a235dd463f6ab3c63))
+
 ## v1.7.1 (2023-10-06)
 
 ### Fix
