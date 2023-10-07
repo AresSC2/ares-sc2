@@ -162,14 +162,15 @@ class BuildOrderRunner:
                         step.command, step.target
                     ):
                         self.current_build_position = next_building_position
-                        self.current_step_started = True
-                        self.mediator.build_with_specific_worker(
+                        if self.mediator.build_with_specific_worker(
                             worker=worker,
                             structure_type=command,
                             pos=self.current_build_position,
                             assign_role=worker.tag
                             in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
-                        )
+                        ):
+                            self.current_step_started = True
+
             elif isinstance(command, UnitID) and command not in ALL_STRUCTURES:
                 self.current_step_started = True
                 self.ai.train(command)

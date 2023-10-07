@@ -213,8 +213,7 @@ class BuildingManager(Manager, IManagerMediator):
 
             # check if we are finished with the building worker
             if close_structures := self.ai.structures.filter(
-                lambda s: s.type_id == structure_id
-                and cy_distance_to(s.position, target.position) < 1.0
+                lambda s: cy_distance_to(s.position, target.position) < 1.0
             ):
                 structure: Unit = close_structures[0]
                 target_progress: float = 1.0 if self.ai.race == Race.Terran else 0.01
