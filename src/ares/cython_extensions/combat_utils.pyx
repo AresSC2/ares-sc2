@@ -67,7 +67,7 @@ cpdef bint cy_attack_ready(bot, unit, target):
     """
     cdef:
         unsigned int unit_type_int = unit._proto.unit_type
-        unsigned int weapon_cooldown
+        int weapon_cooldown
         double angle, distance, move_time, step_time, turn_time, unit_speed
         (float, float) unit_pos
         (float, float) target_pos
