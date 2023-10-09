@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.7.3 (2023-10-09)
+
+### Fix
+
+* Correct int type for weapon cooldown ([`a7cfd28`](https://github.com/AresSC2/ares-sc2/commit/a7cfd28b5709bf341caf01878418154d08543be0))
+
 ## v1.7.2 (2023-10-07)
 
 ### Fix
