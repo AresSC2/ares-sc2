@@ -17,6 +17,7 @@ cython = "^0.29.33"
 tqdm = "^4.64.1"
 scikit-learn = "^1.2.2"
 MapAnalyzer = { git = "https://github.com/spudde123/SC2MapAnalysis" }
+sc2-helper = "^0.2.1"
 
 
 [tool.poetry.group.docs]
