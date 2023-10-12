@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.8.0 (2023-10-12)
+
+### Feature
+
+* Add method to interact with combat sim ([`237ba44`](https://github.com/AresSC2/ares-sc2/commit/237ba44bf2c0aa406fcbb078e6e9241dc53fa4e8))
+
 ## v1.7.3 (2023-10-09)
 
 ### Fix
