@@ -10,6 +10,7 @@ from sc2.unit import Unit
 from ares.consts import DEBUG
 from ares.managers.ability_tracker_manager import AbilityTrackerManager
 from ares.managers.building_manager import BuildingManager
+from ares.managers.combat_sim_manager import CombatSimManager
 from ares.managers.data_manager import DataManager
 from ares.managers.enemy_to_base_manager import EnemyToBaseManager
 from ares.managers.manager_mediator import ManagerMediator
@@ -147,6 +148,9 @@ class Hub:
             if not enemy_to_base_manager
             else enemy_to_base_manager
         )
+        self.combat_sim_manager: CombatSimManager = CombatSimManager(
+            ai, config, self.manager_mediator
+        )
 
         # in order of priority
         self.managers: list["Manager"] = [
@@ -161,6 +165,7 @@ class Hub:
             self.ability_tracker_manager,
             self.placement_manager,
             self.enemy_to_base_manager,
+            self.combat_sim_manager,
         ]
 
         if additional_managers:

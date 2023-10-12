@@ -4,6 +4,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 import numpy as np
+from map_analyzer import MapData
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -52,7 +53,6 @@ from ares.cython_extensions.combat_utils import cy_is_position_safe
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from MapAnalyzer import MapData
 
 if TYPE_CHECKING:
     from ares import AresBot

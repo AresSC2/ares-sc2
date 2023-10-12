@@ -6,6 +6,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Callable, DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
+from map_analyzer import MapData
 from sc2.game_info import Ramp
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -13,8 +14,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 from scipy.spatial import KDTree
 
-from ares.consts import ManagerName, ManagerRequestType, UnitRole
-from MapAnalyzer import MapData
+from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
 
 
 class IManagerMediator(metaclass=ABCMeta):
@@ -239,6 +239,43 @@ class ManagerMediator(IManagerMediator):
         """
         return self.manager_request(
             ManagerName.BUILDING_MANAGER, ManagerRequestType.GET_BUILDING_TRACKER_DICT
+        )
+
+    """
+    CombatSimManager
+    """
+
+    def can_win_fight(self, **kwargs) -> EngagementResult:
+        """Get the predicted engagement result between two forces.
+
+        Combat Sim Manager.
+
+        Other Parameters
+        ----------
+        own_units :
+            Our units involved in the battle.
+        enemy_units
+            The enemy units.
+        timing_adjust :
+            Take distance between units into account.
+        good_positioning :
+            Assume units are decently split.
+        workers_do_no_damage :
+            Don't take workers into account.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+
+        Returns
+        -------
+        EngagementResult :
+            Enum with human-readable engagement result
+
+        """
+        return self.manager_request(
+            ManagerName.COMBAT_SIM_MANAGER, ManagerRequestType.CAN_WIN_FIGHT, **kwargs
         )
 
     """
