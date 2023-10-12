@@ -10,6 +10,8 @@ from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
+from MapAnalyzer import MapData
+from MapAnalyzer.constructs import ChokeArea, VisionBlockerArea
 from sc2.game_info import Ramp
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -33,8 +35,6 @@ from ares.consts import (
 from ares.cython_extensions.flood_fill import flood_fill_grid
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from MapAnalyzer import MapData
-from MapAnalyzer.constructs import ChokeArea, VisionBlockerArea
 
 if TYPE_CHECKING:
     from ares import AresBot
