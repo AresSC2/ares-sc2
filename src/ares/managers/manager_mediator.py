@@ -6,7 +6,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Any, Callable, DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import numpy as np
-from MapAnalyzer import MapData
+from map_analyzer import MapData
 from sc2.game_info import Ramp
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2

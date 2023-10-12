@@ -4,7 +4,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 import numpy as np
-from MapAnalyzer import MapData
+from map_analyzer import MapData
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2

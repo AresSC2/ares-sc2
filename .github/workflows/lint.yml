@@ -17,7 +17,7 @@ jobs:
           ref: ${{ github.head_ref }}
       # install poetry
       - name: Install poetry
-        run: pipx install poetry==1.5
+        run: pipx install poetry==1.6.1
       # set-up python with cache
       - name: Setup Python 3.11
         uses: actions/setup-python@v4

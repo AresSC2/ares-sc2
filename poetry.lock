@@ -1209,13 +1209,13 @@ files = [
 
 [[package]]
 name = "jupyter-client"
-version = "8.3.1"
+version = "8.4.0"
 description = "Jupyter protocol implementation and client libraries"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "jupyter_client-8.3.1-py3-none-any.whl", hash = "sha256:5eb9f55eb0650e81de6b7e34308d8b92d04fe4ec41cd8193a913979e33d8e1a5"},
-    {file = "jupyter_client-8.3.1.tar.gz", hash = "sha256:60294b2d5b869356c893f57b1a877ea6510d60d45cf4b38057f1672d85699ac9"},
+    {file = "jupyter_client-8.4.0-py3-none-any.whl", hash = "sha256:6a2a950ec23a8f62f9e4c66acec7f0ea6c7d1f80ba0992e747b10c56ce2e6dbe"},
+    {file = "jupyter_client-8.4.0.tar.gz", hash = "sha256:dc1b857d5d7d76ac101766c6e9b646bf18742721126e72e5d484c75a993cada2"},
 ]
 
 [package.dependencies]
@@ -1460,7 +1460,7 @@ win32-setctime = {version = ">=1.0.0", markers = "sys_platform == \"win32\""}
 dev = ["Sphinx (>=4.1.1)", "black (>=19.10b0)", "colorama (>=0.3.4)", "docutils (==0.16)", "flake8 (>=3.7.7)", "isort (>=5.1.1)", "pytest (>=4.6.2)", "pytest-cov (>=2.7.1)", "sphinx-autobuild (>=0.7.1)", "sphinx-rtd-theme (>=0.4.3)", "tox (>=3.9.0)"]
 
 [[package]]
-name = "mapanalyzer"
+name = "map-analyzer"
 version = "0.1.0"
 description = ""
 optional = false
@@ -1474,8 +1474,8 @@ numpy = "^1.25.2"
 [package.source]
 type = "git"
 url = "https://github.com/spudde123/SC2MapAnalysis"
-reference = "HEAD"
-resolved_reference = "e8038b6ef2b9e7c3f162dd334f1db32cccaed03e"
+reference = "develop"
+resolved_reference = "320c6c3454bd9d4a058515da40d2e02633ef9b68"
 
 [[package]]
 name = "markdown"
@@ -3402,4 +3402,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.11, <3.12"
-content-hash = "334209615facaee93a9d43e79fe8292d0a10684b083ceeef1f26bbff50909730"
+content-hash = "84dec1724df42b2479ed23e2fd3f6d4d71dbc251a14e29c864be03f485cabc00"
