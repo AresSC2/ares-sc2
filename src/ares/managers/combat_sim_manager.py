@@ -13,35 +13,17 @@ WARNING:
     - IDPTG/Paul
 """
 
-
-from enum import Enum
 from typing import TYPE_CHECKING, Any
 
 from sc2.units import Units
 from sc2_helper.combat_simulator import CombatSimulator
 
-from ares.consts import ManagerName, ManagerRequestType
+from ares.consts import EngagementResult, ManagerName, ManagerRequestType
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
 if TYPE_CHECKING:
     from ares import AresBot
-
-
-class EngagementResult(int, Enum):
-    """Possible engagement results."""
-
-    VICTORY_EMPHATIC = 10
-    VICTORY_OVERWHELMING = 9
-    VICTORY_DECISIVE = 8
-    VICTORY_CLOSE = 7
-    VICTORY_MARGINAL = 6
-    TIE = 5
-    LOSS_MARGINAL = 4
-    LOSS_CLOSE = 3
-    LOSS_DECISIVE = 2
-    LOSS_OVERWHELMING = 1
-    LOSS_EMPHATIC = 0
 
 
 class CombatSimManager(Manager, IManagerMediator):
