@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.9.0 (2023-10-17)
+
+### Feature
+
+* Combat sim sets of EngagementResult ([`1008422`](https://github.com/AresSC2/ares-sc2/commit/100842299f2d97530ae56f2ab6f91af3b9c64b22))
+
 ## v1.8.0 (2023-10-12)
 
 ### Feature
