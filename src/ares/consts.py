@@ -616,3 +616,39 @@ RACE_SUPPLY: dict[Race, UnitID] = {
     Race.Terran: UnitID.SUPPLYDEPOT,
     Race.Zerg: UnitID.OVERLORD,
 }
+
+LOSS_EMPHATIC_OR_WORSE: Set[EngagementResult] = {EngagementResult.LOSS_EMPHATIC}
+
+LOSS_OVERWHELMING_OR_WORSE: Set[EngagementResult] = LOSS_EMPHATIC_OR_WORSE | {
+    EngagementResult.LOSS_OVERWHELMING
+}
+
+LOSS_DECISIVE_OR_WORSE: Set[EngagementResult] = LOSS_OVERWHELMING_OR_WORSE | {
+    EngagementResult.LOSS_DECISIVE
+}
+
+LOSS_CLOSE_OR_WORSE: Set[EngagementResult] = LOSS_DECISIVE_OR_WORSE | {
+    EngagementResult.LOSS_CLOSE
+}
+
+LOSS_MARGINAL_OR_WORSE: Set[EngagementResult] = LOSS_CLOSE_OR_WORSE | {
+    EngagementResult.LOSS_MARGINAL
+}
+
+VICTORY_EMPHATIC_OR_BETTER: Set[EngagementResult] = {EngagementResult.VICTORY_EMPHATIC}
+
+VICTORY_OVERWHELMING_OR_BETTER: Set[EngagementResult] = VICTORY_EMPHATIC_OR_BETTER | {
+    EngagementResult.VICTORY_OVERWHELMING
+}
+
+VICTORY_DECISIVE_OR_BETTER: Set[EngagementResult] = VICTORY_OVERWHELMING_OR_BETTER | {
+    EngagementResult.VICTORY_DECISIVE
+}
+
+VICTORY_CLOSE_OR_BETTER: Set[EngagementResult] = VICTORY_DECISIVE_OR_BETTER | {
+    EngagementResult.VICTORY_CLOSE
+}
+
+VICTORY_MARGINAL_OR_BETTER: Set[EngagementResult] = VICTORY_CLOSE_OR_BETTER | {
+    EngagementResult.VICTORY_MARGINAL
+}
