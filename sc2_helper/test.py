@@ -1,7 +1,9 @@
-from sc2_helper import CombatSettings, CombatPredictor, test_units, test_unit
-from sc2 import run_game, maps, Race, Difficulty, BotAI, UnitTypeId
-from sc2.player import Bot, Computer
 from time import perf_counter_ns
+
+from sc2 import BotAI, Difficulty, Race, UnitTypeId, maps, run_game
+from sc2.player import Bot, Computer
+
+from sc2_helper import CombatPredictor, CombatSettings, test_unit, test_units
 
 
 class basic_bot(BotAI):

@@ -1,5 +1,6 @@
-from .sc2_helper import CombatPredictor, CombatSettings
 from typing import Tuple
+
+from .sc2_helper import CombatPredictor, CombatSettings
 
 
 class CombatSimulator:

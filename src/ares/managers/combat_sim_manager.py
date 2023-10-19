@@ -16,11 +16,11 @@ WARNING:
 from typing import TYPE_CHECKING, Any
 
 from sc2.units import Units
-from sc2_helper.combat_simulator import CombatSimulator
 
 from ares.consts import EngagementResult, ManagerName, ManagerRequestType
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+from sc2_helper.combat_simulator import CombatSimulator
 
 if TYPE_CHECKING:
     from ares import AresBot
