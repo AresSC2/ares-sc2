@@ -195,7 +195,8 @@ class BuildOrderParser:
         cost: Cost = self.ai.calculate_cost(structure_id)
         return lambda: BuildOrderStep(
             command=structure_id,
-            start_condition=lambda: self.ai.minerals >= cost.minerals - 75,
+            start_condition=lambda: self.ai.minerals >= cost.minerals - 75
+            and self.ai.vespene >= cost.vespene - 25,
             end_condition=lambda: self.ai.structures.filter(
                 lambda s: 0.00001 <= s.build_progress < 0.05
                 and s.type_id == structure_id

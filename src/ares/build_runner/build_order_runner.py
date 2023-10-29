@@ -184,6 +184,7 @@ class BuildOrderRunner:
                             AbilityId.EFFECT_CHRONOBOOSTENERGYCOST, chrono_target
                         )
                         self.current_step_started = True
+
             elif command == AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND:
                 if available_ccs := [
                     th
