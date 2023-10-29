@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Callable, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 
 import numpy as np
 from sc2.ids.ability_id import AbilityId
@@ -8,7 +8,9 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares import AresBot
+if TYPE_CHECKING:
+    from ares import AresBot
+
 from ares.behaviors.macro import MacroBehavior
 from ares.consts import MINING, TOWNHALL_DISTANCE_FACTOR, UnitRole, UnitTreeQueryType
 from ares.cython_extensions.combat_utils import cy_attack_ready, cy_pick_enemy_target
@@ -68,7 +70,7 @@ class Mining(MacroBehavior):
     safe_long_distance_mineral_fields: Optional[Units] = None
     locked_action_tags: dict[int, float] = field(default_factory=dict)
 
-    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         workers: Units = mediator.get_units_from_role(
             role=UnitRole.GATHERING,
             unit_type=ai.worker_type,
@@ -240,7 +242,7 @@ class Mining(MacroBehavior):
             mediator.find_closest_safe_spot(from_pos=worker_position, grid=grid)
         )
 
-    def _do_standard_mining(self, ai: AresBot, worker: Unit, resource: Unit) -> None:
+    def _do_standard_mining(self, ai: "AresBot", worker: Unit, resource: Unit) -> None:
         worker_tag: int = worker.tag
         # prevent spam clicking workers on patch to reduce APM
         if worker_tag in self.locked_action_tags:
@@ -275,7 +277,7 @@ class Mining(MacroBehavior):
 
     def _long_distance_mining(
         self,
-        ai: AresBot,
+        ai: "AresBot",
         mediator: ManagerMediator,
         grid: np.ndarray,
         worker: Unit,
@@ -482,7 +484,7 @@ class Mining(MacroBehavior):
 
     @staticmethod
     def _safe_long_distance_mineral_fields(
-        ai: AresBot, mediator: ManagerMediator
+        ai: "AresBot", mediator: ManagerMediator
     ) -> Optional[Units]:
         """Find mineral fields for long distance miners.
 
@@ -541,7 +543,7 @@ class Mining(MacroBehavior):
 
     @staticmethod
     def _worker_attacking_enemy(
-        ai: AresBot, dist_to_resource: float, worker: Unit
+        ai: "AresBot", dist_to_resource: float, worker: Unit
     ) -> bool:
         if not worker.is_collecting or dist_to_resource > 1.0:
             if enemies := cy_in_attack_range(worker, ai.enemy_units):

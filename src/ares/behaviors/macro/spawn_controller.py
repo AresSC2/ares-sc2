@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from math import isclose
+from typing import TYPE_CHECKING
 
 from sc2.data import Race
 from sc2.dicts.unit_train_build_abilities import TRAIN_INFO
@@ -9,7 +10,8 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares import AresBot
+if TYPE_CHECKING:
+    from ares import AresBot
 from ares.behaviors.macro import MacroBehavior
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -66,7 +68,7 @@ class SpawnController(MacroBehavior):
     __excluded_structure_tags: set[int] = field(default_factory=set)
     __supply_available: float = 0.0
 
-    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         # Nothing can be spawned for less than 25 min (ravager), prevent code execution
         if ai.minerals < 25:
             return False
@@ -188,7 +190,7 @@ class SpawnController(MacroBehavior):
 
     def _add_to_build_dict(
         self,
-        ai: AresBot,
+        ai: "AresBot",
         type_id: UnitID,
         base_unit: list[Unit],
         amount: int,
@@ -223,7 +225,7 @@ class SpawnController(MacroBehavior):
 
     @staticmethod
     def _calculate_build_amount(
-        ai: AresBot,
+        ai: "AresBot",
         unit_type: UnitID,
         base_units: list[Unit],
         supply_left: float,
@@ -259,7 +261,7 @@ class SpawnController(MacroBehavior):
 
     def _get_build_structures(
         self,
-        ai: AresBot,
+        ai: "AresBot",
         build_from_dict: dict[UnitID, Units],
         structure_unit_types: set[UnitID],
         unit_type: UnitID,

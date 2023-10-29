@@ -14,6 +14,11 @@ class MyBot(AresBot):
         show_root_heading: false
         show_root_toc_entry: false 
 
+::: ares.behaviors.macro.addon_swap
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+
 ::: ares.behaviors.macro.auto_supply
     options:
         show_root_heading: false
