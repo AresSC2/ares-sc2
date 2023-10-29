@@ -373,6 +373,51 @@ class ManagerMediator(IManagerMediator):
         )
 
     """
+    FlyingStructureManager
+    """
+
+    @property
+    def get_flying_structure_tracker(self) -> dict[int, Any]:
+        """Get the current information stored by FlyingStructureManager.
+
+        FlyingStructureManager
+
+        Returns
+        -------
+        dict[int, Any] :
+            Key -> structure_tag, Value -> Information about the flight.
+        """
+        return self.manager_request(
+            ManagerName.FLYING_STRUCTURE_MANAGER,
+            ManagerRequestType.GET_FLYING_STRUCTURE_TRACKER,
+        )
+
+    def move_structure(self, **kwargs) -> None:
+        """Request a structure to move via flight.
+
+        FlyingStructureManager
+
+        Other Parameters
+        ----------
+        structure : Unit
+            Our units involved in the battle.
+        target : Point2
+            The enemy units.
+        should_land : bool (default=True)
+            Take distance between units into account.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+        """
+        return self.manager_request(
+            ManagerName.FLYING_STRUCTURE_MANAGER,
+            ManagerRequestType.MOVE_STRUCTURE,
+            **kwargs,
+        )
+
+    """
     ResourceManager
     """
 

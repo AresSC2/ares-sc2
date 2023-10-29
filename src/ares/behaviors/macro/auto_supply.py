@@ -1,11 +1,13 @@
 import math
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 
-from ares import AresBot
+if TYPE_CHECKING:
+    from ares import AresBot
 from ares.behaviors.macro.build_structure import BuildStructure
 from ares.behaviors.macro.macro_behavior import MacroBehavior
 from ares.consts import ALL_PRODUCTION_STRUCTURES, RACE_SUPPLY

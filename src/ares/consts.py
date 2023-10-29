@@ -147,6 +147,7 @@ class BuildingSize(str, Enum):
 
 
 class BuildOrderOptions(str, Enum):
+    ADDONSWAP = "ADDONSWAP"
     CHRONO = "CHRONO"
     GAS = "GAS"
     EXPAND = "EXPAND"
@@ -214,6 +215,10 @@ class ManagerRequestType(str, Enum):
     GET_MAIN_AIR_THREATS_NEAR_TOWNHALL = "GET_MAIN_AIR_THREATS_NEAR_TOWNHALL"
     GET_MAIN_GROUND_THREATS_NEAR_TOWNHALL = "GET_MAIN_GROUND_THREATS_NEAR_TOWNHALL"
     GET_TH_TAG_WITH_LARGEST_GROUND_THREAT = "GET_TH_TAG_WITH_LARGEST_GROUND_THREAT"
+
+    # FlyingStructureManager
+    GET_FLYING_STRUCTURE_TRACKER = "GET_FLYING_STRUCTURE_TRACKER"
+    MOVE_STRUCTURE = "MOVE_STRUCTURE"
 
     # PathManager
     FIND_LOW_PRIORITY_PATH = "FIND_LOW_PRIORITY_PATH"
@@ -315,6 +320,7 @@ class ManagerName(str, Enum):
     COMBAT_SIM_MANAGER = "CombatSimManager"
     DATA_MANAGER = "DataManager"
     ENEMY_TO_BASE_MANAGER = "EnemyToBaseManager"
+    FLYING_STRUCTURE_MANAGER = "FlyingStructureManager"
     PATH_MANAGER = "PathManager"
     PLACEMENT_MANAGER = "PlacementManager"
     RESOURCE_MANAGER = "ResourceManager"

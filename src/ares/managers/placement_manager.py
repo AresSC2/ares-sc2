@@ -331,13 +331,20 @@ class PlacementManager(Manager, IManagerMediator):
             )
             # if wall placement is requested swap final_placement if possible
             if wall:
-                if available := [
+                if _available := [
                     a
                     for a in available
                     if self.placements_dict[location][building_size][a]["is_wall"]
                 ]:
                     final_placement = min(
-                        available, key=lambda k: cy_distance_to(k, base_location)
+                        _available, key=lambda k: cy_distance_to(k, base_location)
+                    )
+                else:
+                    final_placement = min(
+                        available,
+                        key=lambda k: cy_distance_to(
+                            k, self.ai.main_base_ramp.top_center
+                        ),
                     )
             # prioritize production pylons if they exist
             elif structure_type == UnitID.PYLON:
