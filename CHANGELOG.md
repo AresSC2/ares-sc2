@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v1.10.0 (2023-10-29)
+
+### Feature
+
+* AddonSwap behavior ([`878219a`](https://github.com/AresSC2/ares-sc2/commit/878219a468ecf8e82b7d4652da2ff610abbacda1))
+* Flying structure manager ([`013f040`](https://github.com/AresSC2/ares-sc2/commit/013f040e08e9635674660ddb30f993e96a6e38f9))
+* Find placement at wall finds close alternative ([`6566e3f`](https://github.com/AresSC2/ares-sc2/commit/6566e3f545f3c09cafbb76f0e06a7049c0e840d5))
+
 ## v1.9.0 (2023-10-17)
 
 ### Feature
