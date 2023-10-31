@@ -212,7 +212,7 @@ class Hub:
         # remove dead townhalls and workers
         self.resource_manager.on_unit_destroyed(unit_tag)
         self.placement_manager.on_building_destroyed(unit_tag)
-        self.building_manager.remove_unit(unit_tag)
+        # self.building_manager.remove_unit(unit_tag)
 
     def on_game_end(self, result: Union[Result, str]) -> None:
         """Store data from the completed game.

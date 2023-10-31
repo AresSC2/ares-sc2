@@ -149,7 +149,7 @@ class BuildingManager(Manager, IManagerMediator):
         -------
 
         """
-        await self._handle_construction_orders()
+        self._handle_construction_orders()
 
         # check if a worker has the Building task but isn't being told to build anything
         for worker in self.manager_mediator.get_units_from_role(
@@ -160,7 +160,7 @@ class BuildingManager(Manager, IManagerMediator):
                     tag=worker.tag, role=UnitRole.GATHERING
                 )
 
-    async def _handle_construction_orders(self) -> None:
+    def _handle_construction_orders(self) -> None:
         """Construct tracked buildings.
 
         Go through the building tracker and control workers. This is to avoid the
