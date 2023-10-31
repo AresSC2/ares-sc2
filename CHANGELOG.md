@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.10.1 (2023-10-31)
+
+### Fix
+
+* Prevent removing dead scv from building tracker ([`5da3459`](https://github.com/AresSC2/ares-sc2/commit/5da3459a2a89de9236f3588ede557d3e21859bb8))
+* Correct addon type id ([`bb89bf2`](https://github.com/AresSC2/ares-sc2/commit/bb89bf2c702cf9767354c9bb3b6adee0c21972e6))
+
 ## v1.10.0 (2023-10-29)
 
 ### Feature
