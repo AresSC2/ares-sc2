@@ -333,8 +333,13 @@ class ManagerName(str, Enum):
 class UnitRole(str, Enum):
     """Roles for units"""
 
-    ATTACKING = "ATTACKING"  # units in a combat zone that is not near one of our bases
+    ATTACKING = "ATTACKING"
+    # the main attacking squad on the map
+    ATTACKING_MAIN_SQUAD = "ATTACKING_MAIN_SQUAD"
+    # units that require transporting to battlefield (medivac / bio for example)
+    ATTACKING_TRANSPORT_SQUAD = "ATTACKING_TRANSPORT_SQUAD"
     BASE_DEFENDER = "BASE_DEFENDER"  # units split off to defend expansions
+    BASE_BLOCKER = "BASE_BLOCKER"  # blocking an enemy base
     BUILDING = "BUILDING"  # workers that have been assigned to create a building
     DEFENDING = "DEFENDING"  # units in a combat zone near one of our bases
     DROP_SHIP = "DROP_SHIP"  # medivacs / prism/ dropperlord
@@ -342,11 +347,17 @@ class UnitRole(str, Enum):
         "DROP_UNITS_ATTACKING"  # units dropped off, that now need to attack
     )
     DROP_UNITS_TO_LOAD = "DROP_UNITS_TO_LOAD"  # units that require picking up
+    # reserved roles for flanking
+    FLANK_GROUP_ONE = "FLANK_GROUP_ONE"
+    FLANK_GROUP_TWO = "FLANK_GROUP_TWO"
+    FLANK_GROUP_THREE = "FLANK_GROUP_THREE"
     GATHERING = "GATHERING"  # workers that are mining
     HARASSING = "HARASSING"  # units that are harassing
     IDLE = "IDLE"  # not doing anything
     PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # does not get reassigned automatically
+    REPAIRING = "REPAIRING"  # repairing scvs
     SCOUTING = "SCOUTING"
+    SURROUNDING = "SURROUNDING"  # zerglings currently in a surround
     # control groups, use for anything not specified
     CONTROL_GROUP_ONE = "CONTROL_GROUP_ONE"
     CONTROL_GROUP_TWO = "CONTROL_GROUP_TWO"
@@ -354,6 +365,9 @@ class UnitRole(str, Enum):
     CONTROL_GROUP_FOUR = "CONTROL_GROUP_FOUR"
     CONTROL_GROUP_FIVE = "CONTROL_GROUP_FIVE"
     CONTROL_GROUP_SIX = "CONTROL_GROUP_SIX"
+    CONTROL_GROUP_SEVEN = "CONTROL_GROUP_SEVEN"
+    CONTROL_GROUP_EIGHT = "CONTROL_GROUP_EIGHT"
+    CONTROL_GROUP_NINE = "CONTROL_GROUP_NINE"
 
 
 class UnitTreeQueryType(str, Enum):
