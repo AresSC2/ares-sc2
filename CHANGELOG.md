@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.11.0 (2023-11-01)
+
+### Feature
+
+* Extra unit roles ([`a5717d1`](https://github.com/AresSC2/ares-sc2/commit/a5717d183bb641efc292fbc50de34599e2200177))
+
 ## v1.10.1 (2023-10-31)
 
 ### Fix
