@@ -915,7 +915,9 @@ class PlacementManager(Manager, IManagerMediator):
                     > base_placements[two_by_two][building_location]["time_requested"]
                     + self.WORKER_ON_ROUTE_TIMEOUT
                 ):
-                    base_placements[two_by_two][building_location]["available"] = True
+                    self._make_placement_available(
+                        two_by_two, base_location, building_location
+                    )
                     loc_to_remove.append(building_location)
 
             elif building_location in base_placements[three_by_three]:
@@ -926,9 +928,9 @@ class PlacementManager(Manager, IManagerMediator):
                     ]
                     + self.WORKER_ON_ROUTE_TIMEOUT
                 ):
-                    base_placements[three_by_three][building_location][
-                        "available"
-                    ] = True
+                    self._make_placement_available(
+                        three_by_three, base_location, building_location
+                    )
                     loc_to_remove.append(building_location)
 
         for loc in loc_to_remove:
