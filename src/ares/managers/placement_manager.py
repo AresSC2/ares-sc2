@@ -301,29 +301,35 @@ class PlacementManager(Manager, IManagerMediator):
                     )
                     return
                 base_locations.remove(location)
-                location = min(
+                locations = sorted(
                     base_locations,
                     key=lambda k: cy_distance_to(k, base_location),
                 )
-                logger.warning(
-                    f"No available {building_size} found near location: "
-                    f"{base_location}, trying near {location}"
-                )
-                potential_placements: dict[Point2:dict] = self.placements_dict[
-                    location
-                ][building_size]
-                available: list[Point2] = [
-                    placement
-                    for placement in potential_placements
-                    if potential_placements[placement]["available"]
-                    and not potential_placements[placement]["worker_on_route"]
-                    and self.can_place_structure(placement, structure_type)
-                ]
-                if len(available) == 0:
+                for location in locations:
                     logger.warning(
-                        f"No available {building_size} found near location: {location}"
+                        f"No available {building_size} found near location: "
+                        f"{base_location}, trying near {location}"
                     )
-                    return
+                    potential_placements: dict[Point2:dict] = self.placements_dict[
+                        location
+                    ][building_size]
+                    available: list[Point2] = [
+                        placement
+                        for placement in potential_placements
+                        if potential_placements[placement]["available"]
+                        and not potential_placements[placement]["worker_on_route"]
+                        and self.can_place_structure(placement, structure_type)
+                    ]
+                    if len(available) == 0:
+                        logger.warning(
+                            f"No {building_size} found near location: {location}"
+                        )
+                    # FOUND SOMETHING! Break out and continue
+                    else:
+                        break
+
+            if len(available) == 0:
+                logger.warning(f"No available {building_size} found, giving up")
 
             # get closest available by default
             final_placement: Point2 = min(
@@ -909,7 +915,9 @@ class PlacementManager(Manager, IManagerMediator):
                     > base_placements[two_by_two][building_location]["time_requested"]
                     + self.WORKER_ON_ROUTE_TIMEOUT
                 ):
-                    base_placements[two_by_two][building_location]["available"] = True
+                    self._make_placement_available(
+                        two_by_two, base_location, building_location
+                    )
                     loc_to_remove.append(building_location)
 
             elif building_location in base_placements[three_by_three]:
@@ -920,9 +928,9 @@ class PlacementManager(Manager, IManagerMediator):
                     ]
                     + self.WORKER_ON_ROUTE_TIMEOUT
                 ):
-                    base_placements[three_by_three][building_location][
-                        "available"
-                    ] = True
+                    self._make_placement_available(
+                        three_by_three, base_location, building_location
+                    )
                     loc_to_remove.append(building_location)
 
         for loc in loc_to_remove:

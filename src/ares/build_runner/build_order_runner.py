@@ -121,10 +121,12 @@ class BuildOrderRunner:
         if len(self.build_order) > 0:
             await self.do_step(self.build_order[self.build_step])
 
-        if not self.build_completed and self.build_step >= len(self.build_order):
+        if self.build_completed or len(self.ai.townhalls) > 1 or self.ai.time > 120.0:
             self.mediator.switch_roles(
                 from_role=UnitRole.PERSISTENT_BUILDER, to_role=UnitRole.GATHERING
             )
+
+        if not self.build_completed and self.build_step >= len(self.build_order):
             self._opening_build_completed = True
             return
 
