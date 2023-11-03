@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v1.12.0 (2023-11-03)
+
+### Feature
+
+* More extensive find alternative building placement ([`55f7062`](https://github.com/AresSC2/ares-sc2/commit/55f7062c8402010b3b1feb03f9815cb0a2277a11))
+
+### Fix
+
+* Ensure requested placements are removed properly ([`17bfef1`](https://github.com/AresSC2/ares-sc2/commit/17bfef12a7edd1f23cd80171427f16a58c60d8e3))
+
 ## v1.11.0 (2023-11-01)
 
 ### Feature
