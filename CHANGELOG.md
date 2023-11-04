@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.12.1 (2023-11-04)
+
+### Fix
+
+* Return from find placement if nothing is available ([`c327345`](https://github.com/AresSC2/ares-sc2/commit/c327345d6b9c543f4c59e140f4ba1601a08be008))
+
 ## v1.12.0 (2023-11-03)
 
 ### Feature
