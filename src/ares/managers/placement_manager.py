@@ -324,12 +324,13 @@ class PlacementManager(Manager, IManagerMediator):
                         logger.warning(
                             f"No {building_size} found near location: {location}"
                         )
-                    # FOUND SOMETHING! Break out and continue
+                    # FOUND SOMETHING! Break out and continue logic after this loop
                     else:
                         break
 
             if len(available) == 0:
                 logger.warning(f"No available {building_size} found, giving up")
+                return
 
             # get closest available by default
             final_placement: Point2 = min(
