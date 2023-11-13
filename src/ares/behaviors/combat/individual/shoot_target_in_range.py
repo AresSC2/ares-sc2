@@ -57,6 +57,16 @@ class ShootTargetInRange(CombatBehavior):
         if len(in_attack_range) == 0:
             return False
 
+        # idea here is if our unit already has an order to shoot one of these
+        # in attack range enemies then we return True but don't issue a
+        # new action
+        if (
+            self.unit.orders
+            and len([u for u in in_attack_range if u.tag == self.unit.order_target])
+            and self.unit.weapon_cooldown == 0.0
+        ):
+            return True
+
         enemy_target: Unit = cy_pick_enemy_target(in_attack_range)
 
         if cy_attack_ready(ai, self.unit, enemy_target):
