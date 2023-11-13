@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v1.13.0 (2023-11-13)
+
+### Feature
+
+* Add behavior recipes ([`28178d8`](https://github.com/AresSC2/ares-sc2/commit/28178d847dd4a0d5efdd0ca71d35d0896cad5ea5))
+* Add place predictive aoe behavior ([`f6008ac`](https://github.com/AresSC2/ares-sc2/commit/f6008ac743c787531eb435447f261978453b4af4))
+
+### Documentation
+
+* Fix internal links ([`c237d9e`](https://github.com/AresSC2/ares-sc2/commit/c237d9e413887e81ebf53633ed19bfe20dca2bcb))
+
 ## v1.12.1 (2023-11-04)
 
 ### Fix
