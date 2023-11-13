@@ -40,7 +40,7 @@ class DropCargo(CombatBehavior):
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         # TODO: Expand logic as needed, initial working version.
         # no action executed
-        if self.unit.cargo_used == 0:
+        if self.unit.cargo_used == 0 or not ai.in_pathing_grid(self.unit.position):
             return False
 
         ai.do_unload_container(self.unit.tag)

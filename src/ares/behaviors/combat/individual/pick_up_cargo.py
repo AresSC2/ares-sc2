@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 import numpy as np
 from sc2.ids.ability_id import AbilityId
@@ -42,7 +42,7 @@ class PickUpCargo(CombatBehavior):
         Pathing grid for container unit.
     pickup_targets : Union[Units, list[Unit]]
         Units we want to load into the container.
-    cargo_switch_to_role : UnitRole (default: UnitRole.DROP_UNITS_ATTACKING)
+    cargo_switch_to_role : UnitRole (default: None)
         Sometimes useful to switch cargo tp new role
         immediately after loading.
     """
@@ -50,13 +50,13 @@ class PickUpCargo(CombatBehavior):
     unit: Unit
     grid: np.ndarray
     pickup_targets: Union[Units, list[Unit]]
-    cargo_switch_to_role: UnitRole = UnitRole.DROP_UNITS_ATTACKING
+    cargo_switch_to_role: Optional[UnitRole] = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         # no action executed
         if not self.pickup_targets or self.unit.type_id not in PICKUP_RANGE:
             # just ensure tags inside are assigned correctly
-            if len(self.unit.passengers_tags) > 0:
+            if len(self.unit.passengers_tags) > 0 and self.cargo_switch_to_role:
                 for tag in self.unit.passengers_tags:
                     mediator.assign_role(tag=tag, role=self.cargo_switch_to_role)
             return False
