@@ -110,19 +110,6 @@ class Mining(MacroBehavior):
             resource_position: Optional[Point2] = None
             resource_tag: int = -1
 
-            # keeping worker safe is first priority
-            if self.keep_safe and (
-                # lib zone / nukes etc
-                not pos_safe(grid=avoidance_grid, position=worker_position)
-                # retreat based on self.flee_at_health_perc value
-                or (
-                    worker.health_percentage <= health_perc
-                    and not pos_safe(grid=grid, position=worker_position)
-                )
-            ):
-                self._keep_worker_safe(mediator, grid, worker, worker_position)
-                continue
-
             assigned_mineral_patch: bool = worker_tag in worker_to_mineral_patch_dict
             assigned_gas_building: bool = worker_tag in worker_to_geyser_dict
             dist_to_resource: float = 15.0
@@ -148,6 +135,26 @@ class Mining(MacroBehavior):
                     else:
                         mediator.remove_gas_building(gas_building_tag=resource_tag)
                     continue
+
+            # keeping worker safe is first priority
+            if self.keep_safe and (
+                # lib zone / nukes etc
+                not pos_safe(grid=avoidance_grid, position=worker_position)
+                # retreat based on self.flee_at_health_perc value
+                or (
+                    worker.health_percentage <= health_perc
+                    and not pos_safe(grid=grid, position=worker_position)
+                )
+            ):
+                self._keep_worker_safe(
+                    mediator,
+                    grid,
+                    worker,
+                    resource,
+                    resource_position,
+                    dist_to_resource,
+                )
+                continue
 
             if main_enemy_ground_threats and self._worker_attacking_enemy(
                 ai, dist_to_resource, worker
@@ -218,29 +225,36 @@ class Mining(MacroBehavior):
         mediator: ManagerMediator,
         grid: np.ndarray,
         worker: Unit,
-        worker_position: Point2,
+        resource: Unit,
+        resource_position: Point2,
+        dist_to_resource: float,
     ) -> None:
         """Logic for keeping workers in danger safe.
 
         Parameters
         ----------
-        mediator : ManagerMediator
+        mediator :
             ManagerMediator used for getting information from other managers.
-        grid : np.ndarray
+        grid :
             Ground grid with enemy influence.
         worker :
             Worker to keep safe.
-        worker_position :
-            Pass this in for optimization purposes,
-            as may have already retrieved it.
+        resource :
+            Resource worker is assigned to.
+        resource_position :
+            Resource this worker is assigned to.
+        dist_to_resource :
+            How far away are we from intended resource?
 
         Returns
         -------
-
         """
-        worker.move(
-            mediator.find_closest_safe_spot(from_pos=worker_position, grid=grid)
-        )
+        if dist_to_resource > 5.0:
+            worker.gather(resource)
+        else:
+            worker.move(
+                mediator.find_closest_safe_spot(from_pos=resource_position, grid=grid)
+            )
 
     def _do_standard_mining(self, ai: "AresBot", worker: Unit, resource: Unit) -> None:
         worker_tag: int = worker.tag
@@ -335,9 +349,15 @@ class Mining(MacroBehavior):
                 target_mineral = cy_closest_to(target_base.position, ai.mineral_field)
             # no pending base, find a mineral field
             elif self.safe_long_distance_mineral_fields:
-                target_mineral = self.safe_long_distance_mineral_fields.closest_to(
-                    worker
-                )
+                # early game, get closest to natural
+                if ai.time < 260.0:
+                    target_mineral = cy_closest_to(
+                        mediator.get_own_nat, self.safe_long_distance_mineral_fields
+                    )
+                else:
+                    target_mineral = cy_closest_to(
+                        worker.position, self.safe_long_distance_mineral_fields
+                    )
 
             if target_mineral:
                 target_mineral_position: Point2 = target_mineral.position

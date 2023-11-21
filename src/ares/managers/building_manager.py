@@ -221,11 +221,6 @@ class BuildingManager(Manager, IManagerMediator):
                     tags_to_remove.add(worker_tag)
                     continue
 
-            # this happens if no target location is available eg: all expansions taken
-            if not target:
-                tags_to_remove.add(worker_tag)
-                continue
-
             # TODO: find the maximum distance so we don't have to keep adjusting this
             distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
 
