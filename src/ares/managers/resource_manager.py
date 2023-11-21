@@ -23,6 +23,7 @@ from ares.consts import (
     UnitRole,
     UnitTreeQueryType,
 )
+from ares.cython_extensions.geometry import cy_distance_to
 from ares.cython_extensions.units_utils import cy_closest_to, cy_sorted_by_distance_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
@@ -313,6 +314,7 @@ class ResourceManager(Manager, IManagerMediator):
         force_close: bool = False,
         select_persistent_builder: bool = False,
         only_select_persistent_builder: bool = False,
+        min_health_perc: float = 0.0,
     ) -> Optional[Unit]:
         """Select a worker.
 
@@ -335,6 +337,8 @@ class ResourceManager(Manager, IManagerMediator):
             If True we can select the persistent_builder if it's available.
         only_select_persistent_builder :
             If True, don't find an alternative worker
+        min_health_perc :
+            Only select workers above this health percentage.
 
         Returns
         -------
@@ -361,7 +365,7 @@ class ResourceManager(Manager, IManagerMediator):
 
         workers: Units = self.manager_mediator.get_units_from_roles(
             roles={UnitRole.GATHERING, UnitRole.IDLE}, unit_type=self.ai.worker_type
-        )
+        ).filter(lambda u: u.health_percentage >= min_health_perc)
         # there is a chance we have no workers
         if not workers or not target_position:
             return
@@ -389,7 +393,9 @@ class ResourceManager(Manager, IManagerMediator):
             # seems there are no townhalls with plenty of resources, don't be fussy at
             # this point
             if not townhalls:
-                return cy_closest_to(target_position, available_workers)
+                worker = cy_closest_to(target_position, available_workers)
+                self.remove_worker_from_mineral(worker.tag)
+                return worker
 
             # go through townhalls, we loop through the min fields by distance to
             # townhall that way there is a good chance we pick a worker at a far mineral
@@ -405,26 +411,27 @@ class ResourceManager(Manager, IManagerMediator):
                             if close_workers := available_workers.filter(
                                 lambda w: w.tag
                                 in self.mineral_patch_to_list_of_workers[mineral.tag]
+                                and cy_distance_to(w.position, townhall.position) < 10.0
                             ):
                                 worker: Unit = cy_closest_to(
                                     target_position, close_workers
                                 )
                                 self.remove_worker_from_mineral(worker.tag)
                                 return worker
-
-                        # try to get a worker at this patch that is not carrying
-                        # resources
-                        if _workers := available_workers.filter(
-                            lambda w: w.tag
-                            in self.mineral_patch_to_list_of_workers[mineral.tag]
-                            and not w.is_carrying_resource
-                            and not w.is_collecting
-                        ):
-                            worker: Unit = _workers.first
-                            # make sure to remove worker, so a new one can be assigned
-                            # to mine
-                            self.remove_worker_from_mineral(worker.tag)
-                            return worker
+                        else:
+                            # try to get a worker at this patch that is not carrying
+                            # resources
+                            if _workers := available_workers.filter(
+                                lambda w: w.tag
+                                in self.mineral_patch_to_list_of_workers[mineral.tag]
+                                and not w.is_carrying_resource
+                                and not w.is_collecting
+                            ):
+                                worker: Unit = _workers.first
+                                # make sure to remove worker, so a new one
+                                # can be assigned to mine
+                                self.remove_worker_from_mineral(worker.tag)
+                                return worker
 
             # somehow got here without finding a worker, any worker will do
             worker: Unit = cy_closest_to(target_position, available_workers)

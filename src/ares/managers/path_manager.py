@@ -34,6 +34,7 @@ from ares.consts import (
     GROUND_AVOIDANCE,
     GROUND_COST,
     GROUND_RANGE,
+    KD8_CHARGE,
     LIBERATOR_ZONE,
     LURKER_SPINE,
     NUKE,
@@ -45,11 +46,10 @@ from ares.consts import (
     RANGE_BUFFER,
     SHOW_PATHING_COST,
     STORM,
+    TOWNHALL_TYPES,
     UNITS,
     ManagerName,
     ManagerRequestType,
-    KD8_CHARGE,
-    TOWNHALL_TYPES,
 )
 from ares.cython_extensions.combat_utils import cy_is_position_safe
 from ares.cython_extensions.geometry import cy_distance_to
@@ -842,10 +842,7 @@ class PathManager(Manager, IManagerMediator):
             )
         elif structure.type_id == UnitID.PLANETARYFORTRESS:
             s_range: int = 7 if self.ai.time > 400 else 6
-            (
-                self.climber_grid,
-                self.ground_grid,
-            ) = self.add_cost_to_multiple_grids(
+            (self.climber_grid, self.ground_grid,) = self.add_cost_to_multiple_grids(
                 structure.position,
                 28,
                 s_range + self.config[PATHING][RANGE_BUFFER],
