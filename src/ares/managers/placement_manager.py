@@ -231,6 +231,7 @@ class PlacementManager(Manager, IManagerMediator):
         reserve_placement: bool = True,
         within_psionic_matrix: bool = False,
         pylon_build_progress: float = 1.0,
+        closest_to: Optional[Point2] = None,
     ) -> Optional[Point2]:
         """Given a base location and building size find an available placement.
 
@@ -254,6 +255,8 @@ class PlacementManager(Manager, IManagerMediator):
             Protoss specific -> calculated position have power?
         pylon_build_progress : float, optional (default = 1.0)
             Only relevant if `within_psionic_matrix = True`
+        closest_to : Point2, optional
+            Find placement at base closest to this
 
         Returns
         ----------
@@ -333,9 +336,15 @@ class PlacementManager(Manager, IManagerMediator):
                 return
 
             # get closest available by default
-            final_placement: Point2 = min(
-                available, key=lambda k: cy_distance_to(k, base_location)
-            )
+            if not closest_to:
+                final_placement: Point2 = min(
+                    available, key=lambda k: cy_distance_to(k, base_location)
+                )
+            else:
+                final_placement: Point2 = min(
+                    available, key=lambda k: cy_distance_to(k, closest_to)
+                )
+
             # if wall placement is requested swap final_placement if possible
             if wall:
                 if _available := [
