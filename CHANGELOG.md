@@ -2,6 +2,24 @@
 
 <!--next-version-placeholder-->
 
+## v1.14.0 (2023-11-21)
+
+### Feature
+
+* Select worker with min health perc argument ([`d747986`](https://github.com/AresSC2/ares-sc2/commit/d74798639a0e57a68be8ea98de8d8d603e7195d7))
+* Request placement closest to desired position ([`80a16d5`](https://github.com/AresSC2/ares-sc2/commit/80a16d59ddb17ac15ff071b1061df8946533293d))
+* Persistent worker bool toggle when declaring builds ([`730a287`](https://github.com/AresSC2/ares-sc2/commit/730a287f46ab71f53911009a4eb89ae19714f43c))
+* Improve worker safety behavior ([`fc77ddb`](https://github.com/AresSC2/ares-sc2/commit/fc77ddb1279965ec933165c7a12ea3d119155668))
+* Add reaper grenade to grids ([`da222ab`](https://github.com/AresSC2/ares-sc2/commit/da222ab709f1536eee6ef5120d139976997a8c48))
+
+### Fix
+
+* Workaround to bug where resource bookkeeping is incorrect ([`1cc50aa`](https://github.com/AresSC2/ares-sc2/commit/1cc50aa321182105be65eee15c7bfb5f632f6f9d))
+
+### Documentation
+
+* Update README.md ([`fdd7c61`](https://github.com/AresSC2/ares-sc2/commit/fdd7c6194ecdf86035c780a277860f43fe3a8d14))
+
 ## v1.13.0 (2023-11-13)
 
 ### Feature
