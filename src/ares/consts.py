@@ -44,6 +44,7 @@ GROUND_COST: str = "GroundCost"
 GROUND_ENEMY_LEAVING_BASES: str = "GroundEnemyLeavingBases"
 GROUND_ENEMY_NEAR_BASES: str = "GroundEnemyNearBases"
 GROUND_RANGE: str = "GroundRange"
+KD8_CHARGE: str = "KD8Charge"
 LIBERATOR_ZONE: str = "LiberatorZone"
 LURKER_SPINE: str = "LurkerSpine"
 MINERAL_BOOST: str = "MineralBoost"
@@ -355,9 +356,11 @@ class UnitRole(str, Enum):
     HARASSING = "HARASSING"  # units that are harassing
     IDLE = "IDLE"  # not doing anything
     PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # does not get reassigned automatically
+    PROXY_WORKER = "PROXY_WORKER"
     REPAIRING = "REPAIRING"  # repairing scvs
     SCOUTING = "SCOUTING"
     SURROUNDING = "SURROUNDING"  # zerglings currently in a surround
+    UNDER_REPAIR = "UNDER_REPAIR"  # units currently under repair
     # control groups, use for anything not specified
     CONTROL_GROUP_ONE = "CONTROL_GROUP_ONE"
     CONTROL_GROUP_TWO = "CONTROL_GROUP_TWO"

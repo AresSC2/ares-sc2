@@ -48,8 +48,11 @@ from ares.consts import (
     UNITS,
     ManagerName,
     ManagerRequestType,
+    KD8_CHARGE,
+    TOWNHALL_TYPES,
 )
 from ares.cython_extensions.combat_utils import cy_is_position_safe
+from ares.cython_extensions.geometry import cy_distance_to
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
@@ -667,6 +670,18 @@ class PathManager(Manager, IManagerMediator):
                     + self.config[PATHING][EFFECTS_RANGE_BUFFER],
                     [self.climber_grid, self.ground_grid, self.ground_avoidance_grid],
                 )
+            elif effect.id == "KD8CHARGE":
+                (
+                    self.climber_grid,
+                    self.ground_grid,
+                    # self.ground_avoidance_grid,
+                ) = self.add_cost_to_multiple_grids(
+                    Point2.center(effect.positions),
+                    effect_values[KD8_CHARGE][COST],
+                    effect_values[KD8_CHARGE][RANGE]
+                    + self.config[PATHING][EFFECTS_RANGE_BUFFER],
+                    [self.climber_grid, self.ground_grid],
+                )
             # liberator siege
             elif effect.id in {
                 EffectId.LIBERATORTARGETMORPHDELAYPERSISTENT,
@@ -803,6 +818,11 @@ class PathManager(Manager, IManagerMediator):
                 [self.air_grid, self.air_vs_ground_grid],
             )
         elif structure.type_id == UnitID.BUNKER:
+            if self.ai.enemy_structures.filter(
+                lambda g: g.type_id in TOWNHALL_TYPES
+                and cy_distance_to(g.position, structure.position) < 9.0
+            ):
+                return
             # add range of marine + 1
             (
                 self.air_grid,
@@ -822,7 +842,10 @@ class PathManager(Manager, IManagerMediator):
             )
         elif structure.type_id == UnitID.PLANETARYFORTRESS:
             s_range: int = 7 if self.ai.time > 400 else 6
-            (self.climber_grid, self.ground_grid,) = self.add_cost_to_multiple_grids(
+            (
+                self.climber_grid,
+                self.ground_grid,
+            ) = self.add_cost_to_multiple_grids(
                 structure.position,
                 28,
                 s_range + self.config[PATHING][RANGE_BUFFER],

@@ -54,6 +54,9 @@ Pathing:
         CorrosiveBile:
             Cost: 100
             Range: 3.0
+        KD8Charge:
+            Cost: 10
+            Range: 4.5
         LiberatorZone:
             Cost: 500
             Range: 6
