@@ -244,6 +244,17 @@ class ResourceManager(Manager, IManagerMediator):
                     if th.tag not in self.cached_townhalls.tags and th.is_ready:
                         self.cached_townhalls.append(th)
 
+            # TODO: this is here to fix a rare but, where a building worker is
+            #   selected but somehow it remains in this manager's bookkeeping
+            #   FIX THIS!
+            if iteration % 32 == 0:
+                for worker in workers:
+                    if worker.tag in self.manager_mediator.get_building_tracker_dict:
+                        self.remove_worker_from_mineral(worker.tag)
+                        self.manager_mediator.assign_role(
+                            tag=worker.tag, role=UnitRole.BUILDING
+                        )
+
         if self.debug and self.config[DEBUG_OPTIONS][RESOURCE_DEBUG]:
             self._print_debug_information()
 
