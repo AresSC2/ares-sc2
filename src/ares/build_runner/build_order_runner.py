@@ -60,6 +60,7 @@ class BuildOrderRunner:
     """
 
     CONSTANT_WORKER_PRODUCTION_TILL: str = "ConstantWorkerProductionTill"
+    PERSISTENT_WORKER: str = "PersistentWorker"
     REQUIRES_TOWNHALL_COMMANDS: set = {
         AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
         AbilityId.UPGRADETOPLANETARYFORTRESS_PLANETARYFORTRESS,
@@ -76,12 +77,18 @@ class BuildOrderRunner:
         self.config: dict = config
         self.mediator: ManagerMediator = mediator
         self.constant_worker_production_till: int = 0
+        self.persistent_worker: bool = True
         self._chosen_opening: str = chosen_opening
         if BUILDS in self.config:
             build: list[str] = config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
-            self.constant_worker_production_till = config[BUILDS][chosen_opening][
-                self.CONSTANT_WORKER_PRODUCTION_TILL
-            ]
+            if self.CONSTANT_WORKER_PRODUCTION_TILL in config[BUILDS][chosen_opening]:
+                self.constant_worker_production_till = config[BUILDS][chosen_opening][
+                    self.CONSTANT_WORKER_PRODUCTION_TILL
+                ]
+            if self.PERSISTENT_WORKER in config[BUILDS][chosen_opening]:
+                self.persistent_worker = config[BUILDS][chosen_opening][
+                    self.PERSISTENT_WORKER
+                ]
         else:
             build: list[str] = []
 
@@ -117,7 +124,8 @@ class BuildOrderRunner:
         """
         Runs the build order.
         """
-        self._assign_persistent_worker()
+        if self.persistent_worker:
+            self._assign_persistent_worker()
         if len(self.build_order) > 0:
             await self.do_step(self.build_order[self.build_step])
 
