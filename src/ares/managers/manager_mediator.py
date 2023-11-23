@@ -997,6 +997,7 @@ class ManagerMediator(IManagerMediator):
             request it.
         within_psionic_matrix : bool, optional
             Protoss specific -> calculated position have power?
+        closest_to : Optional[Point2]
 
         Parameters
         ----------
@@ -1081,6 +1082,7 @@ class ManagerMediator(IManagerMediator):
             If True we can select the persistent_builder if it's available.
         only_select_persistent_builder : bool
             If True, don't find an alternative worker
+        min_health_perc : float (optional)
 
         Parameters
         ----------

@@ -573,12 +573,21 @@ class ResourceManager(Manager, IManagerMediator):
             if self.ai.time < 120:
                 mineral: Unit = cy_closest_to(worker.position, _minerals)
             else:
-                # find the closest mineral, then find the nearby minerals that are
-                # closest to the townhall
-                closest_mineral: Unit = cy_closest_to(worker.position, _minerals)
-                nearby_minerals: Units = _minerals.closer_than(10, closest_mineral)
-                th: Unit = cy_closest_to(closest_mineral.position, self.ai.townhalls)
-                mineral: Unit = cy_closest_to(th.position, nearby_minerals)
+                # early game threats, stick to main base where possible
+                if (
+                    self.ai.time < 300.0
+                    and self.manager_mediator.get_main_ground_threats_near_townhall
+                ):
+                    mineral: Unit = cy_closest_to(self.ai.start_location, _minerals)
+                else:
+                    # find the closest mineral, then find the nearby minerals that are
+                    # closest to the townhall
+                    closest_mineral: Unit = cy_closest_to(worker.position, _minerals)
+                    nearby_minerals: Units = _minerals.closer_than(10, closest_mineral)
+                    th: Unit = cy_closest_to(
+                        closest_mineral.position, self.ai.townhalls
+                    )
+                    mineral: Unit = cy_closest_to(th.position, nearby_minerals)
 
             if len(self.mineral_patch_to_list_of_workers.get(mineral.tag, [])) < 2:
                 self._assign_worker_to_patch(mineral, worker)
