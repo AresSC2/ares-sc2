@@ -2,6 +2,21 @@
 
 <!--next-version-placeholder-->
 
+## v1.15.0 (2023-11-23)
+
+### Feature
+
+* Early game miners prefer minerals close to spawn ([`5d4c5b3`](https://github.com/AresSC2/ares-sc2/commit/5d4c5b3b54a1778ddb6e73f3c1a4aebf1f2c9880))
+* Build structure behavior accepts closest to arg ([`ab7cee9`](https://github.com/AresSC2/ares-sc2/commit/ab7cee9904da4ea0a9dc831b956a48b7e948b9f3))
+
+### Fix
+
+* Coorent building size for bunker ([`9d8def0`](https://github.com/AresSC2/ares-sc2/commit/9d8def07050a5ddfef07235ba16dff857db3817a))
+
+### Performance
+
+* Mining behavior use existing unit tag dict ([`c003058`](https://github.com/AresSC2/ares-sc2/commit/c003058ba23d98f84ce8d6fb66227e80e9bd6246))
+
 ## v1.14.0 (2023-11-21)
 
 ### Feature
