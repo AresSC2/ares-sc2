@@ -22,13 +22,13 @@ STRUCTURE_TO_BUILDING_SIZE: dict[UnitID, BuildingSize] = {
     # protoss 5x5
     UnitID.NEXUS: BuildingSize.FIVE_BY_FIVE,
     # terran 2x2
-    UnitID.BUNKER: BuildingSize.TWO_BY_TWO,
     UnitID.MISSILETURRET: BuildingSize.TWO_BY_TWO,
     UnitID.SENSORTOWER: BuildingSize.TWO_BY_TWO,
     UnitID.SUPPLYDEPOT: BuildingSize.TWO_BY_TWO,
     # terran 3x3
     UnitID.ARMORY: BuildingSize.THREE_BY_THREE,
     UnitID.BARRACKS: BuildingSize.THREE_BY_THREE,
+    UnitID.BUNKER: BuildingSize.THREE_BY_THREE,
     UnitID.ENGINEERINGBAY: BuildingSize.THREE_BY_THREE,
     UnitID.FACTORY: BuildingSize.THREE_BY_THREE,
     UnitID.FUSIONCORE: BuildingSize.THREE_BY_THREE,
