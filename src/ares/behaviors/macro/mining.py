@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Optional
 
 import numpy as np
+from loguru import logger
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -78,11 +79,7 @@ class Mining(MacroBehavior):
         if not workers:
             return False
 
-        mediator.set_workers_per_gas(amount=self.workers_per_gas)
-
-        resources_dict: dict[int, Unit] = dict(
-            (resource.tag, resource) for resource in ai.gas_buildings + ai.mineral_field
-        )
+        resources_dict: dict[int, Unit] = ai.unit_tag_dict
         health_perc: float = self.flee_at_health_perc
         avoidance_grid: np.ndarray = mediator.get_ground_avoidance_grid
         grid: np.ndarray = mediator.get_ground_grid
@@ -216,8 +213,16 @@ class Mining(MacroBehavior):
             # this worker really has nothing to do, keep it safe at least
             # don't mine from anywhere since user requested no `long_distance_mine`
             elif not pos_safe(grid=grid, position=worker_position):
-                self._keep_worker_safe(mediator, grid, worker, worker_position)
+                self._keep_worker_safe(
+                    mediator,
+                    grid,
+                    worker,
+                    resource,
+                    resource_position,
+                    dist_to_resource,
+                )
 
+        mediator.set_workers_per_gas(amount=self.workers_per_gas)
         return True
 
     @staticmethod
@@ -438,7 +443,13 @@ class Mining(MacroBehavior):
         """
 
         if target.is_mineral_field or target.is_vespene_geyser:
-            resource_target_pos: Point2 = mineral_target_dict[target_position]
+            try:
+                resource_target_pos: Point2 = mineral_target_dict[target_position]
+            except KeyError:
+                logger.warning(
+                    f"{target_position} not found in resource_target_pos, "
+                    f"no action will be provided for f{worker.tag}"
+                )
         else:
             resource_target_pos: Point2 = Point2(
                 cy_towards(target_position, worker_position, TOWNHALL_TARGET)
