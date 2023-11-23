@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -37,11 +37,14 @@ class BuildStructure(MacroBehavior):
     wall : bool
         Find wall placement if possible.
         (Only main base currently supported)
+    closest_to : Point2 (optional)
+        Find placement at this base closest to
     """
 
     base_location: Point2
     structure_id: UnitID
     wall: bool = False
+    closest_to: Optional[Point2] = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert (
@@ -57,6 +60,7 @@ class BuildStructure(MacroBehavior):
             structure_type=self.structure_id,
             wall=self.wall,
             within_psionic_matrix=within_psionic_matrix,
+            closest_to=self.closest_to,
         ):
             if worker := mediator.select_worker(
                 target_position=placement,
