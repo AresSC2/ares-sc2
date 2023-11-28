@@ -1,7 +1,6 @@
 """Extension of sc2.BotAI to add custom functions.
 
 """
-from functools import lru_cache
 from typing import Dict, List, Tuple
 
 from loguru import logger
@@ -210,7 +209,6 @@ class CustomBotAI(BotAI):
             )
         )
 
-    @lru_cache(maxsize=None)
     def get_enemy_proxies(
         self,
         distance: float,
