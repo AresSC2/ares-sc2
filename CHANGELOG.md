@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.15.1 (2023-11-28)
+
+### Fix
+
+* Remove lru cache for proxies ([`27faf8d`](https://github.com/AresSC2/ares-sc2/commit/27faf8de6db5aec382a702d55f0237f2ec265cc2))
+* Disable vespene boosting till it can be fixed ([`79a5e8f`](https://github.com/AresSC2/ares-sc2/commit/79a5e8fc5c19200891852faa93cce960a40ce424))
+
 ## v1.15.0 (2023-11-23)
 
 ### Feature
