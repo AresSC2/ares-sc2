@@ -100,6 +100,8 @@ class BuildOrderRunner:
         self.current_build_position: Point2 = self.ai.start_location
         self.assigned_persistent_worker: bool = False
 
+        self._temporary_build_step: int = -1
+
     @property
     def build_completed(self) -> bool:
         """
@@ -120,6 +122,13 @@ class BuildOrderRunner:
         """
         return self._chosen_opening
 
+    @property
+    def look_ahead(self) -> bool:
+        """
+        Can look ahead in the build order?
+        """
+        return self.ai.minerals > 470 and self._temporary_build_step == -1
+
     async def run_build(self) -> None:
         """
         Runs the build order.
@@ -127,7 +136,23 @@ class BuildOrderRunner:
         if self.persistent_worker:
             self._assign_persistent_worker()
         if len(self.build_order) > 0:
-            await self.do_step(self.build_order[self.build_step])
+            if self._temporary_build_step != -1:
+                await self.do_step(self.build_order[self._temporary_build_step])
+            else:
+                await self.do_step(self.build_order[self.build_step])
+
+            # if we are a bit stuck on current step, we can look ahead
+            # and attempt to complete a future step
+            if self.look_ahead:
+                index: int = 0
+                for i, step in enumerate(self.build_order[self.build_step :]):
+                    if index == 0:
+                        continue
+                    index += 1
+                    if step.start_condition():
+                        self.current_step_started = False
+                        self._temporary_build_step = i
+                        break
 
         if self.build_completed or len(self.ai.townhalls) > 1 or self.ai.time > 120.0:
             self.mediator.switch_roles(
@@ -221,7 +246,14 @@ class BuildOrderRunner:
             else:
                 time: str = self.ai.time_formatted
                 logger.info(f"{self.ai.supply_used} {time} {step.command.name}")
-                self.build_step += 1
+                if self._temporary_build_step != -1:
+                    self.build_order.remove(
+                        self.build_order[self._temporary_build_step]
+                    )
+                    self._temporary_build_step = -1
+                else:
+                    self.build_step += 1
+
                 self.current_step_started = False
 
     async def get_position(
