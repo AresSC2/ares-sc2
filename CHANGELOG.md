@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.16.0 (2023-12-03)
+
+### Feature
+
+* Build runner look ahead ([`b807e1b`](https://github.com/AresSC2/ares-sc2/commit/b807e1b220dcc1ef0e4028bde299abe7f5798188))
+* Check existing structures on geyser ([`464eeb3`](https://github.com/AresSC2/ares-sc2/commit/464eeb36a154f1e3ef56c0c58745fa6ebbc95f91))
+
 ## v1.15.1 (2023-11-28)
 
 ### Fix
