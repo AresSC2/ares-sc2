@@ -34,6 +34,11 @@ class MyBot(AresBot):
         show_root_heading: false
         show_root_toc_entry: false 
 
+::: ares.behaviors.macro.production_controller
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+
 ::: ares.behaviors.macro.spawn_controller
     options:
         show_root_heading: false

@@ -17,8 +17,7 @@ if TYPE_CHECKING:
 class PlacePredictiveAoE(CombatBehavior):
     """Predict an enemy position and fire AoE accordingly.
 
-    Warning: Use this at your own risk. It works but making is a
-    work in progress.
+    Warning: Use this at your own risk. Work in progress.
 
     TODO: Guess where the enemy is going based on how it's been moving.
         Cythonize this.

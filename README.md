@@ -19,6 +19,141 @@ avoiding preconceived choices out of the box. In fact when initiating a project 
 resembles starting with a blank `python-sc2` bot! You can write standard `python-sc2` logic and call upon
 `ares` functionality as required.
 
+## Features
+
+ - Calculated production formation for every expansion location on game start for Terran and Protoss, 
+use convenience behavior `BuildStructure` for easy usage.
+```python
+from ares.behaviors.macro import BuildStructure
+from sc2.ids.unit_typeid import UnitTypeId
+
+self.register_behavior(
+    BuildStructure(
+        base_location=self.start_location,
+        structure_id=UnitTypeId.BARRACKS
+    )
+)
+```
+![formation](https://github.com/raspersc2/oops/assets/63355562/946686eb-cc75-4271-ae1e-3b9f5c424e47)
+
+ - Curate custom combat maneuvers with our plug and play behavior system. Mix and match your own
+behaviors to truly create some unique play styles!
+```python
+from ares import AresBot
+from ares.behaviors.combat import CombatManeuver
+from ares.behaviors.combat.individual import (
+    DropCargo,
+    KeepUnitSafe,
+    PathUnitToTarget,
+    PickUpCargo,
+)
+from sc2.unit import Unit
+from sc2.units import Units
+import numpy as np
+
+class MyBot(AresBot):
+    async def on_step(self, iteration: int) -> None:
+        # retrieve medivac and mines_to_pickup and pass to method
+        # left out here for clarity
+        # mines would require their own behavior
+        self.do_medivac_mine_drop(medivac, mines_to_pickup)
+
+    def do_medivac_mine_drop(
+            self, 
+            medivac: Unit, 
+            mines_to_pickup: Units
+    ) -> None:
+        # initialize a new CombatManeuver
+        mine_drop: CombatManeuver = CombatManeuver()
+        # get a grid for the medivac to path on
+        air_grid: np.ndarray = self.mediator.get_air_grid
+        # first priority is picking up units
+        mine_drop.add(
+            PickUpCargo(
+                unit=medivac, 
+                grid=air_grid, 
+                pickup_targets=mines_to_pickup)
+        )
+        # if there is cargo, path to target and drop them off
+        if medivac.has_cargo:
+            # path
+            mine_drop.add(
+                PathUnitToTarget(
+                    unit=medivac,
+                    grid=air_grid,
+                    target=self.enemy_start_locations[0],
+                )
+            )
+            # drop off the mines
+            mine_drop.add(
+                DropCargo(unit=medivac, target=medivac.position)
+            )
+        # no cargo and no units to pick up, stay safe
+        else:
+            mine_drop.add(
+                KeepUnitSafe(unit=medivac, grid=air_grid)
+            )
+
+        # finally register this maneuver to be executed
+        self.register_behavior(mine_drop)
+```
+ - Convenient production management via `SpawnController` and `ProductionController` behaviors.
+ - Fast `cython` alternatives to some common functionality, see [the docs](https://aressc2.github.io/ares-sc2/api_reference/cython_extensions/index.html)
+ - [MapAnalyzer](https://github.com/spudde123/SC2MapAnalysis) library available and used throughout `ares-sc2`,
+access the library yourself via `self.mediator.get_map_data_object`
+
+ - [CombatSim](https://github.com/danielvschoor/sc2-helper) helper method available via `self.mediator.can_win_fight`
+ - Opt in Build runner system, easily curate new builds via a yml config file.
+
+ - Use `KDTree` for fast distance checks on batches of units, example:
+```python
+from ares.consts import UnitTreeQueryType
+
+from sc2.ids.unit_typeid import UnitTypeId
+from sc2.unit import Unit
+from sc2.units import Units
+
+reapers: list[Unit] = self.mediator.get_own_units_dict[UnitTypeId.REAPER]
+all_ground_near_reapers: dict[int, Units] = self.mediator.get_units_in_range(
+    start_points=reapers,
+    distances=15,
+    query_tree=UnitTreeQueryType.EnemyGround,
+    return_as_dict=True,
+)
+
+for reaper in reapers:
+    near_ground: Units = all_ground_near_reapers[reaper.tag]
+```
+
+ - `ares-sc2` works quietly behind the scenes, yet at any moment access to a wealth of information
+is available via the `mediator`, some examples:
+
+Retrieve a ground pathing grid already containing enemy influence:
+
+`grid: np.ndarray = self.mediator.get_ground_grid`
+
+Use this grid to make a pathing call:
+
+`move_to: Point2 = self.mediator.find_path_next_point(start=unit.position, target=self.target, grid=grid)`
+
+Optimally select a worker and assign a new `UnitRole`:
+```python
+from ares.consts import UnitRole
+from sc2.ids.unit_typeid import UnitTypeId
+from sc2.units import Units
+
+if worker := self.mediator.select_worker(target_position=self.main_base_ramp.top_center):
+    self.mediator.assign_role(tag=worker.tag, role=UnitRole.DEFENDING)
+
+# retrieve `UnitRole.DEFENDING` workers
+defending_workers: Units = self.mediator.get_units_from_role(
+    role=UnitRole.DEFENDING, unit_type=UnitTypeId.SCV
+)
+```
+
+See [Manager Mediator docs](https://aressc2.github.io/ares-sc2/api_reference/manager_mediator.html) for all
+available methods.
+
 ## Setting up `ares-sc2`
 
 To setup a full development environment:

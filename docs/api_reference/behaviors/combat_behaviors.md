@@ -33,6 +33,11 @@
         show_root_heading: false
         show_root_toc_entry: false 
 
+::: ares.behaviors.combat.individual.place_predictive_aoe
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+
 ::: ares.behaviors.combat.individual.shoot_target_in_range
     options:
         show_root_heading: false
