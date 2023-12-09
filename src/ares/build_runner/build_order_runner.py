@@ -102,6 +102,10 @@ class BuildOrderRunner:
 
         self._temporary_build_step: int = -1
 
+    def set_build_completed(self) -> None:
+        logger.info("Build order completed")
+        self._opening_build_completed = True
+
     @property
     def build_completed(self) -> bool:
         """
@@ -161,6 +165,7 @@ class BuildOrderRunner:
 
         if not self.build_completed and self.build_step >= len(self.build_order):
             self._opening_build_completed = True
+            logger.info("Build order completed")
             return
 
         if self.ai.supply_workers < self.constant_worker_production_till:
