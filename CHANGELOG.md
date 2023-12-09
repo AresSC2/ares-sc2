@@ -2,6 +2,23 @@
 
 <!--next-version-placeholder-->
 
+## v1.17.0 (2023-12-09)
+
+### Feature
+
+* Add production controller ([`123e1b8`](https://github.com/AresSC2/ares-sc2/commit/123e1b84b5b8181bfcaab5bb7f0993e321694333))
+* Implement production controller ([`477947a`](https://github.com/AresSC2/ares-sc2/commit/477947a19dc26f4f4e0c2048fe5e3a4a42e9f62e))
+* Add public method to complete build order ([`eceb294`](https://github.com/AresSC2/ares-sc2/commit/eceb2949bf9a9169637f4b89b0406fcd6c8fe82d))
+* Add convienient pending methods ([`eac3ff1`](https://github.com/AresSC2/ares-sc2/commit/eac3ff1c9eea988526a3b59a0849e4a1588947d6))
+
+### Fix
+
+* Prevent mining crash if no townhalls ([`4d3f4c5`](https://github.com/AresSC2/ares-sc2/commit/4d3f4c57e6c8e15eed20ca22330e3f578256b02c))
+
+### Documentation
+
+* Add tutorial for production, add to readme ([`84b2d04`](https://github.com/AresSC2/ares-sc2/commit/84b2d040a178e342ee5858c7998f7ab0cabb4220))
+
 ## v1.16.0 (2023-12-03)
 
 ### Feature
