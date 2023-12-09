@@ -160,7 +160,7 @@ class Mining(MacroBehavior):
                 continue
 
             # do we have record of this worker? If so mine from the relevant resource
-            if assigned_mineral_patch or assigned_gas_building:
+            if ai.townhalls and (assigned_mineral_patch or assigned_gas_building):
                 # we are far away, path to min field to avoid enemies
                 if dist_to_resource > 6.0 and not worker.is_carrying_resource:
                     worker.move(
@@ -201,7 +201,7 @@ class Mining(MacroBehavior):
                     self._do_standard_mining(ai, worker, resource)
 
             # nowhere for this worker to go, long distance mining
-            elif self.long_distance_mine and ai.minerals:
+            elif self.long_distance_mine and ai.minerals and ai.townhalls:
                 self._long_distance_mining(
                     ai,
                     mediator,
@@ -455,6 +455,12 @@ class Mining(MacroBehavior):
             resource_target_pos: Point2 = Point2(
                 cy_towards(target_position, worker_position, TOWNHALL_TARGET)
             )
+
+        if not target:
+            ai.mediator.remove_mineral_field(mineral_field_tag=target.tag)
+            ai.mediator.remove_worker_from_mineral(worker_tag=worker.tag)
+        elif not target.is_mineral_field and not target.vespene_contents:
+            ai.mediator.remove_gas_building(gas_building_tag=target.tag)
 
         closest_th: Unit = cy_closest_to(worker_position, ai.townhalls)
 
