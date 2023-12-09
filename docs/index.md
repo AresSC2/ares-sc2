@@ -17,14 +17,18 @@ resembles starting with a blank `python-sc2` bot! You can write standard `python
 ## Bots made with `ares-sc2`
 Feel free to add your own bot here
 
- - [Phobos (T)](https://github.com/AresSC2/phobos)
+[//]: # ( - [Phobos &#40;T&#41;]&#40;https://github.com/AresSC2/phobos&#41;)
+ - [Aristaeus (P)](https://github.com/august-k/Aristaeus)
  - [QueenBot (Z)](https://github.com/AresSC2/QueenBot)
+ - [oops (R) micro ladder bot](https://github.com/raspersc2/oops)
 
 ## Features
 
  - Highly customizable and extendable behavior system. Curate custom combat maneuvers and macro plans.
  - `ManagerMediator` to facilitate communication and retrieve information from managers in `ares`, 
 see [docs here](./api_reference/manager_mediator.html)
+ - Manage production by declaring army compositions, less repetitive boilerplate code in your bot. See
+[tutorial here](./tutorials/managing_production.html)
  - Memory units tracking by default. Track units that have recently entered fog of war.
  - Pre-calculated building formation for all maps and bases (Terran and Protoss only).
  - [MapAnalyzer](https://github.com/spudde123/SC2MapAnalysis/tree/develop) library available 

@@ -12,3 +12,8 @@ Many of these functions exhibit multiple-fold speed enhancements compared to the
 many of which serve as alternatives to `python-sc2` functions.
  - `Manager mediator` - Seamlessly orchestrating numerous managers in the background, the mediator serves 
 as the recommended approach to access data and functions within these managers.
+
+Convenient methods globally available:
+::: ares.main
+    options:
+        show_root_heading: false

@@ -38,6 +38,7 @@ nav:
       - Creating Custom Behaviors: tutorials/custom_behaviors.md
       - Config File: tutorials/config_file.md
       - Installation: tutorials/installation.md
+      - Managing Production: tutorials/managing_production.md
       - Tips and Tricks: tutorials/tips_and_tricks.md
   - API Reference:
       - api_reference/index.md
