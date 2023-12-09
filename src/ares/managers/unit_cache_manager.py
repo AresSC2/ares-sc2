@@ -430,9 +430,13 @@ class UnitCacheManager(Manager, IManagerMediator):
         )[0]
 
     def get_own_unit_count(
-        self, unit_type_id: UnitID, include_alias=True, include_pending: bool = True
+        self,
+        unit_type_id: UnitID,
+        include_alias: bool = True,
+        include_pending: bool = True,
     ) -> int:
         """Get unit count, should include alias if specified.
+        Includes pending units by default
 
         Examples:
         ```

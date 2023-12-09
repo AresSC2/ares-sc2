@@ -1,6 +1,6 @@
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
-UNIT_TECH_REQUIREMENT: dict[UnitID, set[UnitID]] = dict(
+UNIT_TECH_REQUIREMENT: dict[UnitID, list[UnitID]] = dict(
     {
         UnitID.ADEPT: [UnitID.GATEWAY, UnitID.CYBERNETICSCORE],
         UnitID.BANELING: [UnitID.BANELINGNEST],
