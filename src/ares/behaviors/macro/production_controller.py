@@ -127,7 +127,7 @@ class ProductionController(MacroBehavior):
             train_from: set[UnitID] = UNIT_TRAINED_FROM[unit_type_id]
             trained_from: UnitID = next(iter(UNIT_TRAINED_FROM[unit_type_id]))
 
-            if self.not_started_but_in_building_tracker(ai, mediator, trained_from):
+            if self._not_started_but_in_building_tracker(ai, mediator, trained_from):
                 continue
 
             # get all idle build structures/units we can create this unit from
@@ -211,7 +211,7 @@ class ProductionController(MacroBehavior):
         return False
 
     @staticmethod
-    def not_started_but_in_building_tracker(
+    def _not_started_but_in_building_tracker(
         ai: "AresBot", mediator: ManagerMediator, structure_type: UnitID
     ) -> bool:
         """
