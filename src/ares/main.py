@@ -11,6 +11,7 @@ from loguru import logger
 from s2clientprotocol.raw_pb2 import Unit as RawUnit
 from sc2.constants import ALL_GAS, IS_PLACEHOLDER, FakeEffectID, geyser_ids, mineral_ids
 from sc2.data import Race, Result, race_gas, race_townhalls, race_worker
+from sc2.dicts.unit_train_build_abilities import TRAIN_INFO
 from sc2.game_data import Cost
 from sc2.game_state import EffectData
 from sc2.ids.buff_id import BuffId
@@ -32,6 +33,7 @@ from ares.consts import (
     DEBUG_GAME_STEP,
     DEBUG_OPTIONS,
     GAME_STEP,
+    ID,
     IGNORE_DESTRUCTABLES,
     RACE_SUPPLY,
     SHADE_COMMENCED,
@@ -44,6 +46,7 @@ from ares.consts import (
     UnitTreeQueryType,
 )
 from ares.custom_bot_ai import CustomBotAI
+from ares.cython_extensions.general_utils import cy_unit_pending
 from ares.dicts.cost_dict import COST_DICT
 from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
 from ares.dicts.enemy_vs_ground_static_defense_ranges import (
@@ -793,3 +796,176 @@ class AresBot(CustomBotAI):
             self.all_units.append(unit)
             self.unit_tag_dict[unit.tag] = unit
             index += 1
+
+    def get_build_structures(
+        self,
+        structure_unit_types: set[UnitID],
+        unit_type: UnitID,
+        build_dict=None,
+        ignored_build_from_tags=None,
+    ) -> list[Unit]:
+        """Get all structures (or units) where we can spawn unit_type.
+        Takes into account techlabs and reactors. And Gateway / warp gate
+
+
+        Parameters
+        ----------
+        structure_unit_types :
+            The valid build structures we can spawn this unit_type from.
+        unit_type :
+            The target unit we are trying to spawn.
+        build_dict : dict[Unit, UnitID] (optional)
+            Use to prevent selecting idle build structures that
+            have already got a pending order this frame.
+            Key: Unit that should get order, value: what UnitID to build
+        ignored_build_from_tags : Set[int]
+            Pass in if you don't want certain build structures selected.
+
+        Returns
+        -------
+        list[Unit] :
+            List of structures / units where this unit could possibly be spawned from.
+        """
+        if ignored_build_from_tags is None:
+            ignored_build_from_tags = {}
+        if build_dict is None:
+            build_dict = {}
+
+        structures_dict: dict[UnitID:Units] = self.mediator.get_own_structures_dict
+        own_army_dict: dict[UnitID:Units] = self.mediator.get_own_army_dict
+        build_from_dict: dict[UnitID:Units] = structures_dict
+        if self.race == Race.Zerg:
+            build_from_dict: dict[UnitID:Units] = {
+                **structures_dict,
+                **own_army_dict,
+            }
+        build_from_tags: list[int] = []
+        using_larva: bool = False
+        for structure_type in structure_unit_types:
+            if structure_type not in build_from_dict:
+                continue
+
+            if structure_type == UnitID.LARVA:
+                using_larva = True
+
+            build_from: Units = build_from_dict[structure_type]
+            requires_techlab: bool = TRAIN_INFO[structure_type][unit_type].get(
+                "requires_techlab", False
+            )
+            if not requires_techlab:
+                build_from_tags.extend(
+                    [
+                        u.tag
+                        for u in build_from
+                        if u.is_ready and u.is_idle and u not in build_dict
+                    ]
+                )
+                if self.race == Race.Terran:
+                    build_from_tags.extend(
+                        u.tag
+                        for u in build_from
+                        if u.is_ready
+                        and u.has_reactor
+                        and len(u.orders) < 2
+                        and u not in build_dict
+                    )
+            else:
+                build_from_tags.extend(
+                    [
+                        u.tag
+                        for u in build_from
+                        if u.is_ready
+                        and u.is_idle
+                        and u.has_add_on
+                        and self.unit_tag_dict[u.add_on_tag].is_ready
+                        and u.add_on_tag in self.techlab_tags
+                        and u not in build_dict
+                    ]
+                )
+
+        build_structures: list[Unit] = [
+            self.unit_tag_dict[u]
+            for u in build_from_tags
+            if u not in ignored_build_from_tags
+        ]
+        # sort build structures with reactors first
+        if self.race == Race.Terran:
+            build_structures = sorted(
+                build_structures,
+                key=lambda structure: -1 * (structure.add_on_tag in self.reactor_tags)
+                + 1 * (structure.add_on_tag in self.techlab_tags),
+            )
+        # limit build structures to number of larva left
+        if self.race == Race.Zerg and using_larva:
+            build_structures = build_structures[: self.num_larva_left]
+
+        return build_structures
+
+    def structure_present_or_pending(self, structure_type: UnitID) -> bool:
+        """
+        Checks presence of a structure, or if worker is on route to
+        build structure.
+
+        Parameters
+        ----------
+        structure_type
+
+        Returns
+        -------
+        bool
+
+        """
+        return (
+            len(self.mediator.get_own_structures_dict[structure_type]) > 0
+            or self.mediator.get_building_counter[structure_type] > 0
+        )
+
+    def unit_pending(self, unit_type: UnitID) -> int:
+        """
+        Checks pending units.
+        Alternative and faster version of `self.already_pending`
+
+        Parameters
+        ----------
+        unit_type
+
+        Returns
+        -------
+        int
+
+        """
+        return cy_unit_pending(self, unit_type)
+
+    def structure_pending(self, structure_type: UnitID) -> int:
+        """
+        Checks pending structures, includes workers on route.
+        Alternative and faster version of `self.already_pending`
+
+        Parameters
+        ----------
+        structure_type
+
+        Returns
+        -------
+        int
+
+        """
+        num_pending: int = 0
+        building_tracker: dict = self.mediator.get_building_tracker_dict
+        for tag, info in building_tracker.items():
+            structure_id: UnitID = building_tracker[tag][ID]
+            if structure_id != structure_type:
+                continue
+
+            num_pending += 1
+
+        if self.race != Race.Terran or structure_type in ADD_ONS:
+            num_pending += len(
+                [
+                    s
+                    for s in self.mediator.get_own_structures_dict[structure_type]
+                    if s.build_progress < 1.0
+                ]
+            )
+
+        return num_pending
