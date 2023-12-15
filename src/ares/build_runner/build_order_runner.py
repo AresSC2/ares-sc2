@@ -195,6 +195,7 @@ class BuildOrderRunner:
                     select_persistent_builder=command != UnitID.REFINERY,
                     only_select_persistent_builder=command
                     in {UnitID.BARRACKS, UnitID.COMMANDCENTER}
+                    and self.persistent_worker
                     and not self.ai.already_pending(UnitID.BARRACKS)
                     and self.ai.time < 90.0,
                 ):
