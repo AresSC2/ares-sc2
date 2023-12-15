@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.17.1 (2023-12-15)
+
+### Fix
+
+* Don't try to select persistent worker if not enabled ([`4383924`](https://github.com/AresSC2/ares-sc2/commit/43839245dade28c4a53e76ed5785dcfb1b953084))
+
 ## v1.17.0 (2023-12-09)
 
 ### Feature
