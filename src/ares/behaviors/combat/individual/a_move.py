@@ -4,7 +4,9 @@ from typing import TYPE_CHECKING, Union
 from sc2.position import Point2
 from sc2.unit import Unit
 
-from ares.behaviors.combat.individual import CombatIndividualBehavior
+from ares.behaviors.combat.individual.combat_individual_behavior import (
+    CombatIndividualBehavior,
+)
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:

@@ -7,7 +7,9 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.behaviors.combat.individual import CombatIndividualBehavior
+from ares.behaviors.combat.individual.combat_individual_behavior import (
+    CombatIndividualBehavior,
+)
 from ares.consts import UnitRole
 from ares.cython_extensions.geometry import cy_distance_to
 from ares.cython_extensions.units_utils import cy_closest_to

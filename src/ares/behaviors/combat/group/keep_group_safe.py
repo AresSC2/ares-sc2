@@ -5,7 +5,7 @@ import numpy as np
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.behaviors.combat.group import CombatGroupBehavior
+from ares.behaviors.combat.group.combat_group_behavior import CombatGroupBehavior
 from ares.behaviors.combat.individual import KeepUnitSafe, ShootTargetInRange
 from ares.managers.manager_mediator import ManagerMediator
 
