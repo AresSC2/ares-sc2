@@ -8,9 +8,9 @@ from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.consts import ManagerName, ManagerRequestType
+from ares.cython_extensions.geometry import cy_distance_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from src.ares.cython_extensions.geometry import cy_distance_to
 
 if TYPE_CHECKING:
     from ares import AresBot

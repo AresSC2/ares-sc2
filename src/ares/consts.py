@@ -259,6 +259,10 @@ class ManagerRequestType(str, Enum):
     SELECT_WORKER = "SELECT_WORKER"
     SET_WORKERS_PER_GAS = "SET_WORKERS_PER_GAS"
 
+    # SquadManager
+    GET_POSITION_OF_MAIN_SQUAD = "GET_POSITION_OF_MAIN_SQUAD"
+    GET_SQUADS = "GET_SQUADS"
+
     # TerrainManager
     BUILDING_POSITION_BLOCKED_BY_BURROWED_UNIT = (
         "BUILDING_POSITION_BLOCKED_BY_BURROWED_UNIT"
@@ -325,6 +329,7 @@ class ManagerName(str, Enum):
     PATH_MANAGER = "PathManager"
     PLACEMENT_MANAGER = "PlacementManager"
     RESOURCE_MANAGER = "ResourceManager"
+    SQUAD_MANAGER = "SquadManager"
     TERRAIN_MANAGER = "TerrainManager"
     UNIT_CACHE_MANAGER = "UnitCacheManager"
     UNIT_MEMORY_MANAGER = "UnitMemoryManager"
@@ -355,11 +360,13 @@ class UnitRole(str, Enum):
     GATHERING = "GATHERING"  # workers that are mining
     HARASSING = "HARASSING"  # units that are harassing
     IDLE = "IDLE"  # not doing anything
+    MAP_CONTROL = "MAP_CONTROL"  # units controlling the map (lings/hellions?)
+    OVERLORD_HUNTER = "OVERLORD_HUNTER"  # units looking for overlords
     PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # does not get reassigned automatically
     PROXY_WORKER = "PROXY_WORKER"
     REPAIRING = "REPAIRING"  # repairing scvs
     SCOUTING = "SCOUTING"
-    SURROUNDING = "SURROUNDING"  # zerglings currently in a surround
+    SURROUNDING = "SURROUNDING"  # units currently in a surround
     UNDER_REPAIR = "UNDER_REPAIR"  # units currently under repair
     # control groups, use for anything not specified
     CONTROL_GROUP_ONE = "CONTROL_GROUP_ONE"
