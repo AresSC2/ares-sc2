@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.18.2 (2024-01-04)
+
+### Fix
+
+* Group behaviors return False if no units ([`c9aeebb`](https://github.com/AresSC2/ares-sc2/commit/c9aeebbbbd2e38bdbef19ca41e3c5594f59ab1d2))
+
 ## v1.18.1 (2024-01-04)
 
 ### Fix
