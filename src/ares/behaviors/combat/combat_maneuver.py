@@ -2,12 +2,12 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Union
 
 from ares.behaviors.behavior import Behavior
-from ares.behaviors.combat.group import CombatGroupBehavior
-from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
     from ares import AresBot
+    from ares.behaviors.combat.group import CombatGroupBehavior
+    from ares.behaviors.combat.individual import CombatIndividualBehavior
 
 
 @dataclass
@@ -87,7 +87,7 @@ class CombatManeuver(Behavior):
     def add(
         self,
         behavior: Union[
-            CombatIndividualBehavior, CombatGroupBehavior, "CombatManeuver"
+            "CombatIndividualBehavior", "CombatGroupBehavior", "CombatManeuver"
         ],
     ) -> None:
         """
