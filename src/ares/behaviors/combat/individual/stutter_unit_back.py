@@ -5,8 +5,11 @@ import numpy as np
 from loguru import logger
 from sc2.unit import Unit
 
-from ares.behaviors.combat import CombatBehavior
-from ares.behaviors.combat.individual import AttackTarget, KeepUnitSafe
+from ares.behaviors.combat.individual import (
+    AttackTarget,
+    CombatIndividualBehavior,
+    KeepUnitSafe,
+)
 from ares.cython_extensions.combat_utils import cy_attack_ready
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -15,7 +18,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class StutterUnitBack(CombatBehavior):
+class StutterUnitBack(CombatIndividualBehavior):
     """Shoot at the target if possible, else move back.
 
     Example:

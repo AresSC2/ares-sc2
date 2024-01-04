@@ -3,8 +3,7 @@ from typing import TYPE_CHECKING
 
 from sc2.unit import Unit
 
-from ares.behaviors.combat import CombatBehavior
-from ares.behaviors.combat.individual import AttackTarget
+from ares.behaviors.combat.individual import AttackTarget, CombatIndividualBehavior
 from ares.cython_extensions.combat_utils import cy_attack_ready
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -13,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class StutterUnitForward(CombatBehavior):
+class StutterUnitForward(CombatIndividualBehavior):
     """Shoot at the target if possible, else move back.
 
     Example:

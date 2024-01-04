@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from sc2.unit import Unit
 
-from ares.behaviors.combat import CombatBehavior
+from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class AttackTarget(CombatBehavior):
+class AttackTarget(CombatIndividualBehavior):
     """Shoot a target.
 
     Example:

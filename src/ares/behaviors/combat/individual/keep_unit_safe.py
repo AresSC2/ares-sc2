@@ -6,7 +6,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.behaviors.behavior import Behavior
-from ares.behaviors.combat import CombatBehavior
+from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.behaviors.combat.individual.path_unit_to_target import PathUnitToTarget
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class KeepUnitSafe(CombatBehavior):
+class KeepUnitSafe(CombatIndividualBehavior):
     """Get a unit to safety based on the influence grid passed in.
 
     Example:

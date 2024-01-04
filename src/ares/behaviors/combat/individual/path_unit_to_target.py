@@ -5,7 +5,7 @@ import numpy as np
 from sc2.position import Point2
 from sc2.unit import Unit
 
-from ares.behaviors.combat import CombatBehavior
+from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.cython_extensions.geometry import cy_distance_to
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class PathUnitToTarget(CombatBehavior):
+class PathUnitToTarget(CombatIndividualBehavior):
     """Path a unit to its target destination.
 
     TODO: Add attack enemy in range logic / parameter
