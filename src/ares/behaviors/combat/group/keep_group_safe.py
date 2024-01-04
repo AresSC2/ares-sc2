@@ -42,6 +42,9 @@ class KeepGroupSafe(CombatGroupBehavior):
     attack_in_range_enemy: bool = True
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+        if len(self.group) == 0:
+            return False
+
         for u in self.group:
             if self.attack_in_range_enemy:
                 if ShootTargetInRange(u, self.close_enemy).execute(

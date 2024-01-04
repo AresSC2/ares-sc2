@@ -36,6 +36,9 @@ class AMoveGroup(CombatGroupBehavior):
     target: Union[Point2, Unit]
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+        if len(self.group) == 0:
+            return False
+
         sorted_units: list[Unit] = cy_sorted_by_distance_to(
             self.group, self.target, reverse=True
         )
