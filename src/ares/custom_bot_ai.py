@@ -1,7 +1,7 @@
 """Extension of sc2.BotAI to add custom functions.
 
 """
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple, Union
 
 from loguru import logger
 from s2clientprotocol import raw_pb2 as raw_pb
@@ -9,6 +9,7 @@ from s2clientprotocol import sc2api_pb2 as sc_pb
 from s2clientprotocol import ui_pb2 as ui_pb
 from sc2.bot_ai import BotAI
 from sc2.constants import EQUIVALENTS_FOR_TECH_PROGRESS
+from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
@@ -83,7 +84,7 @@ class CustomBotAI(BotAI):
         )
 
     @staticmethod
-    def get_total_supply(units: Units) -> int:
+    def get_total_supply(units: Union[Units, list[Unit]]) -> int:
         """Get total supply of units.
 
         Parameters
@@ -106,14 +107,16 @@ class CustomBotAI(BotAI):
             ]
         )
 
-    def split_ground_fliers(self, units: Units) -> Tuple[Units, Units]:
+    def split_ground_fliers(
+        self, units: Union[Units, list[Unit]], return_as_lists: bool = False
+    ) -> Union[Tuple[Units, Units], Tuple[list, list]]:
         """Split units into ground units and flying units.
 
         Parameters
         ----------
         units :
             Units object that should be split
-
+        return_as_lists :
         Returns
         -------
         Tuple[Units, Units] :
@@ -127,7 +130,10 @@ class CustomBotAI(BotAI):
                 fly.append(unit)
             else:
                 ground.append(unit)
-        return Units(ground, self), Units(fly, self)
+        if return_as_lists:
+            return ground, fly
+        else:
+            return Units(ground, self), Units(fly, self)
 
     def tech_ready_for_unit(self, unit_type: UnitID) -> bool:
         """
@@ -170,6 +176,69 @@ class CustomBotAI(BotAI):
                 return False
 
         return True
+
+    async def _give_units_same_order(
+        self,
+        order: AbilityId,
+        unit_tags: Union[List[int], set[int]],
+        target: Optional[Union[Point2, int]] = None,
+    ) -> None:
+        """
+        Give units corresponding to the given tags the same order.
+        @param order: the order to give to all units
+        @param unit_tags: the tags of the units to give the order to
+        @param target: either a Point2 of the location or the tag of the unit to target
+        """
+        if not target:
+            # noinspection PyProtectedMember
+            await self.client._execute(
+                action=sc_pb.RequestAction(
+                    actions=[
+                        sc_pb.Action(
+                            action_raw=raw_pb.ActionRaw(
+                                unit_command=raw_pb.ActionRawUnitCommand(
+                                    ability_id=order.value,
+                                    unit_tags=unit_tags,
+                                )
+                            )
+                        ),
+                    ]
+                )
+            )
+        elif isinstance(target, Point2):
+            # noinspection PyProtectedMember
+            await self.client._execute(
+                action=sc_pb.RequestAction(
+                    actions=[
+                        sc_pb.Action(
+                            action_raw=raw_pb.ActionRaw(
+                                unit_command=raw_pb.ActionRawUnitCommand(
+                                    ability_id=order.value,
+                                    target_world_space_pos=target.as_Point2D,
+                                    unit_tags=unit_tags,
+                                )
+                            )
+                        ),
+                    ]
+                )
+            )
+        else:
+            # noinspection PyProtectedMember
+            await self.client._execute(
+                action=sc_pb.RequestAction(
+                    actions=[
+                        sc_pb.Action(
+                            action_raw=raw_pb.ActionRaw(
+                                unit_command=raw_pb.ActionRawUnitCommand(
+                                    ability_id=order.value,
+                                    target_unit_tag=target,
+                                    unit_tags=unit_tags,
+                                )
+                            )
+                        ),
+                    ]
+                )
+            )
 
     async def unload_by_tag(self, container: Unit, unit_tag: int) -> None:
         """Unload a unit from a container based on its tag. Thanks, Sasha!"""

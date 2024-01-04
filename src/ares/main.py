@@ -4,7 +4,7 @@ The bot will be called from here, but most of the logic should be in Hub.
 """
 from collections import defaultdict
 from os import getcwd, path
-from typing import DefaultDict, Dict, List, Optional, Set, Tuple
+from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import yaml
 from loguru import logger
@@ -14,6 +14,7 @@ from sc2.data import Race, Result, race_gas, race_townhalls, race_worker
 from sc2.dicts.unit_train_build_abilities import TRAIN_INFO
 from sc2.game_data import Cost
 from sc2.game_state import EffectData
+from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -106,8 +107,20 @@ class AresBot(CustomBotAI):
         self.supply_type: UnitID = UnitID.OVERLORD
         self.num_larva_left: int = 0
 
+        self._same_order_actions: list[
+            tuple[AbilityId, set[int], Optional[Union[Unit, Point2]]]
+        ] = []
         self._drop_unload_actions: list[tuple[int, int]] = []
+
         self.arcade_mode: bool = False
+
+    def give_same_action(
+        self,
+        order: AbilityId,
+        unit_tags: Union[List[int], set[int]],
+        target: Optional[Union[Point2, int]] = None,
+    ) -> None:
+        self._same_order_actions.append((order, unit_tags, target))
 
     def do_unload_container(self, container_tag: int, index: int = 0) -> None:
         self._drop_unload_actions.append((container_tag, index))
@@ -349,6 +362,10 @@ class AresBot(CustomBotAI):
         self.behavior_executioner.execute()
         for drop_action in self._drop_unload_actions:
             await self.unload_container(drop_action[0], drop_action[1])
+        for same_order in self._same_order_actions:
+            await self._give_units_same_order(
+                same_order[0], same_order[1], same_order[2]
+            )
         self.manager_hub.path_manager.reset_grids(self.actual_iteration)
         return await super(AresBot, self)._after_step()
 
@@ -747,6 +764,7 @@ class AresBot(CustomBotAI):
         self.enemy_parasitic_bomb_positions: List[Point2] = []
 
         self._drop_unload_actions = []
+        self._same_order_actions = []
 
     def _should_add_unit(self, unit: RawUnit) -> bool:
         """Whether the given unit should be tracked.
