@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v1.18.0 (2024-01-04)
+
+### Feature
+
+* Stutter group forward behavior ([`5171003`](https://github.com/AresSC2/ares-sc2/commit/5171003b3e79df1736d0fdc647be4a22c9c54f4f))
+* Stutter group back behavior ([`9dc8e45`](https://github.com/AresSC2/ares-sc2/commit/9dc8e45e07bf1111a51dccb0d0c04a5758603ad2))
+* Path group to target behavior ([`f425a72`](https://github.com/AresSC2/ares-sc2/commit/f425a72e3668bf710cfc690c8ba5115d7a57ce79))
+* Keep group safe behavior ([`e4c2488`](https://github.com/AresSC2/ares-sc2/commit/e4c248890eda966f092a77b326117ff64a8f1788))
+* Implement initial a-move group behavior ([`ce1eb39`](https://github.com/AresSC2/ares-sc2/commit/ce1eb3910032e49ba93a855c0d5830d1dfb52c31))
+* Implement unit squad manager ([`f20b47c`](https://github.com/AresSC2/ares-sc2/commit/f20b47c7a4eb638a8791f2af84ac878c941da386))
+
 ## v1.17.1 (2023-12-15)
 
 ### Fix
