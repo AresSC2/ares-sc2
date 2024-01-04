@@ -3,7 +3,18 @@
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import Any, Callable, DefaultDict, Dict, List, Optional, Set, Tuple, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    DefaultDict,
+    Dict,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 import numpy as np
 from map_analyzer import MapData
@@ -15,6 +26,9 @@ from sc2.units import Units
 from scipy.spatial import KDTree
 
 from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
+
+if TYPE_CHECKING:
+    from ares.managers.squad_manager import UnitSquad
 
 
 class IManagerMediator(metaclass=ABCMeta):
@@ -1119,6 +1133,69 @@ class ManagerMediator(IManagerMediator):
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
             ManagerRequestType.GET_MINERAL_TARGET_DICT,
+        )
+
+    """
+    SquadManager
+    """
+
+    def get_position_of_main_squad(self, **kwargs) -> Point2:
+        """Given a unit role, find where the main squad is.
+
+        SquadManager
+
+        Other Parameters
+        ----------
+        role : UnitRole
+            Get the squads for this unit role.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+
+        Returns
+        -------
+        Point2 :
+
+        """
+        return self.manager_request(
+            ManagerName.SQUAD_MANAGER,
+            ManagerRequestType.GET_POSITION_OF_MAIN_SQUAD,
+            **kwargs,
+        )
+
+    def get_squads(self, **kwargs) -> list["UnitSquad"]:
+        """Given a unit role, get the updated squads.
+
+        SquadManager
+
+        Other Parameters
+        ----------
+        role : UnitRole
+            Get the squads for this unit role.
+        squad_radius : float (default = 11.0)
+            The threshold as to which separate squads are formed.
+        unit_type: Optional[Union[UnitID, set[UnitID]]] (default = None)
+            If specified, only form squads with these unit types
+            WARNING: Will not remove units that have already
+                     been assigned to a squad.
+
+        Parameters
+        ----------
+        kwargs :
+            (See Other Parameters)
+
+        Returns
+        -------
+        List[UnitSquad] :
+            Each squad with this unit role.
+
+        """
+        return self.manager_request(
+            ManagerName.SQUAD_MANAGER,
+            ManagerRequestType.GET_SQUADS,
+            **kwargs,
         )
 
     """

@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Union
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.behaviors.combat import CombatBehavior
+from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.cython_extensions.combat_utils import cy_attack_ready, cy_pick_enemy_target
 from ares.cython_extensions.units_utils import cy_in_attack_range
 from ares.managers.manager_mediator import ManagerMediator
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class ShootTargetInRange(CombatBehavior):
+class ShootTargetInRange(CombatIndividualBehavior):
     """Find something to shoot at.
 
     TODO: Currently only picks lowest health.

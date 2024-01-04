@@ -1,8 +1,9 @@
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from ares.behaviors.behavior import Behavior
-from ares.behaviors.combat import CombatBehavior
+from ares.behaviors.combat.group import CombatGroupBehavior
+from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
@@ -83,7 +84,12 @@ class CombatManeuver(Behavior):
 
     micros: list[Behavior] = field(default_factory=list)
 
-    def add(self, behavior: CombatBehavior) -> None:
+    def add(
+        self,
+        behavior: Union[
+            CombatIndividualBehavior, CombatGroupBehavior, "CombatManeuver"
+        ],
+    ) -> None:
         """
 
         Parameters

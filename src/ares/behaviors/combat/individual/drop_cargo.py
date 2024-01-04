@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from sc2.position import Point2
 from sc2.unit import Unit
 
-from ares.behaviors.combat import CombatBehavior
+from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class DropCargo(CombatBehavior):
+class DropCargo(CombatIndividualBehavior):
     """Handle releasing cargo from a container.
 
     Medivacs, WarpPrism, Overlords, Nydus.

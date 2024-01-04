@@ -5,7 +5,7 @@ from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
 
-from ares.behaviors.combat import CombatBehavior
+from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 @dataclass
-class UseAbility(CombatBehavior):
+class UseAbility(CombatIndividualBehavior):
     """A-Move a unit to a target.
 
     Example:

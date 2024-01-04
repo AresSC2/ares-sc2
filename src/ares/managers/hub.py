@@ -18,6 +18,7 @@ from ares.managers.manager_mediator import ManagerMediator
 from ares.managers.path_manager import PathManager
 from ares.managers.placement_manager import PlacementManager
 from ares.managers.resource_manager import ResourceManager
+from ares.managers.squad_manager import SquadManager
 from ares.managers.terrain_manager import TerrainManager
 from ares.managers.unit_cache_manager import UnitCacheManager
 from ares.managers.unit_memory_manager import UnitMemoryManager
@@ -155,6 +156,9 @@ class Hub:
         self.flying_structures_manager: FlyingStructureManager = FlyingStructureManager(
             ai, config, self.manager_mediator
         )
+        self.squad_manager: SquadManager = SquadManager(
+            ai, config, self.manager_mediator
+        )
 
         # in order of priority
         self.managers: list["Manager"] = [
@@ -171,6 +175,7 @@ class Hub:
             self.enemy_to_base_manager,
             self.combat_sim_manager,
             self.flying_structures_manager,
+            self.squad_manager,
         ]
 
         if additional_managers:
