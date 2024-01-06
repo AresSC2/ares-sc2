@@ -20,10 +20,6 @@ cpdef set flood_fill_grid(
     if not terrain_height:
         return filled_points
 
-    # if pathing_value != 1:
-    #     print("r3r3r")
-    #     return filled_points
-
     grid_flood_fill(start_point, terrain_grid, pathing_grid, terrain_height, filled_points, start_point, max_distance, choke_points)
     return filled_points
 

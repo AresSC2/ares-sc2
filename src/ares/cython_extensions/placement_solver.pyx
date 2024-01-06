@@ -66,7 +66,6 @@ cpdef list find_building_locations(
         unsigned int _y = 0
         unsigned int valid_idx = 0
         float x, y
-        float weighted_x, weighted_y
         int x_min = x_bounds[0]
         int x_max = x_bounds[1]
         int y_min = y_bounds[0]
@@ -76,7 +75,10 @@ cpdef list find_building_locations(
         (float, float) center
         float half_width = building_width / 2
         unsigned int creep_check = 0 if avoid_creep else 1
+        unsigned int found_this_many_on_y = 0
         Py_ssize_t i, j
+
+    blocked_y = set()
 
     for i in range(x_min, x_max + 1):
         for j in range(y_min, y_max + 1):
@@ -86,8 +88,18 @@ cpdef list find_building_locations(
     cdef unsigned char[:, :] result = convolve2d(to_convolve, kernel, mode="valid")
 
     for i in range(0, result.shape[0], x_stride):
+        found_this_many_on_y = 0
         for j in range(0, result.shape[1], y_stride):
             if result[i][j] == 0:
+                if j in blocked_y:
+                    continue
+
+                found_this_many_on_y += 1
+                # idea here is to leave a gap sometimes to prevent stuck units
+                if j > 0 and found_this_many_on_y % 4 == 0:
+                    blocked_y.add(j)
+                    continue
+
                 x = i + x_min + half_width
                 y = j + y_min + half_width
 
