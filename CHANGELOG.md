@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.18.3 (2024-01-06)
+
+### Fix
+
+* Placement formation add gaps to help prevent unit block ([`0edf35b`](https://github.com/AresSC2/ares-sc2/commit/0edf35b8cedd329d11fc8fa98d37081804208aa3))
+
 ## v1.18.2 (2024-01-04)
 
 ### Fix
