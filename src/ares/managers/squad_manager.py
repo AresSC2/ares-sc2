@@ -452,10 +452,13 @@ class SquadManager(Manager, IManagerMediator):
             tags: list[int] = [u.tag for u in squad_to_merge.squad_units]
             self._remove_squad(role, squad_to_merge.squad_id)
             # add tags to new squad id
-            self._squads_dict[role][closest_squad_id][self.TAGS].update(tags)
-            for tag in tags:
-                self._assigned_unit_tags.add(tag)
-            return True
+            try:
+                self._squads_dict[role][closest_squad_id][self.TAGS].update(tags)
+                for tag in tags:
+                    self._assigned_unit_tags.add(tag)
+                return True
+            except KeyError:
+                return False
         return False
 
     def _find_main_squad(self, role: UnitRole) -> None:
