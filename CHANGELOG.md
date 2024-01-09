@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v1.18.4 (2024-01-09)
+
+### Fix
+
+* Wrap squad merge in try except to check key error ([`666df90`](https://github.com/AresSC2/ares-sc2/commit/666df90d34c379b5cce4809e0a9621432f010fb0))
+
 ## v1.18.3 (2024-01-06)
 
 ### Fix
