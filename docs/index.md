@@ -17,10 +17,13 @@ resembles starting with a blank `python-sc2` bot! You can write standard `python
 ## Bots made with `ares-sc2`
 Feel free to add your own bot here
 
-[//]: # ( - [Phobos &#40;T&#41;]&#40;https://github.com/AresSC2/phobos&#41;)
+ - [AresRandomExample (R)](https://github.com/AresSC2/ares-random-example)
  - [Aristaeus (P)](https://github.com/august-k/Aristaeus)
- - [QueenBot (Z)](https://github.com/AresSC2/QueenBot)
+ - [Nani-Z (Z) micro ladder bot](https://github.com/DrekkSama/Nani-Z)
  - [oops (R) micro ladder bot](https://github.com/raspersc2/oops)
+ - [Phobos (T)](https://github.com/AresSC2/phobos)
+ - [QueenBot (Z)](https://github.com/AresSC2/QueenBot)
+ 
 
 ## Features
 
