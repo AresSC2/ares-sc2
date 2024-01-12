@@ -37,7 +37,7 @@ self.register_behavior(
 ![formation](https://github.com/raspersc2/oops/assets/63355562/946686eb-cc75-4271-ae1e-3b9f5c424e47)
 
  - Curate custom combat maneuvers with our plug and play behavior system. Mix and match your own
-behaviors to truly create some unique play styles!
+behaviors to truly create some unique play styles! Individual and Group behaviors are now available.
 ```python
 from ares import AresBot
 from ares.behaviors.combat import CombatManeuver
@@ -171,3 +171,27 @@ Try running the basic test bot, it will place a random race and speed mine with 
 Install optional dependencies only as needed, for example:
 
 `poetry install --only docs`
+
+## Contributing to the docs
+It's possible to set up a lightweight environment that only sets up requirements for testing 
+the documentation locally. As a prerequisite [poetry](https://python-poetry.org/) should 
+be installed on your system. `pip install poetry` is probably all you need in most instances.
+
+1. Fork and then Clone the repo
+`git clone <repo-url>`
+
+2. Setup environment and install docs requirements
+`poetry install --only docs`
+
+3. Run the documentation in a live local webserver
+`poetry run mkdocs serve`
+
+4. Visit `http://127.0.0.1:8000/` using your favourite web browser.
+
+5. Edit `.md` files in the `docs` directory, and any saved changes will automatically be reloaded in your browser.
+
+The documentation relies on the [MkDocs](https://www.mkdocs.org/) library to generate the docs. 
+To automatically generate API docs from code we use the [mkdocstrings extension](https://mkdocstrings.github.io/) .
+
+See `mkdocs.yml` file for settings and for configuring the navigation bars.
+
