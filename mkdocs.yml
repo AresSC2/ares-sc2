@@ -33,6 +33,7 @@ nav:
   - Start here: index.md
   - Tutorials:
       - tutorials/index.md
+      - Assigning Unit Roles: tutorials/assigning_unit_roles.md
       - Build Runner: tutorials/build_runner.md
       - Combat Maneuver Example: tutorials/combat_maneuver_example.md
       - Creating Custom Behaviors: tutorials/custom_behaviors.md
@@ -40,11 +41,13 @@ nav:
       - Installation: tutorials/installation.md
       - Managing Production: tutorials/managing_production.md
       - Tips and Tricks: tutorials/tips_and_tricks.md
+      - Unit Squads and Group Behaviors: tutorials/unit_squads_group_behaviors.md
   - API Reference:
       - api_reference/index.md
       - Behaviors:
           - api_reference/behaviors/index.md
-          - Combat Behaviors: api_reference/behaviors/combat_behaviors.md
+          - Individual Combat Behaviors: api_reference/behaviors/combat_behaviors.md
+          - Group Combat Behaviors: api_reference/behaviors/group_combat_behaviors.md
           - Macro Behaviors: api_reference/behaviors/macro_behaviors.md
       - Cython Extensions:
           - api_reference/cython_extensions/index.md
