@@ -28,6 +28,7 @@ class CombatIndividualBehavior(Behavior, Protocol):
         Returns
         ----------
         bool :
-            MacroBehavior carried out an action.
+            True if this CombatIndividualBehavior carried out an action.
+            False otherwise.
         """
         ...
