@@ -12,10 +12,9 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.consts import DEBUG, ManagerName, ManagerRequestType, UnitRole
-from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.units_utils import cy_center
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+from cython_extensions import cy_center, cy_distance_to_squared
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -298,11 +297,13 @@ class SquadManager(Manager, IManagerMediator):
             return ""
 
         closest_squad: UnitSquad = squads[0]
-        min_distance: float = 9998.9
+        min_distance: float = 999999.9
         for squad in squads:
             if squad.squad_id == avoid_squad_id:
                 continue
-            current_distance: float = cy_distance_to(position, squad.squad_position)
+            current_distance: float = cy_distance_to_squared(
+                position, squad.squad_position
+            )
             if current_distance < min_distance:
                 closest_squad = squad
                 min_distance = current_distance
@@ -382,12 +383,14 @@ class SquadManager(Manager, IManagerMediator):
     def _handle_existing_squads_assignment(
         self, role: UnitRole, squads: list[UnitSquad], radius: float
     ) -> None:
+        radius_squared: float = radius**2
         # Stray units get too far from squad -> Remove from current squad
         for squad in squads:
             in_range_tags: set[int] = {
                 u.tag
                 for u in squad.squad_units
-                if cy_distance_to(u.position, squad.squad_position) < radius
+                if cy_distance_to_squared(u.position, squad.squad_position)
+                < radius_squared
             }
             for unit in squad.squad_units:
                 if unit.tag not in in_range_tags:

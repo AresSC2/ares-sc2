@@ -8,8 +8,8 @@ from sc2.unit import Unit
 from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
-from ares.cython_extensions.geometry import cy_distance_to
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_distance_to
 
 if TYPE_CHECKING:
     from ares import AresBot

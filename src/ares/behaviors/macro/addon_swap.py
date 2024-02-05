@@ -7,9 +7,10 @@ from sc2.unit import Unit
 
 if TYPE_CHECKING:
     from ares import AresBot
+
 from ares.behaviors.macro.macro_behavior import MacroBehavior
-from ares.cython_extensions.units_utils import cy_sorted_by_distance_to
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_sorted_by_distance_to
 
 ADDON_TYPES: set[UnitID] = {UnitID.TECHLAB, UnitID.REACTOR}
 

@@ -9,8 +9,8 @@ from ares.behaviors.combat.individual import AttackTarget, KeepUnitSafe
 from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
-from ares.cython_extensions.combat_utils import cy_attack_ready
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_attack_ready
 
 if TYPE_CHECKING:
     from ares import AresBot

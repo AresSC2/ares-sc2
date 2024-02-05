@@ -47,7 +47,6 @@ from ares.consts import (
     UnitTreeQueryType,
 )
 from ares.custom_bot_ai import CustomBotAI
-from ares.cython_extensions.general_utils import cy_unit_pending
 from ares.dicts.cost_dict import COST_DICT
 from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
 from ares.dicts.enemy_vs_ground_static_defense_ranges import (
@@ -55,6 +54,7 @@ from ares.dicts.enemy_vs_ground_static_defense_ranges import (
 )
 from ares.managers.hub import Hub
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_unit_pending
 
 
 class AresBot(CustomBotAI):

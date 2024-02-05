@@ -36,10 +36,14 @@ from ares.consts import (
     ManagerRequestType,
     UnitRole,
 )
-from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.units_utils import cy_center, cy_closest_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+from cython_extensions import (
+    cy_center,
+    cy_closest_to,
+    cy_distance_to,
+    cy_distance_to_squared,
+)
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -213,7 +217,7 @@ class BuildingManager(Manager, IManagerMediator):
 
             # check if we are finished with the building worker
             if close_structures := self.ai.structures.filter(
-                lambda s: cy_distance_to(s.position, target.position) < 1.0
+                lambda s: cy_distance_to_squared(s.position, target.position) < 2.0
             ):
                 structure: Unit = close_structures[0]
                 target_progress: float = 1.0 if self.ai.race == Race.Terran else 0.01
@@ -230,7 +234,7 @@ class BuildingManager(Manager, IManagerMediator):
                     s
                     for s in structures_dict[structure_id]
                     if s.type_id == structure_id
-                    and cy_distance_to(s.position, target.position) < 1.5
+                    and cy_distance_to_squared(s.position, target.position) < 2.25
                     and s.build_progress < 1.0
                 ]:
                     existing_unfinished_structure = existing_unfinished_structures[0]
@@ -240,7 +244,7 @@ class BuildingManager(Manager, IManagerMediator):
                 # check if target geyser got taken by enemy
                 if self.ai.enemy_structures.filter(
                     lambda u: u.type_id in GAS_BUILDINGS
-                    and cy_distance_to(target.position, u.position) < 4.5
+                    and cy_distance_to_squared(target.position, u.position) < 20.25
                 ):
                     # gas blocked, update with new target and continue
                     # in the next frame worker will try different geyser
@@ -388,10 +392,10 @@ class BuildingManager(Manager, IManagerMediator):
                 else:
                     # target geyser closest to mf so worker doesn't have to move as far
                     if close_mf := self.ai.mineral_field.filter(
-                        lambda mf: cy_distance_to(
+                        lambda mf: cy_distance_to_squared(
                             mf.position, cy_center(possible_geysers)
                         )
-                        < 12.0
+                        < 144.0
                     ):
                         target_geyser: Unit = possible_geysers.closest_to(
                             close_mf.center

@@ -7,9 +7,8 @@ from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.behaviors.combat.group.combat_group_behavior import CombatGroupBehavior
-from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.units_utils import cy_closest_to
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_closest_to, cy_distance_to
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -71,7 +70,7 @@ class PathGroupToTarget(CombatGroupBehavior):
     group_tags: set[int]
     grid: np.ndarray
     target: Point2
-    distance_check: float = 2.5
+    distance_check_squared: float = 26.25
     success_at_distance: float = 0.0
     sensitivity: int = 12
     smoothing: bool = False
@@ -104,7 +103,10 @@ class PathGroupToTarget(CombatGroupBehavior):
             sample_unit: Unit = cy_closest_to(self.start, self.group)
 
             if sample_unit and self.duplicate_or_similar_order(
-                sample_unit, move_to, AbilityId.MOVE, distance_check=self.distance_check
+                sample_unit,
+                move_to,
+                AbilityId.MOVE,
+                distance_check_squared=self.distance_check_squared,
             ):
                 return False
 

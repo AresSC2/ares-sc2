@@ -7,11 +7,8 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.behaviors.combat.group.combat_group_behavior import CombatGroupBehavior
-from ares.cython_extensions.units_utils import (
-    cy_in_attack_range,
-    cy_sorted_by_distance_to,
-)
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_in_attack_range, cy_sorted_by_distance_to
 from src.ares.consts import UnitTreeQueryType
 
 if TYPE_CHECKING:

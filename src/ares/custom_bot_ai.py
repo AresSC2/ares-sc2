@@ -16,9 +16,9 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.consts import ALL_STRUCTURES
-from ares.cython_extensions.geometry import cy_distance_to
 from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
+from cython_extensions import cy_distance_to_squared
 
 
 class CustomBotAI(BotAI):
@@ -283,8 +283,9 @@ class CustomBotAI(BotAI):
         distance: float,
         from_position: Point2,
     ) -> list[Unit]:
+        dist: float = distance**2
         return [
             s
             for s in self.enemy_structures
-            if cy_distance_to(s.position, from_position) < distance
+            if cy_distance_to_squared(s.position, from_position) < dist
         ]

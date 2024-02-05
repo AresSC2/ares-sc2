@@ -10,8 +10,8 @@ from sc2.position import Point2
 from sc2.units import Units
 
 from ares.consts import ADD_ONS, ID, TARGET, TECHLAB_TYPES
-from ares.cython_extensions.geometry import cy_distance_to
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
+from cython_extensions import cy_distance_to_squared
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -237,7 +237,7 @@ class ProductionController(MacroBehavior):
             target: Point2 = building_tracker[tag][TARGET]
 
             if not ai.structures.filter(
-                lambda s: cy_distance_to(s.position, target.position) < 1.0
+                lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
             ):
                 return True
 

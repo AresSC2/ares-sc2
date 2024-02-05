@@ -5,8 +5,8 @@ from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.behaviors.behavior import Behavior
-from ares.cython_extensions.geometry import cy_distance_to
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_distance_to_squared
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -39,9 +39,12 @@ class CombatGroupBehavior(Behavior, Protocol):
         unit: Unit,
         target: Union[Point2, Unit],
         order_type: AbilityId,
-        distance_check: float = 0.75,
+        distance_check_squared: float = 0.75,
     ) -> bool:
-        if cy_distance_to(unit.position, target.position) < distance_check:
+        if (
+            cy_distance_to_squared(unit.position, target.position)
+            < distance_check_squared
+        ):
             return True
 
         if order_target := unit.order_target:

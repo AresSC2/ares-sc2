@@ -7,8 +7,8 @@ from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.behaviors.combat.group.combat_group_behavior import CombatGroupBehavior
-from ares.cython_extensions.units_utils import cy_sorted_by_distance_to
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_sorted_by_distance_to
 
 if TYPE_CHECKING:
     from ares import AresBot

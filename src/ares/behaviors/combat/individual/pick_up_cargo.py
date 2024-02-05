@@ -11,10 +11,9 @@ from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
 from ares.consts import UnitRole
-from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.units_utils import cy_closest_to
 from ares.dicts.pickup_range import PICKUP_RANGE
 from ares.managers.manager_mediator import ManagerMediator
+from cython_extensions import cy_closest_to, cy_distance_to
 
 if TYPE_CHECKING:
     from ares import AresBot

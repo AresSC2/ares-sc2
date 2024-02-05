@@ -13,10 +13,10 @@ license = "MIT"
 python = ">=3.11, <3.12"
 burnysc2 = { git = "https://github.com/august-k/python-sc2", branch = "develop" }
 PyYAML = "6.0"
-cython = "^0.29.33"
+cython = "^3.0.8"
 tqdm = "^4.64.1"
 scikit-learn = "^1.2.2"
-map-analyzer = { git = "https://github.com/spudde123/SC2MapAnalysis", branch = "develop" }
+map-analyzer = { git = "https://github.com/spudde123/SC2MapAnalysis" }
 
 
 [tool.poetry.group.docs]
@@ -58,10 +58,6 @@ line-profiler = "^4.0.3"
 [build-system]
 requires = ["poetry-core", "Cython", "numpy", "setuptools"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.build]
-generate-setup-file = false
-script = 'build.py'
 
 [tool.coverage.report]
 exclude_lines = [

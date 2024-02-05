@@ -11,7 +11,7 @@ from ares.behaviors.combat.individual import (
     PathUnitToTarget,
     ShootTargetInRange,
 )
-from ares.cython_extensions.geometry import cy_distance_to
+from cython_extensions import cy_distance_to
 
 
 @dataclass
