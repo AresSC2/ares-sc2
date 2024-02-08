@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from cython_extensions import cy_distance_to_squared
 from loguru import logger
 from sc2.data import Race
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
@@ -10,7 +11,6 @@ from sc2.position import Point2
 from sc2.units import Units
 
 from ares.consts import ADD_ONS, ID, TARGET, TECHLAB_TYPES
-from ares.cython_extensions.geometry import cy_distance_to
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 if TYPE_CHECKING:
@@ -237,7 +237,7 @@ class ProductionController(MacroBehavior):
             target: Point2 = building_tracker[tag][TARGET]
 
             if not ai.structures.filter(
-                lambda s: cy_distance_to(s.position, target.position) < 1.0
+                lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
             ):
                 return True
 

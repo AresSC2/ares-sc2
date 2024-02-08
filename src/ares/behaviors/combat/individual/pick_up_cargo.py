@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional, Union
 
 import numpy as np
+from cython_extensions import cy_closest_to, cy_distance_to
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -11,8 +12,6 @@ from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
 from ares.consts import UnitRole
-from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.units_utils import cy_closest_to
 from ares.dicts.pickup_range import PICKUP_RANGE
 from ares.managers.manager_mediator import ManagerMediator
 

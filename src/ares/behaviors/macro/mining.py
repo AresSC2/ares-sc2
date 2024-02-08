@@ -12,11 +12,18 @@ from sc2.units import Units
 if TYPE_CHECKING:
     from ares import AresBot
 
+from cython_extensions import (
+    cy_attack_ready,
+    cy_closest_to,
+    cy_distance_to,
+    cy_distance_to_squared,
+    cy_in_attack_range,
+    cy_pick_enemy_target,
+    cy_towards,
+)
+
 from ares.behaviors.macro import MacroBehavior
 from ares.consts import MINING, TOWNHALL_DISTANCE_FACTOR, UnitRole, UnitTreeQueryType
-from ares.cython_extensions.combat_utils import cy_attack_ready, cy_pick_enemy_target
-from ares.cython_extensions.geometry import cy_distance_to, cy_towards
-from ares.cython_extensions.units_utils import cy_closest_to, cy_in_attack_range
 from ares.managers.manager_mediator import ManagerMediator
 
 TOWNHALL_RADIUS: float = 2.75
@@ -276,7 +283,7 @@ class Mining(MacroBehavior):
         else:
             # work out when we need to issue command to mine resource
             if worker.is_idle or (
-                worker.distance_to(resource) > 9.0
+                cy_distance_to_squared(worker.position, resource.position) > 81.0
                 and worker.order_target
                 and worker.order_target != resource
             ):
@@ -372,7 +379,8 @@ class Mining(MacroBehavior):
                         grid=grid,
                         position=worker_position,
                     )
-                    and cy_distance_to(worker_position, target_mineral_position) > 5
+                    and cy_distance_to_squared(worker_position, target_mineral_position)
+                    > 25.0
                 ):
                     move_to: Point2 = mediator.find_path_next_point(
                         start=worker_position,
@@ -393,7 +401,7 @@ class Mining(MacroBehavior):
             return_base_position: Point2 = return_base.position
             if (
                 not mediator.is_position_safe(grid=grid, position=worker_position)
-                and cy_distance_to(worker_position, return_base_position) > 8
+                and cy_distance_to_squared(worker_position, return_base_position) > 64.0
             ):
                 move_to: Point2 = mediator.find_path_next_point(
                     start=worker_position,
@@ -493,7 +501,7 @@ class Mining(MacroBehavior):
                 )
             )
 
-            if 0.75 < cy_distance_to(worker_position, target_pos) < 2:
+            if 0.5625 < cy_distance_to_squared(worker_position, target_pos) < 4.0:
                 worker.move(target_pos)
                 worker(AbilityId.SMART, townhall, True)
             # not at right distance to get boost command, but doesn't have return
@@ -502,11 +510,11 @@ class Mining(MacroBehavior):
                 worker(AbilityId.SMART, townhall)
 
         elif not worker.is_returning and len(worker.orders) < 2:
-            min_distance: float = 0.75 if target.is_mineral_field else 0.1
-            max_distance: float = 2.0 if target.is_mineral_field else 0.5
+            min_distance: float = 0.5625 if target.is_mineral_field else 0.01
+            max_distance: float = 4.0 if target.is_mineral_field else 0.25
             if (
                 min_distance
-                < cy_distance_to(worker_position, resource_target_pos)
+                < cy_distance_to_squared(worker_position, resource_target_pos)
                 < max_distance
                 or worker.is_idle
             ):

@@ -7,6 +7,11 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any, DefaultDict, Dict, List, Optional, Set
 
 import numpy as np
+from cython_extensions import (
+    cy_closest_to,
+    cy_distance_to_squared,
+    cy_sorted_by_distance_to,
+)
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -23,8 +28,6 @@ from ares.consts import (
     UnitRole,
     UnitTreeQueryType,
 )
-from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.units_utils import cy_closest_to, cy_sorted_by_distance_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -411,7 +414,10 @@ class ResourceManager(Manager, IManagerMediator):
                             if close_workers := available_workers.filter(
                                 lambda w: w.tag
                                 in self.mineral_patch_to_list_of_workers[mineral.tag]
-                                and cy_distance_to(w.position, townhall.position) < 10.0
+                                and cy_distance_to_squared(
+                                    w.position, townhall.position
+                                )
+                                < 100.0
                             ):
                                 worker: Unit = cy_closest_to(
                                     target_position, close_workers

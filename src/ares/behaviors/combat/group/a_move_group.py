@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Union
 
+from cython_extensions import cy_sorted_by_distance_to
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.behaviors.combat.group.combat_group_behavior import CombatGroupBehavior
-from ares.cython_extensions.units_utils import cy_sorted_by_distance_to
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:

@@ -2,6 +2,13 @@ import time
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Optional, Union
 
 import numpy as np
+from cython_extensions import (
+    cy_can_place_structure,
+    cy_distance_to_squared,
+    cy_find_building_locations,
+    cy_get_bounding_box,
+    cy_pylon_matrix_covers,
+)
 from loguru import logger
 from sc2.constants import ALL_GAS
 from sc2.data import Race
@@ -20,13 +27,6 @@ from ares.consts import (
     BuildingSize,
     ManagerName,
     ManagerRequestType,
-)
-from ares.cython_extensions.cython_functions import get_bounding_box
-from ares.cython_extensions.general_utils import cy_pylon_matrix_covers
-from ares.cython_extensions.geometry import cy_distance_to
-from ares.cython_extensions.placement_solver import (
-    can_place_structure,
-    find_building_locations,
 )
 from ares.dicts.structure_to_building_size import STRUCTURE_TO_BUILDING_SIZE
 from ares.managers.manager import Manager
@@ -202,7 +202,8 @@ class PlacementManager(Manager, IManagerMediator):
         if structure_type in GAS_BUILDINGS:
             pos: Point2 = position.position
             existing_gas_buildings: Units = self.ai.all_units.filter(
-                lambda u: u.type_id in ALL_GAS and cy_distance_to(pos, u.position) < 3.5
+                lambda u: u.type_id in ALL_GAS
+                and cy_distance_to_squared(pos, u.position) < 12.25
             )
             return len(existing_gas_buildings) == 0
 
@@ -212,7 +213,7 @@ class PlacementManager(Manager, IManagerMediator):
         origin_y: int = int(position[1] - offset)
 
         size: tuple[int, int] = self.BUILDING_SIZE_ENUM_TO_TUPLE[size]
-        return can_place_structure(
+        return cy_can_place_structure(
             (origin_x, origin_y),
             size,
             self.ai.state.creep.data_numpy,
@@ -279,7 +280,7 @@ class PlacementManager(Manager, IManagerMediator):
             if base_location in self.placements_dict
             else min(
                 base_locations,
-                key=lambda k: cy_distance_to(k, base_location),
+                key=lambda k: cy_distance_to_squared(k, base_location),
             )
         )
 
@@ -306,7 +307,7 @@ class PlacementManager(Manager, IManagerMediator):
                 base_locations.remove(location)
                 locations = sorted(
                     base_locations,
-                    key=lambda k: cy_distance_to(k, base_location),
+                    key=lambda k: cy_distance_to_squared(k, base_location),
                 )
                 for location in locations:
                     logger.warning(
@@ -338,11 +339,11 @@ class PlacementManager(Manager, IManagerMediator):
             # get closest available by default
             if not closest_to:
                 final_placement: Point2 = min(
-                    available, key=lambda k: cy_distance_to(k, base_location)
+                    available, key=lambda k: cy_distance_to_squared(k, base_location)
                 )
             else:
                 final_placement: Point2 = min(
-                    available, key=lambda k: cy_distance_to(k, closest_to)
+                    available, key=lambda k: cy_distance_to_squared(k, closest_to)
                 )
 
             # if wall placement is requested swap final_placement if possible
@@ -353,12 +354,13 @@ class PlacementManager(Manager, IManagerMediator):
                     if self.placements_dict[location][building_size][a]["is_wall"]
                 ]:
                     final_placement = min(
-                        _available, key=lambda k: cy_distance_to(k, base_location)
+                        _available,
+                        key=lambda k: cy_distance_to_squared(k, base_location),
                     )
                 else:
                     final_placement = min(
                         available,
-                        key=lambda k: cy_distance_to(
+                        key=lambda k: cy_distance_to_squared(
                             k, self.ai.main_base_ramp.top_center
                         ),
                     )
@@ -374,7 +376,8 @@ class PlacementManager(Manager, IManagerMediator):
                     and not self.placements_dict[location][building_size][a]["is_wall"]
                 ]:
                     final_placement = min(
-                        available, key=lambda k: cy_distance_to(k, base_location)
+                        available,
+                        key=lambda k: cy_distance_to_squared(k, base_location),
                     )
 
             if self.ai.race == Race.Protoss and within_psionic_matrix:
@@ -415,7 +418,9 @@ class PlacementManager(Manager, IManagerMediator):
                 pylon_build_progress=1.0,
             )
         ]:
-            return min(available, key=lambda k: cy_distance_to(k, base_location))
+            return min(
+                available, key=lambda k: cy_distance_to_squared(k, base_location)
+            )
         # then check for those in progress
         else:
             if available := [
@@ -428,7 +433,9 @@ class PlacementManager(Manager, IManagerMediator):
                     pylon_build_progress=pylon_build_progress,
                 )
             ]:
-                return min(available, key=lambda k: cy_distance_to(k, base_location))
+                return min(
+                    available, key=lambda k: cy_distance_to_squared(k, base_location)
+                )
 
     def on_building_started(self, unit: Unit) -> None:
         """On structure starting, update placements_dict with this new information.
@@ -590,9 +597,9 @@ class PlacementManager(Manager, IManagerMediator):
             ] = self.manager_mediator.get_flood_fill_area(
                 start_point=el, max_dist=max_dist
             )
-            raw_x_bounds, raw_y_bounds = get_bounding_box(area_points)
+            raw_x_bounds, raw_y_bounds = cy_get_bounding_box(area_points)
 
-            three_by_three_positions = find_building_locations(
+            three_by_three_positions = cy_find_building_locations(
                 kernel=np.ones((5, 3), dtype=np.uint8),
                 x_stride=5,
                 y_stride=3,
@@ -630,7 +637,7 @@ class PlacementManager(Manager, IManagerMediator):
             self.points_to_avoid_grid[
                 start_y : start_y + 15, start_x : start_x + 15
             ] = 1
-            supply_positions = find_building_locations(
+            supply_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
                 x_stride=2,
                 y_stride=2,
@@ -701,10 +708,10 @@ class PlacementManager(Manager, IManagerMediator):
             ] = self.manager_mediator.get_flood_fill_area(
                 start_point=el, max_dist=max_dist
             )
-            raw_x_bounds, raw_y_bounds = get_bounding_box(area_points)
+            raw_x_bounds, raw_y_bounds = cy_get_bounding_box(area_points)
 
             # find production pylon positions first
-            production_pylon_positions = find_building_locations(
+            production_pylon_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
                 x_stride=6,
                 y_stride=6,
@@ -740,7 +747,7 @@ class PlacementManager(Manager, IManagerMediator):
             start_x: int = int(el.x - 4.5)
             start_y: int = int(el.y - 4.5)
             self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
-            three_by_three_positions = find_building_locations(
+            three_by_three_positions = cy_find_building_locations(
                 kernel=np.ones((3, 3), dtype=np.uint8),
                 x_stride=3,
                 y_stride=3,
@@ -772,7 +779,7 @@ class PlacementManager(Manager, IManagerMediator):
                     ] = 1
 
             # find extra 2x2 last
-            two_by_two_positions = find_building_locations(
+            two_by_two_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
                 x_stride=2,
                 y_stride=2,

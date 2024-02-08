@@ -7,6 +7,7 @@ from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import yaml
+from cython_extensions import cy_unit_pending
 from loguru import logger
 from s2clientprotocol.raw_pb2 import Unit as RawUnit
 from sc2.constants import ALL_GAS, IS_PLACEHOLDER, FakeEffectID, geyser_ids, mineral_ids
@@ -47,7 +48,6 @@ from ares.consts import (
     UnitTreeQueryType,
 )
 from ares.custom_bot_ai import CustomBotAI
-from ares.cython_extensions.general_utils import cy_unit_pending
 from ares.dicts.cost_dict import COST_DICT
 from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
 from ares.dicts.enemy_vs_ground_static_defense_ranges import (

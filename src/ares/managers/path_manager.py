@@ -4,6 +4,7 @@
 from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 import numpy as np
+from cython_extensions import cy_distance_to_squared, cy_point_below_value
 from map_analyzer import MapData
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -51,8 +52,6 @@ from ares.consts import (
     ManagerName,
     ManagerRequestType,
 )
-from ares.cython_extensions.combat_utils import cy_is_position_safe
-from ares.cython_extensions.geometry import cy_distance_to
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
@@ -577,7 +576,7 @@ class PathManager(Manager, IManagerMediator):
             True if the position is considered safe, False otherwise.
 
         """
-        return cy_is_position_safe(grid, position.rounded, weight_safety_limit)
+        return cy_point_below_value(grid, position.rounded, weight_safety_limit)
 
     def reset_grids(self, iteration: int) -> None:
         """Get fresh grids so that the influence can be updated.
@@ -820,7 +819,7 @@ class PathManager(Manager, IManagerMediator):
         elif structure.type_id == UnitID.BUNKER:
             if self.ai.enemy_structures.filter(
                 lambda g: g.type_id in TOWNHALL_TYPES
-                and cy_distance_to(g.position, structure.position) < 9.0
+                and cy_distance_to_squared(g.position, structure.position) < 81.0  # 9.0
             ):
                 return
             # add range of marine + 1

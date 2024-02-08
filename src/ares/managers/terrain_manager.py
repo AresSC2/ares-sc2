@@ -1,15 +1,11 @@
 """Calculations involving terrain.
 
 """
-# cython imports
-
-from libc.math cimport acos, sqrt
-
 import math
-from functools import lru_cache
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
+from cython_extensions import cy_flood_fill_grid
 from map_analyzer import MapData
 from map_analyzer.constructs import ChokeArea, VisionBlockerArea
 from sc2.game_info import Ramp
@@ -32,7 +28,6 @@ from ares.consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
-from ares.cython_extensions.flood_fill import flood_fill_grid
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -81,19 +76,13 @@ class TerrainManager(Manager, IManagerMediator):
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
             ManagerRequestType.BUILDING_POSITION_BLOCKED_BY_BURROWED_UNIT: (
-                lambda kwargs: self.building_position_blocked_by_burrowed_unit(
-                    **kwargs
-                )
+                lambda kwargs: self.building_position_blocked_by_burrowed_unit(**kwargs)
             ),
             ManagerRequestType.GET_BEHIND_MINERAL_POSITIONS: lambda kwargs: (
-                self.get_behind_mineral_positions(
-                    **kwargs
-                )
+                self.get_behind_mineral_positions(**kwargs)
             ),
             ManagerRequestType.GET_CLOSEST_OVERLORD_SPOT: lambda kwargs: (
-                self.get_closest_overlord_spot(
-                    **kwargs
-                )
+                self.get_closest_overlord_spot(**kwargs)
             ),
             ManagerRequestType.GET_DEFENSIVE_THIRD: lambda kwargs: self.defensive_third,
             ManagerRequestType.GET_ENEMY_EXPANSIONS: lambda kwargs: (
@@ -104,9 +93,7 @@ class TerrainManager(Manager, IManagerMediator):
             ManagerRequestType.GET_ENEMY_THIRD: lambda kwargs: self.enemy_third,
             ManagerRequestType.GET_ENEMY_FOURTH: lambda kwargs: self.enemy_fourth,
             ManagerRequestType.GET_FLOOD_FILL_AREA: lambda kwargs: (
-                self.get_flood_fill_area(
-                    **kwargs
-                )
+                self.get_flood_fill_area(**kwargs)
             ),
             ManagerRequestType.GET_INITIAL_PATHING_GRID: lambda kwargs: (
                 self.initial_pathing_grid
@@ -288,7 +275,6 @@ class TerrainManager(Manager, IManagerMediator):
         else:
             return self.enemy_expansions[1][0]
 
-
     @property_cache_once_per_frame
     def enemy_main_base_ramp(self) -> Ramp:
         """Identify which ramp is the enemies main.
@@ -406,11 +392,10 @@ class TerrainManager(Manager, IManagerMediator):
             self.ol_spots.pop(self.ol_spots.index(closest_spot))
         return closest_spot
 
-    def get_flood_fill_area(
-        self, start_point: Point2, max_dist: int = 25
-    ):
+    def get_flood_fill_area(self, start_point: Point2, max_dist: int = 25):
         """
-        Given a point, flood fill outward from it and return the valid points. Does not continue through chokes.
+        Given a point, flood fill outward from it and return the valid points.
+        Does not continue through chokes.
 
         Parameters
         ----------
@@ -424,15 +409,14 @@ class TerrainManager(Manager, IManagerMediator):
         set :
             Set of points (as tuples) that are filled in
         """
-        all_points = flood_fill_grid(
+        all_points = cy_flood_fill_grid(
             start_point=start_point.rounded,
             terrain_grid=self.ai.game_info.terrain_height.data_numpy.T,
             pathing_grid=self.cached_pathing_grid.astype(np.uint8),
             max_distance=max_dist,
-            choke_points=self.choke_points,
+            cutoff_points=self.choke_points,
         )
         return all_points
-
 
     def location_is_blocked(
         self, position: Point2, enemy_only: bool = False, structures_only: bool = False
@@ -461,13 +445,13 @@ class TerrainManager(Manager, IManagerMediator):
         close_enemy: Units = self.manager_mediator.get_units_in_range(
             start_points=[position],
             distances=distance,
-            query_tree=UnitTreeQueryType.AllEnemy
+            query_tree=UnitTreeQueryType.AllEnemy,
         )[0]
 
         close_enemy: Units = close_enemy.filter(
             lambda u: u.type_id not in FLYING_IGNORE
-                      and u.type_id != UnitID.AUTOTURRET
-                      and u.type_id != UnitID.MARINE
+            and u.type_id != UnitID.AUTOTURRET
+            and u.type_id != UnitID.MARINE
         )
         if structures_only and close_enemy(ALL_STRUCTURES):
             return True
@@ -478,7 +462,7 @@ class TerrainManager(Manager, IManagerMediator):
             close_own: Units = self.manager_mediator.get_units_in_range(
                 start_positions=[position],
                 distances=3,
-                query_tree=UnitTreeQueryType.AllOwn
+                query_tree=UnitTreeQueryType.AllOwn,
             )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES)
             if close_own:
                 return True
@@ -509,7 +493,7 @@ class TerrainManager(Manager, IManagerMediator):
         close_mines: Units = self.manager_mediator.get_units_in_range(
             start_points=[position],
             distance=3,
-            query_tree=UnitTreeQueryType.EnemyGround
+            query_tree=UnitTreeQueryType.EnemyGround,
         )[0].filter(lambda u: u.type_id == UnitID.WIDOWMINEBURROWED)
         if close_mines:
             self.positions_blocked_by_enemy_burrowed_units.append(position)
@@ -550,7 +534,9 @@ class TerrainManager(Manager, IManagerMediator):
             if from_pos.distance_to(el) < self.ai.EXPANSION_GAP_THRESHOLD:
                 continue
 
-            if path := self.manager_mediator.get_map_data_object.pathfind(from_pos, el, grid):
+            if path := self.manager_mediator.get_map_data_object.pathfind(
+                from_pos, el, grid
+            ):
                 expansion_distances.append((el, len(path)))
 
         # sort by path length to each expansion
@@ -651,7 +637,7 @@ class TerrainManager(Manager, IManagerMediator):
                     )
                 )
                 for ch in self.map_data.in_region_p(base_loc).region_chokes
-                if type(ch) != VisionBlockerArea
+                if type(ch) is not VisionBlockerArea
             }
             for base_loc in self.ai.expansion_locations_list
         }
@@ -669,14 +655,12 @@ class TerrainManager(Manager, IManagerMediator):
         _positions_blocked_by_enemy_burrowed_units: List[Point2] = []
         for position in self.positions_blocked_by_enemy_burrowed_units:
             detectors: Units = self.manager_mediator.get_units_in_range(
-                start_points=[position],
-                distance=7,
-                query_tree=UnitTreeQueryType.AllOwn
+                start_points=[position], distance=7, query_tree=UnitTreeQueryType.AllOwn
             )[0].filter(lambda u: u.type_id in {DETECTORS})
             enemies_in_range: Units = self.manager_mediator.get_units_in_range(
                 start_points=[position],
                 distance=9,
-                query_tree=UnitTreeQueryType.AllEnemy
+                query_tree=UnitTreeQueryType.AllEnemy,
             )[0]
 
             # looks like there is nothing here, no need to add it to the blocked
@@ -702,179 +686,3 @@ class TerrainManager(Manager, IManagerMediator):
 
         for i, el in enumerate(self.own_expansions):
             self.ai.draw_text_on_world(el[0], str(i), y_offset=2)
-
-cdef (float, float, float) get_line_to_point((int, int) pa, (int, int) pb):
-    """Cython version of get_line_between_points, probably not actually necessary"""
-    cdef:
-        int x1 = pa[0]
-        int y1 = pa[1]
-        int x2 = pb[0]
-        int y2 = pb[1]
-        (float, float, float) line
-        float slope
-
-    if x1 == x2:
-        line = (1, 0, -x1)
-    else:
-        slope = (y2 - y1) / (x2 - x1)
-        line = (-slope, 1, -(y1 - (slope * x1)))
-    return line
-
-cpdef ((float, float, float), (float, float)) find_correct_line(points, base_location):
-    """
-    
-    Given a list of points and a center point, find if there's a line such that all
-    other points are above or below the line. Returns the line in the form
-    Ax + By + C = 0 and the point that was used.
-    
-    If no such line is found, it returns ((0, 0, 0), <last_point_checked>).    
-    
-    Parameters
-    ----------
-    points :
-        Points that need to be on one side of the line.
-    base_location :
-        Starting point for the line.
-
-    Returns
-    -------
-    Tuple[Tuple[float, float, float], Tuple[float, float]] :
-        First element is the coefficients of Ax + By + C = 0.
-        Second element is the point used to form the line.
-
-    """
-    cdef:
-        float a, b, c, value
-        int idx
-        (float, float, float) line
-        int last_temp_idx = 0
-        int positive
-        int negative
-
-    if len(points) == 1:
-        return get_line_to_point(points[0], base_location), points[0]
-
-    for idx in range(len(points)):
-        positive = 0
-        negative = 0
-        temporary = points.copy()
-        start_point = temporary.pop(idx)
-        a, b, c = get_line_to_point(base_location, start_point)
-        for point_idx in range(len(temporary)):
-            value = a * temporary[point_idx][0] + b * temporary[point_idx][1] + c
-            if value > 0:
-                positive += 1
-            elif value < 0:
-                negative += 1
-            if positive > 0 and negative > 0:
-                break
-        if positive > 0 and negative > 0:
-            continue
-        else:
-            line = (a, b, c)
-            break
-
-    return line, points[idx]
-
-cpdef find_average_angle(
-        (float, float) start_point, (float, float) reference_point, points
-):
-    """Find the average angle between the points and the reference point.
-    
-    Given a starting point, a reference point, and a list of points, find the average
-    angle between the vectors from the starting point to the reference point and the
-    starting point to the points.
-    
-    Parameters
-    ----------
-    start_point :
-        Origin for the vectors to the other given points.
-    reference_point :
-        Vector forming one leg of the angle.
-    points :
-        Points to calculate the angle between relative to the reference point.
-
-    Returns
-    -------
-    double :
-        Average angle in radians between the reference point and the given points.
-
-    """
-    cdef:
-        float[50] angles
-        (float, float) ref_point = reference_point
-        float ref_magnitude
-        float angle_sum = 0
-        float x, y
-        (float, float) point
-        # iterators
-        int angle_idx, point_idx
-
-    ref_point[0] = reference_point[0] - start_point[0]
-    ref_point[1] = reference_point[1] - start_point[1]
-    ref_magnitude = sqrt(ref_point[0] ** 2 + ref_point[1] ** 2)
-
-    for point_idx in range(len(points)):
-        point = points[point_idx]
-        x = point[0] - start_point[0]
-        y = point[1] - start_point[1]
-        if (x, y) == ref_point:
-            angle = 0
-        else:
-            angle = get_angle_between_points((x, y), ref_point)
-        angles[point_idx] = angle
-
-    for idx in range(point_idx + 1):
-        angle_sum += angles[idx]
-
-    return angle_sum / (point_idx + 1)
-
-cpdef (float, float) get_average_of_points(points):
-    """Given a list of points, return the average x and y coordinates.
-    
-    Parameters
-    ----------
-    points :
-        Points to take the average x and y coordinates of.
-
-    Returns
-    -------
-    Tuple[float, float] :
-        Average x and y coordinates.
-
-    """
-    cdef:
-        float x_value = 0
-        float y_value = 0
-        int point_idx
-
-    for point_idx in range(len(points)):
-        x_value += points[point_idx][0]
-        y_value += points[point_idx][1]
-
-    return (x_value / (point_idx + 1)), (y_value / (point_idx + 1))
-
-cpdef get_angle_between_points((float, float) point_a, (float, float) point_b):
-    """Get the angle between two points as if they were vectors from the origin.
-    
-    Parameters
-    ----------
-    point_a :
-        One point.
-    point_b :
-        The other point.
-
-    Returns
-    -------
-    double :
-        The angle between the two points.
-
-    """
-    cdef:
-        float a_dot_b, a_magnitude, b_magnitude
-
-    a_dot_b = point_a[0] * point_b[0] + point_a[1] * point_b[1]
-    a_magnitude = sqrt(point_a[0] ** 2 + point_a[1] ** 2)
-    b_magnitude = sqrt(point_b[0] ** 2 + point_b[1] ** 2)
-
-    return acos(a_dot_b / (a_magnitude * b_magnitude))

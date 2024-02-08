@@ -2,6 +2,7 @@ from collections import defaultdict
 from enum import Enum, auto
 from typing import DefaultDict, Union
 
+from cython_extensions import cy_closest_to
 from sc2.unit import Unit
 from sc2.units import Units
 
@@ -16,7 +17,6 @@ from ares.consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
-from ares.cython_extensions.units_utils import cy_closest_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 

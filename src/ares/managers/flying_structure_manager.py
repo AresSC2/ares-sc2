@@ -3,12 +3,12 @@
 """
 from typing import TYPE_CHECKING, Dict, Optional
 
+from cython_extensions import cy_distance_to_squared
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.consts import ManagerName, ManagerRequestType
-from ares.cython_extensions.geometry import cy_distance_to
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -140,7 +140,7 @@ class FlyingStructureManager(Manager, IManagerMediator):
                 tags_to_remove.append(structure_tag)
                 continue
 
-            dist_to_target: float = cy_distance_to(structure.position, target)
+            dist_to_target: float = cy_distance_to_squared(structure.position, target)
             if not structure.is_flying:
                 if structure.position == target:
                     tags_to_remove.append(structure_tag)
@@ -149,7 +149,7 @@ class FlyingStructureManager(Manager, IManagerMediator):
                 structure(AbilityId.CANCEL_QUEUE5)
                 structure(AbilityId.LIFT, queue=True)
             else:
-                if dist_to_target < 5.5:
+                if dist_to_target < 30.25:  # 5.5
                     if should_land:
                         structure(AbilityId.LAND, target)
                 else:

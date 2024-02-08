@@ -8,10 +8,12 @@ from sc2.position import Point2
 
 if TYPE_CHECKING:
     from ares import AresBot
+
+from cython_extensions import cy_unit_pending
+
 from ares.behaviors.macro.build_structure import BuildStructure
 from ares.behaviors.macro.macro_behavior import MacroBehavior
 from ares.consts import ALL_PRODUCTION_STRUCTURES, RACE_SUPPLY
-from ares.cython_extensions.general_utils import cy_unit_pending
 from ares.managers.manager_mediator import ManagerMediator
 
 

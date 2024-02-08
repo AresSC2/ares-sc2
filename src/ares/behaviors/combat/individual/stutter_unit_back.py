@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
 import numpy as np
+from cython_extensions import cy_attack_ready
 from loguru import logger
 from sc2.unit import Unit
 
@@ -9,7 +10,6 @@ from ares.behaviors.combat.individual import AttackTarget, KeepUnitSafe
 from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
-from ares.cython_extensions.combat_utils import cy_attack_ready
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
