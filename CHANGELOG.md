@@ -2,6 +2,21 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.0 (2024-02-08)
+
+### Breaking
+
+* migrate to cython-extensions-sc2 library / remove cython code ([`c7f3cb6`](https://github.com/AresSC2/ares-sc2/commit/c7f3cb661e21973e9494ba1180bca7f85d1c45a4))
+
+### Documentation
+
+* Update readme with contrib to docs guide ([`ff01848`](https://github.com/AresSC2/ares-sc2/commit/ff01848780fe5582f784db8dcc970ff23a354315))
+* Update bots made with ares ([`d1736bd`](https://github.com/AresSC2/ares-sc2/commit/d1736bd693d0fce600dda47f2dedb8f113ac5c4f))
+* Custom behavior tutorial ([`ec848d4`](https://github.com/AresSC2/ares-sc2/commit/ec848d44a5d57f95fed6db131a5f9d31b084c020))
+* Unit squad initial tutorial file ([`2d7fb29`](https://github.com/AresSC2/ares-sc2/commit/2d7fb29859a235c96137e0a165bd51eb5796d4ce))
+* Add group combat api ([`4fea72b`](https://github.com/AresSC2/ares-sc2/commit/4fea72bd98317ddc6f9ec19d5a823dacfacde17d))
+* Add unit role tutorial ([`3f5291c`](https://github.com/AresSC2/ares-sc2/commit/3f5291ca00bc25d10db3043c8bbe8493b92dc802))
+
 ## v1.18.4 (2024-01-09)
 
 ### Fix
