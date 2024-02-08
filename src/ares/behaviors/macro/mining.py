@@ -12,9 +12,6 @@ from sc2.units import Units
 if TYPE_CHECKING:
     from ares import AresBot
 
-from ares.behaviors.macro import MacroBehavior
-from ares.consts import MINING, TOWNHALL_DISTANCE_FACTOR, UnitRole, UnitTreeQueryType
-from ares.managers.manager_mediator import ManagerMediator
 from cython_extensions import (
     cy_attack_ready,
     cy_closest_to,
@@ -24,6 +21,10 @@ from cython_extensions import (
     cy_pick_enemy_target,
     cy_towards,
 )
+
+from ares.behaviors.macro import MacroBehavior
+from ares.consts import MINING, TOWNHALL_DISTANCE_FACTOR, UnitRole, UnitTreeQueryType
+from ares.managers.manager_mediator import ManagerMediator
 
 TOWNHALL_RADIUS: float = 2.75
 # how far from townhall should we return speed miners to

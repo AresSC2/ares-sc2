@@ -13,10 +13,10 @@ license = "MIT"
 python = ">=3.11, <3.12"
 burnysc2 = { git = "https://github.com/august-k/python-sc2", branch = "develop" }
 PyYAML = "6.0"
-cython = "^3.0.8"
 tqdm = "^4.64.1"
 scikit-learn = "^1.2.2"
 map-analyzer = { git = "https://github.com/spudde123/SC2MapAnalysis" }
+cython-extensions-sc2 = "^0.3.1"
 
 
 [tool.poetry.group.docs]

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from cython_extensions import cy_distance_to_squared
 from loguru import logger
 from sc2.data import Race
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
@@ -11,7 +12,6 @@ from sc2.units import Units
 
 from ares.consts import ADD_ONS, ID, TARGET, TECHLAB_TYPES
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
-from cython_extensions import cy_distance_to_squared
 
 if TYPE_CHECKING:
     from ares import AresBot

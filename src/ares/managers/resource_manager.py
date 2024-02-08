@@ -7,6 +7,11 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any, DefaultDict, Dict, List, Optional, Set
 
 import numpy as np
+from cython_extensions import (
+    cy_closest_to,
+    cy_distance_to_squared,
+    cy_sorted_by_distance_to,
+)
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -25,11 +30,6 @@ from ares.consts import (
 )
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from cython_extensions import (
-    cy_closest_to,
-    cy_distance_to_squared,
-    cy_sorted_by_distance_to,
-)
 
 if TYPE_CHECKING:
     from ares import AresBot

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Union
 
+from cython_extensions import cy_attack_ready, cy_in_attack_range, cy_pick_enemy_target
 from sc2.unit import Unit
 from sc2.units import Units
 
@@ -8,7 +9,6 @@ from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
 from ares.managers.manager_mediator import ManagerMediator
-from cython_extensions import cy_attack_ready, cy_in_attack_range, cy_pick_enemy_target
 
 if TYPE_CHECKING:
     from ares import AresBot

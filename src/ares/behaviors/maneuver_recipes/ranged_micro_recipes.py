@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import numpy as np
+from cython_extensions import cy_distance_to
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -11,7 +12,6 @@ from ares.behaviors.combat.individual import (
     PathUnitToTarget,
     ShootTargetInRange,
 )
-from cython_extensions import cy_distance_to
 
 
 @dataclass

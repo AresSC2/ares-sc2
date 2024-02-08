@@ -1,12 +1,12 @@
 from typing import TYPE_CHECKING, Protocol, Union
 
+from cython_extensions import cy_distance_to_squared
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
 
 from ares.behaviors.behavior import Behavior
 from ares.managers.manager_mediator import ManagerMediator
-from cython_extensions import cy_distance_to_squared
 
 if TYPE_CHECKING:
     from ares import AresBot

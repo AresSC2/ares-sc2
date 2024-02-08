@@ -5,6 +5,7 @@ import math
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
+from cython_extensions import cy_flood_fill_grid
 from map_analyzer import MapData
 from map_analyzer.constructs import ChokeArea, VisionBlockerArea
 from sc2.game_info import Ramp
@@ -29,7 +30,6 @@ from ares.consts import (
 )
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from cython_extensions import cy_flood_fill_grid
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -414,7 +414,7 @@ class TerrainManager(Manager, IManagerMediator):
             terrain_grid=self.ai.game_info.terrain_height.data_numpy.T,
             pathing_grid=self.cached_pathing_grid.astype(np.uint8),
             max_distance=max_dist,
-            choke_points=self.choke_points,
+            cutoff_points=self.choke_points,
         )
         return all_points
 

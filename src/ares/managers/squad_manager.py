@@ -5,6 +5,7 @@ import uuid
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Optional, Union
 
+from cython_extensions import cy_center, cy_distance_to_squared
 from loguru import logger
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -14,7 +15,6 @@ from sc2.units import Units
 from ares.consts import DEBUG, ManagerName, ManagerRequestType, UnitRole
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from cython_extensions import cy_center, cy_distance_to_squared
 
 if TYPE_CHECKING:
     from ares import AresBot

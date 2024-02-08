@@ -7,6 +7,7 @@ from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import yaml
+from cython_extensions import cy_unit_pending
 from loguru import logger
 from s2clientprotocol.raw_pb2 import Unit as RawUnit
 from sc2.constants import ALL_GAS, IS_PLACEHOLDER, FakeEffectID, geyser_ids, mineral_ids
@@ -54,7 +55,6 @@ from ares.dicts.enemy_vs_ground_static_defense_ranges import (
 )
 from ares.managers.hub import Hub
 from ares.managers.manager_mediator import ManagerMediator
-from cython_extensions import cy_unit_pending
 
 
 class AresBot(CustomBotAI):

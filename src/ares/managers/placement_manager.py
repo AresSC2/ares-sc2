@@ -2,6 +2,13 @@ import time
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Optional, Union
 
 import numpy as np
+from cython_extensions import (
+    cy_can_place_structure,
+    cy_distance_to_squared,
+    cy_find_building_locations,
+    cy_get_bounding_box,
+    cy_pylon_matrix_covers,
+)
 from loguru import logger
 from sc2.constants import ALL_GAS
 from sc2.data import Race
@@ -24,13 +31,6 @@ from ares.consts import (
 from ares.dicts.structure_to_building_size import STRUCTURE_TO_BUILDING_SIZE
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from cython_extensions import (
-    can_place_structure,
-    cy_distance_to_squared,
-    cy_get_bounding_box,
-    cy_pylon_matrix_covers,
-    find_building_locations,
-)
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -213,7 +213,7 @@ class PlacementManager(Manager, IManagerMediator):
         origin_y: int = int(position[1] - offset)
 
         size: tuple[int, int] = self.BUILDING_SIZE_ENUM_TO_TUPLE[size]
-        return can_place_structure(
+        return cy_can_place_structure(
             (origin_x, origin_y),
             size,
             self.ai.state.creep.data_numpy,
@@ -599,7 +599,7 @@ class PlacementManager(Manager, IManagerMediator):
             )
             raw_x_bounds, raw_y_bounds = cy_get_bounding_box(area_points)
 
-            three_by_three_positions = find_building_locations(
+            three_by_three_positions = cy_find_building_locations(
                 kernel=np.ones((5, 3), dtype=np.uint8),
                 x_stride=5,
                 y_stride=3,
@@ -637,7 +637,7 @@ class PlacementManager(Manager, IManagerMediator):
             self.points_to_avoid_grid[
                 start_y : start_y + 15, start_x : start_x + 15
             ] = 1
-            supply_positions = find_building_locations(
+            supply_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
                 x_stride=2,
                 y_stride=2,
@@ -711,7 +711,7 @@ class PlacementManager(Manager, IManagerMediator):
             raw_x_bounds, raw_y_bounds = cy_get_bounding_box(area_points)
 
             # find production pylon positions first
-            production_pylon_positions = find_building_locations(
+            production_pylon_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
                 x_stride=6,
                 y_stride=6,
@@ -747,7 +747,7 @@ class PlacementManager(Manager, IManagerMediator):
             start_x: int = int(el.x - 4.5)
             start_y: int = int(el.y - 4.5)
             self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
-            three_by_three_positions = find_building_locations(
+            three_by_three_positions = cy_find_building_locations(
                 kernel=np.ones((3, 3), dtype=np.uint8),
                 x_stride=3,
                 y_stride=3,
@@ -779,7 +779,7 @@ class PlacementManager(Manager, IManagerMediator):
                     ] = 1
 
             # find extra 2x2 last
-            two_by_two_positions = find_building_locations(
+            two_by_two_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
                 x_stride=2,
                 y_stride=2,

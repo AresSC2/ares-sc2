@@ -14,6 +14,12 @@ from typing import (
     Union,
 )
 
+from cython_extensions import (
+    cy_center,
+    cy_closest_to,
+    cy_distance_to,
+    cy_distance_to_squared,
+)
 from sc2.constants import ALL_GAS
 from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
@@ -38,12 +44,6 @@ from ares.consts import (
 )
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from cython_extensions import (
-    cy_center,
-    cy_closest_to,
-    cy_distance_to,
-    cy_distance_to_squared,
-)
 
 if TYPE_CHECKING:
     from ares import AresBot

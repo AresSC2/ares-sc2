@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from cython_extensions import cy_attack_ready
 from sc2.unit import Unit
 
 from ares.behaviors.combat.individual import AttackTarget
@@ -8,7 +9,6 @@ from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
 from ares.managers.manager_mediator import ManagerMediator
-from cython_extensions import cy_attack_ready
 
 if TYPE_CHECKING:
     from ares import AresBot

@@ -3,6 +3,7 @@
 """
 from typing import Dict, List, Optional, Tuple, Union
 
+from cython_extensions import cy_distance_to_squared
 from loguru import logger
 from s2clientprotocol import raw_pb2 as raw_pb
 from s2clientprotocol import sc2api_pb2 as sc_pb
@@ -18,7 +19,6 @@ from sc2.units import Units
 from ares.consts import ALL_STRUCTURES
 from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
-from cython_extensions import cy_distance_to_squared
 
 
 class CustomBotAI(BotAI):

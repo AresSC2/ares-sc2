@@ -4,6 +4,7 @@
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Dict, List, Set, Union
 
+from cython_extensions import cy_unit_pending
 from sc2.data import Race
 from sc2.game_data import AbilityData
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -28,7 +29,6 @@ from ares.dicts.does_not_use_larva import DOES_NOT_USE_LARVA
 from ares.dicts.unit_alias import UNIT_ALIAS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from cython_extensions import cy_unit_pending
 
 if TYPE_CHECKING:
     from ares import AresBot
