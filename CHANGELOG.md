@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.1 (2024-02-09)
+
+### Fix
+
+* Only select persistent worker if enabled ([`47cabda`](https://github.com/AresSC2/ares-sc2/commit/47cabdaec7d1b0ec8a4177d45b30ce7ce915bacf))
+
 ## v2.0.0 (2024-02-08)
 
 ### Breaking
