@@ -193,8 +193,8 @@ class BuildOrderRunner:
                     target_position=self.current_build_position,
                     force_close=True,
                     select_persistent_builder=command != UnitID.REFINERY,
-                    only_select_persistent_builder=command
-                    in {UnitID.BARRACKS, UnitID.COMMANDCENTER}
+                    only_select_persistent_builder=self.persistent_worker
+                    and command in {UnitID.BARRACKS, UnitID.COMMANDCENTER}
                     and not self.ai.already_pending(UnitID.BARRACKS)
                     and self.ai.time < 90.0,
                 ):
