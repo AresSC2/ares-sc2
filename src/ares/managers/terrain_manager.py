@@ -187,7 +187,7 @@ class TerrainManager(Manager, IManagerMediator):
         -------
 
         """
-        if self.debug:
+        if self.debug and not self.ai.arcade_mode:
             await self._draw_information()
 
         self._clear_positions_blocked_by_burrowed_enemy()

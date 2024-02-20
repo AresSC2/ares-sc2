@@ -51,6 +51,7 @@ from ares.consts import (
     UNITS,
     ManagerName,
     ManagerRequestType,
+    GROUND_TO_AIR,
 )
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
@@ -128,6 +129,9 @@ class PathManager(Manager, IManagerMediator):
             ManagerRequestType.GET_GROUND_AVOIDANCE_GRID: lambda kwargs: (
                 self.ground_avoidance_grid
             ),
+            ManagerRequestType.GET_GROUND_TO_AIR_GRID: lambda kwargs: (
+                self.ground_to_air_grid
+            ),
             ManagerRequestType.GET_CLIMBER_GRID: lambda kwargs: self.climber_grid,
             ManagerRequestType.GET_GROUND_GRID: lambda kwargs: self.ground_grid,
             ManagerRequestType.GET_MAP_DATA: lambda kwargs: self.map_data,
@@ -145,6 +149,7 @@ class PathManager(Manager, IManagerMediator):
         self.map_data: MapData = MapData(ai, arcade=self.ai.arcade_mode)
 
         self.air_grid: np.ndarray = self.map_data.get_clean_air_grid()
+        # grid where ground pathable tiles have influence so flyers avoid
         self.air_vs_ground_grid: np.ndarray = self.map_data.get_air_vs_ground_grid(
             default_weight=AIR_VS_GROUND_DEFAULT
         )
@@ -152,6 +157,9 @@ class PathManager(Manager, IManagerMediator):
         self.ground_grid: np.ndarray = self.map_data.get_pyastar_grid()
         # tiles without creep are listed as unpathable
         self.creep_ground_grid: np.ndarray = self.map_data.get_pyastar_grid()
+        # this is like the air grid above,
+        # but only add influence from enemy ground
+        self.ground_to_air_grid: np.ndarray = self.air_grid.copy()
 
         self._cached_clean_air_grid: np.ndarray = self.air_grid.copy()
         self._cached_clean_air_vs_ground_grid: np.ndarray = (
@@ -258,6 +266,10 @@ class PathManager(Manager, IManagerMediator):
             elif self.config[DEBUG_OPTIONS][ACTIVE_GRID] == AIR_AVOIDANCE:
                 self.map_data.draw_influence_in_game(
                     self.air_avoidance_grid, lower_threshold=1
+                )
+            elif self.config[DEBUG_OPTIONS][ACTIVE_GRID] == GROUND_TO_AIR:
+                self.map_data.draw_influence_in_game(
+                    self.ground_to_air_grid, lower_threshold=1
                 )
 
     def add_cost(
@@ -597,6 +609,7 @@ class PathManager(Manager, IManagerMediator):
         self.air_avoidance_grid = self._cached_clean_air_grid.copy()
         self.ground_avoidance_grid = self._cached_clean_ground_grid.copy()
         self.priority_ground_avoidance_grid = self._cached_clean_ground_grid.copy()
+        self.ground_to_air_grid = self._cached_clean_air_grid.copy()
 
         # Refresh the cached ground grid every 8 steps, because things like structures/
         # minerals / rocks will change throughout the game
@@ -763,12 +776,18 @@ class PathManager(Manager, IManagerMediator):
                 self.air_grid,
                 self.air_vs_ground_grid,
                 self.air_avoidance_grid,
+                self.ground_to_air_grid,
             ) = self.add_cost_to_multiple_grids(
                 position,
                 effect_values[PARASITIC_BOMB][COST],
                 effect_values[PARASITIC_BOMB][RANGE]
                 + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid, self.air_avoidance_grid],
+                [
+                    self.air_grid,
+                    self.air_vs_ground_grid,
+                    self.air_avoidance_grid,
+                    self.ground_to_air_grid,
+                ],
             )
 
     def _add_structure_influence(self, structure: Unit) -> None:
@@ -789,6 +808,7 @@ class PathManager(Manager, IManagerMediator):
                 self.air_vs_ground_grid,
                 self.climber_grid,
                 self.ground_grid,
+                self.ground_to_air_grid,
             ) = self.add_cost_to_multiple_grids(
                 structure.position,
                 22,
@@ -798,23 +818,32 @@ class PathManager(Manager, IManagerMediator):
                     self.air_vs_ground_grid,
                     self.climber_grid,
                     self.ground_grid,
+                    self.ground_to_air_grid,
                 ],
             )
         elif structure.type_id == UnitID.MISSILETURRET:
             s_range: int = 8 if self.ai.time > 540 else 7
-            self.air_grid, self.air_vs_ground_grid = self.add_cost_to_multiple_grids(
+            (
+                self.air_grid,
+                self.air_vs_ground_grid,
+                self.ground_to_air_grid,
+            ) = self.add_cost_to_multiple_grids(
                 structure.position,
                 39,
                 s_range + self.config[PATHING][RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid],
+                [self.air_grid, self.air_vs_ground_grid, self.ground_to_air_grid],
             )
         elif structure.type_id == UnitID.SPORECRAWLER:
             # 48 vs biological units, 24 otherwise
-            self.air_grid, self.air_vs_ground_grid = self.add_cost_to_multiple_grids(
+            (
+                self.air_grid,
+                self.air_vs_ground_grid,
+                self.ground_to_air_grid,
+            ) = self.add_cost_to_multiple_grids(
                 structure.position,
                 39,
                 7 + self.config[PATHING][RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid],
+                [self.air_grid, self.air_vs_ground_grid, self.ground_to_air_grid],
             )
         elif structure.type_id == UnitID.BUNKER:
             if self.ai.enemy_structures.filter(
@@ -828,6 +857,7 @@ class PathManager(Manager, IManagerMediator):
                 self.air_vs_ground_grid,
                 self.climber_grid,
                 self.ground_grid,
+                self.ground_to_air_grid,
             ) = self.add_cost_to_multiple_grids(
                 structure.position,
                 22,
@@ -837,6 +867,7 @@ class PathManager(Manager, IManagerMediator):
                     self.air_vs_ground_grid,
                     self.climber_grid,
                     self.ground_grid,
+                    self.ground_to_air_grid,
                 ],
             )
         elif structure.type_id == UnitID.PLANETARYFORTRESS:
@@ -863,7 +894,15 @@ class PathManager(Manager, IManagerMediator):
 
         """
         if unit.type_id in WEIGHT_COSTS:
-            self._add_cost_to_all_grids(unit, WEIGHT_COSTS[unit.type_id])
+            weight_values = WEIGHT_COSTS[unit.type_id]
+            self._add_cost_to_all_grids(unit, weight_values)
+            if not unit.is_flying:
+                self.ground_to_air_grid = self.map_data.add_cost(
+                    unit.position,
+                    weight_values[AIR_RANGE] + self.config[PATHING][RANGE_BUFFER],
+                    self.ground_to_air_grid,
+                    weight_values[AIR_COST],
+                )
         elif unit.type_id == UnitID.DISRUPTORPHASED:
             (
                 self.climber_grid,
@@ -900,7 +939,14 @@ class PathManager(Manager, IManagerMediator):
             )
         # add the potential of a fungal growth
         elif unit.type_id == UnitID.INFESTOR and unit.energy >= 75:
+            weight_values: dict = WEIGHT_COSTS[UnitID.INFESTOR]
             self._add_cost_to_all_grids(unit, WEIGHT_COSTS[UnitID.INFESTOR])
+            self.ground_to_air_grid = self.map_data.add_cost(
+                unit.position,
+                weight_values[AIR_RANGE] + self.config[PATHING][RANGE_BUFFER],
+                self.ground_to_air_grid,
+                weight_values[AIR_COST],
+            )
         elif unit.type_id == UnitID.ORACLE and unit.energy >= 25:
             self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
                 unit.position,
@@ -924,6 +970,13 @@ class PathManager(Manager, IManagerMediator):
                 unit.air_range + self.config[PATHING][RANGE_BUFFER],
                 [self.air_grid, self.air_vs_ground_grid],
             )
+            if not unit.is_flying:
+                self.map_data.add_cost(
+                    unit.position,
+                    unit.air_range + self.config[PATHING][RANGE_BUFFER],
+                    self.ground_to_air_grid,
+                    unit.air_dps,
+                )
         elif unit.can_attack_ground:
             self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
                 unit.position,

@@ -4,8 +4,8 @@ GameStep: 2
 DebugGameStep: 2
 
 DebugOptions:
-    # one of: Air, AirVsGround, Ground, GroundAvoidance, AirAvoidance
-    ActiveGrid: Ground
+    # one of: Air, AirVsGround, Ground, GroundAvoidance, AirAvoidance, GroundToAir
+    ActiveGrid: GroundToAir
     ChatDebug: True
     DebugSpawn: False
     ShowPathingCost: False
@@ -15,7 +15,6 @@ DebugOptions:
 Chat:
     Enabled: True
     AiarenaTags: True
-    FlankChat: True
 
 Distances:
     FlyingEnemyNearBases: 20.
