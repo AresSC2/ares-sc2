@@ -1,7 +1,3 @@
-"""Ares
-
-The bot will be called from here, but most of the logic should be in Hub.
-"""
 from collections import defaultdict
 from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
@@ -230,7 +226,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         # optional build order config from a user, add to the existing config dictionary
         __user_build_orders_location__: str = path.join(
@@ -258,7 +254,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         # manually skip the frames in realtime
         if self.realtime:
@@ -317,7 +313,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         manager_mediator: ManagerMediator = ManagerMediator()
         self.manager_hub = Hub(self, self.config, manager_mediator)
@@ -335,6 +331,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
+        None
 
         """
 
@@ -381,7 +378,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         self.behavior_executioner.register_behavior(behavior)
 
@@ -436,7 +433,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         await self.manager_hub.on_structure_complete(unit)
 
@@ -450,7 +447,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         await self.manager_hub.on_unit_created(unit)
 
@@ -464,7 +461,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         await self.manager_hub.on_unit_destroyed(unit_tag)
 
@@ -477,6 +474,10 @@ class AresBot(CustomBotAI):
             The Unit that took damage
         amount_damage_taken :
             The amount of damage the Unit took
+
+        Returns
+        -------
+        None
         """
         await self.manager_hub.on_unit_took_damage(unit)
 
@@ -486,6 +487,10 @@ class AresBot(CustomBotAI):
         Parameters
         ----------
         unit :
+
+        Returns
+        -------
+        None
         """
         self.manager_hub.on_building_started(unit)
 
@@ -514,6 +519,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
+        None
 
         """
 
@@ -655,6 +661,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
+        None
         """
         current_frame: int = self.state.game_loop
         shade_owner_tags_to_remove: List[int] = []
@@ -684,7 +691,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         current_frame: int = self.state.game_loop
         shade_tag: int = shade.tag
@@ -715,7 +722,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         self.manager_hub.unit_cache_manager.clear_store_dicts()
         self.manager_hub.unit_memory_manager.clear_settings()
@@ -726,7 +733,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         # Set of enemy units detected by own sensor tower,
         # as blips have less unit information than normal visible units
@@ -803,7 +810,7 @@ class AresBot(CustomBotAI):
 
         Returns
         -------
-
+        None
         """
         self.manager_hub.unit_cache_manager.update_enemy_army()
 

@@ -38,7 +38,6 @@ nav:
       - Combat Maneuver Example: tutorials/combat_maneuver_example.md
       - Creating Custom Behaviors: tutorials/custom_behaviors.md
       - Config File: tutorials/config_file.md
-      - Installation: tutorials/installation.md
       - Managing Production: tutorials/managing_production.md
       - Tips and Tricks: tutorials/tips_and_tricks.md
       - Unit Squads and Group Behaviors: tutorials/unit_squads_group_behaviors.md
@@ -69,7 +68,7 @@ markdown_extensions:
   - attr_list
   - md_in_html
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
 # to navigate with `/site` content correctly

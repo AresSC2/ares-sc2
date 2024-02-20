@@ -1,12 +1,9 @@
 # Ares-SC2 Documentation
 
-<b>Please Note:</b> The documentation while mostly complete, is an ongoing project. 
+<b>Please Note:</b> The documentation is an ongoing project. 
 Please feel free to contribute or raise an issue for anything that is missing or broke.
 
 ## Get Started Quickly with `ares-sc2`
-In any case glancing through the [tutorials](tutorials/index.md) and
-the [api docs](api_reference/index.md) should give you an idea of what `ares-sc2` can offer.
-
 ### New bot author
 For authors eager to establish a local bot development environment right away, we 
 recommend using the [ares-sc2-bot-template](https://github.com/AresSC2/ares-sc2-bot-template) and
@@ -21,6 +18,10 @@ usual within the blank starter bot, making it a good option for learning the bas
 ### Existing `python-sc2` users
 Migrating your existing bot made with [python-sc2](https://github.com/BurnySc2/python-sc2) to `ares-sc2`,
 is a fairly straight forward process in most instances. <b>Tutorial coming soon</b>
+
+In any case glancing through the [tutorials](tutorials/index.md) and
+the [api docs](api_reference/index.md) should give you an idea of what `ares-sc2` can offer.
+
 
 ## About
 `Ares-sc2` is a library that extends the capabilities of the
