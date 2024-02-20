@@ -35,6 +35,7 @@ from ares.consts import (
     GROUND_AVOIDANCE,
     GROUND_COST,
     GROUND_RANGE,
+    GROUND_TO_AIR,
     KD8_CHARGE,
     LIBERATOR_ZONE,
     LURKER_SPINE,
@@ -51,7 +52,6 @@ from ares.consts import (
     UNITS,
     ManagerName,
     ManagerRequestType,
-    GROUND_TO_AIR,
 )
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
