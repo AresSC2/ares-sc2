@@ -1,5 +1,5 @@
 <b>Recommended Reading:</b> Explore how to effectively curate 
-[Combat Maneuvers]([Installation](./combat_maneuver_example.html)) with individual units, 
+[Combat Maneuvers](./combat_maneuver_example.md) with individual units, 
 providing insights into the workings of the combat maneuver and behavior system in `ares-sc2`.
 
 ## Why Opt for Unit Squads and Group Behaviors?

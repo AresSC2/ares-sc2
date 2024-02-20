@@ -2,10 +2,10 @@
 
 ## Selecting a worker 
 This aspect becomes especially meaningful, particularly in the context of using the 
-[`Mining` `MacroBehavior`](/api_reference/behaviors/macro_behaviors.html#ares.behaviors.macro.mining.Mining). 
+[`Mining` `MacroBehavior`](../api_reference/behaviors/macro_behaviors.md#ares.behaviors.macro.mining.Mining). 
 Behind the scenes, Ares designates workers to the `UnitRole.GATHERING` and automatically assigns 
 specific resources to each worker. Therefore, opting to 
-[select a worker through the mediator](/api_reference/manager_mediator.html#ares.managers.manager_mediator.ManagerMediator.select_worker)
+[select a worker through the mediator](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.select_worker)
 is recommended. 
 This not only simplifies internal bookkeeping by removing the worker but also prioritizes a worker 
 that isn't currently involved in mining or holding resources. The selection process even extends to workers at 
