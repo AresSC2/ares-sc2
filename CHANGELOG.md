@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.2 (2024-02-20)
+
+### Fix
+
+* Links in docs ([`f68a480`](https://github.com/AresSC2/ares-sc2/commit/f68a4804d2972decac315d174e832d4fcee87d5f))
+
+### Documentation
+
+* Improve docstrings throughout ([`c11df7d`](https://github.com/AresSC2/ares-sc2/commit/c11df7d833e54e2139eecd10674dfd3df4d70cc3))
+
 ## v2.0.1 (2024-02-09)
 
 ### Fix
