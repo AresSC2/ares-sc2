@@ -70,6 +70,6 @@ class TestBot(AresBot):
 ```
 
 These behaviors can be further customized through arguments, 
-please refer to the [API docs](../api_reference/behaviors/macro_behaviors.html)
+please refer to the [API docs](../api_reference/behaviors/macro_behaviors.md)
 
 

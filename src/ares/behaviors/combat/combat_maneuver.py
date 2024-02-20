@@ -91,7 +91,6 @@ class CombatManeuver(Behavior):
         ],
     ) -> None:
         """
-
         Parameters
         ----------
         behavior : CombatBehavior
@@ -99,7 +98,7 @@ class CombatManeuver(Behavior):
 
         Returns
         -------
-
+            None
         """
         self.micros.append(behavior)
 

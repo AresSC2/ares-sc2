@@ -87,6 +87,9 @@ class ManagerMediator(IManagerMediator):
         ----------
         managers :
             List of all Managers capable of handling ManagerRequests.
+        Returns
+        ----------
+        None
         """
         for manager in managers:
             self.managers[str(type(manager).__name__)] = manager
@@ -160,17 +163,16 @@ class ManagerMediator(IManagerMediator):
 
         AbilityTrackerManager.
 
-        Other Parameters
+        Parameters
         ----------
         ability : AbilityId
             The AbilityId that was used.
         unit_tag : int
             The tag of the Unit that used the ability
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
 
         """
         return self.manager_request(
@@ -188,7 +190,7 @@ class ManagerMediator(IManagerMediator):
 
         BuildingManager.
 
-        Other Parameters
+        Parameters
         -----
         worker : Unit
             The chosen worker.
@@ -198,11 +200,6 @@ class ManagerMediator(IManagerMediator):
             Where the structure should be placed.
         building_purpose : BuildingPurpose
             Why the structure is being placed.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -264,23 +261,18 @@ class ManagerMediator(IManagerMediator):
 
         Combat Sim Manager.
 
-        Other Parameters
-        ----------
-        own_units :
-            Our units involved in the battle.
-        enemy_units
-            The enemy units.
-        timing_adjust :
-            Take distance between units into account.
-        good_positioning :
-            Assume units are decently split.
-        workers_do_no_damage :
-            Don't take workers into account.
-
         Parameters
         ----------
-        kwargs :
-            (See Other Parameters)
+        own_units : Units
+            Our units involved in the battle.
+        enemy_units : Units
+            The enemy units.
+        timing_adjust : bool
+            Take distance between units into account.
+        good_positioning : bool
+            Assume units are decently split.
+        workers_do_no_damage : bool
+            Don't take workers into account.
 
         Returns
         -------
@@ -411,19 +403,18 @@ class ManagerMediator(IManagerMediator):
 
         FlyingStructureManager
 
-        Other Parameters
+        Parameters
         ----------
         structure : Unit
             Our units involved in the battle.
         target : Point2
             The enemy units.
-        should_land : bool (default=True)
+        should_land : bool, optional
             Take distance between units into account.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.FLYING_STRUCTURE_MANAGER,
@@ -492,15 +483,14 @@ class ManagerMediator(IManagerMediator):
 
         Resource Manager
 
-        Other Parameters
+        Parameters
         -----
         mineral_field_tag : int
             The tag of the patch to remove.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
@@ -530,15 +520,14 @@ class ManagerMediator(IManagerMediator):
 
         Resource Manager
 
-        Other Parameters
+        Parameters
         -----
         gas_building_tag : int
             The tag of the gas building to remove.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
@@ -555,7 +544,7 @@ class ManagerMediator(IManagerMediator):
 
         PathManager
 
-        Other Parameters
+        Parameters
         -----
         from_pos : Point2
             Where the search starts from.
@@ -563,11 +552,6 @@ class ManagerMediator(IManagerMediator):
             The grid to find the low cost point on.
         radius : float
             How far away the safe point can be.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -591,19 +575,14 @@ class ManagerMediator(IManagerMediator):
 
         PathManager
 
-        Other Parameters
-        -----
+        Parameters
+        ----------
         start : Point2
             Start point of the path.
         target : Point2
             Desired end point of the path.
         grid : np.ndarray
             The grid that should be used for pathing.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -623,7 +602,7 @@ class ManagerMediator(IManagerMediator):
 
         PathManager
 
-        Other Parameters
+        Parameters
         ----------
         from_pos : Point2
             Point to start the search from.
@@ -631,11 +610,6 @@ class ManagerMediator(IManagerMediator):
             How far away the returned points can be.
         grid : np.ndarray
             Which grid to query for lowest cost points.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -652,7 +626,7 @@ class ManagerMediator(IManagerMediator):
     def find_path_next_point(self, **kwargs) -> Point2:
         """Find the next point in a path.
 
-        Other Parameters
+        Parameters
         ----------
         start : Point2
             Start point of the path.
@@ -675,11 +649,6 @@ class ManagerMediator(IManagerMediator):
         danger_threshold : float, optional
             Minimum value for a tile to be considered dangerous.
 
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
-
         Returns
         -------
         Point2 :
@@ -696,7 +665,7 @@ class ManagerMediator(IManagerMediator):
 
         PathManager
 
-        Other Parameters
+        Parameters
         ----------
         start : Point2
             Start point of the path.
@@ -707,11 +676,6 @@ class ManagerMediator(IManagerMediator):
         sensitivity : int
             Amount of points that should be skipped in the full path between tiles that
             are returned.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -729,6 +693,13 @@ class ManagerMediator(IManagerMediator):
 
         PathManager
 
+        Example:
+        ```py
+        import numpy as np
+
+        avoidance_grid: np.ndarray = self.mediator.get_air_avoidance_grid
+        ```
+
         Returns
         -------
         np.ndarray :
@@ -744,6 +715,13 @@ class ManagerMediator(IManagerMediator):
         """Get the air pathing grid.
 
         PathManager
+
+        Example:
+        ```py
+        import numpy as np
+
+        air_grid: np.ndarray = self.mediator.get_air_grid
+        ```
 
         Returns
         -------
@@ -761,6 +739,15 @@ class ManagerMediator(IManagerMediator):
 
         PathManager
 
+        Example:
+        ```py
+        import numpy as np
+
+        air_vs_ground_grid: np.ndarray = (
+            self.mediator.get_air_vs_ground_grid
+        )
+        ```
+
         Returns
         -------
         np.ndarray :
@@ -777,6 +764,15 @@ class ManagerMediator(IManagerMediator):
 
         PathManager
 
+        Example:
+        ```py
+        import numpy as np
+
+        cached_ground_grid: np.ndarray = (
+            self.mediator.get_cached_ground_grid
+        )
+        ```
+
         Returns
         -------
         np.ndarray :
@@ -791,7 +787,16 @@ class ManagerMediator(IManagerMediator):
     def get_climber_grid(self) -> np.ndarray:
         """Get the climber ground pathing grid for reapers and colossus.
 
-        ClimberManager
+        PathManager
+
+        Example:
+        ```py
+        import numpy as np
+
+        climber_grid: np.ndarray = (
+            self.mediator.get_climber_grid
+        )
+        ```
 
         Returns
         -------
@@ -808,6 +813,13 @@ class ManagerMediator(IManagerMediator):
         """Get positions of forcefields.
 
         PathManager
+
+        Example:
+        ```py
+        from sc2.position import Point2
+
+        ff_positions: list[Point2] = self.mediator.get_forcefield_positions
+        ```
 
         Returns
         -------
@@ -926,7 +938,7 @@ class ManagerMediator(IManagerMediator):
 
         PathManager
 
-        Other Parameters
+        Parameters
         ----------
         grid : np.ndarray
             The grid to evaluate safety on.
@@ -934,11 +946,6 @@ class ManagerMediator(IManagerMediator):
             The position to check the safety of.
         weight_safety_limit : float
             The maximum value the point can have on the grid to be considered safe.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -963,7 +970,7 @@ class ManagerMediator(IManagerMediator):
 
         PlacementManager
 
-        Other Parameters
+        Parameters
         ----------
         position : Point2
             The intended building position.
@@ -971,11 +978,6 @@ class ManagerMediator(IManagerMediator):
             Structure type we want to place.
         include_addon : bool, optional
             For Terran structures, check addon will place too.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         ----------
@@ -993,7 +995,7 @@ class ManagerMediator(IManagerMediator):
 
         PlacementManager
 
-        Other Parameters
+        Parameters
         ----------
         base_location : Point2
             The general area where the placement should be near.
@@ -1012,11 +1014,6 @@ class ManagerMediator(IManagerMediator):
         within_psionic_matrix : bool, optional
             Protoss specific -> calculated position have power?
         closest_to : Optional[Point2]
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         ----------
@@ -1060,15 +1057,14 @@ class ManagerMediator(IManagerMediator):
 
         ResourceManager
 
-        Other Parameters
+        Parameters
         ----------
         worker_tag : int
             Tag of the worker to be removed.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
@@ -1086,7 +1082,7 @@ class ManagerMediator(IManagerMediator):
 
         ResourceManager
 
-        Other Parameters
+        Parameters
         ----------
         target_position : Point2
             Location to get the closest workers to.
@@ -1097,11 +1093,6 @@ class ManagerMediator(IManagerMediator):
         only_select_persistent_builder : bool
             If True, don't find an alternative worker
         min_health_perc : float (optional)
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1144,15 +1135,10 @@ class ManagerMediator(IManagerMediator):
 
         SquadManager
 
-        Other Parameters
+        Parameters
         ----------
         role : UnitRole
             Get the squads for this unit role.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1170,7 +1156,7 @@ class ManagerMediator(IManagerMediator):
 
         SquadManager
 
-        Other Parameters
+        Parameters
         ----------
         role : UnitRole
             Get the squads for this unit role.
@@ -1180,11 +1166,6 @@ class ManagerMediator(IManagerMediator):
             If specified, only form squads with these unit types
             WARNING: Will not remove units that have already
                      been assigned to a squad.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1207,17 +1188,12 @@ class ManagerMediator(IManagerMediator):
 
         TerrainManager
 
-        Other Parameters
+        Parameters
         ----------
         worker_tag : int
             The worker attempting to build the structure.
         position : Point2
             Where the structure is attempting to be placed.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1238,15 +1214,10 @@ class ManagerMediator(IManagerMediator):
 
         TerrainManager
 
-        Other Parameters
+        Parameters
         ----------
         th_pos : Point2
             Position of townhall to find points behind the mineral line of.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1265,15 +1236,10 @@ class ManagerMediator(IManagerMediator):
 
         TerrainManager
 
-        Other Parameters
+        Parameters
         ----------
         from_pos : Point2
             Position the Overlord spot should be closest to.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1392,17 +1358,12 @@ class ManagerMediator(IManagerMediator):
 
         TerrainManager
 
-        Other Parameters
+        Parameters
         -----
         start_point : Point2
             Where to start the flood fill.
         max_dist : float
             Only include points closer than this distance to the start point.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1690,17 +1651,12 @@ class ManagerMediator(IManagerMediator):
 
         UnitCacheManager
 
-        Other Parameters
+        Parameters
         -----
         unit_type_id : UnitID
             Unit type to count.
         include_alias : bool
             Check aliases. (default=True)
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1719,15 +1675,14 @@ class ManagerMediator(IManagerMediator):
 
         UnitCacheManager
 
-        Other Parameters
+        Parameters
         -----
         tags : Set[int]
             Tags of the units to retrieve.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.UNIT_CACHE_MANAGER,
@@ -1826,7 +1781,7 @@ class ManagerMediator(IManagerMediator):
 
         UnitMemoryManager
 
-        Other Parameters
+        Parameters
         -----
         start_points: List[Union[Unit, Tuple[float, float]]]
             List of `Unit`s or positions to search for units from.
@@ -1837,11 +1792,6 @@ class ManagerMediator(IManagerMediator):
             Which KDTree should be queried.
         return_as_dict: bool = False
             Sets whether the returned units in range should be a dictionary or list.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1882,17 +1832,16 @@ class ManagerMediator(IManagerMediator):
 
         UnitRoleManager
 
-        Other Parameters
+        Parameters
         -----
         tag : int
             Tag of the unit to be assigned.
         role : UnitRole
             What role the unit should have.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.UNIT_ROLE_MANAGER,
@@ -1907,17 +1856,16 @@ class ManagerMediator(IManagerMediator):
 
         UnitRoleManager
 
-        Other Parameters
+        Parameters
         -----
         tags : Set[int]
             Tags of the units to assign to a role.
         role : UnitRole
             The role the units should be assigned to.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.UNIT_ROLE_MANAGER,
@@ -1930,15 +1878,14 @@ class ManagerMediator(IManagerMediator):
 
         UnitRoleManager
 
-        Other Parameters
+        Parameters
         -----
         tag : int
             Tag of the unit to clear the role of.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.UNIT_ROLE_MANAGER, ManagerRequestType.CLEAR_ROLE, **kwargs
@@ -1949,17 +1896,12 @@ class ManagerMediator(IManagerMediator):
 
         UnitRoleManager
 
-        Other Parameters
+        Parameters
         -----
         roles : Set[UnitRole]
             Roles to get units from.
         excluded : Set[UnitTypeId]
             Unit types that should not be included.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -1998,8 +1940,8 @@ class ManagerMediator(IManagerMediator):
 
         UnitRoleManager
 
-        Other Parameters
-        -----
+        Parameters
+        ----------
         role : UnitRole
             Role to get units from.
         unit_type : UnitTypeId
@@ -2008,11 +1950,6 @@ class ManagerMediator(IManagerMediator):
         restrict_to : Set[UnitTypeId]
             If supplied, only take Units with the given role and type if they also exist
             here.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -2031,18 +1968,13 @@ class ManagerMediator(IManagerMediator):
 
         UnitRoleManager
 
-        Other Parameters
+        Parameters
         -----
         roles : Set[UnitRole]
             Roles to get units from.
         unit_type : UnitTypeId
             Type(s) of units that should be returned. If omitted, all units with the
             role will be returned.
-
-        Parameters
-        ----------
-        kwargs :
-            (See Other Parameters)
 
         Returns
         -------
@@ -2060,15 +1992,14 @@ class ManagerMediator(IManagerMediator):
 
         ResourceManager
 
-        Other Parameters
-        -----
+        Parameters
+        ----------
         amount : int
             Num workers to assign to each gas building
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.RESOURCE_MANAGER,
@@ -2081,17 +2012,16 @@ class ManagerMediator(IManagerMediator):
 
         UnitRoleManager
 
-        Other Parameters
+        Parameters
         -----
         from_role : UnitRole
             Role the units currently have.
         to_role : UnitRole
             Role to assign to the units.
 
-        Parameters
+        Returns
         ----------
-        kwargs :
-            (See Other Parameters)
+        None
         """
         return self.manager_request(
             ManagerName.UNIT_ROLE_MANAGER,

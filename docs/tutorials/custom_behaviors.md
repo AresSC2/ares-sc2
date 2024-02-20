@@ -1,4 +1,4 @@
-<b>Recommended reading:</b> How to curate [Combat Maneuver's]([Installation](./combat_maneuver_example.html)) using
+<b>Recommended reading:</b> How to curate [Combat Maneuver's](./combat_maneuver_example.md) using
 existing `Behavior`'s in `ares-sc2`.
 Before curating custom behaviors, take a look at some of the 
 core [behaviors in ares-sc2](https://github.com/AresSC2/ares-sc2/tree/main/src/ares/behaviors), to get an idea

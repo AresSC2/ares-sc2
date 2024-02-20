@@ -47,24 +47,6 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        """Take the enemy center unit and fire a predictive AoE.
-
-        Parameters
-        ----------
-        ai : AresBot
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        **kwargs :
-            None
-
-        Returns
-        -------
-        bool :
-            CombatBehavior carried out an action.
-        """
         if self.aoe_ability in self.unit.abilities:
             # try to fire the ability if we find a position
             if pos := self._calculate_target_position(ai):
