@@ -865,6 +865,22 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
+    def get_ground_to_air_grid(self) -> np.ndarray:
+        """Get the ground pathing grid.
+
+        PathManager
+
+        Returns
+        -------
+        np.ndarray :
+            The ground pathing grid.
+
+        """
+        return self.manager_request(
+            ManagerName.PATH_MANAGER, ManagerRequestType.GET_GROUND_TO_AIR_GRID
+        )
+
+    @property
     def get_map_data_object(self) -> MapData:
         """Get the MapAnalyzer.MapData object being used.
 
