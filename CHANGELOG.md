@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.0 (2024-02-21)
+
+### Feature
+
+* Add ground to air grid with influence ([`79136d5`](https://github.com/AresSC2/ares-sc2/commit/79136d5d524243a9647d21459339e61c5b55706e))
+
 ## v2.0.2 (2024-02-20)
 
 ### Fix
