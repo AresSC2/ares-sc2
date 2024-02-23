@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.1 (2024-02-23)
+
+### Fix
+
+* Assign persistent worker earlier ([`2ba0414`](https://github.com/AresSC2/ares-sc2/commit/2ba04142fc90905a30a40d4246497aa5438d710f))
+
+### Documentation
+
+* Add migration tutorial ([`52e867e`](https://github.com/AresSC2/ares-sc2/commit/52e867ee55423ade4612161107d845b9c04ca919))
+
 ## v2.1.0 (2024-02-21)
 
 ### Feature
