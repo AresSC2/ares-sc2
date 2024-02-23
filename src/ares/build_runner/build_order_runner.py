@@ -338,7 +338,7 @@ class BuildOrderRunner:
         if (
             # terran specific for now
             self.ai.race == Race.Terran
-            and self.ai.time > 11
+            and self.ai.time > 9.0
             and not self.assigned_persistent_worker
         ):
             if worker := self.mediator.select_worker(
