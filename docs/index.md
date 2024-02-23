@@ -17,7 +17,7 @@ usual within the blank starter bot, making it a good option for learning the bas
 
 ### Existing `python-sc2` users
 Migrating your existing bot made with [python-sc2](https://github.com/BurnySc2/python-sc2) to `ares-sc2`,
-is a fairly straight forward process in most instances. <b>Tutorial coming soon</b>
+is a fairly straight forward process in most instances. Check out the [migration tutorial](tutorials/migrating.md).
 
 In any case glancing through the [tutorials](tutorials/index.md) and
 the [api docs](api_reference/index.md) should give you an idea of what `ares-sc2` can offer.
