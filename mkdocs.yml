@@ -39,6 +39,7 @@ nav:
       - Creating Custom Behaviors: tutorials/custom_behaviors.md
       - Config File: tutorials/config_file.md
       - Managing Production: tutorials/managing_production.md
+      - Migrating from python-sc2: tutorials/migrating.md
       - Tips and Tricks: tutorials/tips_and_tricks.md
       - Unit Squads and Group Behaviors: tutorials/unit_squads_group_behaviors.md
   - API Reference:
