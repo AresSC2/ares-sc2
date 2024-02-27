@@ -264,6 +264,7 @@ class ManagerRequestType(str, Enum):
     # SquadManager
     GET_POSITION_OF_MAIN_SQUAD = "GET_POSITION_OF_MAIN_SQUAD"
     GET_SQUADS = "GET_SQUADS"
+    REMOVE_TAG_FROM_SQUADS = "REMOVE_TAG_FROM_SQUADS"
 
     # TerrainManager
     BUILDING_POSITION_BLOCKED_BY_BURROWED_UNIT = (
@@ -363,6 +364,7 @@ class UnitRole(str, Enum):
     HARASSING = "HARASSING"  # units that are harassing
     IDLE = "IDLE"  # not doing anything
     MAP_CONTROL = "MAP_CONTROL"  # units controlling the map (lings/hellions?)
+    OFFENSIVE_REPAIR = "OFFENSIVE_REPAIR"  # with the main force
     OVERLORD_HUNTER = "OVERLORD_HUNTER"  # units looking for overlords
     PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # does not get reassigned automatically
     PROXY_WORKER = "PROXY_WORKER"

@@ -108,6 +108,9 @@ class SquadManager(Manager, IManagerMediator):
                 self._get_position_of_main_squad(**kwargs)
             ),
             ManagerRequestType.GET_SQUADS: lambda kwargs: (self._get_squads(**kwargs)),
+            ManagerRequestType.REMOVE_TAG_FROM_SQUADS: lambda kwargs: self.remove_tag(
+                kwargs["tag"]
+            ),
         }
 
         self._assigned_unit_tags: set[int] = set()
@@ -167,6 +170,21 @@ class SquadManager(Manager, IManagerMediator):
                     self.ai.draw_text_on_world(
                         squad_info["squad_object"].squad_position, f"{squad_id}"
                     )
+
+    def remove_tag(self, tag: int) -> None:
+        if tag in self._assigned_unit_tags:
+            found_squad: bool = False
+            squad_id_to_remove_from = ""
+            role: UnitRole = UnitRole.ATTACKING
+            for _role, squad_dict in self._squads_dict.items():
+                for squad_id, squad_info in squad_dict.items():
+                    if tag in squad_info[self.TAGS]:
+                        squad_id_to_remove_from = squad_id
+                        found_squad = True
+                        role = _role
+                        break
+            if found_squad:
+                self._remove_unit_tag(tag, role, squad_id_to_remove_from)
 
     def _get_squads(
         self,

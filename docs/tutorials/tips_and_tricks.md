@@ -31,3 +31,16 @@ defending_workers: Units = self.mediator.get_units_from_role(
     role=UnitRole.DEFENDING, unit_type=UnitTypeId.SCV
 )
 ```
+
+## Selecting a unit already assigned to a `UnitSquad`
+If you are using `ares-sc2` [unit squad system](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.get_squads),
+and you want to select a unit already assigned to a squad then you should take care to remove the unit to ensure
+accurate squad calculations. You can do so by making the following mediator request:
+
+```python
+from sc2.unit import Unit
+
+# pretend this unit is already assigned to a unit squad
+unit: Unit = self.units[0]
+self.mediator.remove_tag_from_squads(tag=unit.tag)
+```

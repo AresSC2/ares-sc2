@@ -1195,6 +1195,18 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
+    def remove_tag_from_squads(self, **kwargs) -> None:
+        """
+        Squad Manager
+        Keyword args:
+            tag: int
+        """
+        return self.manager_request(
+            ManagerName.SQUAD_MANAGER,
+            ManagerRequestType.REMOVE_TAG_FROM_SQUADS,
+            **kwargs,
+        )
+
     """
     TerrainManager
     """
