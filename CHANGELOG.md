@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.0 (2024-02-27)
+
+### Feature
+
+* Request to remove unit from squads ([`732e462`](https://github.com/AresSC2/ares-sc2/commit/732e462d570d48be0fdfecb3f493b04fcc1fef39))
+
 ## v2.1.1 (2024-02-23)
 
 ### Fix
