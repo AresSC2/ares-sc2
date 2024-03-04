@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.2 (2024-03-04)
+
+### Fix
+
+* Ensure unit tags are cleaned up from deleted squads ([`d39cb69`](https://github.com/AresSC2/ares-sc2/commit/d39cb69cebba0c09cb03f5fb7f42fcd9a93d0204))
+* Keep group safe only returns true if action issued ([`f2c6752`](https://github.com/AresSC2/ares-sc2/commit/f2c675279a56f3631dcfc7428aacf73176f48759))
+
+### Performance
+
+* Only retrieve unassigned_workers if available_minerals ([`9196360`](https://github.com/AresSC2/ares-sc2/commit/9196360754c69a5ce37caa98293ee21836d7304b))
+
 ## v2.2.1 (2024-03-04)
 
 ### Fix
