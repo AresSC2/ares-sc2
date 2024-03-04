@@ -384,6 +384,8 @@ class SquadManager(Manager, IManagerMediator):
             # squads may contain no more units, remove it from records
             if not squad_units:
                 squads_to_remove.append(squad.squad_id)
+                for tag in tags:
+                    self._assigned_unit_tags.remove(tag)
                 continue
 
             self._squads_dict[role][squad.squad_id][self.SQUAD_OBJECT].set_squad_units(
@@ -398,6 +400,9 @@ class SquadManager(Manager, IManagerMediator):
 
     def _remove_squad(self, role: UnitRole, squad_id: str) -> None:
         if squad_id in self._squads_dict[role]:
+            for tag in self._squads_dict[role][squad_id][self.TAGS]:
+                if tag in self._assigned_unit_tags:
+                    self._assigned_unit_tags.remove(tag)
             del self._squads_dict[role][squad_id]
 
     def _handle_existing_squads_assignment(
@@ -434,6 +439,8 @@ class SquadManager(Manager, IManagerMediator):
         if tag in self._squads_dict[role][squad_id][self.TAGS]:
             self._squads_dict[role][squad_id][self.TAGS].remove(tag)
             self._squads_dict[role][squad_id][self.SQUAD_OBJECT].remove_unit_tag(tag)
+            if tag in self._assigned_unit_tags:
+                self._assigned_unit_tags.remove(tag)
 
         # if this was the only unit in the squad, then remove the squad too
         if len(self._squads_dict[role][squad_id][self.TAGS]) == 0:
@@ -469,10 +476,10 @@ class SquadManager(Manager, IManagerMediator):
         )
         if closest_squad_id != "":
             # remove this squad
-            tags: list[int] = [u.tag for u in squad_to_merge.squad_units]
-            self._remove_squad(role, squad_to_merge.squad_id)
-            # add tags to new squad id
             try:
+                tags: list[int] = [u.tag for u in squad_to_merge.squad_units]
+                self._remove_squad(role, squad_to_merge.squad_id)
+                # add tags to new squad id
                 self._squads_dict[role][closest_squad_id][self.TAGS].update(tags)
                 for tag in tags:
                     self._assigned_unit_tags.add(tag)
