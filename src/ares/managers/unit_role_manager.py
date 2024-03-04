@@ -164,7 +164,9 @@ class UnitRoleManager(Manager, IManagerMediator):
             if unit.type_id == self.ai.worker_type:
                 self.assign_role(unit.tag, UnitRole.GATHERING)
 
-    def assign_role(self, tag: int, role: UnitRole) -> None:
+    def assign_role(
+        self, tag: int, role: UnitRole, remove_from_squad: bool = True
+    ) -> None:
         """Assign a unit a role.
 
         Parameters
@@ -173,6 +175,10 @@ class UnitRoleManager(Manager, IManagerMediator):
             Tag of the unit to be assigned.
         role :
             What role the unit should have.
+        remove_from_squad :
+            Search for this unit in UnitSquads and remove it.
+            Default=True prevents unexpected bugs when using
+            UnitSquads
 
         Returns
         -------
@@ -181,6 +187,8 @@ class UnitRoleManager(Manager, IManagerMediator):
         self.clear_role(tag)
         self.unit_role_dict[role.name].add(tag)
         self.tag_to_role_dict[tag] = role.name
+        if remove_from_squad:
+            self.manager_mediator.remove_tag_from_squads(tag=tag)
 
     def batch_assign_role(
         self, tags: Union[List[int], Set[int]], role: UnitRole

@@ -1866,6 +1866,8 @@ class ManagerMediator(IManagerMediator):
             Tag of the unit to be assigned.
         role : UnitRole
             What role the unit should have.
+        remove_from_squad : bool (default = True)
+            Attempt to remove this unit from squad bookkeeping.
 
         Returns
         ----------
