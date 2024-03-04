@@ -463,12 +463,11 @@ class ResourceManager(Manager, IManagerMediator):
         if self.ai.gas_buildings:
             self._assign_worker_to_gas_buildings(self.ai.gas_buildings)
 
-        unassigned_workers: Units = workers.filter(
-            lambda u: u.tag not in self.worker_to_geyser_dict
-            and u.tag not in self.worker_to_mineral_patch_dict
-        )
-
         if self.available_minerals:
+            unassigned_workers: Units = workers.filter(
+                lambda u: u.tag not in self.worker_to_geyser_dict
+                and u.tag not in self.worker_to_mineral_patch_dict
+            )
             self._assign_workers_to_mineral_patches(
                 self.available_minerals, unassigned_workers
             )
