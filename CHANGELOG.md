@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.1 (2024-03-04)
+
+### Fix
+
+* Remove unit tag from squads when assigning new role ([`aa2d20d`](https://github.com/AresSC2/ares-sc2/commit/aa2d20dd096d5b60ee353fafde149f9ebd9f7988))
+
 ## v2.2.0 (2024-02-27)
 
 ### Feature
