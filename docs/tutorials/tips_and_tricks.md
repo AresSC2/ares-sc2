@@ -44,3 +44,6 @@ from sc2.unit import Unit
 unit: Unit = self.units[0]
 self.mediator.remove_tag_from_squads(tag=unit.tag)
 ```
+
+Note if you're using the `ares` role system, when assigning a unit a new role,
+units are removed from squads automatically.
