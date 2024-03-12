@@ -49,10 +49,6 @@ class StutterGroupBack(CombatGroupBehavior):
         sample_unit: Unit = sorted_units[0]
 
         if self.group_weapons_on_cooldown(self.group, stutter_forward=False):
-            if self.duplicate_or_similar_order(
-                sample_unit, self.target, AbilityId.MOVE
-            ):
-                return True
             group_move_to: Point2 = mediator.find_path_next_point(
                 start=self.group_position,
                 target=ai.start_location,
@@ -60,7 +56,7 @@ class StutterGroupBack(CombatGroupBehavior):
                 sensitivity=9,
             )
             if self.duplicate_or_similar_order(
-                sample_unit, self.target, AbilityId.MOVE
+                sample_unit, group_move_to, AbilityId.MOVE
             ):
                 return True
             ai.give_same_action(AbilityId.MOVE, self.group_tags, group_move_to)
