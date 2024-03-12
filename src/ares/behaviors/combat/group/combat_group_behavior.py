@@ -39,7 +39,7 @@ class CombatGroupBehavior(Behavior, Protocol):
         unit: Unit,
         target: Union[Point2, Unit],
         order_type: AbilityId,
-        distance_check_squared: float = 0.75,
+        distance_check_squared: float = 2.0,
     ) -> bool:
         if (
             cy_distance_to_squared(unit.position, target.position)
@@ -76,4 +76,4 @@ class CombatGroupBehavior(Behavior, Protocol):
         if stutter_forward:
             return avg_weapon_cooldown > 2.5
         else:
-            return avg_weapon_cooldown > 3.5
+            return avg_weapon_cooldown > 5.0

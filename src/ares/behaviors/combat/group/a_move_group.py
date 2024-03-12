@@ -28,11 +28,14 @@ class AMoveGroup(CombatGroupBehavior):
     ----------
     group : list[Unit]
         Units we want to control.
+    group_tags : set[int]
+        The group unit tags.
     target: Point2
         Where the unit is going.
     """
 
     group: list[Unit]
+    group_tags: set[int]
     target: Union[Point2, Unit]
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
@@ -47,5 +50,5 @@ class AMoveGroup(CombatGroupBehavior):
         ):
             return False
 
-        ai.give_same_action(AbilityId.ATTACK, [u.tag for u in self.group], self.target)
+        ai.give_same_action(AbilityId.ATTACK, self.group_tags, self.target)
         return True
