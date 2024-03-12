@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Union
 
+from cython_extensions import cy_distance_to_squared
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -196,7 +197,10 @@ class BuildOrderRunner:
                     only_select_persistent_builder=self.persistent_worker
                     and command
                     in {UnitID.BARRACKS, UnitID.FACTORY, UnitID.COMMANDCENTER}
-                    and not self.ai.already_pending(UnitID.BARRACKS)
+                    and (
+                        not self.ai.already_pending(UnitID.BARRACKS)
+                        or command != UnitID.BARRACKS
+                    )
                     and self.ai.time < 125.0,
                 ):
                     if next_building_position := await self.get_position(
@@ -298,10 +302,19 @@ class BuildOrderRunner:
                 and structure_type in STRUCTURE_TO_BUILDING_SIZE
                 and structure_type != UnitID.PYLON
             )
+            at_wall: bool = target == BuildOrderTargetOptions.RAMP
+            close_enemy_to_ramp: list[Unit] = [
+                e
+                for e in self.ai.enemy_units
+                if cy_distance_to_squared(e.position, self.ai.main_base_ramp.top_center)
+                < 100.0
+            ]
+            if len(close_enemy_to_ramp) > 0:
+                at_wall = False
             return self.mediator.request_building_placement(
                 base_location=self.ai.start_location,
                 structure_type=structure_type,
-                wall=target == BuildOrderTargetOptions.RAMP,
+                wall=at_wall,
                 within_psionic_matrix=within_psionic_matrix,
                 pylon_build_progress=0.5,
             )
