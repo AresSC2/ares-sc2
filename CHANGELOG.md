@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.0 (2024-03-12)
+
+### Feature
+
+* Stutter forward enemy units argument ([`80ec1d4`](https://github.com/AresSC2/ares-sc2/commit/80ec1d4834235eab501dec71c82c1c189a258ef3))
+* Build order ramp position moved if close enemy ([`7d083eb`](https://github.com/AresSC2/ares-sc2/commit/7d083eb8cabeb60d5e63b689b8fc73fd372f8814))
+
+### Fix
+
+* Stutter group back duplicate order check ([`d468066`](https://github.com/AresSC2/ares-sc2/commit/d468066f1b97f445c3e7f7381188b6cc7ac04b63))
+
 ## v2.2.2 (2024-03-04)
 
 ### Fix
