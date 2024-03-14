@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.0 (2024-03-14)
+
+### Feature
+
+* Update cython to get find center mass ([`05214bb`](https://github.com/AresSC2/ares-sc2/commit/05214bb9cfdea1e64deb57d1a7be0de266073036))
+
 ## v2.3.0 (2024-03-12)
 
 ### Feature
