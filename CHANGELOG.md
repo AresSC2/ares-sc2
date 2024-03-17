@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.1 (2024-03-17)
+
+### Fix
+
+* Building tracker check for any structure build progress ([`0452e1d`](https://github.com/AresSC2/ares-sc2/commit/0452e1d53330230ca62128943c0dfd0842ce594e))
+
 ## v2.4.0 (2024-03-14)
 
 ### Feature
