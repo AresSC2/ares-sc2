@@ -220,7 +220,7 @@ class BuildingManager(Manager, IManagerMediator):
                 lambda s: cy_distance_to_squared(s.position, target.position) < 2.0
             ):
                 structure: Unit = close_structures[0]
-                target_progress: float = 1.0 if self.ai.race == Race.Terran else 0.01
+                target_progress: float = 1.0 if self.ai.race == Race.Terran else 1e-16
                 if structure.build_progress >= target_progress:
                     tags_to_remove.add(worker_tag)
                     continue
