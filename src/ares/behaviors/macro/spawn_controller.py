@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_data import Cost
+from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.unit import Unit
 
@@ -176,11 +177,16 @@ class SpawnController(MacroBehavior):
             ), f"The army comp proportions should equal 1.0, got {proportion_sum}"
 
         did_action: bool = False
-        for unit in self.__build_dict:
+        for unit, value in self.__build_dict.items():
             did_action = True
             mediator.clear_role(tag=unit.tag)
-            unit.train(self.__build_dict[unit])
-            ai.num_larva_left -= 1
+            if value == UnitID.BANELING:
+                unit(AbilityId.MORPHTOBANELING_BANELING)
+            elif value == UnitID.RAVAGER:
+                unit(AbilityId.MORPHTORAVAGER_RAVAGER)
+            else:
+                unit.train(value)
+                ai.num_larva_left -= 1
 
         return did_action
 
