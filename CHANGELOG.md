@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.2 (2024-03-19)
+
+### Fix
+
+* Reuse SpawnController in build runner to enable build from reactors ([`d70dd70`](https://github.com/AresSC2/ares-sc2/commit/d70dd701e6861aae87bef155d2b86e570cc0fed4))
+* Correctly retrieve build from structures ([`2553a7a`](https://github.com/AresSC2/ares-sc2/commit/2553a7a905ffcbf9fa3d465ad5d59b0f5cb22b5e))
+
 ## v2.4.1 (2024-03-17)
 
 ### Fix
