@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.3 (2024-03-19)
+
+### Fix
+
+* Zerg morphs work correctly in spawn controller ([`f3bfb58`](https://github.com/AresSC2/ares-sc2/commit/f3bfb58a0a75be4b2ac18e535ff915046bb65f76))
+
 ## v2.4.2 (2024-03-19)
 
 ### Fix
