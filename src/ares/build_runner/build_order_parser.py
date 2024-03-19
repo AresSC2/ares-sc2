@@ -219,10 +219,13 @@ class BuildOrderParser:
         return lambda: BuildOrderStep(
             command=unit_id,
             start_condition=lambda: self.ai.can_afford(unit_id)
-            and len(self.ai.get_build_structures(
-                UNIT_TRAINED_FROM[unit_id],
-                unit_id,
-            )) > 0,
+            and len(
+                self.ai.get_build_structures(
+                    UNIT_TRAINED_FROM[unit_id],
+                    unit_id,
+                )
+            )
+            > 0,
             # if start condition is True a train order will be issued
             # therefore it will automatically complete the step
             end_condition=lambda: True,

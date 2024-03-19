@@ -7,6 +7,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
+from ares.behaviors.macro import SpawnController
 from ares.build_runner.build_order_step import BuildOrderStep
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -105,6 +106,9 @@ class BuildOrderRunner:
 
     def set_build_completed(self) -> None:
         logger.info("Build order completed")
+        self.mediator.switch_roles(
+            from_role=UnitRole.PERSISTENT_BUILDER, to_role=UnitRole.GATHERING
+        )
         self._opening_build_completed = True
 
     @property
@@ -159,13 +163,8 @@ class BuildOrderRunner:
                         self._temporary_build_step = i
                         break
 
-        if self.build_completed or len(self.ai.townhalls) > 1 or self.ai.time > 120.0:
-            self.mediator.switch_roles(
-                from_role=UnitRole.PERSISTENT_BUILDER, to_role=UnitRole.GATHERING
-            )
-
         if not self.build_completed and self.build_step >= len(self.build_order):
-            self._opening_build_completed = True
+            self.set_build_completed()
             logger.info("Build order completed")
             return
 
@@ -218,7 +217,8 @@ class BuildOrderRunner:
 
             elif isinstance(command, UnitID) and command not in ALL_STRUCTURES:
                 self.current_step_started = True
-                self.ai.train(command)
+                army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
+                SpawnController(army_comp).execute(self.ai, self.config, self.mediator)
 
             elif command == AbilityId.EFFECT_CHRONOBOOST:
                 if chrono_target := self.get_structure(step.target):
