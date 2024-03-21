@@ -1,0 +1,3338 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../tutorials/unit_squads_group_behaviors.html">
+      
+      
+        <link rel="next" href="behaviors/index.html">
+      
+      
+      <link rel="icon" href="../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.14">
+    
+    
+      
+        <title>API Reference - Ares SC2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.10ba22f1.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ares.main.AresBot" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="Ares SC2" class="md-header__button md-logo" aria-label="Ares SC2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ares SC2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AresSC2/ares-sc2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ares-sc2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="Ares SC2" class="md-nav__button md-logo" aria-label="Ares SC2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Ares SC2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AresSC2/ares-sc2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 512"><!--! Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc.--><path d="M186.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1zM480 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2zm-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3zm-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ares-sc2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Start here
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../tutorials/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/assigning_unit_roles.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Assigning Unit Roles
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/build_runner.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Build Runner
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/combat_maneuver_example.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Combat Maneuver Example
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/custom_behaviors.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Creating Custom Behaviors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/config_file.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Config File
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/managing_production.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Managing Production
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/migrating.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Migrating from python-sc2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/tips_and_tricks.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tips and Tricks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/unit_squads_group_behaviors.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Unit Squads and Group Behaviors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="index.html" class="md-nav__link md-nav__link--active">
+              
+  
+  <span class="md-ellipsis">
+    API Reference
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="behaviors/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Behaviors
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Behaviors
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="behaviors/combat_behaviors.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Individual Combat Behaviors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="behaviors/group_combat_behaviors.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Group Combat Behaviors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="behaviors/macro_behaviors.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Macro Behaviors
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="manager_mediator.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Manager mediator
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../contributing/index.html" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Contributing
+  </span>
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Contributing
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ares.main.AresBot" class="md-nav__link">
+    <span class="md-ellipsis">
+      AresBot
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="AresBot">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.mediator" class="md-nav__link">
+    <span class="md-ellipsis">
+      mediator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.get_build_structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_build_structures
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_before_start" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_before_start
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_building_construction_complete" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_building_construction_complete
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_building_construction_started" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_building_construction_started
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_end" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_end
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_start" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_start
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_step" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_step
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_unit_created" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_unit_created
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_unit_destroyed" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_unit_destroyed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.on_unit_took_damage" class="md-nav__link">
+    <span class="md-ellipsis">
+      on_unit_took_damage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.register_behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      register_behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.register_managers" class="md-nav__link">
+    <span class="md-ellipsis">
+      register_managers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.structure_pending" class="md-nav__link">
+    <span class="md-ellipsis">
+      structure_pending
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.structure_present_or_pending" class="md-nav__link">
+    <span class="md-ellipsis">
+      structure_present_or_pending
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ares.main.AresBot.unit_pending" class="md-nav__link">
+    <span class="md-ellipsis">
+      unit_pending
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+  <h1>API Reference</h1>
+
+<p>Utilize the menu to delve into the available functionalities, currently organized into three primary sections:</p>
+<ul>
+<li><code>Behaviors</code> - Discover the art of crafting personalized combat maneuvers or macro plans. 
+Each Behavior can be executed individually, tailored to your specific requirements.</li>
+<li><code>Manager mediator</code> - Seamlessly orchestrating numerous managers in the background, the mediator serves 
+as the recommended approach to access data and functions within these managers.</li>
+</ul>
+<p>Convenient methods globally available:
+</p>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+
+  <div class="doc doc-contents first">
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="ares.main.AresBot" class="doc doc-heading">
+          <span class="doc doc-object-name doc-class-name">AresBot</span>
+
+
+<a href="#ares.main.AresBot" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">AresBot</span><span class="p">(</span><span class="n">game_step_override</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+          <p class="doc doc-class-bases">
+            Bases: <code><span title="ares.custom_bot_ai.CustomBotAI">CustomBotAI</span></code></p>
+
+  
+      <p>Final setup of CustomBotAI for usage.</p>
+<p>Most bot logic should go in Hub.</p>
+  
+      <p>Load config and set up necessary attributes.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>game_step_override</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>If provided, set the game_step to this value regardless of how it was
+specified elsewhere</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+                <details class="quote">
+                  <summary>Source code in <code>src/ares/main.py</code></summary>
+                  <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-67"> 67</a></span>
+<span class="normal"><a href="#__codelineno-0-68"> 68</a></span>
+<span class="normal"><a href="#__codelineno-0-69"> 69</a></span>
+<span class="normal"><a href="#__codelineno-0-70"> 70</a></span>
+<span class="normal"><a href="#__codelineno-0-71"> 71</a></span>
+<span class="normal"><a href="#__codelineno-0-72"> 72</a></span>
+<span class="normal"><a href="#__codelineno-0-73"> 73</a></span>
+<span class="normal"><a href="#__codelineno-0-74"> 74</a></span>
+<span class="normal"><a href="#__codelineno-0-75"> 75</a></span>
+<span class="normal"><a href="#__codelineno-0-76"> 76</a></span>
+<span class="normal"><a href="#__codelineno-0-77"> 77</a></span>
+<span class="normal"><a href="#__codelineno-0-78"> 78</a></span>
+<span class="normal"><a href="#__codelineno-0-79"> 79</a></span>
+<span class="normal"><a href="#__codelineno-0-80"> 80</a></span>
+<span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
+<span class="normal"><a href="#__codelineno-0-82"> 82</a></span>
+<span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
+<span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
+<span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
+<span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
+<span class="normal"><a href="#__codelineno-0-87"> 87</a></span>
+<span class="normal"><a href="#__codelineno-0-88"> 88</a></span>
+<span class="normal"><a href="#__codelineno-0-89"> 89</a></span>
+<span class="normal"><a href="#__codelineno-0-90"> 90</a></span>
+<span class="normal"><a href="#__codelineno-0-91"> 91</a></span>
+<span class="normal"><a href="#__codelineno-0-92"> 92</a></span>
+<span class="normal"><a href="#__codelineno-0-93"> 93</a></span>
+<span class="normal"><a href="#__codelineno-0-94"> 94</a></span>
+<span class="normal"><a href="#__codelineno-0-95"> 95</a></span>
+<span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-0-100">100</a></span>
+<span class="normal"><a href="#__codelineno-0-101">101</a></span>
+<span class="normal"><a href="#__codelineno-0-102">102</a></span>
+<span class="normal"><a href="#__codelineno-0-103">103</a></span>
+<span class="normal"><a href="#__codelineno-0-104">104</a></span>
+<span class="normal"><a href="#__codelineno-0-105">105</a></span>
+<span class="normal"><a href="#__codelineno-0-106">106</a></span>
+<span class="normal"><a href="#__codelineno-0-107">107</a></span>
+<span class="normal"><a href="#__codelineno-0-108">108</a></span>
+<span class="normal"><a href="#__codelineno-0-109">109</a></span>
+<span class="normal"><a href="#__codelineno-0-110">110</a></span>
+<span class="normal"><a href="#__codelineno-0-111">111</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game_step_override</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Load config and set up necessary attributes.</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="sd">    game_step_override :</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="sd">        If provided, set the game_step to this value regardless of how it was</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="sd">        specified elsewhere</span>
+<a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-76" name="__codelineno-0-76"></a>    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+<a id="__codelineno-0-77" name="__codelineno-0-77"></a>    <span class="c1"># use this Dict when compiling</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a>    <span class="c1"># self.config: Dict = CONFIG</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a>    <span class="c1"># otherwise we use the config.yml file</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a>    <span class="n">__ares_config_location__</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a>        <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>    <span class="p">)</span>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">__user_config_location__</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a>    <span class="n">config_parser</span><span class="p">:</span> <span class="n">ConfigParser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">(</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a>        <span class="n">__ares_config_location__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__user_config_location__</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a>    <span class="p">)</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">config_parser</span><span class="o">.</span><span class="n">parse</span><span class="p">()</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">game_step_override</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">game_step_override</span>
+<a id="__codelineno-0-91" name="__codelineno-0-91"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">unit_tag_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Unit</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-92" name="__codelineno-0-92"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">chat_debug</span> <span class="o">=</span> <span class="kc">None</span>
+<a id="__codelineno-0-93" name="__codelineno-0-93"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">forcefield_to_bile_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Point2</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-94" name="__codelineno-0-94"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">last_game_loop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<a id="__codelineno-0-95" name="__codelineno-0-95"></a>
+<a id="__codelineno-0-96" name="__codelineno-0-96"></a>    <span class="c1"># track adept shades as we only add them towards shade completion (160 frames)</span>
+<a id="__codelineno-0-97" name="__codelineno-0-97"></a>    <span class="c1"># Key: tag of shade Value: frame shade commenced (+32 if no adept owner found)</span>
+<a id="__codelineno-0-98" name="__codelineno-0-98"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">adept_shades</span><span class="p">:</span> <span class="n">DefaultDict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+<a id="__codelineno-0-99" name="__codelineno-0-99"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">adept_tags_with_shades_assigned</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<a id="__codelineno-0-100" name="__codelineno-0-100"></a>    <span class="c1"># we skip python-sc2 iterations in realtime, so we keep track of our own one</span>
+<a id="__codelineno-0-101" name="__codelineno-0-101"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">actual_iteration</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-0-102" name="__codelineno-0-102"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">WORKER_TYPES</span> <span class="o">=</span> <span class="n">WORKER_TYPES</span> <span class="o">|</span> <span class="p">{</span><span class="n">UnitID</span><span class="o">.</span><span class="n">DRONEBURROWED</span><span class="p">}</span>
+<a id="__codelineno-0-103" name="__codelineno-0-103"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">supply_type</span><span class="p">:</span> <span class="n">UnitID</span> <span class="o">=</span> <span class="n">UnitID</span><span class="o">.</span><span class="n">OVERLORD</span>
+<a id="__codelineno-0-104" name="__codelineno-0-104"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">num_larva_left</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-0-105" name="__codelineno-0-105"></a>
+<a id="__codelineno-0-106" name="__codelineno-0-106"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_same_order_actions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span>
+<a id="__codelineno-0-107" name="__codelineno-0-107"></a>        <span class="nb">tuple</span><span class="p">[</span><span class="n">AbilityId</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Unit</span><span class="p">,</span> <span class="n">Point2</span><span class="p">]]]</span>
+<a id="__codelineno-0-108" name="__codelineno-0-108"></a>    <span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-109" name="__codelineno-0-109"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">_drop_unload_actions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-110" name="__codelineno-0-110"></a>
+<a id="__codelineno-0-111" name="__codelineno-0-111"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">arcade_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+</code></pre></div></td></tr></table></div>
+                </details>
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="ares.main.AresBot.mediator" class="doc doc-heading">
+          <span class="doc doc-object-name doc-attribute-name">mediator</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.mediator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">mediator</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Register behavior.</p>
+<p>Shortcut to <code>self.manager_hub.manager_mediator</code></p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="ares.managers.manager_mediator.ManagerMediator">ManagerMediator</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+  </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.get_build_structures" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">get_build_structures</span>
+
+
+<a href="#ares.main.AresBot.get_build_structures" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">get_build_structures</span><span class="p">(</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">structure_unit_types</span><span class="p">,</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">unit_type</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">build_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">ignored_build_from_tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Get all structures (or units) where we can spawn unit_type.
+Takes into account techlabs and reactors. And Gateway / warp gate</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>structure_unit_types</code></td>
+          <td>
+                <code>set[<span title="sc2.ids.unit_typeid.UnitTypeId">UnitTypeId</span>]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The valid build structures we can spawn this unit_type from.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>unit_type</code></td>
+          <td>
+                <code><span title="sc2.ids.unit_typeid.UnitTypeId">UnitTypeId</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The target unit we are trying to spawn.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>build_dict</code></td>
+          <td>
+                <code>dict[<span title="sc2.unit.Unit">Unit</span>, <span title="sc2.ids.unit_typeid.UnitTypeId">UnitTypeId</span>](optional)</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Use to prevent selecting idle build structures that
+have already got a pending order this frame.
+Key: Unit that should get order, value: what UnitID to build</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>ignored_build_from_tags</code></td>
+          <td>
+                <code><span title="typing.Set">Set</span>[int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Pass in if you don't want certain build structures selected.</p>
+            </div>
+          </td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>list[Unit] :</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>List of structures / units where this unit could possibly be spawned from.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-825">825</a></span>
+<span class="normal"><a href="#__codelineno-0-826">826</a></span>
+<span class="normal"><a href="#__codelineno-0-827">827</a></span>
+<span class="normal"><a href="#__codelineno-0-828">828</a></span>
+<span class="normal"><a href="#__codelineno-0-829">829</a></span>
+<span class="normal"><a href="#__codelineno-0-830">830</a></span>
+<span class="normal"><a href="#__codelineno-0-831">831</a></span>
+<span class="normal"><a href="#__codelineno-0-832">832</a></span>
+<span class="normal"><a href="#__codelineno-0-833">833</a></span>
+<span class="normal"><a href="#__codelineno-0-834">834</a></span>
+<span class="normal"><a href="#__codelineno-0-835">835</a></span>
+<span class="normal"><a href="#__codelineno-0-836">836</a></span>
+<span class="normal"><a href="#__codelineno-0-837">837</a></span>
+<span class="normal"><a href="#__codelineno-0-838">838</a></span>
+<span class="normal"><a href="#__codelineno-0-839">839</a></span>
+<span class="normal"><a href="#__codelineno-0-840">840</a></span>
+<span class="normal"><a href="#__codelineno-0-841">841</a></span>
+<span class="normal"><a href="#__codelineno-0-842">842</a></span>
+<span class="normal"><a href="#__codelineno-0-843">843</a></span>
+<span class="normal"><a href="#__codelineno-0-844">844</a></span>
+<span class="normal"><a href="#__codelineno-0-845">845</a></span>
+<span class="normal"><a href="#__codelineno-0-846">846</a></span>
+<span class="normal"><a href="#__codelineno-0-847">847</a></span>
+<span class="normal"><a href="#__codelineno-0-848">848</a></span>
+<span class="normal"><a href="#__codelineno-0-849">849</a></span>
+<span class="normal"><a href="#__codelineno-0-850">850</a></span>
+<span class="normal"><a href="#__codelineno-0-851">851</a></span>
+<span class="normal"><a href="#__codelineno-0-852">852</a></span>
+<span class="normal"><a href="#__codelineno-0-853">853</a></span>
+<span class="normal"><a href="#__codelineno-0-854">854</a></span>
+<span class="normal"><a href="#__codelineno-0-855">855</a></span>
+<span class="normal"><a href="#__codelineno-0-856">856</a></span>
+<span class="normal"><a href="#__codelineno-0-857">857</a></span>
+<span class="normal"><a href="#__codelineno-0-858">858</a></span>
+<span class="normal"><a href="#__codelineno-0-859">859</a></span>
+<span class="normal"><a href="#__codelineno-0-860">860</a></span>
+<span class="normal"><a href="#__codelineno-0-861">861</a></span>
+<span class="normal"><a href="#__codelineno-0-862">862</a></span>
+<span class="normal"><a href="#__codelineno-0-863">863</a></span>
+<span class="normal"><a href="#__codelineno-0-864">864</a></span>
+<span class="normal"><a href="#__codelineno-0-865">865</a></span>
+<span class="normal"><a href="#__codelineno-0-866">866</a></span>
+<span class="normal"><a href="#__codelineno-0-867">867</a></span>
+<span class="normal"><a href="#__codelineno-0-868">868</a></span>
+<span class="normal"><a href="#__codelineno-0-869">869</a></span>
+<span class="normal"><a href="#__codelineno-0-870">870</a></span>
+<span class="normal"><a href="#__codelineno-0-871">871</a></span>
+<span class="normal"><a href="#__codelineno-0-872">872</a></span>
+<span class="normal"><a href="#__codelineno-0-873">873</a></span>
+<span class="normal"><a href="#__codelineno-0-874">874</a></span>
+<span class="normal"><a href="#__codelineno-0-875">875</a></span>
+<span class="normal"><a href="#__codelineno-0-876">876</a></span>
+<span class="normal"><a href="#__codelineno-0-877">877</a></span>
+<span class="normal"><a href="#__codelineno-0-878">878</a></span>
+<span class="normal"><a href="#__codelineno-0-879">879</a></span>
+<span class="normal"><a href="#__codelineno-0-880">880</a></span>
+<span class="normal"><a href="#__codelineno-0-881">881</a></span>
+<span class="normal"><a href="#__codelineno-0-882">882</a></span>
+<span class="normal"><a href="#__codelineno-0-883">883</a></span>
+<span class="normal"><a href="#__codelineno-0-884">884</a></span>
+<span class="normal"><a href="#__codelineno-0-885">885</a></span>
+<span class="normal"><a href="#__codelineno-0-886">886</a></span>
+<span class="normal"><a href="#__codelineno-0-887">887</a></span>
+<span class="normal"><a href="#__codelineno-0-888">888</a></span>
+<span class="normal"><a href="#__codelineno-0-889">889</a></span>
+<span class="normal"><a href="#__codelineno-0-890">890</a></span>
+<span class="normal"><a href="#__codelineno-0-891">891</a></span>
+<span class="normal"><a href="#__codelineno-0-892">892</a></span>
+<span class="normal"><a href="#__codelineno-0-893">893</a></span>
+<span class="normal"><a href="#__codelineno-0-894">894</a></span>
+<span class="normal"><a href="#__codelineno-0-895">895</a></span>
+<span class="normal"><a href="#__codelineno-0-896">896</a></span>
+<span class="normal"><a href="#__codelineno-0-897">897</a></span>
+<span class="normal"><a href="#__codelineno-0-898">898</a></span>
+<span class="normal"><a href="#__codelineno-0-899">899</a></span>
+<span class="normal"><a href="#__codelineno-0-900">900</a></span>
+<span class="normal"><a href="#__codelineno-0-901">901</a></span>
+<span class="normal"><a href="#__codelineno-0-902">902</a></span>
+<span class="normal"><a href="#__codelineno-0-903">903</a></span>
+<span class="normal"><a href="#__codelineno-0-904">904</a></span>
+<span class="normal"><a href="#__codelineno-0-905">905</a></span>
+<span class="normal"><a href="#__codelineno-0-906">906</a></span>
+<span class="normal"><a href="#__codelineno-0-907">907</a></span>
+<span class="normal"><a href="#__codelineno-0-908">908</a></span>
+<span class="normal"><a href="#__codelineno-0-909">909</a></span>
+<span class="normal"><a href="#__codelineno-0-910">910</a></span>
+<span class="normal"><a href="#__codelineno-0-911">911</a></span>
+<span class="normal"><a href="#__codelineno-0-912">912</a></span>
+<span class="normal"><a href="#__codelineno-0-913">913</a></span>
+<span class="normal"><a href="#__codelineno-0-914">914</a></span>
+<span class="normal"><a href="#__codelineno-0-915">915</a></span>
+<span class="normal"><a href="#__codelineno-0-916">916</a></span>
+<span class="normal"><a href="#__codelineno-0-917">917</a></span>
+<span class="normal"><a href="#__codelineno-0-918">918</a></span>
+<span class="normal"><a href="#__codelineno-0-919">919</a></span>
+<span class="normal"><a href="#__codelineno-0-920">920</a></span>
+<span class="normal"><a href="#__codelineno-0-921">921</a></span>
+<span class="normal"><a href="#__codelineno-0-922">922</a></span>
+<span class="normal"><a href="#__codelineno-0-923">923</a></span>
+<span class="normal"><a href="#__codelineno-0-924">924</a></span>
+<span class="normal"><a href="#__codelineno-0-925">925</a></span>
+<span class="normal"><a href="#__codelineno-0-926">926</a></span>
+<span class="normal"><a href="#__codelineno-0-927">927</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-825" name="__codelineno-0-825"></a><span class="k">def</span> <span class="nf">get_build_structures</span><span class="p">(</span>
+<a id="__codelineno-0-826" name="__codelineno-0-826"></a>    <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-827" name="__codelineno-0-827"></a>    <span class="n">structure_unit_types</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">UnitID</span><span class="p">],</span>
+<a id="__codelineno-0-828" name="__codelineno-0-828"></a>    <span class="n">unit_type</span><span class="p">:</span> <span class="n">UnitID</span><span class="p">,</span>
+<a id="__codelineno-0-829" name="__codelineno-0-829"></a>    <span class="n">build_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-830" name="__codelineno-0-830"></a>    <span class="n">ignored_build_from_tags</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<a id="__codelineno-0-831" name="__codelineno-0-831"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Unit</span><span class="p">]:</span>
+<a id="__codelineno-0-832" name="__codelineno-0-832"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Get all structures (or units) where we can spawn unit_type.</span>
+<a id="__codelineno-0-833" name="__codelineno-0-833"></a><span class="sd">    Takes into account techlabs and reactors. And Gateway / warp gate</span>
+<a id="__codelineno-0-834" name="__codelineno-0-834"></a>
+<a id="__codelineno-0-835" name="__codelineno-0-835"></a>
+<a id="__codelineno-0-836" name="__codelineno-0-836"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-837" name="__codelineno-0-837"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-838" name="__codelineno-0-838"></a><span class="sd">    structure_unit_types :</span>
+<a id="__codelineno-0-839" name="__codelineno-0-839"></a><span class="sd">        The valid build structures we can spawn this unit_type from.</span>
+<a id="__codelineno-0-840" name="__codelineno-0-840"></a><span class="sd">    unit_type :</span>
+<a id="__codelineno-0-841" name="__codelineno-0-841"></a><span class="sd">        The target unit we are trying to spawn.</span>
+<a id="__codelineno-0-842" name="__codelineno-0-842"></a><span class="sd">    build_dict : dict[Unit, UnitID] (optional)</span>
+<a id="__codelineno-0-843" name="__codelineno-0-843"></a><span class="sd">        Use to prevent selecting idle build structures that</span>
+<a id="__codelineno-0-844" name="__codelineno-0-844"></a><span class="sd">        have already got a pending order this frame.</span>
+<a id="__codelineno-0-845" name="__codelineno-0-845"></a><span class="sd">        Key: Unit that should get order, value: what UnitID to build</span>
+<a id="__codelineno-0-846" name="__codelineno-0-846"></a><span class="sd">    ignored_build_from_tags : Set[int]</span>
+<a id="__codelineno-0-847" name="__codelineno-0-847"></a><span class="sd">        Pass in if you don&#39;t want certain build structures selected.</span>
+<a id="__codelineno-0-848" name="__codelineno-0-848"></a>
+<a id="__codelineno-0-849" name="__codelineno-0-849"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-850" name="__codelineno-0-850"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-851" name="__codelineno-0-851"></a><span class="sd">    list[Unit] :</span>
+<a id="__codelineno-0-852" name="__codelineno-0-852"></a><span class="sd">        List of structures / units where this unit could possibly be spawned from.</span>
+<a id="__codelineno-0-853" name="__codelineno-0-853"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-854" name="__codelineno-0-854"></a>    <span class="k">if</span> <span class="n">ignored_build_from_tags</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-855" name="__codelineno-0-855"></a>        <span class="n">ignored_build_from_tags</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-856" name="__codelineno-0-856"></a>    <span class="k">if</span> <span class="n">build_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-857" name="__codelineno-0-857"></a>        <span class="n">build_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<a id="__codelineno-0-858" name="__codelineno-0-858"></a>
+<a id="__codelineno-0-859" name="__codelineno-0-859"></a>    <span class="n">structures_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">UnitID</span><span class="p">:</span><span class="n">Units</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_own_structures_dict</span>
+<a id="__codelineno-0-860" name="__codelineno-0-860"></a>    <span class="n">own_army_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">UnitID</span><span class="p">:</span><span class="n">Units</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_own_army_dict</span>
+<a id="__codelineno-0-861" name="__codelineno-0-861"></a>    <span class="n">build_from_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">UnitID</span><span class="p">:</span><span class="n">Units</span><span class="p">]</span> <span class="o">=</span> <span class="n">structures_dict</span>
+<a id="__codelineno-0-862" name="__codelineno-0-862"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">race</span> <span class="o">==</span> <span class="n">Race</span><span class="o">.</span><span class="n">Zerg</span><span class="p">:</span>
+<a id="__codelineno-0-863" name="__codelineno-0-863"></a>        <span class="n">build_from_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">UnitID</span><span class="p">:</span><span class="n">Units</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<a id="__codelineno-0-864" name="__codelineno-0-864"></a>            <span class="o">**</span><span class="n">structures_dict</span><span class="p">,</span>
+<a id="__codelineno-0-865" name="__codelineno-0-865"></a>            <span class="o">**</span><span class="n">own_army_dict</span><span class="p">,</span>
+<a id="__codelineno-0-866" name="__codelineno-0-866"></a>        <span class="p">}</span>
+<a id="__codelineno-0-867" name="__codelineno-0-867"></a>    <span class="n">build_from_tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-0-868" name="__codelineno-0-868"></a>    <span class="n">using_larva</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<a id="__codelineno-0-869" name="__codelineno-0-869"></a>    <span class="k">for</span> <span class="n">structure_type</span> <span class="ow">in</span> <span class="n">structure_unit_types</span><span class="p">:</span>
+<a id="__codelineno-0-870" name="__codelineno-0-870"></a>        <span class="k">if</span> <span class="n">structure_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">build_from_dict</span><span class="p">:</span>
+<a id="__codelineno-0-871" name="__codelineno-0-871"></a>            <span class="k">continue</span>
+<a id="__codelineno-0-872" name="__codelineno-0-872"></a>
+<a id="__codelineno-0-873" name="__codelineno-0-873"></a>        <span class="k">if</span> <span class="n">structure_type</span> <span class="o">==</span> <span class="n">UnitID</span><span class="o">.</span><span class="n">LARVA</span><span class="p">:</span>
+<a id="__codelineno-0-874" name="__codelineno-0-874"></a>            <span class="n">using_larva</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-0-875" name="__codelineno-0-875"></a>
+<a id="__codelineno-0-876" name="__codelineno-0-876"></a>        <span class="n">build_from</span><span class="p">:</span> <span class="n">Units</span> <span class="o">=</span> <span class="n">build_from_dict</span><span class="p">[</span><span class="n">structure_type</span><span class="p">]</span>
+<a id="__codelineno-0-877" name="__codelineno-0-877"></a>        <span class="n">requires_techlab</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="n">TRAIN_INFO</span><span class="p">[</span><span class="n">structure_type</span><span class="p">][</span><span class="n">unit_type</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+<a id="__codelineno-0-878" name="__codelineno-0-878"></a>            <span class="s2">&quot;requires_techlab&quot;</span><span class="p">,</span> <span class="kc">False</span>
+<a id="__codelineno-0-879" name="__codelineno-0-879"></a>        <span class="p">)</span>
+<a id="__codelineno-0-880" name="__codelineno-0-880"></a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">requires_techlab</span><span class="p">:</span>
+<a id="__codelineno-0-881" name="__codelineno-0-881"></a>            <span class="n">build_from_tags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+<a id="__codelineno-0-882" name="__codelineno-0-882"></a>                <span class="p">[</span>
+<a id="__codelineno-0-883" name="__codelineno-0-883"></a>                    <span class="n">u</span><span class="o">.</span><span class="n">tag</span>
+<a id="__codelineno-0-884" name="__codelineno-0-884"></a>                    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">build_from</span>
+<a id="__codelineno-0-885" name="__codelineno-0-885"></a>                    <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">is_ready</span> <span class="ow">and</span> <span class="n">u</span><span class="o">.</span><span class="n">is_idle</span> <span class="ow">and</span> <span class="n">u</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">build_dict</span>
+<a id="__codelineno-0-886" name="__codelineno-0-886"></a>                <span class="p">]</span>
+<a id="__codelineno-0-887" name="__codelineno-0-887"></a>            <span class="p">)</span>
+<a id="__codelineno-0-888" name="__codelineno-0-888"></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">race</span> <span class="o">==</span> <span class="n">Race</span><span class="o">.</span><span class="n">Terran</span><span class="p">:</span>
+<a id="__codelineno-0-889" name="__codelineno-0-889"></a>                <span class="n">build_from_tags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+<a id="__codelineno-0-890" name="__codelineno-0-890"></a>                    <span class="n">u</span><span class="o">.</span><span class="n">tag</span>
+<a id="__codelineno-0-891" name="__codelineno-0-891"></a>                    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">build_from</span>
+<a id="__codelineno-0-892" name="__codelineno-0-892"></a>                    <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">is_ready</span>
+<a id="__codelineno-0-893" name="__codelineno-0-893"></a>                    <span class="ow">and</span> <span class="n">u</span><span class="o">.</span><span class="n">has_reactor</span>
+<a id="__codelineno-0-894" name="__codelineno-0-894"></a>                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">orders</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span>
+<a id="__codelineno-0-895" name="__codelineno-0-895"></a>                    <span class="ow">and</span> <span class="n">u</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">build_dict</span>
+<a id="__codelineno-0-896" name="__codelineno-0-896"></a>                <span class="p">)</span>
+<a id="__codelineno-0-897" name="__codelineno-0-897"></a>        <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-898" name="__codelineno-0-898"></a>            <span class="n">build_from_tags</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+<a id="__codelineno-0-899" name="__codelineno-0-899"></a>                <span class="p">[</span>
+<a id="__codelineno-0-900" name="__codelineno-0-900"></a>                    <span class="n">u</span><span class="o">.</span><span class="n">tag</span>
+<a id="__codelineno-0-901" name="__codelineno-0-901"></a>                    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">build_from</span>
+<a id="__codelineno-0-902" name="__codelineno-0-902"></a>                    <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">is_ready</span>
+<a id="__codelineno-0-903" name="__codelineno-0-903"></a>                    <span class="ow">and</span> <span class="n">u</span><span class="o">.</span><span class="n">is_idle</span>
+<a id="__codelineno-0-904" name="__codelineno-0-904"></a>                    <span class="ow">and</span> <span class="n">u</span><span class="o">.</span><span class="n">has_add_on</span>
+<a id="__codelineno-0-905" name="__codelineno-0-905"></a>                    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit_tag_dict</span><span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">add_on_tag</span><span class="p">]</span><span class="o">.</span><span class="n">is_ready</span>
+<a id="__codelineno-0-906" name="__codelineno-0-906"></a>                    <span class="ow">and</span> <span class="n">u</span><span class="o">.</span><span class="n">add_on_tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">techlab_tags</span>
+<a id="__codelineno-0-907" name="__codelineno-0-907"></a>                    <span class="ow">and</span> <span class="n">u</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">build_dict</span>
+<a id="__codelineno-0-908" name="__codelineno-0-908"></a>                <span class="p">]</span>
+<a id="__codelineno-0-909" name="__codelineno-0-909"></a>            <span class="p">)</span>
+<a id="__codelineno-0-910" name="__codelineno-0-910"></a>
+<a id="__codelineno-0-911" name="__codelineno-0-911"></a>    <span class="n">build_structures</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-0-912" name="__codelineno-0-912"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">unit_tag_dict</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+<a id="__codelineno-0-913" name="__codelineno-0-913"></a>        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">build_from_tags</span>
+<a id="__codelineno-0-914" name="__codelineno-0-914"></a>        <span class="k">if</span> <span class="n">u</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ignored_build_from_tags</span>
+<a id="__codelineno-0-915" name="__codelineno-0-915"></a>    <span class="p">]</span>
+<a id="__codelineno-0-916" name="__codelineno-0-916"></a>    <span class="c1"># sort build structures with reactors first</span>
+<a id="__codelineno-0-917" name="__codelineno-0-917"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">race</span> <span class="o">==</span> <span class="n">Race</span><span class="o">.</span><span class="n">Terran</span><span class="p">:</span>
+<a id="__codelineno-0-918" name="__codelineno-0-918"></a>        <span class="n">build_structures</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+<a id="__codelineno-0-919" name="__codelineno-0-919"></a>            <span class="n">build_structures</span><span class="p">,</span>
+<a id="__codelineno-0-920" name="__codelineno-0-920"></a>            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">structure</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">structure</span><span class="o">.</span><span class="n">add_on_tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactor_tags</span><span class="p">)</span>
+<a id="__codelineno-0-921" name="__codelineno-0-921"></a>            <span class="o">+</span> <span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="n">structure</span><span class="o">.</span><span class="n">add_on_tag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">techlab_tags</span><span class="p">),</span>
+<a id="__codelineno-0-922" name="__codelineno-0-922"></a>        <span class="p">)</span>
+<a id="__codelineno-0-923" name="__codelineno-0-923"></a>    <span class="c1"># limit build structures to number of larva left</span>
+<a id="__codelineno-0-924" name="__codelineno-0-924"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">race</span> <span class="o">==</span> <span class="n">Race</span><span class="o">.</span><span class="n">Zerg</span> <span class="ow">and</span> <span class="n">using_larva</span><span class="p">:</span>
+<a id="__codelineno-0-925" name="__codelineno-0-925"></a>        <span class="n">build_structures</span> <span class="o">=</span> <span class="n">build_structures</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_larva_left</span><span class="p">]</span>
+<a id="__codelineno-0-926" name="__codelineno-0-926"></a>
+<a id="__codelineno-0-927" name="__codelineno-0-927"></a>    <span class="k">return</span> <span class="n">build_structures</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_before_start" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_before_start</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_before_start" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_before_start</span><span class="p">()</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Train a drone and split workers before managers are set up</p>
+<p>Called before bot properly initializes</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-222">222</a></span>
+<span class="normal"><a href="#__codelineno-0-223">223</a></span>
+<span class="normal"><a href="#__codelineno-0-224">224</a></span>
+<span class="normal"><a href="#__codelineno-0-225">225</a></span>
+<span class="normal"><a href="#__codelineno-0-226">226</a></span>
+<span class="normal"><a href="#__codelineno-0-227">227</a></span>
+<span class="normal"><a href="#__codelineno-0-228">228</a></span>
+<span class="normal"><a href="#__codelineno-0-229">229</a></span>
+<span class="normal"><a href="#__codelineno-0-230">230</a></span>
+<span class="normal"><a href="#__codelineno-0-231">231</a></span>
+<span class="normal"><a href="#__codelineno-0-232">232</a></span>
+<span class="normal"><a href="#__codelineno-0-233">233</a></span>
+<span class="normal"><a href="#__codelineno-0-234">234</a></span>
+<span class="normal"><a href="#__codelineno-0-235">235</a></span>
+<span class="normal"><a href="#__codelineno-0-236">236</a></span>
+<span class="normal"><a href="#__codelineno-0-237">237</a></span>
+<span class="normal"><a href="#__codelineno-0-238">238</a></span>
+<span class="normal"><a href="#__codelineno-0-239">239</a></span>
+<span class="normal"><a href="#__codelineno-0-240">240</a></span>
+<span class="normal"><a href="#__codelineno-0-241">241</a></span>
+<span class="normal"><a href="#__codelineno-0-242">242</a></span>
+<span class="normal"><a href="#__codelineno-0-243">243</a></span>
+<span class="normal"><a href="#__codelineno-0-244">244</a></span>
+<span class="normal"><a href="#__codelineno-0-245">245</a></span>
+<span class="normal"><a href="#__codelineno-0-246">246</a></span>
+<span class="normal"><a href="#__codelineno-0-247">247</a></span>
+<span class="normal"><a href="#__codelineno-0-248">248</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-222" name="__codelineno-0-222"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_before_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-223" name="__codelineno-0-223"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Train a drone and split workers before managers are set up</span>
+<a id="__codelineno-0-224" name="__codelineno-0-224"></a>
+<a id="__codelineno-0-225" name="__codelineno-0-225"></a><span class="sd">    Called before bot properly initializes</span>
+<a id="__codelineno-0-226" name="__codelineno-0-226"></a>
+<a id="__codelineno-0-227" name="__codelineno-0-227"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-228" name="__codelineno-0-228"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-229" name="__codelineno-0-229"></a><span class="sd">    None</span>
+<a id="__codelineno-0-230" name="__codelineno-0-230"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-231" name="__codelineno-0-231"></a>    <span class="c1"># optional build order config from a user, add to the existing config dictionary</span>
+<a id="__codelineno-0-232" name="__codelineno-0-232"></a>    <span class="n">__user_build_orders_location__</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<a id="__codelineno-0-233" name="__codelineno-0-233"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">__user_config_location__</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">race</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="si">}</span><span class="s2">_builds.yml&quot;</span>
+<a id="__codelineno-0-234" name="__codelineno-0-234"></a>    <span class="p">)</span>
+<a id="__codelineno-0-235" name="__codelineno-0-235"></a>    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">__user_build_orders_location__</span><span class="p">):</span>
+<a id="__codelineno-0-236" name="__codelineno-0-236"></a>        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">__user_build_orders_location__</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">config_file</span><span class="p">:</span>
+<a id="__codelineno-0-237" name="__codelineno-0-237"></a>            <span class="n">build_order_config</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span>
+<a id="__codelineno-0-238" name="__codelineno-0-238"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">build_order_config</span><span class="p">)</span>
+<a id="__codelineno-0-239" name="__codelineno-0-239"></a>
+<a id="__codelineno-0-240" name="__codelineno-0-240"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">gas_type</span> <span class="o">=</span> <span class="n">race_gas</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">race</span><span class="p">]</span>
+<a id="__codelineno-0-241" name="__codelineno-0-241"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">worker_type</span> <span class="o">=</span> <span class="n">race_worker</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">race</span><span class="p">]</span>
+<a id="__codelineno-0-242" name="__codelineno-0-242"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">supply_type</span> <span class="o">=</span> <span class="n">RACE_SUPPLY</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">race</span><span class="p">]</span>
+<a id="__codelineno-0-243" name="__codelineno-0-243"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">race</span> <span class="o">!=</span> <span class="n">Race</span><span class="o">.</span><span class="n">Zerg</span><span class="p">:</span>
+<a id="__codelineno-0-244" name="__codelineno-0-244"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">base_townhall_type</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-0-245" name="__codelineno-0-245"></a>            <span class="n">UnitID</span><span class="o">.</span><span class="n">COMMANDCENTER</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">race</span> <span class="o">==</span> <span class="n">Race</span><span class="o">.</span><span class="n">Terran</span> <span class="k">else</span> <span class="n">UnitID</span><span class="o">.</span><span class="n">NEXUS</span>
+<a id="__codelineno-0-246" name="__codelineno-0-246"></a>        <span class="p">)</span>
+<a id="__codelineno-0-247" name="__codelineno-0-247"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-248" name="__codelineno-0-248"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">base_townhall_type</span> <span class="o">=</span> <span class="n">UnitID</span><span class="o">.</span><span class="n">HATCHERY</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_building_construction_complete" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_building_construction_complete</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_building_construction_complete" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_building_construction_complete</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>On structure completion event (own units)</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>unit</code></td>
+          <td>
+                <code><span title="sc2.unit.Unit">Unit</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The Unit that just finished building</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-426">426</a></span>
+<span class="normal"><a href="#__codelineno-0-427">427</a></span>
+<span class="normal"><a href="#__codelineno-0-428">428</a></span>
+<span class="normal"><a href="#__codelineno-0-429">429</a></span>
+<span class="normal"><a href="#__codelineno-0-430">430</a></span>
+<span class="normal"><a href="#__codelineno-0-431">431</a></span>
+<span class="normal"><a href="#__codelineno-0-432">432</a></span>
+<span class="normal"><a href="#__codelineno-0-433">433</a></span>
+<span class="normal"><a href="#__codelineno-0-434">434</a></span>
+<span class="normal"><a href="#__codelineno-0-435">435</a></span>
+<span class="normal"><a href="#__codelineno-0-436">436</a></span>
+<span class="normal"><a href="#__codelineno-0-437">437</a></span>
+<span class="normal"><a href="#__codelineno-0-438">438</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-426" name="__codelineno-0-426"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_building_construction_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-427" name="__codelineno-0-427"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;On structure completion event (own units)</span>
+<a id="__codelineno-0-428" name="__codelineno-0-428"></a>
+<a id="__codelineno-0-429" name="__codelineno-0-429"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-430" name="__codelineno-0-430"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-431" name="__codelineno-0-431"></a><span class="sd">    unit :</span>
+<a id="__codelineno-0-432" name="__codelineno-0-432"></a><span class="sd">        The Unit that just finished building</span>
+<a id="__codelineno-0-433" name="__codelineno-0-433"></a>
+<a id="__codelineno-0-434" name="__codelineno-0-434"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-435" name="__codelineno-0-435"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-436" name="__codelineno-0-436"></a><span class="sd">    None</span>
+<a id="__codelineno-0-437" name="__codelineno-0-437"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-438" name="__codelineno-0-438"></a>    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">on_structure_complete</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_building_construction_started" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_building_construction_started</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_building_construction_started" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_building_construction_started</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>On structure starting</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>unit</code></td>
+          <td>
+                <code><span title="sc2.unit.Unit">Unit</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-484">484</a></span>
+<span class="normal"><a href="#__codelineno-0-485">485</a></span>
+<span class="normal"><a href="#__codelineno-0-486">486</a></span>
+<span class="normal"><a href="#__codelineno-0-487">487</a></span>
+<span class="normal"><a href="#__codelineno-0-488">488</a></span>
+<span class="normal"><a href="#__codelineno-0-489">489</a></span>
+<span class="normal"><a href="#__codelineno-0-490">490</a></span>
+<span class="normal"><a href="#__codelineno-0-491">491</a></span>
+<span class="normal"><a href="#__codelineno-0-492">492</a></span>
+<span class="normal"><a href="#__codelineno-0-493">493</a></span>
+<span class="normal"><a href="#__codelineno-0-494">494</a></span>
+<span class="normal"><a href="#__codelineno-0-495">495</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-484" name="__codelineno-0-484"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_building_construction_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-485" name="__codelineno-0-485"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;On structure starting</span>
+<a id="__codelineno-0-486" name="__codelineno-0-486"></a>
+<a id="__codelineno-0-487" name="__codelineno-0-487"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-488" name="__codelineno-0-488"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-489" name="__codelineno-0-489"></a><span class="sd">    unit :</span>
+<a id="__codelineno-0-490" name="__codelineno-0-490"></a>
+<a id="__codelineno-0-491" name="__codelineno-0-491"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-492" name="__codelineno-0-492"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-493" name="__codelineno-0-493"></a><span class="sd">    None</span>
+<a id="__codelineno-0-494" name="__codelineno-0-494"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-495" name="__codelineno-0-495"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">on_building_started</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_end" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_end</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_end" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_end</span><span class="p">(</span><span class="n">game_result</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Output game info to the log and save data (if enabled)</p>
+<p>Called on game end</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>game_result</code></td>
+          <td>
+                <code><span title="sc2.data.Result">Result</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The game result</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-399">399</a></span>
+<span class="normal"><a href="#__codelineno-0-400">400</a></span>
+<span class="normal"><a href="#__codelineno-0-401">401</a></span>
+<span class="normal"><a href="#__codelineno-0-402">402</a></span>
+<span class="normal"><a href="#__codelineno-0-403">403</a></span>
+<span class="normal"><a href="#__codelineno-0-404">404</a></span>
+<span class="normal"><a href="#__codelineno-0-405">405</a></span>
+<span class="normal"><a href="#__codelineno-0-406">406</a></span>
+<span class="normal"><a href="#__codelineno-0-407">407</a></span>
+<span class="normal"><a href="#__codelineno-0-408">408</a></span>
+<span class="normal"><a href="#__codelineno-0-409">409</a></span>
+<span class="normal"><a href="#__codelineno-0-410">410</a></span>
+<span class="normal"><a href="#__codelineno-0-411">411</a></span>
+<span class="normal"><a href="#__codelineno-0-412">412</a></span>
+<span class="normal"><a href="#__codelineno-0-413">413</a></span>
+<span class="normal"><a href="#__codelineno-0-414">414</a></span>
+<span class="normal"><a href="#__codelineno-0-415">415</a></span>
+<span class="normal"><a href="#__codelineno-0-416">416</a></span>
+<span class="normal"><a href="#__codelineno-0-417">417</a></span>
+<span class="normal"><a href="#__codelineno-0-418">418</a></span>
+<span class="normal"><a href="#__codelineno-0-419">419</a></span>
+<span class="normal"><a href="#__codelineno-0-420">420</a></span>
+<span class="normal"><a href="#__codelineno-0-421">421</a></span>
+<span class="normal"><a href="#__codelineno-0-422">422</a></span>
+<span class="normal"><a href="#__codelineno-0-423">423</a></span>
+<span class="normal"><a href="#__codelineno-0-424">424</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-399" name="__codelineno-0-399"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game_result</span><span class="p">:</span> <span class="n">Result</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-400" name="__codelineno-0-400"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Output game info to the log and save data (if enabled)</span>
+<a id="__codelineno-0-401" name="__codelineno-0-401"></a>
+<a id="__codelineno-0-402" name="__codelineno-0-402"></a><span class="sd">    Called on game end</span>
+<a id="__codelineno-0-403" name="__codelineno-0-403"></a>
+<a id="__codelineno-0-404" name="__codelineno-0-404"></a>
+<a id="__codelineno-0-405" name="__codelineno-0-405"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-406" name="__codelineno-0-406"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-407" name="__codelineno-0-407"></a><span class="sd">    game_result : Result</span>
+<a id="__codelineno-0-408" name="__codelineno-0-408"></a><span class="sd">        The game result</span>
+<a id="__codelineno-0-409" name="__codelineno-0-409"></a>
+<a id="__codelineno-0-410" name="__codelineno-0-410"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-411" name="__codelineno-0-411"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-412" name="__codelineno-0-412"></a><span class="sd">    None</span>
+<a id="__codelineno-0-413" name="__codelineno-0-413"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-414" name="__codelineno-0-414"></a>    <span class="c1"># TODO: Put this in a method somewhere</span>
+<a id="__codelineno-0-415" name="__codelineno-0-415"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;END GAME REPORT&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-416" name="__codelineno-0-416"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Idle worker time: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">idle_worker_time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-417" name="__codelineno-0-417"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Killed value units: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">killed_value_units</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-418" name="__codelineno-0-418"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+<a id="__codelineno-0-419" name="__codelineno-0-419"></a>        <span class="sa">f</span><span class="s2">&quot;Killed value structures: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">killed_value_structures</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-0-420" name="__codelineno-0-420"></a>    <span class="p">)</span>
+<a id="__codelineno-0-421" name="__codelineno-0-421"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collected minerals: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">collected_minerals</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-422" name="__codelineno-0-422"></a>    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Collected vespene: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">score</span><span class="o">.</span><span class="n">collected_vespene</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-0-423" name="__codelineno-0-423"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">USE_DATA</span><span class="p">]:</span>
+<a id="__codelineno-0-424" name="__codelineno-0-424"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">on_game_end</span><span class="p">(</span><span class="n">game_result</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_start" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_start</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_start" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_start</span><span class="p">()</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Set up game step, managers, and information that requires game data</p>
+<p>Called just before the first step, all game info is available</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-250">250</a></span>
+<span class="normal"><a href="#__codelineno-0-251">251</a></span>
+<span class="normal"><a href="#__codelineno-0-252">252</a></span>
+<span class="normal"><a href="#__codelineno-0-253">253</a></span>
+<span class="normal"><a href="#__codelineno-0-254">254</a></span>
+<span class="normal"><a href="#__codelineno-0-255">255</a></span>
+<span class="normal"><a href="#__codelineno-0-256">256</a></span>
+<span class="normal"><a href="#__codelineno-0-257">257</a></span>
+<span class="normal"><a href="#__codelineno-0-258">258</a></span>
+<span class="normal"><a href="#__codelineno-0-259">259</a></span>
+<span class="normal"><a href="#__codelineno-0-260">260</a></span>
+<span class="normal"><a href="#__codelineno-0-261">261</a></span>
+<span class="normal"><a href="#__codelineno-0-262">262</a></span>
+<span class="normal"><a href="#__codelineno-0-263">263</a></span>
+<span class="normal"><a href="#__codelineno-0-264">264</a></span>
+<span class="normal"><a href="#__codelineno-0-265">265</a></span>
+<span class="normal"><a href="#__codelineno-0-266">266</a></span>
+<span class="normal"><a href="#__codelineno-0-267">267</a></span>
+<span class="normal"><a href="#__codelineno-0-268">268</a></span>
+<span class="normal"><a href="#__codelineno-0-269">269</a></span>
+<span class="normal"><a href="#__codelineno-0-270">270</a></span>
+<span class="normal"><a href="#__codelineno-0-271">271</a></span>
+<span class="normal"><a href="#__codelineno-0-272">272</a></span>
+<span class="normal"><a href="#__codelineno-0-273">273</a></span>
+<span class="normal"><a href="#__codelineno-0-274">274</a></span>
+<span class="normal"><a href="#__codelineno-0-275">275</a></span>
+<span class="normal"><a href="#__codelineno-0-276">276</a></span>
+<span class="normal"><a href="#__codelineno-0-277">277</a></span>
+<span class="normal"><a href="#__codelineno-0-278">278</a></span>
+<span class="normal"><a href="#__codelineno-0-279">279</a></span>
+<span class="normal"><a href="#__codelineno-0-280">280</a></span>
+<span class="normal"><a href="#__codelineno-0-281">281</a></span>
+<span class="normal"><a href="#__codelineno-0-282">282</a></span>
+<span class="normal"><a href="#__codelineno-0-283">283</a></span>
+<span class="normal"><a href="#__codelineno-0-284">284</a></span>
+<span class="normal"><a href="#__codelineno-0-285">285</a></span>
+<span class="normal"><a href="#__codelineno-0-286">286</a></span>
+<span class="normal"><a href="#__codelineno-0-287">287</a></span>
+<span class="normal"><a href="#__codelineno-0-288">288</a></span>
+<span class="normal"><a href="#__codelineno-0-289">289</a></span>
+<span class="normal"><a href="#__codelineno-0-290">290</a></span>
+<span class="normal"><a href="#__codelineno-0-291">291</a></span>
+<span class="normal"><a href="#__codelineno-0-292">292</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-250" name="__codelineno-0-250"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-251" name="__codelineno-0-251"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up game step, managers, and information that requires game data</span>
+<a id="__codelineno-0-252" name="__codelineno-0-252"></a>
+<a id="__codelineno-0-253" name="__codelineno-0-253"></a><span class="sd">    Called just before the first step, all game info is available</span>
+<a id="__codelineno-0-254" name="__codelineno-0-254"></a>
+<a id="__codelineno-0-255" name="__codelineno-0-255"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-256" name="__codelineno-0-256"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-257" name="__codelineno-0-257"></a><span class="sd">    None</span>
+<a id="__codelineno-0-258" name="__codelineno-0-258"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-259" name="__codelineno-0-259"></a>    <span class="c1"># manually skip the frames in realtime</span>
+<a id="__codelineno-0-260" name="__codelineno-0-260"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtime</span><span class="p">:</span>
+<a id="__codelineno-0-261" name="__codelineno-0-261"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">game_step</span> <span class="o">=</span> <span class="mi">1</span>
+<a id="__codelineno-0-262" name="__codelineno-0-262"></a>    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_step_override</span><span class="p">:</span>
+<a id="__codelineno-0-263" name="__codelineno-0-263"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">game_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">game_step_override</span>
+<a id="__codelineno-0-264" name="__codelineno-0-264"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-0-265" name="__codelineno-0-265"></a>        <span class="c1"># set the game step from config</span>
+<a id="__codelineno-0-266" name="__codelineno-0-266"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">game_step</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-0-267" name="__codelineno-0-267"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">GAME_STEP</span><span class="p">]</span>
+<a id="__codelineno-0-268" name="__codelineno-0-268"></a>            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">DEBUG</span><span class="p">]</span>
+<a id="__codelineno-0-269" name="__codelineno-0-269"></a>            <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">DEBUG_GAME_STEP</span><span class="p">]</span>
+<a id="__codelineno-0-270" name="__codelineno-0-270"></a>        <span class="p">)</span>
+<a id="__codelineno-0-271" name="__codelineno-0-271"></a>
+<a id="__codelineno-0-272" name="__codelineno-0-272"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">enemy_start_locations</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">townhalls</span><span class="p">:</span>
+<a id="__codelineno-0-273" name="__codelineno-0-273"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">arcade_mode</span> <span class="o">=</span> <span class="kc">True</span>
+<a id="__codelineno-0-274" name="__codelineno-0-274"></a>
+<a id="__codelineno-0-275" name="__codelineno-0-275"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">register_managers</span><span class="p">()</span>
+<a id="__codelineno-0-276" name="__codelineno-0-276"></a>
+<a id="__codelineno-0-277" name="__codelineno-0-277"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">build_order_runner</span><span class="p">:</span> <span class="n">BuildOrderRunner</span> <span class="o">=</span> <span class="n">BuildOrderRunner</span><span class="p">(</span>
+<a id="__codelineno-0-278" name="__codelineno-0-278"></a>        <span class="bp">self</span><span class="p">,</span>
+<a id="__codelineno-0-279" name="__codelineno-0-279"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">data_manager</span><span class="o">.</span><span class="n">chosen_opening</span><span class="p">,</span>
+<a id="__codelineno-0-280" name="__codelineno-0-280"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span>
+<a id="__codelineno-0-281" name="__codelineno-0-281"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">manager_mediator</span><span class="p">,</span>
+<a id="__codelineno-0-282" name="__codelineno-0-282"></a>    <span class="p">)</span>
+<a id="__codelineno-0-283" name="__codelineno-0-283"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">behavior_executioner</span><span class="p">:</span> <span class="n">BehaviorExecutioner</span> <span class="o">=</span> <span class="n">BehaviorExecutioner</span><span class="p">(</span>
+<a id="__codelineno-0-284" name="__codelineno-0-284"></a>        <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">manager_mediator</span>
+<a id="__codelineno-0-285" name="__codelineno-0-285"></a>    <span class="p">)</span>
+<a id="__codelineno-0-286" name="__codelineno-0-286"></a>
+<a id="__codelineno-0-287" name="__codelineno-0-287"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">DEBUG</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="n">DEBUG_OPTIONS</span><span class="p">][</span><span class="n">CHAT_DEBUG</span><span class="p">]:</span>
+<a id="__codelineno-0-288" name="__codelineno-0-288"></a>        <span class="kn">from</span> <span class="nn">ares.chat_debug</span> <span class="kn">import</span> <span class="n">ChatDebug</span>
+<a id="__codelineno-0-289" name="__codelineno-0-289"></a>
+<a id="__codelineno-0-290" name="__codelineno-0-290"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">chat_debug</span> <span class="o">=</span> <span class="n">ChatDebug</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<a id="__codelineno-0-291" name="__codelineno-0-291"></a>
+<a id="__codelineno-0-292" name="__codelineno-0-292"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">cost_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">UnitID</span><span class="p">,</span> <span class="n">Cost</span><span class="p">]</span> <span class="o">=</span> <span class="n">COST_DICT</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_step" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_step</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_step" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_step</span><span class="p">(</span><span class="n">iteration</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Play the game</p>
+<p>Called on every game step</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>iteration</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The current game iteration</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-322">322</a></span>
+<span class="normal"><a href="#__codelineno-0-323">323</a></span>
+<span class="normal"><a href="#__codelineno-0-324">324</a></span>
+<span class="normal"><a href="#__codelineno-0-325">325</a></span>
+<span class="normal"><a href="#__codelineno-0-326">326</a></span>
+<span class="normal"><a href="#__codelineno-0-327">327</a></span>
+<span class="normal"><a href="#__codelineno-0-328">328</a></span>
+<span class="normal"><a href="#__codelineno-0-329">329</a></span>
+<span class="normal"><a href="#__codelineno-0-330">330</a></span>
+<span class="normal"><a href="#__codelineno-0-331">331</a></span>
+<span class="normal"><a href="#__codelineno-0-332">332</a></span>
+<span class="normal"><a href="#__codelineno-0-333">333</a></span>
+<span class="normal"><a href="#__codelineno-0-334">334</a></span>
+<span class="normal"><a href="#__codelineno-0-335">335</a></span>
+<span class="normal"><a href="#__codelineno-0-336">336</a></span>
+<span class="normal"><a href="#__codelineno-0-337">337</a></span>
+<span class="normal"><a href="#__codelineno-0-338">338</a></span>
+<span class="normal"><a href="#__codelineno-0-339">339</a></span>
+<span class="normal"><a href="#__codelineno-0-340">340</a></span>
+<span class="normal"><a href="#__codelineno-0-341">341</a></span>
+<span class="normal"><a href="#__codelineno-0-342">342</a></span>
+<span class="normal"><a href="#__codelineno-0-343">343</a></span>
+<span class="normal"><a href="#__codelineno-0-344">344</a></span>
+<span class="normal"><a href="#__codelineno-0-345">345</a></span>
+<span class="normal"><a href="#__codelineno-0-346">346</a></span>
+<span class="normal"><a href="#__codelineno-0-347">347</a></span>
+<span class="normal"><a href="#__codelineno-0-348">348</a></span>
+<span class="normal"><a href="#__codelineno-0-349">349</a></span>
+<span class="normal"><a href="#__codelineno-0-350">350</a></span>
+<span class="normal"><a href="#__codelineno-0-351">351</a></span>
+<span class="normal"><a href="#__codelineno-0-352">352</a></span>
+<span class="normal"><a href="#__codelineno-0-353">353</a></span>
+<span class="normal"><a href="#__codelineno-0-354">354</a></span>
+<span class="normal"><a href="#__codelineno-0-355">355</a></span>
+<span class="normal"><a href="#__codelineno-0-356">356</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-322" name="__codelineno-0-322"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iteration</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-323" name="__codelineno-0-323"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Play the game</span>
+<a id="__codelineno-0-324" name="__codelineno-0-324"></a>
+<a id="__codelineno-0-325" name="__codelineno-0-325"></a><span class="sd">    Called on every game step</span>
+<a id="__codelineno-0-326" name="__codelineno-0-326"></a>
+<a id="__codelineno-0-327" name="__codelineno-0-327"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-328" name="__codelineno-0-328"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-329" name="__codelineno-0-329"></a><span class="sd">    iteration : int</span>
+<a id="__codelineno-0-330" name="__codelineno-0-330"></a><span class="sd">        The current game iteration</span>
+<a id="__codelineno-0-331" name="__codelineno-0-331"></a>
+<a id="__codelineno-0-332" name="__codelineno-0-332"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-333" name="__codelineno-0-333"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-334" name="__codelineno-0-334"></a><span class="sd">    None</span>
+<a id="__codelineno-0-335" name="__codelineno-0-335"></a>
+<a id="__codelineno-0-336" name="__codelineno-0-336"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-337" name="__codelineno-0-337"></a>
+<a id="__codelineno-0-338" name="__codelineno-0-338"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-339" name="__codelineno-0-339"></a><span class="sd">    If playing in realtime, we set the game step to 1 (in on_start) and then</span>
+<a id="__codelineno-0-340" name="__codelineno-0-340"></a><span class="sd">    manually skip frames. This gives Ares a time limit of 4 frames (45ms per frame)</span>
+<a id="__codelineno-0-341" name="__codelineno-0-341"></a><span class="sd">    to finish an iteration. Playing every 4th frame seems to be the generally</span>
+<a id="__codelineno-0-342" name="__codelineno-0-342"></a><span class="sd">    accepted solution to prevent weird things going on. And from Ares&#39; point of</span>
+<a id="__codelineno-0-343" name="__codelineno-0-343"></a><span class="sd">    view, they have a better chance of running smoothly on older PC&#39;s.</span>
+<a id="__codelineno-0-344" name="__codelineno-0-344"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-345" name="__codelineno-0-345"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">realtime</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_game_loop</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">game_loop</span><span class="p">:</span>
+<a id="__codelineno-0-346" name="__codelineno-0-346"></a>        <span class="k">return</span>
+<a id="__codelineno-0-347" name="__codelineno-0-347"></a>
+<a id="__codelineno-0-348" name="__codelineno-0-348"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">last_game_loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">game_loop</span>
+<a id="__codelineno-0-349" name="__codelineno-0-349"></a>
+<a id="__codelineno-0-350" name="__codelineno-0-350"></a>    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">update_managers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">actual_iteration</span><span class="p">)</span>
+<a id="__codelineno-0-351" name="__codelineno-0-351"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_order_runner</span><span class="o">.</span><span class="n">build_completed</span><span class="p">:</span>
+<a id="__codelineno-0-352" name="__codelineno-0-352"></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_order_runner</span><span class="o">.</span><span class="n">run_build</span><span class="p">()</span>
+<a id="__codelineno-0-353" name="__codelineno-0-353"></a>
+<a id="__codelineno-0-354" name="__codelineno-0-354"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">actual_iteration</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-0-355" name="__codelineno-0-355"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_debug</span><span class="p">:</span>
+<a id="__codelineno-0-356" name="__codelineno-0-356"></a>        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">chat_debug</span><span class="o">.</span><span class="n">parse_commands</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_unit_created" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_unit_created</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_unit_created" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_unit_created</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>On unit created event (own units)</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>unit</code></td>
+          <td>
+                <code><span title="sc2.unit.Unit">Unit</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The Unit that was just created</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-440">440</a></span>
+<span class="normal"><a href="#__codelineno-0-441">441</a></span>
+<span class="normal"><a href="#__codelineno-0-442">442</a></span>
+<span class="normal"><a href="#__codelineno-0-443">443</a></span>
+<span class="normal"><a href="#__codelineno-0-444">444</a></span>
+<span class="normal"><a href="#__codelineno-0-445">445</a></span>
+<span class="normal"><a href="#__codelineno-0-446">446</a></span>
+<span class="normal"><a href="#__codelineno-0-447">447</a></span>
+<span class="normal"><a href="#__codelineno-0-448">448</a></span>
+<span class="normal"><a href="#__codelineno-0-449">449</a></span>
+<span class="normal"><a href="#__codelineno-0-450">450</a></span>
+<span class="normal"><a href="#__codelineno-0-451">451</a></span>
+<span class="normal"><a href="#__codelineno-0-452">452</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-440" name="__codelineno-0-440"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_unit_created</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-441" name="__codelineno-0-441"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;On unit created event (own units)</span>
+<a id="__codelineno-0-442" name="__codelineno-0-442"></a>
+<a id="__codelineno-0-443" name="__codelineno-0-443"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-444" name="__codelineno-0-444"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-445" name="__codelineno-0-445"></a><span class="sd">    unit :</span>
+<a id="__codelineno-0-446" name="__codelineno-0-446"></a><span class="sd">        The Unit that was just created</span>
+<a id="__codelineno-0-447" name="__codelineno-0-447"></a>
+<a id="__codelineno-0-448" name="__codelineno-0-448"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-449" name="__codelineno-0-449"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-450" name="__codelineno-0-450"></a><span class="sd">    None</span>
+<a id="__codelineno-0-451" name="__codelineno-0-451"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-452" name="__codelineno-0-452"></a>    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">on_unit_created</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_unit_destroyed" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_unit_destroyed</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_unit_destroyed" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_unit_destroyed</span><span class="p">(</span><span class="n">unit_tag</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>On unit or structure destroyed event</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>unit_tag</code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The tag of the unit that was just destroyed</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-454">454</a></span>
+<span class="normal"><a href="#__codelineno-0-455">455</a></span>
+<span class="normal"><a href="#__codelineno-0-456">456</a></span>
+<span class="normal"><a href="#__codelineno-0-457">457</a></span>
+<span class="normal"><a href="#__codelineno-0-458">458</a></span>
+<span class="normal"><a href="#__codelineno-0-459">459</a></span>
+<span class="normal"><a href="#__codelineno-0-460">460</a></span>
+<span class="normal"><a href="#__codelineno-0-461">461</a></span>
+<span class="normal"><a href="#__codelineno-0-462">462</a></span>
+<span class="normal"><a href="#__codelineno-0-463">463</a></span>
+<span class="normal"><a href="#__codelineno-0-464">464</a></span>
+<span class="normal"><a href="#__codelineno-0-465">465</a></span>
+<span class="normal"><a href="#__codelineno-0-466">466</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-454" name="__codelineno-0-454"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_unit_destroyed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_tag</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-455" name="__codelineno-0-455"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;On unit or structure destroyed event</span>
+<a id="__codelineno-0-456" name="__codelineno-0-456"></a>
+<a id="__codelineno-0-457" name="__codelineno-0-457"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-458" name="__codelineno-0-458"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-459" name="__codelineno-0-459"></a><span class="sd">    unit_tag :</span>
+<a id="__codelineno-0-460" name="__codelineno-0-460"></a><span class="sd">        The tag of the unit that was just destroyed</span>
+<a id="__codelineno-0-461" name="__codelineno-0-461"></a>
+<a id="__codelineno-0-462" name="__codelineno-0-462"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-463" name="__codelineno-0-463"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-464" name="__codelineno-0-464"></a><span class="sd">    None</span>
+<a id="__codelineno-0-465" name="__codelineno-0-465"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-466" name="__codelineno-0-466"></a>    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">on_unit_destroyed</span><span class="p">(</span><span class="n">unit_tag</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.on_unit_took_damage" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">on_unit_took_damage</span>
+
+  
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-async"><code>async</code></small>
+  </span>
+
+<a href="#ares.main.AresBot.on_unit_took_damage" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">on_unit_took_damage</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">amount_damage_taken</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>On unit or structure taking damage</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>unit</code></td>
+          <td>
+                <code><span title="sc2.unit.Unit">Unit</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The Unit that took damage</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+        <tr>
+          <td><code>amount_damage_taken</code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The amount of damage the Unit took</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-468">468</a></span>
+<span class="normal"><a href="#__codelineno-0-469">469</a></span>
+<span class="normal"><a href="#__codelineno-0-470">470</a></span>
+<span class="normal"><a href="#__codelineno-0-471">471</a></span>
+<span class="normal"><a href="#__codelineno-0-472">472</a></span>
+<span class="normal"><a href="#__codelineno-0-473">473</a></span>
+<span class="normal"><a href="#__codelineno-0-474">474</a></span>
+<span class="normal"><a href="#__codelineno-0-475">475</a></span>
+<span class="normal"><a href="#__codelineno-0-476">476</a></span>
+<span class="normal"><a href="#__codelineno-0-477">477</a></span>
+<span class="normal"><a href="#__codelineno-0-478">478</a></span>
+<span class="normal"><a href="#__codelineno-0-479">479</a></span>
+<span class="normal"><a href="#__codelineno-0-480">480</a></span>
+<span class="normal"><a href="#__codelineno-0-481">481</a></span>
+<span class="normal"><a href="#__codelineno-0-482">482</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-468" name="__codelineno-0-468"></a><span class="k">async</span> <span class="k">def</span> <span class="nf">on_unit_took_damage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="p">:</span> <span class="n">Unit</span><span class="p">,</span> <span class="n">amount_damage_taken</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-469" name="__codelineno-0-469"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;On unit or structure taking damage</span>
+<a id="__codelineno-0-470" name="__codelineno-0-470"></a>
+<a id="__codelineno-0-471" name="__codelineno-0-471"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-472" name="__codelineno-0-472"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-473" name="__codelineno-0-473"></a><span class="sd">    unit :</span>
+<a id="__codelineno-0-474" name="__codelineno-0-474"></a><span class="sd">        The Unit that took damage</span>
+<a id="__codelineno-0-475" name="__codelineno-0-475"></a><span class="sd">    amount_damage_taken :</span>
+<a id="__codelineno-0-476" name="__codelineno-0-476"></a><span class="sd">        The amount of damage the Unit took</span>
+<a id="__codelineno-0-477" name="__codelineno-0-477"></a>
+<a id="__codelineno-0-478" name="__codelineno-0-478"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-479" name="__codelineno-0-479"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-480" name="__codelineno-0-480"></a><span class="sd">    None</span>
+<a id="__codelineno-0-481" name="__codelineno-0-481"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-482" name="__codelineno-0-482"></a>    <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">on_unit_took_damage</span><span class="p">(</span><span class="n">unit</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.register_behavior" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">register_behavior</span>
+
+
+<a href="#ares.main.AresBot.register_behavior" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">register_behavior</span><span class="p">(</span><span class="n">behavior</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Register behavior.</p>
+<p>Shortcut to <code>self.behavior_executioner.register_behavior</code></p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>behavior</code></td>
+          <td>
+                <code><span title="ares.behaviors.behavior.Behavior">Behavior</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Class that follows the Behavior interface.</p>
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-369">369</a></span>
+<span class="normal"><a href="#__codelineno-0-370">370</a></span>
+<span class="normal"><a href="#__codelineno-0-371">371</a></span>
+<span class="normal"><a href="#__codelineno-0-372">372</a></span>
+<span class="normal"><a href="#__codelineno-0-373">373</a></span>
+<span class="normal"><a href="#__codelineno-0-374">374</a></span>
+<span class="normal"><a href="#__codelineno-0-375">375</a></span>
+<span class="normal"><a href="#__codelineno-0-376">376</a></span>
+<span class="normal"><a href="#__codelineno-0-377">377</a></span>
+<span class="normal"><a href="#__codelineno-0-378">378</a></span>
+<span class="normal"><a href="#__codelineno-0-379">379</a></span>
+<span class="normal"><a href="#__codelineno-0-380">380</a></span>
+<span class="normal"><a href="#__codelineno-0-381">381</a></span>
+<span class="normal"><a href="#__codelineno-0-382">382</a></span>
+<span class="normal"><a href="#__codelineno-0-383">383</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-369" name="__codelineno-0-369"></a><span class="k">def</span> <span class="nf">register_behavior</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">behavior</span><span class="p">:</span> <span class="n">Behavior</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-370" name="__codelineno-0-370"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Register behavior.</span>
+<a id="__codelineno-0-371" name="__codelineno-0-371"></a>
+<a id="__codelineno-0-372" name="__codelineno-0-372"></a><span class="sd">    Shortcut to `self.behavior_executioner.register_behavior`</span>
+<a id="__codelineno-0-373" name="__codelineno-0-373"></a>
+<a id="__codelineno-0-374" name="__codelineno-0-374"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-375" name="__codelineno-0-375"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-376" name="__codelineno-0-376"></a><span class="sd">    behavior : Behavior</span>
+<a id="__codelineno-0-377" name="__codelineno-0-377"></a><span class="sd">        Class that follows the Behavior interface.</span>
+<a id="__codelineno-0-378" name="__codelineno-0-378"></a>
+<a id="__codelineno-0-379" name="__codelineno-0-379"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-380" name="__codelineno-0-380"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-381" name="__codelineno-0-381"></a><span class="sd">    None</span>
+<a id="__codelineno-0-382" name="__codelineno-0-382"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-383" name="__codelineno-0-383"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">behavior_executioner</span><span class="o">.</span><span class="n">register_behavior</span><span class="p">(</span><span class="n">behavior</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.register_managers" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">register_managers</span>
+
+
+<a href="#ares.main.AresBot.register_managers" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">register_managers</span><span class="p">()</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Register standard and custom managers.</p>
+<p>Override in your bot class if you wish to use custom managers.</p>
+
+
+
+<p><strong>Examples:</strong></p>
+    <p>custom_production_manager = CustomProductionManager(
+    self, self.config, manager_mediator
+)
+new_manager = NewManager(self, self.config, manager_mediator)</p>
+<p>self.manager_hub = Hub(
+    self,
+    self.config,
+    manager_mediator,
+    production_manager=custom_production_manager,
+    additional_managers=[new_manager],
+)</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>None</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-294">294</a></span>
+<span class="normal"><a href="#__codelineno-0-295">295</a></span>
+<span class="normal"><a href="#__codelineno-0-296">296</a></span>
+<span class="normal"><a href="#__codelineno-0-297">297</a></span>
+<span class="normal"><a href="#__codelineno-0-298">298</a></span>
+<span class="normal"><a href="#__codelineno-0-299">299</a></span>
+<span class="normal"><a href="#__codelineno-0-300">300</a></span>
+<span class="normal"><a href="#__codelineno-0-301">301</a></span>
+<span class="normal"><a href="#__codelineno-0-302">302</a></span>
+<span class="normal"><a href="#__codelineno-0-303">303</a></span>
+<span class="normal"><a href="#__codelineno-0-304">304</a></span>
+<span class="normal"><a href="#__codelineno-0-305">305</a></span>
+<span class="normal"><a href="#__codelineno-0-306">306</a></span>
+<span class="normal"><a href="#__codelineno-0-307">307</a></span>
+<span class="normal"><a href="#__codelineno-0-308">308</a></span>
+<span class="normal"><a href="#__codelineno-0-309">309</a></span>
+<span class="normal"><a href="#__codelineno-0-310">310</a></span>
+<span class="normal"><a href="#__codelineno-0-311">311</a></span>
+<span class="normal"><a href="#__codelineno-0-312">312</a></span>
+<span class="normal"><a href="#__codelineno-0-313">313</a></span>
+<span class="normal"><a href="#__codelineno-0-314">314</a></span>
+<span class="normal"><a href="#__codelineno-0-315">315</a></span>
+<span class="normal"><a href="#__codelineno-0-316">316</a></span>
+<span class="normal"><a href="#__codelineno-0-317">317</a></span>
+<span class="normal"><a href="#__codelineno-0-318">318</a></span>
+<span class="normal"><a href="#__codelineno-0-319">319</a></span>
+<span class="normal"><a href="#__codelineno-0-320">320</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-294" name="__codelineno-0-294"></a><span class="k">def</span> <span class="nf">register_managers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<a id="__codelineno-0-295" name="__codelineno-0-295"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Register standard and custom managers.</span>
+<a id="__codelineno-0-296" name="__codelineno-0-296"></a>
+<a id="__codelineno-0-297" name="__codelineno-0-297"></a><span class="sd">    Override in your bot class if you wish to use custom managers.</span>
+<a id="__codelineno-0-298" name="__codelineno-0-298"></a>
+<a id="__codelineno-0-299" name="__codelineno-0-299"></a><span class="sd">    Examples</span>
+<a id="__codelineno-0-300" name="__codelineno-0-300"></a><span class="sd">    --------</span>
+<a id="__codelineno-0-301" name="__codelineno-0-301"></a><span class="sd">    custom_production_manager = CustomProductionManager(</span>
+<a id="__codelineno-0-302" name="__codelineno-0-302"></a><span class="sd">        self, self.config, manager_mediator</span>
+<a id="__codelineno-0-303" name="__codelineno-0-303"></a><span class="sd">    )</span>
+<a id="__codelineno-0-304" name="__codelineno-0-304"></a><span class="sd">    new_manager = NewManager(self, self.config, manager_mediator)</span>
+<a id="__codelineno-0-305" name="__codelineno-0-305"></a>
+<a id="__codelineno-0-306" name="__codelineno-0-306"></a><span class="sd">    self.manager_hub = Hub(</span>
+<a id="__codelineno-0-307" name="__codelineno-0-307"></a><span class="sd">        self,</span>
+<a id="__codelineno-0-308" name="__codelineno-0-308"></a><span class="sd">        self.config,</span>
+<a id="__codelineno-0-309" name="__codelineno-0-309"></a><span class="sd">        manager_mediator,</span>
+<a id="__codelineno-0-310" name="__codelineno-0-310"></a><span class="sd">        production_manager=custom_production_manager,</span>
+<a id="__codelineno-0-311" name="__codelineno-0-311"></a><span class="sd">        additional_managers=[new_manager],</span>
+<a id="__codelineno-0-312" name="__codelineno-0-312"></a><span class="sd">    )</span>
+<a id="__codelineno-0-313" name="__codelineno-0-313"></a>
+<a id="__codelineno-0-314" name="__codelineno-0-314"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-315" name="__codelineno-0-315"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-316" name="__codelineno-0-316"></a><span class="sd">    None</span>
+<a id="__codelineno-0-317" name="__codelineno-0-317"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-318" name="__codelineno-0-318"></a>    <span class="n">manager_mediator</span><span class="p">:</span> <span class="n">ManagerMediator</span> <span class="o">=</span> <span class="n">ManagerMediator</span><span class="p">()</span>
+<a id="__codelineno-0-319" name="__codelineno-0-319"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span> <span class="o">=</span> <span class="n">Hub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">manager_mediator</span><span class="p">)</span>
+<a id="__codelineno-0-320" name="__codelineno-0-320"></a>    <span class="bp">self</span><span class="o">.</span><span class="n">manager_hub</span><span class="o">.</span><span class="n">init_managers</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.structure_pending" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">structure_pending</span>
+
+
+<a href="#ares.main.AresBot.structure_pending" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">structure_pending</span><span class="p">(</span><span class="n">structure_type</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Checks pending structures, includes workers on route.
+Alternative and faster version of <code>self.already_pending</code></p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>structure_type</code></td>
+          <td>
+                <code><span title="sc2.ids.unit_typeid.UnitTypeId">UnitTypeId</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-964">964</a></span>
+<span class="normal"><a href="#__codelineno-0-965">965</a></span>
+<span class="normal"><a href="#__codelineno-0-966">966</a></span>
+<span class="normal"><a href="#__codelineno-0-967">967</a></span>
+<span class="normal"><a href="#__codelineno-0-968">968</a></span>
+<span class="normal"><a href="#__codelineno-0-969">969</a></span>
+<span class="normal"><a href="#__codelineno-0-970">970</a></span>
+<span class="normal"><a href="#__codelineno-0-971">971</a></span>
+<span class="normal"><a href="#__codelineno-0-972">972</a></span>
+<span class="normal"><a href="#__codelineno-0-973">973</a></span>
+<span class="normal"><a href="#__codelineno-0-974">974</a></span>
+<span class="normal"><a href="#__codelineno-0-975">975</a></span>
+<span class="normal"><a href="#__codelineno-0-976">976</a></span>
+<span class="normal"><a href="#__codelineno-0-977">977</a></span>
+<span class="normal"><a href="#__codelineno-0-978">978</a></span>
+<span class="normal"><a href="#__codelineno-0-979">979</a></span>
+<span class="normal"><a href="#__codelineno-0-980">980</a></span>
+<span class="normal"><a href="#__codelineno-0-981">981</a></span>
+<span class="normal"><a href="#__codelineno-0-982">982</a></span>
+<span class="normal"><a href="#__codelineno-0-983">983</a></span>
+<span class="normal"><a href="#__codelineno-0-984">984</a></span>
+<span class="normal"><a href="#__codelineno-0-985">985</a></span>
+<span class="normal"><a href="#__codelineno-0-986">986</a></span>
+<span class="normal"><a href="#__codelineno-0-987">987</a></span>
+<span class="normal"><a href="#__codelineno-0-988">988</a></span>
+<span class="normal"><a href="#__codelineno-0-989">989</a></span>
+<span class="normal"><a href="#__codelineno-0-990">990</a></span>
+<span class="normal"><a href="#__codelineno-0-991">991</a></span>
+<span class="normal"><a href="#__codelineno-0-992">992</a></span>
+<span class="normal"><a href="#__codelineno-0-993">993</a></span>
+<span class="normal"><a href="#__codelineno-0-994">994</a></span>
+<span class="normal"><a href="#__codelineno-0-995">995</a></span>
+<span class="normal"><a href="#__codelineno-0-996">996</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-964" name="__codelineno-0-964"></a><span class="k">def</span> <span class="nf">structure_pending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_type</span><span class="p">:</span> <span class="n">UnitID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-0-965" name="__codelineno-0-965"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-966" name="__codelineno-0-966"></a><span class="sd">    Checks pending structures, includes workers on route.</span>
+<a id="__codelineno-0-967" name="__codelineno-0-967"></a><span class="sd">    Alternative and faster version of `self.already_pending`</span>
+<a id="__codelineno-0-968" name="__codelineno-0-968"></a>
+<a id="__codelineno-0-969" name="__codelineno-0-969"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-970" name="__codelineno-0-970"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-971" name="__codelineno-0-971"></a><span class="sd">    structure_type</span>
+<a id="__codelineno-0-972" name="__codelineno-0-972"></a>
+<a id="__codelineno-0-973" name="__codelineno-0-973"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-974" name="__codelineno-0-974"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-975" name="__codelineno-0-975"></a><span class="sd">    int</span>
+<a id="__codelineno-0-976" name="__codelineno-0-976"></a>
+<a id="__codelineno-0-977" name="__codelineno-0-977"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-978" name="__codelineno-0-978"></a>    <span class="n">num_pending</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<a id="__codelineno-0-979" name="__codelineno-0-979"></a>    <span class="n">building_tracker</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_building_tracker_dict</span>
+<a id="__codelineno-0-980" name="__codelineno-0-980"></a>    <span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">building_tracker</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<a id="__codelineno-0-981" name="__codelineno-0-981"></a>        <span class="n">structure_id</span><span class="p">:</span> <span class="n">UnitID</span> <span class="o">=</span> <span class="n">building_tracker</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="n">ID</span><span class="p">]</span>
+<a id="__codelineno-0-982" name="__codelineno-0-982"></a>        <span class="k">if</span> <span class="n">structure_id</span> <span class="o">!=</span> <span class="n">structure_type</span><span class="p">:</span>
+<a id="__codelineno-0-983" name="__codelineno-0-983"></a>            <span class="k">continue</span>
+<a id="__codelineno-0-984" name="__codelineno-0-984"></a>
+<a id="__codelineno-0-985" name="__codelineno-0-985"></a>        <span class="n">num_pending</span> <span class="o">+=</span> <span class="mi">1</span>
+<a id="__codelineno-0-986" name="__codelineno-0-986"></a>
+<a id="__codelineno-0-987" name="__codelineno-0-987"></a>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">race</span> <span class="o">!=</span> <span class="n">Race</span><span class="o">.</span><span class="n">Terran</span> <span class="ow">or</span> <span class="n">structure_type</span> <span class="ow">in</span> <span class="n">ADD_ONS</span><span class="p">:</span>
+<a id="__codelineno-0-988" name="__codelineno-0-988"></a>        <span class="n">num_pending</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span>
+<a id="__codelineno-0-989" name="__codelineno-0-989"></a>            <span class="p">[</span>
+<a id="__codelineno-0-990" name="__codelineno-0-990"></a>                <span class="n">s</span>
+<a id="__codelineno-0-991" name="__codelineno-0-991"></a>                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_own_structures_dict</span><span class="p">[</span><span class="n">structure_type</span><span class="p">]</span>
+<a id="__codelineno-0-992" name="__codelineno-0-992"></a>                <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">build_progress</span> <span class="o">&lt;</span> <span class="mf">1.0</span>
+<a id="__codelineno-0-993" name="__codelineno-0-993"></a>            <span class="p">]</span>
+<a id="__codelineno-0-994" name="__codelineno-0-994"></a>        <span class="p">)</span>
+<a id="__codelineno-0-995" name="__codelineno-0-995"></a>
+<a id="__codelineno-0-996" name="__codelineno-0-996"></a>    <span class="k">return</span> <span class="n">num_pending</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.structure_present_or_pending" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">structure_present_or_pending</span>
+
+
+<a href="#ares.main.AresBot.structure_present_or_pending" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">structure_present_or_pending</span><span class="p">(</span><span class="n">structure_type</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Checks presence of a structure, or if worker is on route to
+build structure.</p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>structure_type</code></td>
+          <td>
+                <code><span title="sc2.ids.unit_typeid.UnitTypeId">UnitTypeId</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>bool</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-929">929</a></span>
+<span class="normal"><a href="#__codelineno-0-930">930</a></span>
+<span class="normal"><a href="#__codelineno-0-931">931</a></span>
+<span class="normal"><a href="#__codelineno-0-932">932</a></span>
+<span class="normal"><a href="#__codelineno-0-933">933</a></span>
+<span class="normal"><a href="#__codelineno-0-934">934</a></span>
+<span class="normal"><a href="#__codelineno-0-935">935</a></span>
+<span class="normal"><a href="#__codelineno-0-936">936</a></span>
+<span class="normal"><a href="#__codelineno-0-937">937</a></span>
+<span class="normal"><a href="#__codelineno-0-938">938</a></span>
+<span class="normal"><a href="#__codelineno-0-939">939</a></span>
+<span class="normal"><a href="#__codelineno-0-940">940</a></span>
+<span class="normal"><a href="#__codelineno-0-941">941</a></span>
+<span class="normal"><a href="#__codelineno-0-942">942</a></span>
+<span class="normal"><a href="#__codelineno-0-943">943</a></span>
+<span class="normal"><a href="#__codelineno-0-944">944</a></span>
+<span class="normal"><a href="#__codelineno-0-945">945</a></span>
+<span class="normal"><a href="#__codelineno-0-946">946</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-929" name="__codelineno-0-929"></a><span class="k">def</span> <span class="nf">structure_present_or_pending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">structure_type</span><span class="p">:</span> <span class="n">UnitID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a id="__codelineno-0-930" name="__codelineno-0-930"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-931" name="__codelineno-0-931"></a><span class="sd">    Checks presence of a structure, or if worker is on route to</span>
+<a id="__codelineno-0-932" name="__codelineno-0-932"></a><span class="sd">    build structure.</span>
+<a id="__codelineno-0-933" name="__codelineno-0-933"></a>
+<a id="__codelineno-0-934" name="__codelineno-0-934"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-935" name="__codelineno-0-935"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-936" name="__codelineno-0-936"></a><span class="sd">    structure_type</span>
+<a id="__codelineno-0-937" name="__codelineno-0-937"></a>
+<a id="__codelineno-0-938" name="__codelineno-0-938"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-939" name="__codelineno-0-939"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-940" name="__codelineno-0-940"></a><span class="sd">    bool</span>
+<a id="__codelineno-0-941" name="__codelineno-0-941"></a>
+<a id="__codelineno-0-942" name="__codelineno-0-942"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-943" name="__codelineno-0-943"></a>    <span class="k">return</span> <span class="p">(</span>
+<a id="__codelineno-0-944" name="__codelineno-0-944"></a>        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_own_structures_dict</span><span class="p">[</span><span class="n">structure_type</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<a id="__codelineno-0-945" name="__codelineno-0-945"></a>        <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_building_counter</span><span class="p">[</span><span class="n">structure_type</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<a id="__codelineno-0-946" name="__codelineno-0-946"></a>    <span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="ares.main.AresBot.unit_pending" class="doc doc-heading">
+          <span class="doc doc-object-name doc-function-name">unit_pending</span>
+
+
+<a href="#ares.main.AresBot.unit_pending" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">unit_pending</span><span class="p">(</span><span class="n">unit_type</span><span class="p">)</span>
+</code></pre></div>
+
+  <div class="doc doc-contents ">
+  
+      <p>Checks pending units.
+Alternative and faster version of <code>self.already_pending</code></p>
+
+
+
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>unit_type</code></td>
+          <td>
+                <code><span title="sc2.ids.unit_typeid.UnitTypeId">UnitTypeId</span></code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+          <td>
+              <em>required</em>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+          <details class="quote">
+            <summary>Source code in <code>src/ares/main.py</code></summary>
+            <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-948">948</a></span>
+<span class="normal"><a href="#__codelineno-0-949">949</a></span>
+<span class="normal"><a href="#__codelineno-0-950">950</a></span>
+<span class="normal"><a href="#__codelineno-0-951">951</a></span>
+<span class="normal"><a href="#__codelineno-0-952">952</a></span>
+<span class="normal"><a href="#__codelineno-0-953">953</a></span>
+<span class="normal"><a href="#__codelineno-0-954">954</a></span>
+<span class="normal"><a href="#__codelineno-0-955">955</a></span>
+<span class="normal"><a href="#__codelineno-0-956">956</a></span>
+<span class="normal"><a href="#__codelineno-0-957">957</a></span>
+<span class="normal"><a href="#__codelineno-0-958">958</a></span>
+<span class="normal"><a href="#__codelineno-0-959">959</a></span>
+<span class="normal"><a href="#__codelineno-0-960">960</a></span>
+<span class="normal"><a href="#__codelineno-0-961">961</a></span>
+<span class="normal"><a href="#__codelineno-0-962">962</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-948" name="__codelineno-0-948"></a><span class="k">def</span> <span class="nf">unit_pending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_type</span><span class="p">:</span> <span class="n">UnitID</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-0-949" name="__codelineno-0-949"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-0-950" name="__codelineno-0-950"></a><span class="sd">    Checks pending units.</span>
+<a id="__codelineno-0-951" name="__codelineno-0-951"></a><span class="sd">    Alternative and faster version of `self.already_pending`</span>
+<a id="__codelineno-0-952" name="__codelineno-0-952"></a>
+<a id="__codelineno-0-953" name="__codelineno-0-953"></a><span class="sd">    Parameters</span>
+<a id="__codelineno-0-954" name="__codelineno-0-954"></a><span class="sd">    ----------</span>
+<a id="__codelineno-0-955" name="__codelineno-0-955"></a><span class="sd">    unit_type</span>
+<a id="__codelineno-0-956" name="__codelineno-0-956"></a>
+<a id="__codelineno-0-957" name="__codelineno-0-957"></a><span class="sd">    Returns</span>
+<a id="__codelineno-0-958" name="__codelineno-0-958"></a><span class="sd">    -------</span>
+<a id="__codelineno-0-959" name="__codelineno-0-959"></a><span class="sd">    int</span>
+<a id="__codelineno-0-960" name="__codelineno-0-960"></a>
+<a id="__codelineno-0-961" name="__codelineno-0-961"></a><span class="sd">    &quot;&quot;&quot;</span>
+<a id="__codelineno-0-962" name="__codelineno-0-962"></a>    <span class="k">return</span> <span class="n">cy_unit_pending</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit_type</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+          </details>
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+  </div>
+
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var tab,labels=set.querySelector(".tabbed-labels");for(tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "content.code.annotate", "navigation.indexes"], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.bd41221c.min.js"></script>
+      
+    
+  </body>
+</html>
