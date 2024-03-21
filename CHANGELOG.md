@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.0 (2024-03-21)
+
+### Feature
+
+* Only select persistent worker generically ([`afa60d3`](https://github.com/AresSC2/ares-sc2/commit/afa60d36b4b2879595a76a7595d3489af144ee84))
+
 ## v2.4.3 (2024-03-19)
 
 ### Fix
