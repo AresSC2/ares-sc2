@@ -24,6 +24,7 @@ from ares.consts import (
     BUILDS,
     GAS_BUILDINGS,
     OPENING_BUILD_ORDER,
+    TARGET,
     BuildOrderTargetOptions,
     UnitRole,
 )
@@ -189,18 +190,27 @@ class BuildOrderRunner:
             if command in ADD_ONS:
                 self.current_step_started = True
             elif command in ALL_STRUCTURES:
+                persistent_workers: Units = self.mediator.get_units_from_role(
+                    role=UnitRole.PERSISTENT_BUILDER
+                )
+                building_tracker: dict = self.mediator.get_building_tracker_dict
+                persistent_worker_available: bool = False
+                if self.persistent_worker:
+                    for worker in persistent_workers:
+                        if worker.tag in building_tracker:
+                            target: Point2 = building_tracker[worker.tag][TARGET]
+                            if [
+                                s
+                                for s in self.ai.structures
+                                if cy_distance_to_squared(s.position, target) < 6
+                                and s.build_progress > 0.95
+                            ]:
+                                persistent_worker_available = True
                 if worker := self.mediator.select_worker(
                     target_position=self.current_build_position,
                     force_close=True,
                     select_persistent_builder=command != UnitID.REFINERY,
-                    only_select_persistent_builder=self.persistent_worker
-                    and command
-                    in {UnitID.BARRACKS, UnitID.FACTORY, UnitID.COMMANDCENTER}
-                    and (
-                        not self.ai.already_pending(UnitID.BARRACKS)
-                        or command != UnitID.BARRACKS
-                    )
-                    and self.ai.time < 125.0,
+                    only_select_persistent_builder=persistent_worker_available,
                 ):
                     if next_building_position := await self.get_position(
                         step.command, step.target
