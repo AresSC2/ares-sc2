@@ -89,6 +89,8 @@ class SpawnController(MacroBehavior):
         proportion_sum: float = 0.0
         # remember units that meet tech requirement
         units_ready_to_build: list[UnitID] = []
+        # keep track of what units we have tech for
+        tech_ready_for: list[UnitID] = []
         # iterate through desired army comp starting with the highest priority unit
         for unit_type_id, army_comp_info in sorted(
             army_comp_dict.items(), key=lambda x: x[1].get("priority", int(0))
@@ -110,6 +112,8 @@ class SpawnController(MacroBehavior):
             # work out if we are able to produce this unit
             if not ai.tech_ready_for_unit(unit_type_id):
                 continue
+
+            tech_ready_for.append(unit_type_id)
 
             # get all idle build structures/units we can create this unit from
             build_structures: list[Unit] = ai.get_build_structures(
@@ -157,7 +161,11 @@ class SpawnController(MacroBehavior):
                 ai, unit_type_id, build_structures, amount, supply, cost
             )
         # if we can only build one type of unit, keep adding them
-        if len(units_ready_to_build) == 1 and self.over_produce_on_low_tech:
+        if (
+            len(tech_ready_for) == 1
+            and self.over_produce_on_low_tech
+            and len(units_ready_to_build) > 0
+        ):
             build_structures = ai.get_build_structures(
                 UNIT_TRAINED_FROM[units_ready_to_build[0]],
                 units_ready_to_build[0],
