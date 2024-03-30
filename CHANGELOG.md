@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.1 (2024-03-30)
+
+### Fix
+
+* Overproduce on low tech behaves as expected ([`4eb78c1`](https://github.com/AresSC2/ares-sc2/commit/4eb78c1367fb1fc517188331df3bb9bd690c4d26))
+
 ## v2.5.0 (2024-03-21)
 
 ### Feature
