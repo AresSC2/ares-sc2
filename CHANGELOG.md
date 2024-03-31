@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.6.0 (2024-03-31)
+
+### Feature
+
+* Natural bunker placement ([`60873f2`](https://github.com/AresSC2/ares-sc2/commit/60873f28453f9de9f7906e4a0dcbec97ac7b2b0c))
+
 ## v2.5.1 (2024-03-30)
 
 ### Fix
