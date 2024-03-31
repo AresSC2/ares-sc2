@@ -1,4 +1,5 @@
 import time
+from itertools import product
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Optional, Union
 
 import numpy as np
@@ -8,6 +9,7 @@ from cython_extensions import (
     cy_find_building_locations,
     cy_get_bounding_box,
     cy_pylon_matrix_covers,
+    cy_towards,
 )
 from loguru import logger
 from sc2.constants import ALL_GAS
@@ -364,6 +366,16 @@ class PlacementManager(Manager, IManagerMediator):
                             k, self.ai.main_base_ramp.top_center
                         ),
                     )
+            elif structure_type == UnitID.BUNKER:
+                if _available := [
+                    a
+                    for a in available
+                    if self.placements_dict[location][building_size][a]["bunker"]
+                ]:
+                    final_placement = min(
+                        _available,
+                        key=lambda k: cy_distance_to_squared(k, base_location),
+                    )
             # prioritize production pylons if they exist
             elif structure_type == UnitID.PYLON:
                 if available := [
@@ -577,10 +589,15 @@ class PlacementManager(Manager, IManagerMediator):
         pathing_grid: np.ndarray = self.manager_mediator.get_ground_grid.astype(
             np.uint8
         ).T
+        self._solve_natural_bunker()
         for el in self.ai.expansion_locations_list:
-            self.placements_dict[el] = {}
-            self.placements_dict[el][BuildingSize.TWO_BY_TWO] = {}
-            self.placements_dict[el][BuildingSize.THREE_BY_THREE] = {}
+            if el not in self.placements_dict:
+                self.placements_dict[el] = {}
+            if BuildingSize.TWO_BY_TWO not in self.placements_dict[el]:
+                self.placements_dict[el][BuildingSize.TWO_BY_TWO] = {}
+            if BuildingSize.THREE_BY_THREE not in self.placements_dict[el]:
+                self.placements_dict[el][BuildingSize.THREE_BY_THREE] = {}
+
             # avoid building 3x3 within 9 distance of el
             start_x: int = int(el.x - 4.5)
             start_y: int = int(el.y - 4.5)
@@ -815,6 +832,7 @@ class PlacementManager(Manager, IManagerMediator):
         position: Point2,
         production_pylon: bool = False,
         wall: bool = False,
+        bunker: bool = False,
     ) -> None:
         """Add calculated position to placements dict."""
         self.placements_dict[expansion_location][building_size][position] = {
@@ -825,6 +843,7 @@ class PlacementManager(Manager, IManagerMediator):
             "worker_on_route": False,
             "time_requested": 0.0,
             "production_pylon": production_pylon,
+            "bunker": bunker,
         }
 
     def _calculate_main_ramp_placements(self, el: Point2) -> None:
@@ -891,11 +910,15 @@ class PlacementManager(Manager, IManagerMediator):
                 self.ai.draw_text_on_world(position, f"{placement}")
                 pos_min = Point3((placement.x - 1.5, placement.y - 1.5, z))
                 pos_max = Point3((placement.x + 1.5, placement.y + 1.5, z + 2))
-                self.ai.client.debug_box_out(pos_min, pos_max, Point3((255, 0, 0)))
-                if self.ai.race == Race.Terran:
+                if info["bunker"]:
+                    colour = Point3((0, 255, 0))
+                else:
+                    colour = Point3((0, 0, 255))
+                self.ai.client.debug_box_out(pos_min, pos_max, colour)
+                if self.ai.race == Race.Terran and not info["bunker"]:
                     pos_min = Point3((placement.x + 1.5, placement.y + 0.5, z))
                     pos_max = Point3((placement.x + 3.5, placement.y - 1.5, z + 1))
-                    self.ai.client.debug_box_out(pos_min, pos_max, Point3((0, 255, 0)))
+                    self.ai.client.debug_box_out(pos_min, pos_max, Point3((0, 0, 255)))
 
             for placement in two_by_two:
                 info = self.placements_dict[location][BuildingSize.TWO_BY_TWO][
@@ -952,3 +975,33 @@ class PlacementManager(Manager, IManagerMediator):
 
         for loc in loc_to_remove:
             self.worker_on_route_tracker.pop(loc)
+
+    def _solve_natural_bunker(self):
+        nat_location: Point2 = self.manager_mediator.get_own_nat
+        start_x: int = int(nat_location.x - 4.5)
+        start_y: int = int(nat_location.y - 4.5)
+        self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
+        self.placements_dict[nat_location] = {}
+        self.placements_dict[nat_location][BuildingSize.THREE_BY_THREE] = {}
+
+        size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[UnitID.BUNKER]
+
+        towards_ramp: tuple[float, float] = cy_towards(
+            nat_location, self.ai.main_base_ramp.bottom_center, 4.0
+        )
+        towards_center: tuple[float, float] = cy_towards(
+            towards_ramp, self.ai.game_info.map_center, 6.0
+        )
+        goal_x: int = int(towards_center[0])
+        goal_y: int = int(towards_center[1])
+
+        for x, y in product(range(-2, 2), range(-2, 2)):
+            pos: Point2 = Point2((goal_x + x, goal_y + y))
+            if self.can_place_structure(pos, UnitID.BUNKER):
+                self._add_placement_position(size, nat_location, pos, bunker=True)
+                avoid_x = int(pos.x - 1.5)
+                avoid_y = int(pos.y - 1.5)
+                self.points_to_avoid_grid[
+                    avoid_y : avoid_y + 3, avoid_x : avoid_x + 3
+                ] = 1
+                break
