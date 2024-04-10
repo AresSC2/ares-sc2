@@ -22,6 +22,7 @@ from ares.consts import (
     AIR_VS_GROUND,
     AIR_VS_GROUND_DEFAULT,
     BLINDING_CLOUD,
+    CHANGELING_TYPES,
     CORROSIVE_BILE,
     COST,
     COST_MULTIPLIER,
@@ -242,7 +243,8 @@ class PathManager(Manager, IManagerMediator):
             self.calculated_danger_tiles = []
 
         for unit in self.ai.enemy_units:
-            self.add_unit_influence(unit)
+            if unit.type_id not in CHANGELING_TYPES:
+                self.add_unit_influence(unit)
 
         # update creep grid
         self.creep_ground_grid = self.ground_grid.copy()

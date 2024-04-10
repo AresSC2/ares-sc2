@@ -51,8 +51,13 @@ class ShootTargetInRange(CombatIndividualBehavior):
         if not self.targets:
             return False
 
+        targets = [
+            t
+            for t in self.targets
+            if not t.is_cloaked or t.is_cloaked and t.is_revealed
+        ]
         in_attack_range: list[Unit] = cy_in_attack_range(
-            self.unit, self.targets, self.extra_range
+            self.unit, targets, self.extra_range
         )
 
         if len(in_attack_range) == 0:
