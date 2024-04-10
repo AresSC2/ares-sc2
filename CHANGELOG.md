@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.6.1 (2024-04-10)
+
+### Fix
+
+* Prevent changeling influence being added ([`25566b3`](https://github.com/AresSC2/ares-sc2/commit/25566b35b3d8f239f071a0573b93be1377d9ae15))
+
 ## v2.6.0 (2024-03-31)
 
 ### Feature
