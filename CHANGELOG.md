@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.6.2 (2024-04-15)
+
+### Fix
+
+* New scv may resume building gas ([`242bcfd`](https://github.com/AresSC2/ares-sc2/commit/242bcfd2b4ab9f5b4bca597e5708f5854d4b0d7b))
+
 ## v2.6.1 (2024-04-10)
 
 ### Fix
