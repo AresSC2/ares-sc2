@@ -240,7 +240,6 @@ class BuildingManager(Manager, IManagerMediator):
                     existing_unfinished_structure = existing_unfinished_structures[0]
                     distance = 4.5
 
-
             if cy_distance_to(worker.position, target.position) > distance:
                 order_target: Union[int, Point2, None] = worker.order_target
                 point: Point2 = self.manager_mediator.find_path_next_point(
@@ -262,14 +261,14 @@ class BuildingManager(Manager, IManagerMediator):
                 elif structure_id in GAS_BUILDINGS and self.ai.can_afford(structure_id):
                     # check if target geyser got taken by enemy
                     if self.ai.enemy_structures.filter(
-                            lambda u: u.type_id in GAS_BUILDINGS
-                                      and cy_distance_to_squared(target.position, u.position) < 20.25
+                        lambda u: u.type_id in GAS_BUILDINGS
+                        and cy_distance_to_squared(target.position, u.position) < 20.25
                     ):
                         # gas blocked, update with new target and continue
                         # in the next frame worker will try different geyser
                         existing_gas_buildings: Units = self.ai.all_units(GAS_BUILDINGS)
                         if available_geysers := self.ai.vespene_geyser.filter(
-                                lambda g: not existing_gas_buildings.closer_than(5.0, g)
+                            lambda g: not existing_gas_buildings.closer_than(5.0, g)
                         ):
                             self.building_tracker[worker_tag][
                                 TARGET
