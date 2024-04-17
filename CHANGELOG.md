@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.0 (2024-04-17)
+
+### Feature
+
+* Cancel stucture mediator call ([`c8c7357`](https://github.com/AresSC2/ares-sc2/commit/c8c7357e0a4093d572786b76cce12aaa0246eb4e))
+
+### Documentation
+
+* Add initial group maneuver tutorial ([`ba183f9`](https://github.com/AresSC2/ares-sc2/commit/ba183f9249cd0bf8be20488a0a6888dcaeed2e3f))
+
 ## v2.6.2 (2024-04-15)
 
 ### Fix
