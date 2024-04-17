@@ -9,7 +9,7 @@ from typing import Dict, Union
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
-ENEMY_DETECTOR_RANGES: Dict[Union[EffectId, UnitID], float] = {
+DETECTOR_RANGES: Dict[Union[EffectId, UnitID], float] = {
     # technically it's their range + radius + 1 (for safety)
     # Protoss
     UnitID.OBSERVER: 11 + 0.5 + 1,

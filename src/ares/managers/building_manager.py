@@ -93,6 +93,9 @@ class BuildingManager(Manager, IManagerMediator):
         super(BuildingManager, self).__init__(ai, config, mediator)
 
         self.manager_requests_dict = {
+            ManagerRequestType.CANCEL_STRUCTURE: lambda kwargs: (
+                self.cancel_structure(**kwargs)
+            ),
             ManagerRequestType.GET_BUILDING_COUNTER: lambda kwargs: (
                 self.building_counter
             ),
@@ -314,6 +317,27 @@ class BuildingManager(Manager, IManagerMediator):
                     tag=new_worker.tag, role=UnitRole.BUILDING
                 )
 
+    def cancel_structure(self, structure: Unit) -> None:
+        # firstly cancel this structure no matter what
+        structure(AbilityId.CANCEL_BUILDINPROGRESS)
+
+        # now look for this structure in the building tracker, and remove it
+        structure_id: UnitID = structure.type_id
+        worker_tag_to_remove: int = 0
+        for worker_tag in self.building_tracker:
+            target: Point2 = self.building_tracker[worker_tag][TARGET]
+            if [
+                s
+                for s in self.manager_mediator.get_own_structures_dict[structure_id]
+                if cy_distance_to_squared(s.position, target.position) < 4.0
+                and s.build_progress < 1.0
+            ]:
+                worker_tag_to_remove = worker_tag
+                break
+        # removing unit (worker) from bookkeeping will
+        # remove any memory about this structure
+        self.remove_unit(worker_tag_to_remove)
+
     def remove_unit(self, tag: int) -> None:
         """Remove dead units from building tracker.
 
@@ -325,6 +349,8 @@ class BuildingManager(Manager, IManagerMediator):
         if tag in self.building_tracker:
             self.building_counter[self.building_tracker[tag][ID]] -= 1
             self.building_tracker.pop(tag)
+            # ensure worker is correctly reassigned
+            self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
 
     async def construct_gas(
         self, max_building: int = 1, geyser: Optional[Unit] = None
@@ -394,9 +420,6 @@ class BuildingManager(Manager, IManagerMediator):
                         )
                         < 144.0
                     ):
-                        target_geyser: Unit = possible_geysers.closest_to(
-                            close_mf.center
-                        )
                         target_geyser: Unit = cy_closest_to(
                             cy_center(close_mf), possible_geysers
                         )
