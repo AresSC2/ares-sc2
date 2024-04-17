@@ -45,7 +45,7 @@ from ares.consts import (
 )
 from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.cost_dict import COST_DICT
-from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
+from ares.dicts.enemy_detector_ranges import DETECTOR_RANGES
 from ares.dicts.enemy_vs_ground_static_defense_ranges import (
     ENEMY_VS_GROUND_STATIC_DEFENSE_TYPES,
 )
@@ -525,7 +525,7 @@ class AresBot(CustomBotAI):
 
         self.all_enemy_units.append(unit_obj)
         unit_id = unit_obj.type_id
-        if unit_id in ENEMY_DETECTOR_RANGES:
+        if unit_id in DETECTOR_RANGES:
             self.enemy_detectors.append(unit_obj)
         if unit_id in ALL_STRUCTURES:
             self.enemy_structures.append(unit_obj)

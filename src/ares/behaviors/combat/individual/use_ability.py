@@ -49,7 +49,6 @@ class UseAbility(CombatIndividualBehavior):
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        AbilityId.FUNGALGROWTH_FUNGALGROWTH
         if self.target:
             self.unit(self.ability, self.target)
         else:

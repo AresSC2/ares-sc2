@@ -2,7 +2,7 @@
 
 """
 from collections import deque
-from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, Set, Tuple, Union
+from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from sc2.position import Point2
@@ -19,7 +19,7 @@ from ares.consts import (
     ManagerRequestType,
     UnitTreeQueryType,
 )
-from ares.dicts.enemy_detector_ranges import ENEMY_DETECTOR_RANGES
+from ares.dicts.enemy_detector_ranges import DETECTOR_RANGES
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -75,7 +75,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         # Dictionary of units that we know of, but which are longer present at the
         # location last seen. Keyed by unit tag
         self._archive_units_by_tag: Dict[int, Deque[Unit]] = {}
-        self._tags_destroyed: Set[int] = set()
+        self._tags_destroyed: set[int] = set()
         self.unit_dict: Dict[int, Deque[Unit]] = {}
 
         # remove units from memory after <time_in_seconds> based on air or ground
@@ -113,13 +113,13 @@ class UnitMemoryManager(Manager, IManagerMediator):
         enemy_detector_range: List[float] = []
 
         for effect in self.ai.state.effects:
-            if effect.id in ENEMY_DETECTOR_RANGES:
+            if effect.id in DETECTOR_RANGES:
                 enemy_detector_position.append(list(effect.positions)[0])
-                enemy_detector_range.append(ENEMY_DETECTOR_RANGES[effect.id])
+                enemy_detector_range.append(DETECTOR_RANGES[effect.id])
 
         for unit in self.ai.enemy_detectors:
             enemy_detector_position.append(unit.position)
-            enemy_detector_range.append(ENEMY_DETECTOR_RANGES[unit.type_id])
+            enemy_detector_range.append(DETECTOR_RANGES[unit.type_id])
 
         return enemy_detector_position, enemy_detector_range
 
@@ -164,7 +164,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         """
         memory_tags_to_remove: List[int] = []
         detectors: Optional[Units] = None
-        removed_unit_tags: Set[int] = self.manager_mediator.manager_request(
+        removed_unit_tags: set[int] = self.manager_mediator.manager_request(
             ManagerName.UNIT_CACHE_MANAGER, ManagerRequestType.GET_REMOVED_UNITS
         ).tags
         for unit_tag in self._memory_units_by_tag:
@@ -547,7 +547,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
                 return True
         return False
 
-    def get_own_units_in_enemy_detector_range(self) -> Set[int]:
+    def get_own_units_in_enemy_detector_range(self) -> set[int]:
         """Find the tags of friendly units in range of an enemy detector.
 
         Given the recorded enemy detectors and effects, query all of our points in range

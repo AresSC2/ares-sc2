@@ -214,6 +214,13 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
+    def cancel_structure(self, **kwargs) -> None:
+        return self.manager_request(
+            ManagerName.BUILDING_MANAGER,
+            ManagerRequestType.CANCEL_STRUCTURE,
+            **kwargs,
+        )
+
     @property
     def get_building_counter(self) -> DefaultDict[UnitID, int]:
         """Get a dictionary containing the number of each type of building in progress.
