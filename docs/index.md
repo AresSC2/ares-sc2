@@ -39,7 +39,8 @@ Feel free to add your own bot here
  - [Aristaeus (P)](https://github.com/august-k/Aristaeus)
  - [Nani-Z (Z) micro ladder bot](https://github.com/DrekkSama/Nani-Z)
  - [oops (R) micro ladder bot](https://github.com/raspersc2/oops)
- - [Phobos (T)](https://github.com/AresSC2/phobos)
+
+[//]: # ( - [Phobos &#40;T&#41;]&#40;https://github.com/AresSC2/phobos&#41;)
  - [QueenBot (Z)](https://github.com/AresSC2/QueenBot)
  
 
