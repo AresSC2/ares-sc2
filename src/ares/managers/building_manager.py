@@ -325,15 +325,16 @@ class BuildingManager(Manager, IManagerMediator):
         structure_id: UnitID = structure.type_id
         worker_tag_to_remove: int = 0
         for worker_tag in self.building_tracker:
-            target: Point2 = self.building_tracker[worker_tag][TARGET]
-            if [
-                s
-                for s in self.manager_mediator.get_own_structures_dict[structure_id]
-                if cy_distance_to_squared(s.position, target.position) < 4.0
-                and s.build_progress < 1.0
-            ]:
-                worker_tag_to_remove = worker_tag
-                break
+            if target := self.building_tracker[worker_tag][TARGET]:
+                if [
+                    s
+                    for s in self.manager_mediator.get_own_structures_dict[structure_id]
+                    if cy_distance_to_squared(s.position, target.position) < 4.0
+                    and s.build_progress < 1.0
+                ]:
+                    worker_tag_to_remove = worker_tag
+                    break
+
         # removing unit (worker) from bookkeeping will
         # remove any memory about this structure
         self.remove_unit(worker_tag_to_remove)
