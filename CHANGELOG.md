@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.1 (2024-04-20)
+
+### Fix
+
+* Ensure target has value in building tracker ([`a6227dd`](https://github.com/AresSC2/ares-sc2/commit/a6227ddc41ff134fe04ba09146bb77cb47e9f8cb))
+
 ## v2.7.0 (2024-04-17)
 
 ### Feature
