@@ -379,7 +379,9 @@ class ResourceManager(Manager, IManagerMediator):
             list(self.worker_to_mineral_patch_dict) + list(self.worker_to_geyser_dict)
         )
         if unassigned_workers and not force_close:
-            return cy_closest_to(target_position, unassigned_workers)
+            worker: Unit = cy_closest_to(target_position, unassigned_workers)
+            self.remove_worker_from_mineral(worker.tag)
+            return worker
 
         if available_workers := workers.filter(
             lambda w: w.tag in self.worker_to_mineral_patch_dict
