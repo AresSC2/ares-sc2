@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.2 (2024-04-23)
+
+### Fix
+
+* Remove worker from mining properly ([`cd002c0`](https://github.com/AresSC2/ares-sc2/commit/cd002c097242d8b29cc767f7266af4f038ea2c0f))
+
 ## v2.7.1 (2024-04-20)
 
 ### Fix
