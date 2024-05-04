@@ -23,7 +23,13 @@ from cython_extensions import (
 )
 
 from ares.behaviors.macro import MacroBehavior
-from ares.consts import MINING, TOWNHALL_DISTANCE_FACTOR, UnitRole, UnitTreeQueryType
+from ares.consts import (
+    GAS_BUILDINGS,
+    MINING,
+    TOWNHALL_DISTANCE_FACTOR,
+    UnitRole,
+    UnitTreeQueryType,
+)
 from ares.managers.manager_mediator import ManagerMediator
 
 TOWNHALL_RADIUS: float = 2.75
@@ -133,6 +139,12 @@ class Mining(MacroBehavior):
                     dist_to_resource = cy_distance_to(
                         worker_position, resource_position
                     )
+                    if (
+                        resource.type_id in GAS_BUILDINGS
+                        and resource.vespene_contents == 0
+                    ):
+                        mediator.remove_gas_building(gas_building_tag=resource_tag)
+
                 except KeyError:
                     # Mined out or no vision? Remove it
                     if assigned_mineral_patch:
