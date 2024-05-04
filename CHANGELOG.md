@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.3 (2024-05-04)
+
+### Fix
+
+* Remove workers from expired gas buildings ([`5971c30`](https://github.com/AresSC2/ares-sc2/commit/5971c3099220adf90fd4fe5c3e2b47e6c3954ec4))
+* Remove stuck scvs / remove workers with duplicate positions ([`53667c2`](https://github.com/AresSC2/ares-sc2/commit/53667c296b038e63ff6f0bd2e78f1e4b4e4d4a3a))
+
 ## v2.7.2 (2024-04-23)
 
 ### Fix
