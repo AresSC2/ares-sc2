@@ -184,6 +184,8 @@ class BuildingManager(Manager, IManagerMediator):
             UnitID, Units
         ] = self.manager_mediator.get_own_structures_dict
 
+        building_spots: set[Point2] = set()
+
         for worker_tag in self.building_tracker:
             if self.config[DEBUG] and self.building_tracker[worker_tag][TARGET]:
                 self.ai.draw_text_on_world(
@@ -191,12 +193,13 @@ class BuildingManager(Manager, IManagerMediator):
                     "BUILDING TARGET",
                 )
 
+            structure_id: UnitID = self.building_tracker[worker_tag][ID]
+
             if (
-                self.ai.race != Race.Terran
-                and self.ai.time
-                > self.building_tracker[worker_tag][TIME_ORDER_COMMENCED]
-                + self.BUILDING_WORKER_TIMEOUT
-            ):
+                self.ai.race != Race.Terran or structure_id == UnitID.REFINERY
+            ) and self.ai.time > self.building_tracker[worker_tag][
+                TIME_ORDER_COMMENCED
+            ] + self.BUILDING_WORKER_TIMEOUT:
                 tags_to_remove.add(worker_tag)
                 continue
 
@@ -211,12 +214,13 @@ class BuildingManager(Manager, IManagerMediator):
             if worker.is_constructing_scv:
                 continue
 
-            structure_id: UnitID = self.building_tracker[worker_tag][ID]
-
             # this happens if no target location is available eg: all expansions taken
-            if not target:
+            # add a check if multiple workers are using same building spot
+            if not target or target in building_spots:
                 tags_to_remove.add(worker_tag)
                 continue
+
+            building_spots.add(target)
 
             # check if we are finished with the building worker
             if close_structures := self.ai.structures.filter(
