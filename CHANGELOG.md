@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.4 (2024-05-18)
+
+### Fix
+
+* Add missing enemy influence to ground to air grid ([`24b21e7`](https://github.com/AresSC2/ares-sc2/commit/24b21e72b9576c9a6f81cd46a5b78fce34805c98))
+
 ## v2.7.3 (2024-05-04)
 
 ### Fix
