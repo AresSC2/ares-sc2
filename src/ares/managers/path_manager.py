@@ -1012,7 +1012,7 @@ class PathManager(Manager, IManagerMediator):
                 self.ground_grid,
                 self.ground_avoidance_grid,
                 self.air_avoidance_grid,
-                # self.priority_ground_avoidance_grid,
+                self.ground_to_air_grid,
             ) = self.add_cost_to_multiple_grids(
                 unit.position,
                 weight_values[AIR_COST],
@@ -1024,7 +1024,7 @@ class PathManager(Manager, IManagerMediator):
                     self.ground_grid,
                     self.ground_avoidance_grid,
                     self.air_avoidance_grid,
-                    # self.priority_ground_avoidance_grid,
+                    self.ground_to_air_grid,
                 ],
             )
 
