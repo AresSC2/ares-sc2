@@ -21,6 +21,7 @@ resembles starting with a blank `python-sc2` bot! You can write standard `python
 
 ## Features
 
+ - Optimized cython functions via the [cython-extensions-sc2 library](https://github.com/AresSC2/cython-extensions-sc2).
  - Calculated production formation for every expansion location on game start for Terran and Protoss, 
 use convenience behavior `BuildStructure` for easy usage.
 ```python
@@ -35,6 +36,8 @@ self.register_behavior(
 )
 ```
 ![formation](https://github.com/raspersc2/oops/assets/63355562/946686eb-cc75-4271-ae1e-3b9f5c424e47)
+
+ - Various grids with populated enemy influence.
 
  - Curate custom combat maneuvers with our plug and play behavior system. Mix and match your own
 behaviors to truly create some unique play styles! Individual and Group behaviors are now available.
@@ -98,7 +101,6 @@ class MyBot(AresBot):
         self.register_behavior(mine_drop)
 ```
  - Convenient production management via `SpawnController` and `ProductionController` behaviors.
- - Fast `cython` alternatives to some common functionality, see [the docs](https://aressc2.github.io/ares-sc2/api_reference/cython_extensions/index.html)
  - [MapAnalyzer](https://github.com/spudde123/SC2MapAnalysis) library available and used throughout `ares-sc2`,
 access the library yourself via `self.mediator.get_map_data_object`
 

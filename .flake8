@@ -11,3 +11,4 @@ exclude =
     tests/generate_pickle_data.py.py
     tests/test_run.py
     tests/conftest.py
+    tests/load_bot_from_pickle.py
