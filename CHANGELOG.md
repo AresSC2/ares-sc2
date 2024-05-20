@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.8.0 (2024-05-20)
+
+### Feature
+
+* Build runner supports upgrades ([`a80e3c9`](https://github.com/AresSC2/ares-sc2/commit/a80e3c95e5e2602b43a93f5619788a818e119431))
+* Support core and gate strings as build step commands ([`d0f8371`](https://github.com/AresSC2/ares-sc2/commit/d0f83716130005df1419b27950e8f29178b07b14))
+
+### Documentation
+
+* Add additional build runner info ([`f3bb82f`](https://github.com/AresSC2/ares-sc2/commit/f3bb82f7b0ec8c5056c270cd0249095c66268eb4))
+
 ## v2.7.4 (2024-05-18)
 
 ### Fix
