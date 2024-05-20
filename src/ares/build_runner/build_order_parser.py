@@ -4,10 +4,12 @@ from typing import TYPE_CHECKING, Callable
 from loguru import logger
 from sc2.data import Race
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
+from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
 from sc2.game_data import Cost
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.upgrade_id import UpgradeId
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -241,6 +243,37 @@ class BuildOrderParser:
             # if start condition is True a train order will be issued
             # therefore it will automatically complete the step
             end_condition=lambda: True,
+        )
+
+    def _generate_upgrade_build_step(self, upgrade_id: UpgradeId) -> Callable:
+        """Generic method to add any upgrade to a build order.
+
+        Parameters
+        ----------
+        upgrade_id :
+            The type of unit we wish to train.
+
+        Returns
+        -------
+        BuildOrderStep :
+            A new build step to put in a build order.
+        """
+        researched_from: UnitID = UPGRADE_RESEARCHED_FROM[upgrade_id]
+        return lambda: BuildOrderStep(
+            command=upgrade_id,
+            start_condition=lambda: self.ai.can_afford(upgrade_id)
+            and not self.ai.already_pending_upgrade(upgrade_id)
+            and len(
+                [
+                    s
+                    for s in self.ai.structures
+                    if s.is_ready and s.is_idle and s.type_id == researched_from
+                ]
+            )
+            > 0,
+            # if start condition is True a train order will be issued
+            # therefore it will automatically complete the step
+            end_condition=lambda: self.ai.pending_or_complete_upgrade(upgrade_id),
         )
 
     def _can_train_unit(self, unit_type: UnitID) -> bool:
