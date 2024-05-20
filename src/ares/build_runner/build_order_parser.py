@@ -85,12 +85,24 @@ class BuildOrderParser:
                         unit_id_command
                     )()
             except Exception:
-                assert BuildOrderOptions.contains_key(
-                    command
-                ), f"Unrecognized build order command, got: {command}"
-                step: BuildOrderStep = self.build_order_step_dict[
-                    BuildOrderOptions[command]
-                ]()
+                try:
+                    upgrade_id_command: UpgradeId = UpgradeId[command]
+                    step: BuildOrderStep = self._generate_upgrade_build_step(
+                        upgrade_id_command
+                    )()
+                except Exception:
+                    assert BuildOrderOptions.contains_key(
+                        command
+                    ), f"Unrecognized build order command, got: {command}"
+                    step: BuildOrderStep
+                    if command == BuildOrderOptions.CORE:
+                        step = self._generate_structure_build_step(
+                            UnitID.CYBERNETICSCORE
+                        )()
+                    elif command == BuildOrderOptions.GATE:
+                        step = self._generate_structure_build_step(UnitID.GATEWAY)()
+                    else:
+                        step = self.build_order_step_dict[BuildOrderOptions[command]]()
 
             # check if user passed a target in, ie. ``expand @ natural``
             if len(commands) == 4:
