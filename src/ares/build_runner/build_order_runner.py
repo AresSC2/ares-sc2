@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from cython_extensions import cy_distance_to_squared
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -230,6 +231,10 @@ class BuildOrderRunner:
                 army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
                 SpawnController(army_comp).execute(self.ai, self.config, self.mediator)
 
+            elif isinstance(command, UpgradeId):
+                self.current_step_started = True
+                self.ai.research(command)
+
             elif command == AbilityId.EFFECT_CHRONOBOOST:
                 if chrono_target := self.get_structure(step.target):
                     if available_nexuses := [
@@ -253,7 +258,7 @@ class BuildOrderRunner:
             end_condition_active: bool = step.end_condition()
             # end condition hasn't yet activated
             if not end_condition_active:
-                command: UnitID = step.command
+                command: Union[UnitID, UpgradeId] = step.command
                 if command in ADD_ONS and self.ai.can_afford(command):
                     if base_structures := [
                         s
@@ -261,6 +266,10 @@ class BuildOrderRunner:
                         if s.is_ready and s.is_idle and s.type_id == ADD_ONS[command]
                     ]:
                         base_structures[0].build(command)
+                # should have already started upgraded when step started,
+                # backup here just in case
+                elif isinstance(command, UpgradeId):
+                    self.ai.research(command)
 
             # end condition active, complete step
             else:

@@ -12,6 +12,7 @@ from sc2.bot_ai import BotAI
 from sc2.constants import EQUIVALENTS_FOR_TECH_PROGRESS
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
 from sc2.units import Units
@@ -106,6 +107,20 @@ class CustomBotAI(BotAI):
                 if unit.type_id not in ALL_STRUCTURES and unit.type_id != UnitID.NUKE
             ]
         )
+
+    def pending_or_complete_upgrade(self, upgrade_id: UpgradeId) -> bool:
+        if upgrade_id in self.state.upgrades:
+            return True
+
+        creationAbilityID = self.game_data.upgrades[
+            upgrade_id.value
+        ].research_ability.exact_id
+        for structure in self.structures:
+            for order in structure.orders:
+                if order.ability.exact_id == creationAbilityID:
+                    return True
+
+        return False
 
     def split_ground_fliers(
         self, units: Union[Units, list[Unit]], return_as_lists: bool = False

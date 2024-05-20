@@ -151,7 +151,9 @@ class BuildingSize(str, Enum):
 class BuildOrderOptions(str, Enum):
     ADDONSWAP = "ADDONSWAP"
     CHRONO = "CHRONO"
+    CORE = "CORE"
     GAS = "GAS"
+    GATE = "GATE"
     EXPAND = "EXPAND"
     ORBITAL = "ORBITAL"
     SUPPLY = "SUPPLY"
