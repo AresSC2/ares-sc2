@@ -80,22 +80,30 @@ Under the BuildChoices key, you should include keys for each enemy race. You may
 to select specific openings for opponents. Under the Cycle key, declare the opening build names for that opponent or 
 race. For each build name, ensure that there is a corresponding build name under Builds.
 
+<b>WARNING</b>: The build runner is dumb by nature, and expected to be told exactly what to do. Please
+be careful adding build steps that are impossible to commence. Such as adding a barracks before a 
+supply depot or a gateway before pylon.
+
 ### Valid build order options
 Each item in the build order should contain a string, with the first word being the command. 
-This supports any UnitTypeID type from python-sc2, which can be found [here.](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/ids/unit_typeid.py)
-
+This supports any [`UnitTypeID`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/ids/unit_typeid.py) 
+or [`UpgradeId`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/ids/upgrade_id.py) type from python-sc2.
 
 A few extra options are also supported:
 ```python
 class BuildOrderOptions(str, Enum):
+    ADDONSWAP = "ADDONSWAP"
     CHRONO = "CHRONO"
+    CORE = "CORE"
     GAS = "GAS"
+    GATE = "GATE"
     EXPAND = "EXPAND"
+    ORBITAL = "ORBITAL"
     SUPPLY = "SUPPLY"
     WORKER = "WORKER"
 ```
 
-Additionally, strings may contain targets such as '14 pylon @ ramp', where the last word should contain the target 
+Additionally, strings may contain targets such as `14 pylon @ ramp`, where the last word should contain the target 
 command. The following targets are currently supported:
 ```python
 class BuildOrderTargetOptions(str, Enum):
