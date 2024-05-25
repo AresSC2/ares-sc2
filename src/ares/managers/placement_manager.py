@@ -1,5 +1,6 @@
 import time
 from itertools import product
+from math import ceil
 from typing import TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Optional, Union
 
 import numpy as np
@@ -9,6 +10,7 @@ from cython_extensions import (
     cy_find_building_locations,
     cy_get_bounding_box,
     cy_pylon_matrix_covers,
+    cy_sorted_by_distance_to,
     cy_towards,
 )
 from loguru import logger
@@ -29,6 +31,7 @@ from ares.consts import (
     BuildingSize,
     ManagerName,
     ManagerRequestType,
+    UnitTreeQueryType,
 )
 from ares.dicts.structure_to_building_size import STRUCTURE_TO_BUILDING_SIZE
 from ares.managers.manager import Manager
@@ -66,6 +69,8 @@ class PlacementManager(Manager, IManagerMediator):
         BuildingSize.THREE_BY_THREE: 1.5,
         BuildingSize.TWO_BY_TWO: 1.0,
     }
+    PSIONIC_MATRIX_RANGE_PYLON: float = 6.5
+    PSIONIC_MATRIX_RANGE_PRISM: float = 3.75
 
     def __init__(
         self,
@@ -93,6 +98,9 @@ class PlacementManager(Manager, IManagerMediator):
             ManagerRequestType.REQUEST_BUILDING_PLACEMENT: lambda kwargs: (
                 self.request_building_placement(**kwargs)
             ),
+            ManagerRequestType.REQUEST_WARP_IN: lambda kwargs: (
+                self.request_warp_in(**kwargs)
+            ),
         }
 
         # main dict where all data is organised
@@ -112,6 +120,8 @@ class PlacementManager(Manager, IManagerMediator):
         self.WORKER_ON_ROUTE_TIMEOUT: float = self.config[PLACEMENT][
             WORKER_ON_ROUTE_TIMEOUT
         ]
+        self.warp_in_positions: set[Point2] = set()
+        self.requested_warp_ins: list[(UnitID, Point2)] = []
 
     def manager_request(
         self,
@@ -156,6 +166,8 @@ class PlacementManager(Manager, IManagerMediator):
         if self.ai.arcade_mode:
             return
 
+        self.warp_in_positions = set()
+        self.requested_warp_ins = []
         # occasionally check if worker on route locations can be unlocked
         if iteration % 16 == 0 and len(self.worker_on_route_tracker) > 0:
             self._track_requested_placements()
@@ -224,6 +236,101 @@ class PlacementManager(Manager, IManagerMediator):
             avoid_creep=self.ai.race != Race.Zerg,
             include_addon=include_addon,
         )
+
+    def request_warp_in(
+        self, build_from: UnitID, unit_type: UnitID, target: Optional[Point2]
+    ) -> None:
+        """
+        Get a warp in spot closest to target
+        This is intended as a simulated alternative to example:
+        `await self.find_placement(AbilityId.WARPGATETRAIN_ZEALOT, position)`
+        So prevents making query to the game client.
+
+        Parameters
+        ----------
+        build_from
+        unit_type
+        target
+
+        Returns
+        -------
+
+        """
+        if not target:
+            target = self.ai.start_location
+
+        self.requested_warp_ins.append((build_from, unit_type, target))
+
+    async def do_warp_ins(self) -> None:
+        if not self.requested_warp_ins:
+            return
+
+        power_sources: list[Unit] = (
+            self.manager_mediator.get_own_structures_dict[UnitID.PYLON]
+            + self.manager_mediator.get_own_army_dict[UnitID.WARPPRISMPHASING]
+        )
+        if not power_sources:
+            logger.warning("Requesting warp in spot, but no power sources found")
+            return
+
+        for build_from, unit_type, target in self.requested_warp_ins:
+            size = (2, 2) if unit_type == UnitID.STALKER else (1, 1)
+            power_sources = cy_sorted_by_distance_to(power_sources, target)
+            for power_source in power_sources:
+                type_id: UnitID = power_source.type_id
+                if type_id == UnitID.PYLON:
+                    half_psionic_range = 3
+                else:
+                    half_psionic_range = ceil(self.PSIONIC_MATRIX_RANGE_PRISM / 2)
+                power_source_pos: Point2 = power_source.position
+
+                positions: list[Point2] = [
+                    Point2((power_source_pos.x + x, power_source_pos.y + y))
+                    for x in range(-half_psionic_range, half_psionic_range + 1)
+                    for y in range(-half_psionic_range, half_psionic_range + 1)
+                    if Point2((power_source_pos.x + x, power_source_pos.y + y))
+                    not in self.warp_in_positions
+                ]
+
+                in_range: list[Units] = self.manager_mediator.get_units_in_range(
+                    start_points=positions,
+                    distances=1.75,
+                    query_tree=UnitTreeQueryType.AllOwn,
+                )
+
+                for i, pos in enumerate(positions):
+                    if pos in self.warp_in_positions:
+                        continue
+
+                    if [
+                        u
+                        for u in in_range[i]
+                        if cy_distance_to_squared(u.position, pos) < 2.25
+                        and not u.is_flying
+                    ]:
+                        continue
+
+                    if cy_can_place_structure(
+                        (int(pos.x), int(pos.y)),
+                        size,
+                        self.ai.state.creep.data_numpy,
+                        self.ai.game_info.placement_grid.data_numpy,
+                        self.manager_mediator.get_ground_grid.astype(np.uint8).T,
+                        avoid_creep=True,
+                        include_addon=False,
+                    ) and cy_pylon_matrix_covers(
+                        pos,
+                        power_sources,
+                        self.ai.game_info.terrain_height.data_numpy,
+                        pylon_build_progress=1.0,
+                    ):
+                        self.warp_in_positions.add(pos)
+                        build_from.warp_in(unit_type, pos)
+                        self.warp_in_positions.add(pos)
+                        if unit_type == UnitID.STALKER:
+                            for p in pos.neighbors8:
+                                self.warp_in_positions.add(p)
+                        return pos
 
     def request_building_placement(
         self,
@@ -393,7 +500,7 @@ class PlacementManager(Manager, IManagerMediator):
                     )
 
             if self.ai.race == Race.Protoss and within_psionic_matrix:
-                final_placement = self._fine_placement_near_pylon(
+                final_placement = self._find_placement_near_pylon(
                     available, base_location, pylon_build_progress
                 )
                 if not final_placement:
@@ -412,7 +519,7 @@ class PlacementManager(Manager, IManagerMediator):
         else:
             logger.warning(f"No {building_size} present in placement bookkeeping.")
 
-    def _fine_placement_near_pylon(
+    def _find_placement_near_pylon(
         self,
         available: list[Point2],
         base_location: Point2,
