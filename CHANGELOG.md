@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v2.9.0 (2024-05-25)
+
+### Feature
+
+* Build runner allows spawning of units by target ([`cecfbeb`](https://github.com/AresSC2/ares-sc2/commit/cecfbeb2255dfce297fe8cda5a50952677d40b13))
+* SpawnController supports warp ins ([`374e740`](https://github.com/AresSC2/ares-sc2/commit/374e74012e43f0c328e1647c6c39744d7e6aa90c))
+* Simulate warpin query and find placements ([`2551a04`](https://github.com/AresSC2/ares-sc2/commit/2551a04f36595e4de2629235d475cfb8e93430d8))
+
+### Documentation
+
+* Update build runner docs with new target options ([`373b67b`](https://github.com/AresSC2/ares-sc2/commit/373b67b86e0ac39651ff19d360fef7567907e5ab))
+
 ## v2.8.0 (2024-05-20)
 
 ### Feature
