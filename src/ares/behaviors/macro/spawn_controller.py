@@ -1,11 +1,13 @@
 from dataclasses import dataclass, field
 from math import isclose
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
+from cython_extensions import cy_sorted_by_distance_to
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_data import Cost
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2
 from sc2.unit import Unit
 
 if TYPE_CHECKING:
@@ -52,6 +54,11 @@ class SpawnController(MacroBehavior):
     ignored_build_from_tags : set[int]
         Prevent spawn controller from morphing from these tags
         Example: Prevent selecting barracks that needs to build an addon
+    maximum : int (default 20)
+        The maximum unit type we can produce in a single step.
+    spawn_target : Union[Point2, None] (default None)
+        Prioritize spawning units near this location.
+
     """
 
     army_composition_dict: dict[UnitID, dict[str, float, str, int]]
@@ -59,6 +66,8 @@ class SpawnController(MacroBehavior):
     ignore_proportions_below_unit_count: int = 0
     over_produce_on_low_tech: bool = True
     ignored_build_from_tags: set[int] = field(default_factory=set)
+    maximum: int = 20
+    spawn_target: Optional[Point2] = None
 
     # key: Unit that should get a build order, value: what UnitID to build
     __build_dict: dict[Unit, UnitID] = field(default_factory=dict)
@@ -126,6 +135,12 @@ class SpawnController(MacroBehavior):
             if len(build_structures) == 0:
                 continue
 
+            # prioritize spawning close to spawn target
+            if self.spawn_target:
+                build_structures = cy_sorted_by_distance_to(
+                    build_structures, self.spawn_target
+                )
+
             # can't afford unit?
             # then we might want to break out loop till we can afford
             if not ai.can_afford(unit_type_id):
@@ -144,7 +159,7 @@ class SpawnController(MacroBehavior):
 
             num_this_unit: int = mediator.get_own_unit_count(unit_type_id=unit_type_id)
             current_proportion: float = num_this_unit / (num_total_units + 1e-16)
-            # already have enough of this unit type
+            # already have enough of this unit type,
             # but we could add it if:
             # freeflow mode or we don't have much army yet
             if (
@@ -155,7 +170,11 @@ class SpawnController(MacroBehavior):
                 continue
 
             amount, supply, cost = self._calculate_build_amount(
-                ai, unit_type_id, build_structures, self.__supply_available
+                ai,
+                unit_type_id,
+                build_structures,
+                self.__supply_available,
+                self.maximum,
             )
             self._add_to_build_dict(
                 ai, unit_type_id, build_structures, amount, supply, cost
@@ -165,6 +184,7 @@ class SpawnController(MacroBehavior):
             len(tech_ready_for) == 1
             and self.over_produce_on_low_tech
             and len(units_ready_to_build) > 0
+            and self.maximum > 1
         ):
             build_structures = ai.get_build_structures(
                 UNIT_TRAINED_FROM[units_ready_to_build[0]],
@@ -175,6 +195,11 @@ class SpawnController(MacroBehavior):
             amount, supply, cost = self._calculate_build_amount(
                 ai, units_ready_to_build[0], build_structures, self.__supply_available
             )
+            # prioritize spawning close to spawn target
+            if self.spawn_target:
+                build_structures = cy_sorted_by_distance_to(
+                    build_structures, self.spawn_target
+                )
             self._add_to_build_dict(
                 ai, units_ready_to_build[0], build_structures, amount, supply, cost
             )
@@ -192,6 +217,12 @@ class SpawnController(MacroBehavior):
                 unit(AbilityId.MORPHTOBANELING_BANELING)
             elif value == UnitID.RAVAGER:
                 unit(AbilityId.MORPHTORAVAGER_RAVAGER)
+            # prod building is warp gate, but we really
+            # want to spawn from psionic field
+            elif unit.type_id == UnitID.WARPGATE:
+                mediator.request_warp_in(
+                    build_from=unit, unit_type=value, target=self.spawn_target
+                )
             else:
                 unit.train(value)
                 ai.num_larva_left -= 1

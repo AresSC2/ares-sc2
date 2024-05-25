@@ -107,13 +107,46 @@ Additionally, strings may contain targets such as `14 pylon @ ramp`, where the l
 command. The following targets are currently supported:
 ```python
 class BuildOrderTargetOptions(str, Enum):
+    ENEMY_FOURTH = "ENEMY_FOURTH"
+    ENEMY_NAT = "ENEMY_NAT"
+    ENEMY_NAT_HG_SPOT = "ENEMY_NAT_HG_SPOT"
+    ENEMY_RAMP = "ENEMY_RAMP"
+    ENEMY_SPAWN = "ENEMY_SPAWN"
+    ENEMY_THIRD = "ENEMY_THIRD"
+    FOURTH = "FOURTH"
+    MAP_CENTER = "MAP_CENTER"
+    NAT = "NAT"
     RAMP = "RAMP"
+    SPAWN = "SPAWN"
+    THIRD = "THIRD"
 ```
 
+### Spawning units
+Targets may be used to target warp ins, for example:
+```yml
+- 36 adept @ enemy_nat
+```
+Will warp in an adept at a power field closest to the enemy natural.
+```yml
+- 36 marine @ enemy_nat
+```
+Will prioritize using barracks closest to the enemy natural.
+
+If omitted the default spawn target is our start location.
+```yml
+# this is perfectly fine
+- 36 adept
+```
+
+### Chronoboost
 If you are using chrono, then the target should contain the structure ID that represents a `UnitTypeID` type, 
 for example:
 
-`chrono @ gateway`
+```yml
+- 13 chrono @ nexus
+- 16 chrono @ gateway
+- 20 chrono @ cyberneticscore
+```
 
 
 ### Build complete

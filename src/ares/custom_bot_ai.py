@@ -182,11 +182,7 @@ class CustomBotAI(BotAI):
                 )
 
             if not any(
-                [
-                    s
-                    for s in self.structures
-                    if s.type_id == tech_building_id and s.is_ready
-                ]
+                [s for s in self.structures if s.type_id in to_check and s.is_ready]
             ):
                 return False
 

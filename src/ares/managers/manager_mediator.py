@@ -1049,6 +1049,25 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
+    def request_warp_in(self, **kwargs) -> None:
+        """Request a warp in spot, without making a query to the game client.
+
+        PlacementManager
+
+        Parameters
+        ----------
+        unit_type: UnitTypeId
+            The unit we want to warp in
+        target : Optional[Point2]
+            If provided, attempt to find spot closest to this
+            location.
+        """
+        return self.manager_request(
+            ManagerName.PLACEMENT_MANAGER,
+            ManagerRequestType.REQUEST_WARP_IN,
+            **kwargs,
+        )
+
     """
     ResourceManager
     """

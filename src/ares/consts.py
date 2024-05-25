@@ -165,7 +165,18 @@ class BuildOrderOptions(str, Enum):
 
 
 class BuildOrderTargetOptions(str, Enum):
+    ENEMY_FOURTH = "ENEMY_FOURTH"
+    ENEMY_NAT = "ENEMY_NAT"
+    ENEMY_NAT_HG_SPOT = "ENEMY_NAT_HG_SPOT"
+    ENEMY_RAMP = "ENEMY_RAMP"
+    ENEMY_SPAWN = "ENEMY_SPAWN"
+    ENEMY_THIRD = "ENEMY_THIRD"
+    FOURTH = "FOURTH"
+    MAP_CENTER = "MAP_CENTER"
+    NAT = "NAT"
     RAMP = "RAMP"
+    SPAWN = "SPAWN"
+    THIRD = "THIRD"
 
     @classmethod
     def contains_key(cls, name):
@@ -250,6 +261,7 @@ class ManagerRequestType(str, Enum):
     # PlacementManager
     CAN_PLACE_STRUCTURE = "CAN_PLACE_STRUCTURE"
     REQUEST_BUILDING_PLACEMENT = "REQUEST_BUILDING_PLACEMENT"
+    REQUEST_WARP_IN = "REQUEST_WARP_IN_SPOT"
 
     # ResourceManager
     GET_MINERAL_PATCH_TO_LIST_OF_WORKERS = "GET_MINERAL_PATCH_TO_LIST_OF_WORKERS"
@@ -566,6 +578,14 @@ FLYING_IGNORE: Set[UnitID] = {
 }
 
 GAS_BUILDINGS = {UnitID.ASSIMILATOR, UnitID.EXTRACTOR, UnitID.REFINERY}
+
+GATEWAY_UNITS: set[UnitID] = {
+    UnitID.ZEALOT,
+    UnitID.ADEPT,
+    UnitID.STALKER,
+    UnitID.DARKTEMPLAR,
+    UnitID.HIGHTEMPLAR,
+}
 
 # These are not really rocks, but end up in the destructible collection
 IGNORE_DESTRUCTABLES: Set[UnitID] = {

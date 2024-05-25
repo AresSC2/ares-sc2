@@ -14,6 +14,7 @@ from sc2.game_state import EffectData
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -31,6 +32,7 @@ from ares.consts import (
     DEBUG_GAME_STEP,
     DEBUG_OPTIONS,
     GAME_STEP,
+    GATEWAY_UNITS,
     ID,
     IGNORE_DESTRUCTABLES,
     RACE_SUPPLY,
@@ -364,6 +366,7 @@ class AresBot(CustomBotAI):
                 same_order[0], same_order[1], same_order[2]
             )
         self.manager_hub.path_manager.reset_grids(self.actual_iteration)
+        await self.manager_hub.placement_manager.do_warp_ins()
         return await super(AresBot, self)._after_step()
 
     def register_behavior(self, behavior: Behavior) -> None:
@@ -449,6 +452,12 @@ class AresBot(CustomBotAI):
         -------
         None
         """
+        if (
+            not self.build_order_runner.build_completed
+            and UpgradeId.WARPGATERESEARCH in self.state.upgrades
+            and unit.type_id in GATEWAY_UNITS
+        ):
+            self.build_order_runner.set_step_started(True)
         await self.manager_hub.on_unit_created(unit)
 
     async def on_unit_destroyed(self, unit_tag: int) -> None:
@@ -873,7 +882,15 @@ class AresBot(CustomBotAI):
             if structure_type == UnitID.LARVA:
                 using_larva = True
 
-            build_from: Units = build_from_dict[structure_type]
+            build_from: Union[Units, list[Unit]] = build_from_dict[structure_type]
+            # only add if warpgate is off cooldown
+            if structure_type == UnitID.WARPGATE:
+                build_from = [
+                    b
+                    for b in build_from
+                    if AbilityId.WARPGATETRAIN_ZEALOT in b.abilities
+                ]
+
             requires_techlab: bool = TRAIN_INFO[structure_type][unit_type].get(
                 "requires_techlab", False
             )
@@ -908,11 +925,7 @@ class AresBot(CustomBotAI):
                     ]
                 )
 
-        build_structures: list[Unit] = [
-            self.unit_tag_dict[u]
-            for u in build_from_tags
-            if u not in ignored_build_from_tags
-        ]
+        build_structures: list[Unit] = [self.unit_tag_dict[u] for u in build_from_tags]
         # sort build structures with reactors first
         if self.race == Race.Terran:
             build_structures = sorted(
@@ -923,6 +936,9 @@ class AresBot(CustomBotAI):
         # limit build structures to number of larva left
         if self.race == Race.Zerg and using_larva:
             build_structures = build_structures[: self.num_larva_left]
+        # limit to powered structures
+        if self.race == Race.Protoss:
+            build_structures = [s for s in build_structures if s.is_powered]
 
         return build_structures
 
