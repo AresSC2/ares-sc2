@@ -250,6 +250,7 @@ class ManagerRequestType(str, Enum):
     # PlacementManager
     CAN_PLACE_STRUCTURE = "CAN_PLACE_STRUCTURE"
     REQUEST_BUILDING_PLACEMENT = "REQUEST_BUILDING_PLACEMENT"
+    REQUEST_WARP_IN = "REQUEST_WARP_IN_SPOT"
 
     # ResourceManager
     GET_MINERAL_PATCH_TO_LIST_OF_WORKERS = "GET_MINERAL_PATCH_TO_LIST_OF_WORKERS"
@@ -566,6 +567,14 @@ FLYING_IGNORE: Set[UnitID] = {
 }
 
 GAS_BUILDINGS = {UnitID.ASSIMILATOR, UnitID.EXTRACTOR, UnitID.REFINERY}
+
+GATEWAY_UNITS: set[UnitID] = {
+    UnitID.ZEALOT,
+    UnitID.ADEPT,
+    UnitID.STALKER,
+    UnitID.DARKTEMPLAR,
+    UnitID.HIGHTEMPLAR,
+}
 
 # These are not really rocks, but end up in the destructible collection
 IGNORE_DESTRUCTABLES: Set[UnitID] = {
