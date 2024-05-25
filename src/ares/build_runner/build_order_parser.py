@@ -7,7 +7,6 @@ from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
 from sc2.game_data import Cost
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
 
@@ -139,12 +138,7 @@ class BuildOrderParser:
                 start_condition=lambda: lambda: any(
                     [t.energy >= 50 for t in self.ai.townhalls]
                 ),
-                end_condition=lambda: any(
-                    [
-                        t.has_buff(BuffId.CHRONOBOOSTENERGYCOST)
-                        for t in self.ai.townhalls
-                    ]
-                ),
+                end_condition=lambda: True,
             ),
             BuildOrderOptions.EXPAND: lambda: BuildOrderStep(
                 command=self.ai.base_townhall_type,

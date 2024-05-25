@@ -32,6 +32,7 @@ from ares.consts import (
     DEBUG_GAME_STEP,
     DEBUG_OPTIONS,
     GAME_STEP,
+    GATEWAY_UNITS,
     ID,
     IGNORE_DESTRUCTABLES,
     RACE_SUPPLY,
@@ -365,6 +366,7 @@ class AresBot(CustomBotAI):
                 same_order[0], same_order[1], same_order[2]
             )
         self.manager_hub.path_manager.reset_grids(self.actual_iteration)
+        await self.manager_hub.placement_manager.do_warp_ins()
         return await super(AresBot, self)._after_step()
 
     def register_behavior(self, behavior: Behavior) -> None:
@@ -450,6 +452,12 @@ class AresBot(CustomBotAI):
         -------
         None
         """
+        if (
+            not self.build_order_runner.build_completed
+            and UpgradeId.WARPGATERESEARCH in self.state.upgrades
+            and unit.type_id in GATEWAY_UNITS
+        ):
+            self.build_order_runner.set_step_started(True)
         await self.manager_hub.on_unit_created(unit)
 
     async def on_unit_destroyed(self, unit_tag: int) -> None:

@@ -165,7 +165,18 @@ class BuildOrderOptions(str, Enum):
 
 
 class BuildOrderTargetOptions(str, Enum):
+    ENEMY_FOURTH = "ENEMY_FOURTH"
+    ENEMY_NAT = "ENEMY_NAT"
+    ENEMY_NAT_HG_SPOT = "ENEMY_NAT_HG_SPOT"
+    ENEMY_RAMP = "ENEMY_RAMP"
+    ENEMY_SPAWN = "ENEMY_SPAWN"
+    ENEMY_THIRD = "ENEMY_THIRD"
+    FOURTH = "FOURTH"
+    MAP_CENTER = "MAP_CENTER"
+    NAT = "NAT"
     RAMP = "RAMP"
+    SPAWN = "SPAWN"
+    THIRD = "THIRD"
 
     @classmethod
     def contains_key(cls, name):

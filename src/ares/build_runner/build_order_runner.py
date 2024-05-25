@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Union
 
-from cython_extensions import cy_distance_to_squared
+from cython_extensions import cy_distance_to_squared, cy_towards
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
@@ -24,6 +24,7 @@ from ares.consts import (
     ALL_STRUCTURES,
     BUILDS,
     GAS_BUILDINGS,
+    GATEWAY_UNITS,
     OPENING_BUILD_ORDER,
     TARGET,
     BuildOrderTargetOptions,
@@ -113,6 +114,9 @@ class BuildOrderRunner:
         )
         self._opening_build_completed = True
 
+    def set_step_started(self, value: bool) -> None:
+        self.current_step_started = value
+
     @property
     def build_completed(self) -> bool:
         """
@@ -183,6 +187,16 @@ class BuildOrderRunner:
             The build order step to run.
         """
         if (
+            step.command in GATEWAY_UNITS
+            and UpgradeId.WARPGATERESEARCH in self.ai.state.upgrades
+            and [
+                g
+                for g in self.mediator.get_own_structures_dict[UnitID.GATEWAY]
+                if g.is_ready
+            ]
+        ):
+            return
+        if (
             step.start_condition()
             and not self.current_step_started
             and self.ai.supply_used >= step.start_at_supply
@@ -227,9 +241,19 @@ class BuildOrderRunner:
                             self.current_step_started = True
 
             elif isinstance(command, UnitID) and command not in ALL_STRUCTURES:
-                self.current_step_started = True
                 army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
-                SpawnController(army_comp).execute(self.ai, self.config, self.mediator)
+                spawn_target: Point2 = self._get_target(step.target)
+                SpawnController(
+                    army_comp, freeflow_mode=True, maximum=1, spawn_target=spawn_target
+                ).execute(self.ai, self.config, self.mediator)
+                if (
+                    UpgradeId.WARPGATERESEARCH in self.ai.state.upgrades
+                    and command in GATEWAY_UNITS
+                ):
+                    # main.on_unit_created will set self.current_step_started = True
+                    pass
+                else:
+                    self.current_step_started = True
 
             elif isinstance(command, UpgradeId):
                 self.current_step_started = True
@@ -404,3 +428,37 @@ class BuildOrderRunner:
             )
         ):
             self.ai.train(self.ai.worker_type)
+
+    def _get_target(self, target: Optional[str]) -> Point2:
+        match target:
+            case BuildOrderTargetOptions.ENEMY_FOURTH:
+                return self.mediator.get_enemy_expansions[2][0]
+            case BuildOrderTargetOptions.ENEMY_NAT:
+                return self.mediator.get_enemy_nat
+            case BuildOrderTargetOptions.ENEMY_NAT_HG_SPOT:
+                return self.mediator.get_closest_overlord_spot(
+                    from_pos=Point2(
+                        cy_towards(
+                            self.mediator.get_enemy_nat,
+                            self.ai.game_info.map_center,
+                            10.0,
+                        )
+                    )
+                )
+            case BuildOrderTargetOptions.ENEMY_RAMP:
+                return self.mediator.get_enemy_ramp.top_center
+            case BuildOrderTargetOptions.ENEMY_SPAWN:
+                return self.ai.enemy_start_locations[0]
+            case BuildOrderTargetOptions.ENEMY_THIRD:
+                return self.mediator.get_enemy_expansions[1][0]
+            case BuildOrderTargetOptions.FOURTH:
+                return self.mediator.get_own_expansions[2][0]
+            case BuildOrderTargetOptions.NAT:
+                return self.mediator.get_own_nat
+            case BuildOrderTargetOptions.RAMP:
+                return self.ai.main_base_ramp.top_center
+            case BuildOrderTargetOptions.SPAWN:
+                return self.ai.start_location
+            case BuildOrderTargetOptions.THIRD:
+                return self.mediator.get_own_expansions[1][0]
+        return self.ai.start_location
