@@ -59,15 +59,22 @@ class StutterGroupBack(CombatGroupBehavior):
                     break
             if group_safe:
                 return True
-
-            move_to_target: Point2 = Point2(
-                cy_towards(
-                    self.group_position, self.target.position, -len(self.group) * 1.5
+            if len(self.group) > 1:
+                move_to_target: Point2 = Point2(
+                    cy_towards(
+                        self.group_position,
+                        self.target.position,
+                        -len(self.group) * 1.5,
+                    )
                 )
-            )
-            safe_spot: Point2 = mediator.find_closest_safe_spot(
-                from_pos=move_to_target, grid=self.grid
-            )
+                safe_spot: Point2 = mediator.find_closest_safe_spot(
+                    from_pos=move_to_target, grid=self.grid
+                )
+            else:
+                safe_spot: Point2 = mediator.find_closest_safe_spot(
+                    from_pos=self.group_position, grid=self.grid
+                )
+
             if ai.in_pathing_grid(safe_spot):
                 group_move_to: Point2 = mediator.find_path_next_point(
                     start=self.group_position,
@@ -85,6 +92,6 @@ class StutterGroupBack(CombatGroupBehavior):
                 sample_unit, self.target, AbilityId.ATTACK
             ):
                 return True
-            ai.give_same_action(AbilityId.ATTACK, self.group_tags, self.target)
+            ai.give_same_action(AbilityId.ATTACK, self.group_tags, self.target.position)
 
         return True

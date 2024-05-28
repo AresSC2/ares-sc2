@@ -43,7 +43,7 @@ class AMoveGroup(CombatGroupBehavior):
             return False
 
         sorted_units: list[Unit] = cy_sorted_by_distance_to(
-            self.group, self.target, reverse=True
+            self.group, self.target.position, reverse=True
         )
         if self.duplicate_or_similar_order(
             sorted_units[0], self.target, AbilityId.ATTACK

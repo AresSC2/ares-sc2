@@ -55,7 +55,7 @@ class CombatGroupBehavior(Behavior, Protocol):
             # the pos we calculated is not that different to previous target
             if (
                 isinstance(order_target, Point2)
-                and order_target.rounded == target.rounded
+                and order_target.rounded == target.position.rounded
             ):
                 return True
             if isinstance(order_target, Unit) and order_target == target:
