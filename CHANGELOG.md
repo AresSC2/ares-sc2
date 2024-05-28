@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.0 (2024-05-28)
+
+### Feature
+
+* Improve stutter group back behavior ([`0e84b41`](https://github.com/AresSC2/ares-sc2/commit/0e84b4178fc3ac4cadce87f1ea1e492ec8ac7854))
+
+### Fix
+
+* Stutter group back works with Unit object target ([`6cfe19e`](https://github.com/AresSC2/ares-sc2/commit/6cfe19e6630497d86bee300f512c6c2b5b63cef2))
+
 ## v2.9.0 (2024-05-25)
 
 ### Feature
