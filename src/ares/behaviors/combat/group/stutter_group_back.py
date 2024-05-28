@@ -44,7 +44,7 @@ class StutterGroupBack(CombatGroupBehavior):
             return False
 
         sorted_units: list[Unit] = cy_sorted_by_distance_to(
-            self.group, self.target, reverse=True
+            self.group, self.target.position, reverse=True
         )
         sample_unit: Unit = sorted_units[0]
 
