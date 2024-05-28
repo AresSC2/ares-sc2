@@ -47,7 +47,9 @@ class StutterGroupForward(CombatGroupBehavior):
         if not self.enemies:
             return False
 
-        sorted_units: list[Unit] = cy_sorted_by_distance_to(self.group, self.target)
+        sorted_units: list[Unit] = cy_sorted_by_distance_to(
+            self.group, self.target.position
+        )
         sample_unit: Unit = sorted_units[0]
 
         # if all units are in range of something, don't worry about moving
