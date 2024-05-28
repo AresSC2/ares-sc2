@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.10.1 (2024-05-28)
+
+### Fix
+
+* Ensure both Point2 and Unit work for group targets ([`d26778a`](https://github.com/AresSC2/ares-sc2/commit/d26778ab0b9f5f63f51a8ed5599f00e587f20650))
+
 ## v2.10.0 (2024-05-28)
 
 ### Feature
