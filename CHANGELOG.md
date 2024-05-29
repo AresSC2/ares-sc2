@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.11.0 (2024-05-29)
+
+### Feature
+
+* Build runner supports scout and duplicate commands ([`c8d939d`](https://github.com/AresSC2/ares-sc2/commit/c8d939d2200f34183d92d0c5ad32147591af2540))
+* Build runner supports autosupply option ([`a444760`](https://github.com/AresSC2/ares-sc2/commit/a44476038716593e8d76a8e089f8051ff19fa130))
+
+### Documentation
+
+* Extend build runner tutorial with new features ([`a7b7017`](https://github.com/AresSC2/ares-sc2/commit/a7b70173823c7ea7495d0005b8930fdda61aafb3))
+
 ## v2.10.1 (2024-05-28)
 
 ### Fix
