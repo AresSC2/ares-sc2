@@ -43,6 +43,7 @@ from ares.consts import (
     UNITS_TO_AVOID_TYPES,
     USE_DATA,
     WORKER_TYPES,
+    UnitRole,
     UnitTreeQueryType,
 )
 from ares.custom_bot_ai import CustomBotAI
@@ -352,6 +353,18 @@ class AresBot(CustomBotAI):
         await self.manager_hub.update_managers(self.actual_iteration)
         if not self.build_order_runner.build_completed:
             await self.build_order_runner.run_build()
+
+        # detect scouts used by the build runner that are finished
+        if self.time < 390.0:
+            if scouts := [
+                w
+                for w in self.mediator.get_units_from_role(
+                    role=UnitRole.BUILD_RUNNER_SCOUT, unit_type=WORKER_TYPES
+                )
+                if w.is_idle
+            ]:
+                for scout in scouts:
+                    self.mediator.assign_role(tag=scout.tag, role=UnitRole.GATHERING)
 
         self.actual_iteration += 1
         if self.chat_debug:
@@ -938,7 +951,9 @@ class AresBot(CustomBotAI):
             build_structures = build_structures[: self.num_larva_left]
         # limit to powered structures
         if self.race == Race.Protoss:
-            build_structures = [s for s in build_structures if s.is_powered]
+            build_structures = [
+                s for s in build_structures if s.is_powered or s.type_id == UnitID.NEXUS
+            ]
 
         return build_structures
 

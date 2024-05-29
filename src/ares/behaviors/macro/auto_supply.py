@@ -117,4 +117,12 @@ class AutoSupply(MacroBehavior):
                 )
                 return min(num, 6)
 
+            # we have no prod structures, just in case
+            elif (
+                num_production_structures == 0
+                and supply_left <= 2
+                and not pending_supply_units
+            ):
+                return 1 - pending_supply_units
+
         return 0
