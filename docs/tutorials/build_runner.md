@@ -84,6 +84,7 @@ race. For each build name, ensure that there is a corresponding build name under
 be careful adding build steps that are impossible to commence. Such as adding a barracks before a 
 supply depot or a gateway before pylon.
 
+
 ### Valid build order options
 Each item in the build order should contain a string, with the first word being the command. 
 This supports any [`UnitTypeID`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/ids/unit_typeid.py) 
@@ -99,8 +100,10 @@ class BuildOrderOptions(str, Enum):
     GATE = "GATE"
     EXPAND = "EXPAND"
     ORBITAL = "ORBITAL"
+    OVERLORD_SCOUT = "OVERLORD_SCOUT"
     SUPPLY = "SUPPLY"
     WORKER = "WORKER"
+    WORKER_SCOUT = "WORKER_SCOUT"
 ```
 
 Additionally, strings may contain targets such as `14 pylon @ ramp`, where the last word should contain the target 
@@ -110,16 +113,137 @@ class BuildOrderTargetOptions(str, Enum):
     ENEMY_FOURTH = "ENEMY_FOURTH"
     ENEMY_NAT = "ENEMY_NAT"
     ENEMY_NAT_HG_SPOT = "ENEMY_NAT_HG_SPOT"
+    ENEMY_NAT_VISION = "ENEMY_NAT_VISION"
     ENEMY_RAMP = "ENEMY_RAMP"
     ENEMY_SPAWN = "ENEMY_SPAWN"
     ENEMY_THIRD = "ENEMY_THIRD"
+    FIFTH = "FIFTH"
     FOURTH = "FOURTH"
     MAP_CENTER = "MAP_CENTER"
     NAT = "NAT"
     RAMP = "RAMP"
+    SIXTH = "SIXTH"
     SPAWN = "SPAWN"
     THIRD = "THIRD"
 ```
+
+### AutoSupply
+Enable AutoSupply in your build order at a specific supply count. 
+This example turns on AutoSupply after the first supply building:
+```yml
+Builds:
+    DummyBuild:
+        # After 17 supply turn AutoSupply on
+        AutoSupplyAtSupply: 17
+        ConstantWorkerProductionTill: 50
+        OpeningBuildOrder:
+            - 14 pylon @ ramp
+            - 15 worker_scout:
+                [spawn, nat, enemy_spawn, third, fourth, map_center, enemy_nat]
+            - 16 gate
+            - 16 gas
+            - 17 gas
+            - 19 gate
+            - 20 core
+            - 22 adept x2
+            - 25 stargate
+```
+
+### Automatic worker production
+Like AutoSupply, this cleans up your build order. Use `ConstantWorkerProductionTill` to set an integer value:
+
+```yml
+Builds:
+    ProbeMaxout:
+        # After 0 supply turn AutoSupply on
+        AutoSupplyAtSupply: 0
+        ConstantWorkerProductionTill: 200
+        OpeningBuildOrder:
+            - 200 gateway
+```
+
+### Build complete
+Upon completion of the build, a typical bot workflow should allow for dynamic production. To check whether the opening 
+has been completed or not, you can use the following method call:
+
+```self.build_order_runner.opening_completed```
+
+### Chronoboost
+For chrono, target structures using UnitTypeID, e.g.:
+
+```yml
+- 13 chrono @ nexus
+- 16 chrono @ gateway
+- 20 chrono @ cyberneticscore
+```
+
+### Duplicate commands
+Use `x`, `X`, or `*` followed by an integer to duplicate commands. Ensure sufficient supply.
+And consider turning `AutoSupply` option on if using duplicate commands.
+
+
+Examples:
+```yml
+- 12 worker x3
+```
+
+```yml
+- 12 pylon @ ramp *5
+```
+
+```yml
+- 15 barracks ramp *2
+```
+
+```yml
+- 42 roach * 16
+```
+
+### Retrieve the opening build name
+Retrieve the opening build name using the following method call:
+
+```self.build_order_runner.chosen_opening```
+
+This method will return a string value containing the name of the currently selected build from the 
+`<my_race_lowercase>_builds.yml` file.
+
+### Scouting
+`worker_scout` and `overlord_scout` options are currently available.
+
+#### Simple worker scout
+Use `worker_scout` to scout the enemy base:
+```yml
+Builds:
+    DummyBuild:
+        OpeningBuildOrder:
+            - 12 worker_scout
+```
+
+#### Advanced worker scout
+Provide locations via a list for the worker to scout:
+```yml
+Builds:
+    DummyBuild:
+        OpeningBuildOrder:
+            - 12 worker_scout:
+                  [spawn, nat, enemy_spawn, third, fourth, map_center, enemy_nat]
+```
+
+See `BuildOrderTargetOptions` above for all valid options.
+
+#### Overlord scout
+Use `overlord_scout` command to send overlord to scout. Unlike the worker scout
+there is no default behavior so please provide locations.
+See example below, overlord checks enemy natural, then finds a close high ground spot.
+```yml
+Builds:
+    DummyBuild:
+        OpeningBuildOrder:
+            - 12 overlord_scout:
+                  [enemy_nat_vision, enemy_nat_hg_spot]
+```
+
+See `BuildOrderTargetOptions` above for all valid options.
 
 ### Spawning units
 Targets may be used to target warp ins, for example:
@@ -137,30 +261,3 @@ If omitted the default spawn target is our start location.
 # this is perfectly fine
 - 36 adept
 ```
-
-### Chronoboost
-If you are using chrono, then the target should contain the structure ID that represents a `UnitTypeID` type, 
-for example:
-
-```yml
-- 13 chrono @ nexus
-- 16 chrono @ gateway
-- 20 chrono @ cyberneticscore
-```
-
-
-### Build complete
-Upon completion of the build, a typical bot workflow should allow for dynamic production. To check whether the opening 
-has been completed or not, you can use the following method call:
-
-```self.build_order_runner.opening_completed```
-
-This will return a boolean value indicating whether the opening has been completed or not.
-
-### Get the opening build name
-Retrieve the opening build name using the following method call:
-
-```self.build_order_runner.chosen_opening```
-
-This method will return a string value containing the name of the currently selected build from the 
-`<my_race_lowercase>_builds.yml` file.
