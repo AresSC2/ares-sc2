@@ -156,8 +156,10 @@ class BuildOrderOptions(str, Enum):
     GATE = "GATE"
     EXPAND = "EXPAND"
     ORBITAL = "ORBITAL"
+    OVERLORD_SCOUT = "OVERLORD_SCOUT"
     SUPPLY = "SUPPLY"
     WORKER = "WORKER"
+    WORKER_SCOUT = "WORKER_SCOUT"
 
     @classmethod
     def contains_key(cls, name):
@@ -168,19 +170,27 @@ class BuildOrderTargetOptions(str, Enum):
     ENEMY_FOURTH = "ENEMY_FOURTH"
     ENEMY_NAT = "ENEMY_NAT"
     ENEMY_NAT_HG_SPOT = "ENEMY_NAT_HG_SPOT"
+    ENEMY_NAT_VISION = "ENEMY_NAT_VISION"
     ENEMY_RAMP = "ENEMY_RAMP"
     ENEMY_SPAWN = "ENEMY_SPAWN"
     ENEMY_THIRD = "ENEMY_THIRD"
+    FIFTH = "FIFTH"
     FOURTH = "FOURTH"
     MAP_CENTER = "MAP_CENTER"
     NAT = "NAT"
     RAMP = "RAMP"
+    SIXTH = "SIXTH"
     SPAWN = "SPAWN"
     THIRD = "THIRD"
 
     @classmethod
     def contains_key(cls, name):
         return name in cls.__members__
+
+    @classmethod
+    def list_options(cls):
+        options = [member.value for role, member in cls.__members__.items()]
+        return options
 
 
 class BuildingPurpose(Enum):
@@ -397,6 +407,8 @@ class UnitRole(str, Enum):
     CONTROL_GROUP_SEVEN = "CONTROL_GROUP_SEVEN"
     CONTROL_GROUP_EIGHT = "CONTROL_GROUP_EIGHT"
     CONTROL_GROUP_NINE = "CONTROL_GROUP_NINE"
+    # reserved for build order runner, use at your own risk :D
+    BUILD_RUNNER_SCOUT = "BUILD_RUNNER_SCOUT"
 
 
 class UnitTreeQueryType(str, Enum):

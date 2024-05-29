@@ -5,6 +5,8 @@ from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
 
+from ares.consts import BuildOrderOptions
+
 
 @dataclass
 class BuildOrderStep:
@@ -12,7 +14,7 @@ class BuildOrderStep:
 
     Attributes
     ----------
-    command : Union[AbilityId, UnitID, UpgradeId]
+    command : Union[AbilityId, UnitID, UpgradeId, BuildOrderOptions]
         What should happen in this step of the build order.
 
         Examples
@@ -33,7 +35,7 @@ class BuildOrderStep:
 
     """
 
-    command: Union[AbilityId, UnitID, UpgradeId]
+    command: Union[AbilityId, UnitID, UpgradeId, BuildOrderOptions]
     start_condition: Callable
     end_condition: Callable
     command_started: bool = False

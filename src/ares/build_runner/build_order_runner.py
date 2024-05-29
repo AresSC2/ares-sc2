@@ -8,7 +8,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.behaviors.macro import SpawnController
+from ares.behaviors.macro import AutoSupply, SpawnController
 from ares.build_runner.build_order_step import BuildOrderStep
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -27,6 +27,7 @@ from ares.consts import (
     GATEWAY_UNITS,
     OPENING_BUILD_ORDER,
     TARGET,
+    BuildOrderOptions,
     BuildOrderTargetOptions,
     UnitRole,
 )
@@ -64,11 +65,16 @@ class BuildOrderRunner:
         Runs a specific build order step.
     """
 
+    AUTO_SUPPLY_AT_SUPPLY: str = "AutoSupplyAtSupply"
     CONSTANT_WORKER_PRODUCTION_TILL: str = "ConstantWorkerProductionTill"
     PERSISTENT_WORKER: str = "PersistentWorker"
     REQUIRES_TOWNHALL_COMMANDS: set = {
         AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
         AbilityId.UPGRADETOPLANETARYFORTRESS_PLANETARYFORTRESS,
+    }
+    SCOUTING_COMMANDS: set[BuildOrderOptions] = {
+        BuildOrderOptions.OVERLORD_SCOUT,
+        BuildOrderOptions.WORKER_SCOUT,
     }
 
     def __init__(
@@ -81,6 +87,7 @@ class BuildOrderRunner:
         self.ai = ai
         self.config: dict = config
         self.mediator: ManagerMediator = mediator
+        self.auto_supply_at_supply: int = 200
         self.constant_worker_production_till: int = 0
         self.persistent_worker: bool = True
         self._chosen_opening: str = chosen_opening
@@ -295,6 +302,33 @@ class BuildOrderRunner:
                     available_ccs[0](AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND)
                     self.current_step_started = True
 
+            elif command == BuildOrderOptions.WORKER_SCOUT:
+                if worker := self.mediator.select_worker(
+                    target_position=self.ai.start_location
+                ):
+                    for i, target in enumerate(step.target):
+                        worker.move(target, queue=i != 0)
+                    self.mediator.assign_role(
+                        tag=worker.tag, role=UnitRole.BUILD_RUNNER_SCOUT
+                    )
+                    self.current_step_started = True
+            elif command == BuildOrderOptions.OVERLORD_SCOUT:
+                unit_role_dict: dict[
+                    UnitRole, set[int]
+                ] = self.mediator.get_unit_role_dict
+                if overlords := [
+                    ol
+                    for ol in self.mediator.get_own_army_dict[UnitID.OVERLORD]
+                    if ol.tag not in unit_role_dict[UnitRole.BUILD_RUNNER_SCOUT]
+                ]:
+                    overlord: Unit = overlords[0]
+                    for i, target in enumerate(step.target):
+                        overlord.move(target, queue=i != 0)
+                    self.mediator.assign_role(
+                        tag=overlord.tag, role=UnitRole.BUILD_RUNNER_SCOUT
+                    )
+                    self.current_step_started = True
+
         if self.current_step_started:
             end_condition_active: bool = step.end_condition()
             # end condition hasn't yet activated
@@ -462,18 +496,32 @@ class BuildOrderRunner:
                         )
                     )
                 )
+            case BuildOrderTargetOptions.ENEMY_NAT_VISION:
+                return Point2(
+                    cy_towards(
+                        self.mediator.get_enemy_nat,
+                        self.ai.game_info.map_center,
+                        10.0,
+                    )
+                )
             case BuildOrderTargetOptions.ENEMY_RAMP:
                 return self.mediator.get_enemy_ramp.top_center
             case BuildOrderTargetOptions.ENEMY_SPAWN:
                 return self.ai.enemy_start_locations[0]
             case BuildOrderTargetOptions.ENEMY_THIRD:
                 return self.mediator.get_enemy_expansions[1][0]
+            case BuildOrderTargetOptions.FIFTH:
+                return self.mediator.get_own_expansions[3][0]
             case BuildOrderTargetOptions.FOURTH:
                 return self.mediator.get_own_expansions[2][0]
+            case BuildOrderTargetOptions.MAP_CENTER:
+                return self.ai.game_info.map_center
             case BuildOrderTargetOptions.NAT:
                 return self.mediator.get_own_nat
             case BuildOrderTargetOptions.RAMP:
                 return self.ai.main_base_ramp.top_center
+            case BuildOrderTargetOptions.SIXTH:
+                return self.mediator.get_own_expansions[4][0]
             case BuildOrderTargetOptions.SPAWN:
                 return self.ai.start_location
             case BuildOrderTargetOptions.THIRD:
