@@ -86,10 +86,22 @@ class BuildOrderRunner:
         self._chosen_opening: str = chosen_opening
         if BUILDS in self.config:
             build: list[str] = config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
+            if self.AUTO_SUPPLY_AT_SUPPLY in config[BUILDS][chosen_opening]:
+                try:
+                    self.auto_supply_at_supply = int(
+                        config[BUILDS][chosen_opening][self.AUTO_SUPPLY_AT_SUPPLY]
+                    )
+                except ValueError as e:
+                    logger.warning(f"Error: {e}")
             if self.CONSTANT_WORKER_PRODUCTION_TILL in config[BUILDS][chosen_opening]:
-                self.constant_worker_production_till = config[BUILDS][chosen_opening][
-                    self.CONSTANT_WORKER_PRODUCTION_TILL
-                ]
+                try:
+                    self.constant_worker_production_till = int(
+                        config[BUILDS][chosen_opening][
+                            self.CONSTANT_WORKER_PRODUCTION_TILL
+                        ]
+                    )
+                except ValueError as e:
+                    logger.warning(f"Error: {e}")
             if self.PERSISTENT_WORKER in config[BUILDS][chosen_opening]:
                 self.persistent_worker = config[BUILDS][chosen_opening][
                     self.PERSISTENT_WORKER
@@ -176,6 +188,11 @@ class BuildOrderRunner:
 
         if self.ai.supply_workers < self.constant_worker_production_till:
             self._produce_workers()
+
+        if self.ai.supply_used >= self.auto_supply_at_supply:
+            AutoSupply(self.ai.start_location).execute(
+                self.ai, self.config, self.mediator
+            )
 
     async def do_step(self, step: BuildOrderStep) -> None:
         """
