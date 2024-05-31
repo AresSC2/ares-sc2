@@ -127,9 +127,11 @@ class BuildOrderTargetOptions(str, Enum):
     THIRD = "THIRD"
 ```
 
-### AutoSupply
+### AutoSupply (optional)
+Automatically handle building supply structures after the supply set.
 Enable AutoSupply in your build order at a specific supply count. 
-This example turns on AutoSupply after the first supply building:
+This example turns on AutoSupply after 17 supply so you no longer need to declare supply
+structures in your build:
 ```yml
 Builds:
     DummyBuild:
@@ -149,7 +151,7 @@ Builds:
             - 25 stargate
 ```
 
-### Automatic worker production
+### Automatic worker production (optional)
 Like AutoSupply, this cleans up your build order. Use `ConstantWorkerProductionTill` to set an integer value:
 
 ```yml
@@ -166,7 +168,15 @@ Builds:
 Upon completion of the build, a typical bot workflow should allow for dynamic production. To check whether the opening 
 has been completed or not, you can use the following method call:
 
-```self.build_order_runner.opening_completed```
+```python
+self.build_order_runner.opening_completed
+```
+
+#### Set build complete
+You can set the build to be complete at any time using the following:
+```python
+self.build_order_runner.set_build_completed()
+```
 
 ### Chronoboost
 For chrono, target structures using UnitTypeID, e.g.:
@@ -196,7 +206,7 @@ Examples:
 ```
 
 ```yml
-- 42 roach * 16
+- 42 roach *16
 ```
 
 ### Retrieve the opening build name
@@ -244,6 +254,23 @@ Builds:
 ```
 
 See `BuildOrderTargetOptions` above for all valid options.
+
+#### Taking control of scouts
+Take the following scenario: Your worker scout has found a proxy, and you want to harass the enemy scv.
+The build runner takes no opinion how your scout should handle this scenario, but you can grab control
+of the worker and issue your own commands. Internally `ares-sc2` assigns scouts to the `BUILD_RUNNER_SCOUT`
+ `UnitRole`, so we can grab the scout via the mediator like so:
+
+```python
+worker_scouts: Units = self.mediator.get_units_from_role(
+    role=UnitRole.BUILD_RUNNER_SCOUT, unit_type=self.worker_type
+)
+for scout in worker_scouts:
+    # issue custom commands
+    pass
+```
+
+You can retrieve overlord scouts in a similar manner.
 
 ### Spawning units
 Targets may be used to target warp ins, for example:
