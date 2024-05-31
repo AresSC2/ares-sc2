@@ -515,6 +515,7 @@ class AresBot(CustomBotAI):
         None
         """
         self.manager_hub.on_building_started(unit)
+        self.build_order_runner.set_step_complete(unit.type_id)
 
     def _add_enemy_unit(
         self,

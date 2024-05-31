@@ -120,6 +120,7 @@ class BuildOrderRunner:
         self.build_order: list[BuildOrderStep] = build_order_parser.parse()
         self.build_step: int = 0
         self.current_step_started: bool = False
+        self.current_step_complete: bool = False
         self._opening_build_completed: bool = False
         self.current_build_position: Point2 = self.ai.start_location
         self.assigned_persistent_worker: bool = False
@@ -132,6 +133,13 @@ class BuildOrderRunner:
             from_role=UnitRole.PERSISTENT_BUILDER, to_role=UnitRole.GATHERING
         )
         self._opening_build_completed = True
+
+    def set_step_complete(self, value: UnitID) -> None:
+        if (
+            value == self.build_order[self.build_step].command
+            and self.current_step_started
+        ):
+            self.current_step_complete = True
 
     def set_step_started(self, value: bool) -> None:
         self.current_step_started = value
@@ -330,9 +338,10 @@ class BuildOrderRunner:
                     self.current_step_started = True
 
         if self.current_step_started:
-            end_condition_active: bool = step.end_condition()
+            if not self.current_step_complete:
+                self.current_step_complete = step.end_condition()
             # end condition hasn't yet activated
-            if not end_condition_active:
+            if not self.current_step_complete:
                 command: Union[UnitID, UpgradeId] = step.command
                 if command in ADD_ONS and self.ai.can_afford(command):
                     if base_structures := [
@@ -359,6 +368,7 @@ class BuildOrderRunner:
                     self.build_step += 1
 
                 self.current_step_started = False
+                self.current_step_complete = False
 
     async def get_position(
         self, structure_type: UnitID, target: Optional[str]
