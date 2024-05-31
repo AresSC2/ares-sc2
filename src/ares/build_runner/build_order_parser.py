@@ -162,10 +162,8 @@ class BuildOrderParser:
             command=structure_id,
             start_condition=lambda: self.ai.minerals >= cost.minerals - 75
             and self.ai.vespene >= cost.vespene - 25,
-            end_condition=lambda: self.ai.structures.filter(
-                lambda s: 0.00001 <= s.build_progress < 0.05
-                and s.type_id == structure_id
-            ),
+            # set via on_structure_started hook
+            end_condition=lambda: False,
         )
 
     def _generate_unit_build_step(self, unit_id: UnitID) -> Callable:
@@ -184,6 +182,7 @@ class BuildOrderParser:
         return lambda: BuildOrderStep(
             command=unit_id,
             start_condition=lambda: self.ai.can_afford(unit_id)
+            and self.ai.tech_ready_for_unit(unit_id)
             and len(
                 self.ai.get_build_structures(
                     UNIT_TRAINED_FROM[unit_id],
