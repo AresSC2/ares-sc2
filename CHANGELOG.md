@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.11.1 (2024-05-31)
+
+### Fix
+
+* Build runner detects structure steps have started correctly ([`8d0199b`](https://github.com/AresSC2/ares-sc2/commit/8d0199b9c7ad7c747d4eebcfde6ede078e110df2))
+* Tech requirement for immortal ([`5a32601`](https://github.com/AresSC2/ares-sc2/commit/5a32601a3a632db1d14a45ade4efd50ea2417418))
+
+### Documentation
+
+* Add to build runner tutorial ([`331d04f`](https://github.com/AresSC2/ares-sc2/commit/331d04fb8dd79ede746407a3865f07d9664884e6))
+
 ## v2.11.0 (2024-05-29)
 
 ### Feature
