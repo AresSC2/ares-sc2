@@ -49,7 +49,6 @@ class StutterGroupBack(CombatGroupBehavior):
         sample_unit: Unit = sorted_units[0]
 
         if self.group_weapons_on_cooldown(self.group, stutter_forward=False):
-
             group_safe: bool = True
             for unit in self.group:
                 if not mediator.is_position_safe(
