@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.12.2 (2024-06-01)
+
+### Fix
+
+* Ramp target in build runner builds in main ([`3b75a97`](https://github.com/AresSC2/ares-sc2/commit/3b75a97fea11a1d2160e652144b98ccc343c1333))
+
 ## v2.12.1 (2024-06-01)
 
 ### Fix
