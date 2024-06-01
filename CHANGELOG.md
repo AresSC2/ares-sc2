@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.12.1 (2024-06-01)
+
+### Fix
+
+* Run game placement query to ensure warpin placement ([`da8e706`](https://github.com/AresSC2/ares-sc2/commit/da8e706a90a5427abf008dddeaa319257f6c0ae5))
+
 ## v2.12.0 (2024-06-01)
 
 ### Feature
