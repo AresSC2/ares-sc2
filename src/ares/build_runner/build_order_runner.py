@@ -136,7 +136,8 @@ class BuildOrderRunner:
 
     def set_step_complete(self, value: UnitID) -> None:
         if (
-            value == self.build_order[self.build_step].command
+            self.build_step < len(self.build_order)
+            and value == self.build_order[self.build_step].command
             and self.current_step_started
         ):
             self.current_step_complete = True
