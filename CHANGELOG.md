@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.12.3 (2024-06-01)
+
+### Fix
+
+* Only use completed ths for chrono ([`83ac1c4`](https://github.com/AresSC2/ares-sc2/commit/83ac1c42fa7355c2c6a92e5ca87d66425f09d8f9))
+
 ## v2.12.2 (2024-06-01)
 
 ### Fix
