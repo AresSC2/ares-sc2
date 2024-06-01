@@ -16,6 +16,7 @@ from cython_extensions import (
 from loguru import logger
 from sc2.constants import ALL_GAS
 from sc2.data import Race
+from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
@@ -324,13 +325,18 @@ class PlacementManager(Manager, IManagerMediator):
                         self.ai.game_info.terrain_height.data_numpy,
                         pylon_build_progress=1.0,
                     ):
+                        ability: AbilityId = (
+                            AbilityId.WARPGATETRAIN_STALKER
+                            if unit_type == UnitID.STALKER
+                            else AbilityId.WARPGATETRAIN_ZEALOT
+                        )
+                        pos = await self.ai.find_placement(ability, pos)
                         self.warp_in_positions.add(pos)
                         build_from.warp_in(unit_type, pos)
                         self.warp_in_positions.add(pos)
                         if unit_type == UnitID.STALKER:
                             for p in pos.neighbors8:
                                 self.warp_in_positions.add(p)
-                        return pos
 
     def request_building_placement(
         self,
