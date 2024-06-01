@@ -295,7 +295,9 @@ class BuildOrderRunner:
             elif command == AbilityId.EFFECT_CHRONOBOOST:
                 if chrono_target := self.get_structure(step.target):
                     if available_nexuses := [
-                        th for th in self.ai.townhalls if th.energy >= 50
+                        th
+                        for th in self.ai.townhalls
+                        if th.energy >= 50 and th.is_ready
                     ]:
                         available_nexuses[0](
                             AbilityId.EFFECT_CHRONOBOOSTENERGYCOST, chrono_target
