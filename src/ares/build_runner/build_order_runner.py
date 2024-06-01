@@ -416,7 +416,10 @@ class BuildOrderRunner:
             ]
             if len(close_enemy_to_ramp) > 0:
                 at_wall = False
-            base_location = self._get_target(target)
+            if target == BuildOrderTargetOptions.RAMP:
+                base_location = self.ai.start_location
+            else:
+                base_location = self._get_target(target)
             return self.mediator.request_building_placement(
                 base_location=base_location,
                 structure_type=structure_type,
