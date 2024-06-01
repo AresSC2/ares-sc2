@@ -312,6 +312,14 @@ class BuildOrderParser:
                 if _duplicates := self.extract_integer_from_target(target):
                     duplicates = _duplicates
 
+        if command == BuildOrderOptions.CHRONO and not step.target:
+            raise Exception(
+                f"No target found for chrono build step command. \n"
+                f"Valid example: "
+                f"``` 16 chrono @ nexus ``` \n"
+                f"Found: {raw_step}"
+            )
+
         step.start_at_supply = supply
         for i in range(duplicates):
             build_order.append(step)
@@ -389,7 +397,10 @@ class BuildOrderParser:
     def _get_target_for_step(target: str) -> Union[str, UnitID]:
         """Set the target for the step."""
         try:
-            return UnitID[target]
+            if target == BuildOrderOptions.CORE:
+                return UnitID.CYBERNETICSCORE
+            else:
+                return UnitID[target]
         except KeyError:
             try:
                 return BuildOrderTargetOptions[target]

@@ -488,6 +488,17 @@ class PlacementManager(Manager, IManagerMediator):
                 if available := [
                     a
                     for a in available
+                    if self.placements_dict[location][building_size][a]["optimal_pylon"]
+                    # don't wall in, user should intentionally pass wall parameter
+                    and not self.placements_dict[location][building_size][a]["is_wall"]
+                ]:
+                    final_placement = min(
+                        available,
+                        key=lambda k: cy_distance_to_squared(k, base_location),
+                    )
+                elif available := [
+                    a
+                    for a in available
                     if self.placements_dict[location][building_size][a][
                         "production_pylon"
                     ]
@@ -500,8 +511,20 @@ class PlacementManager(Manager, IManagerMediator):
                     )
 
             if self.ai.race == Race.Protoss and within_psionic_matrix:
+                build_near: Point2 = location
+                two_by_twos: dict = self.placements_dict[location][
+                    BuildingSize.TWO_BY_TWO
+                ]
+                if optimal_pylon := [
+                    a
+                    for a in two_by_twos
+                    if self.placements_dict[location][BuildingSize.TWO_BY_TWO][a][
+                        "optimal_pylon"
+                    ]
+                ]:
+                    build_near = optimal_pylon[0]
                 final_placement = self._find_placement_near_pylon(
-                    available, base_location, pylon_build_progress
+                    available, build_near, pylon_build_progress
                 )
                 if not final_placement:
                     logger.warning(
@@ -821,7 +844,7 @@ class PlacementManager(Manager, IManagerMediator):
             start_x: int = int(el.x - 4.5)
             start_y: int = int(el.y - 4.5)
             self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
-            max_dist = 16
+            max_dist: int = 16
             # calculate the wall positions first
             if el == self.ai.start_location:
                 max_dist = 22
@@ -837,8 +860,8 @@ class PlacementManager(Manager, IManagerMediator):
             # find production pylon positions first
             production_pylon_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
-                x_stride=6,
-                y_stride=6,
+                x_stride=7,
+                y_stride=7,
                 x_bounds=raw_x_bounds,
                 y_bounds=raw_y_bounds,
                 creep_grid=creep_grid,
@@ -867,10 +890,6 @@ class PlacementManager(Manager, IManagerMediator):
                         avoid_y : avoid_y + 2, avoid_x : avoid_x + 2
                     ] = 1
 
-            # increase distance from townhall that should be avoided
-            start_x: int = int(el.x - 4.5)
-            start_y: int = int(el.y - 4.5)
-            self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
             three_by_three_positions = cy_find_building_locations(
                 kernel=np.ones((3, 3), dtype=np.uint8),
                 x_stride=3,
@@ -928,6 +947,38 @@ class PlacementManager(Manager, IManagerMediator):
                         BuildingSize.TWO_BY_TWO, el, point2_pos
                     )
 
+            # find optimal pylon to build around (fits most 3x3)
+            self._find_optimal_pylon_for_base(el)
+
+    def _find_optimal_pylon_for_base(self, el: Point2) -> None:
+        two_by_twos: dict[Point2:dict] = self.placements_dict[el][
+            BuildingSize.TWO_BY_TWO
+        ]
+        prod_pylons: list[Point2] = [
+            placement
+            for placement in two_by_twos
+            if two_by_twos[placement]["production_pylon"]
+        ]
+        three_by_threes: dict[Point2:dict] = self.placements_dict[el][
+            BuildingSize.THREE_BY_THREE
+        ]
+
+        best_pylon_pos: Point2 = el
+        most_three_by_threes: int = 0
+
+        for pylon_position in prod_pylons:
+            num_three_by_threes: int = 0
+            for three_by_three in three_by_threes:
+                if cy_distance_to_squared(pylon_position, three_by_three) < 42.25:
+                    num_three_by_threes += 1
+            if num_three_by_threes > most_three_by_threes:
+                most_three_by_threes = num_three_by_threes
+                best_pylon_pos = pylon_position
+
+        self.placements_dict[el][BuildingSize.TWO_BY_TWO][best_pylon_pos][
+            "optimal_pylon"
+        ] = True
+
     def _solve_zerg_building_formation(self):
         # TODO: Implement zerg placements
         pass
@@ -940,6 +991,7 @@ class PlacementManager(Manager, IManagerMediator):
         production_pylon: bool = False,
         wall: bool = False,
         bunker: bool = False,
+        optimal_pylon: bool = False,
     ) -> None:
         """Add calculated position to placements dict."""
         self.placements_dict[expansion_location][building_size][position] = {
@@ -951,6 +1003,7 @@ class PlacementManager(Manager, IManagerMediator):
             "time_requested": 0.0,
             "production_pylon": production_pylon,
             "bunker": bunker,
+            "optimal_pylon": optimal_pylon,
         }
 
     def _calculate_main_ramp_placements(self, el: Point2) -> None:
@@ -1035,7 +1088,9 @@ class PlacementManager(Manager, IManagerMediator):
                 self.ai.draw_text_on_world(position, f"{placement}")
                 pos_min = Point3((placement.x - 1.0, placement.y - 1.0, z))
                 pos_max = Point3((placement.x + 1.0, placement.y + 1.0, z + 1))
-                if info["production_pylon"]:
+                if info["optimal_pylon"]:
+                    colour = Point3((255, 0, 0))
+                elif info["production_pylon"]:
                     colour = Point3((0, 255, 0))
                 else:
                     colour = Point3((0, 0, 255))

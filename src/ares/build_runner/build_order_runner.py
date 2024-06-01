@@ -136,7 +136,8 @@ class BuildOrderRunner:
 
     def set_step_complete(self, value: UnitID) -> None:
         if (
-            value == self.build_order[self.build_step].command
+            self.build_step < len(self.build_order)
+            and value == self.build_order[self.build_step].command
             and self.current_step_started
         ):
             self.current_step_complete = True
@@ -415,8 +416,9 @@ class BuildOrderRunner:
             ]
             if len(close_enemy_to_ramp) > 0:
                 at_wall = False
+            base_location = self._get_target(target)
             return self.mediator.request_building_placement(
-                base_location=self.ai.start_location,
+                base_location=base_location,
                 structure_type=structure_type,
                 wall=at_wall,
                 within_psionic_matrix=within_psionic_matrix,
