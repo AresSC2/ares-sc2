@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v2.12.0 (2024-06-01)
+
+### Feature
+
+* Find initial optimal pylon to build around ([`175954f`](https://github.com/AresSC2/ares-sc2/commit/175954f34f5eb5e5028573dc1ff72aa074a95706))
+* Core shortcut command works for chrono ([`abf3c40`](https://github.com/AresSC2/ares-sc2/commit/abf3c402fa17a46803f30580cd5b3126a992bec5))
+* Allow structure build order commands at target options ([`e16933f`](https://github.com/AresSC2/ares-sc2/commit/e16933f5a8d4d27dab85cf86950f3515747493b2))
+
+### Fix
+
+* Prevent crash completing steps out of index ([`85a01f7`](https://github.com/AresSC2/ares-sc2/commit/85a01f79abf3ea72e68b96e5ef0adeca5a90552e))
+
 ## v2.11.1 (2024-05-31)
 
 ### Fix
