@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.13.1 (2024-06-02)
+
+### Fix
+
+* Out of map bounds ([`521c363`](https://github.com/AresSC2/ares-sc2/commit/521c3635504cdeebf73f57a3fe6add7f1b5542c7))
+
 ## v2.13.0 (2024-06-02)
 
 ### Feature
