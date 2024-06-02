@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Union
 
 import numpy as np
-from cython_extensions import cy_sorted_by_distance_to, cy_towards
+from cython_extensions import cy_distance_to_squared, cy_sorted_by_distance_to
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -12,6 +12,17 @@ from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
     from ares import AresBot
+
+DIRECTIONS: list[Point2] = [
+    Point2((1, 0)),
+    Point2((-1, 0)),
+    Point2((0, 1)),
+    Point2((0, -1)),  # Cardinal directions
+    Point2((1, 1)),
+    Point2((-1, -1)),
+    Point2((1, -1)),
+    Point2((-1, 1)),  # Diagonal directions
+]
 
 
 @dataclass
@@ -59,13 +70,7 @@ class StutterGroupBack(CombatGroupBehavior):
             if group_safe:
                 return True
             if len(self.group) > 1:
-                move_to_target: Point2 = Point2(
-                    cy_towards(
-                        self.group_position,
-                        self.target.position,
-                        -len(self.group) * 1.5,
-                    )
-                )
+                move_to_target: Point2 = self.calculate_retreat_position(ai)
                 safe_spot: Point2 = mediator.find_closest_safe_spot(
                     from_pos=move_to_target, grid=self.grid
                 )
@@ -94,3 +99,41 @@ class StutterGroupBack(CombatGroupBehavior):
             ai.give_same_action(AbilityId.ATTACK, self.group_tags, self.target.position)
 
         return True
+
+    def calculate_retreat_position(self, ai: "AresBot") -> Point2:
+        """
+        Search 8 directions for somewhere to retreat to.
+
+        Parameters
+        ----------
+        ai
+
+        Returns
+        -------
+
+        """
+        distance = len(self.group) * 1.5
+
+        map_bounds = ai.game_info.map_size
+        best_position: Point2 = self.group_position
+        max_distance_from_target: float = 0.0
+
+        for direction in DIRECTIONS:
+            retreat_position: Point2 = self.group_position + direction * distance
+            retreat_position = Point2(
+                (
+                    max(0, min(map_bounds[0], retreat_position.x)),
+                    max(0, min(map_bounds[1], retreat_position.y)),
+                )
+            )
+
+            if ai.in_pathing_grid(retreat_position):
+                distance_from_target: float = cy_distance_to_squared(
+                    self.target.position, retreat_position
+                )
+
+                if distance_from_target > max_distance_from_target:
+                    max_distance_from_target = distance_from_target
+                    best_position = retreat_position
+
+        return best_position
