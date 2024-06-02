@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.13.0 (2024-06-02)
+
+### Feature
+
+* Improve retreat position for stutter back group ([`f4b1fea`](https://github.com/AresSC2/ares-sc2/commit/f4b1fea44fb3d1cb708697eedddfd142f232205a))
+
 ## v2.12.3 (2024-06-01)
 
 ### Fix
