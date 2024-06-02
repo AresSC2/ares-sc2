@@ -122,8 +122,8 @@ class StutterGroupBack(CombatGroupBehavior):
             retreat_position: Point2 = self.group_position + direction * distance
             retreat_position = Point2(
                 (
-                    max(0, min(map_bounds[0], retreat_position.x)),
-                    max(0, min(map_bounds[1], retreat_position.y)),
+                    max(0, min(map_bounds[0] - 1, retreat_position.x)),
+                    max(0, min(map_bounds[1] - 1, retreat_position.y)),
                 )
             )
 
