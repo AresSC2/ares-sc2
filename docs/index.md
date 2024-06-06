@@ -42,6 +42,7 @@ Feel free to add your own bot here
 
 [//]: # ( - [Phobos &#40;T&#41;]&#40;https://github.com/AresSC2/phobos&#41;)
  - [QueenBot (Z)](https://github.com/AresSC2/QueenBot)
+ - [12PoolBot (Z)](https://github.com/vschmidt91/12PoolBot)
  
 
 ## Features
