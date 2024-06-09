@@ -22,3 +22,8 @@
     options:
         show_root_heading: false
         show_root_toc_entry: false
+
+::: ares.behaviors.combat.group.group_use_ability
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false
