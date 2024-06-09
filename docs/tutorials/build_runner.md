@@ -169,7 +169,7 @@ Upon completion of the build, a typical bot workflow should allow for dynamic pr
 has been completed or not, you can use the following method call:
 
 ```python
-self.build_order_runner.opening_completed
+self.build_order_runner.build_completed
 ```
 
 #### Set build complete
