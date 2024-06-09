@@ -3,7 +3,7 @@
 The Build Runner System is a tool that enables swift build prototyping through a configuration file. 
 Optional data usage can be incorporated to maintain build history. IMPORTANT: The build runner system
 is designed only for curating optimized build orders in the first few minutes of the game. Your bot 
-should switch to dynamic behavior after completion, checked via ```self.build_order_runner.opening_completed```.
+should switch to dynamic behavior after completion, checked via ```self.build_order_runner.build_completed```.
 
 ### Declaring openings
 To initiate the Build Runner, a `<my_race_lowercase>_builds.yml` file should be included in the root directory of 
