@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.14.1 (2024-06-09)
+
+### Fix
+
+* Add missing import in init file ([`145446c`](https://github.com/AresSC2/ares-sc2/commit/145446cc8b0cd2f61ae3a65e2b0e29cb108f6c78))
+
 ## v2.14.0 (2024-06-09)
 
 ### Feature
