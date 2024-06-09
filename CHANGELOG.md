@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.14.0 (2024-06-09)
+
+### Feature
+
+* New group use ability behavior ([`23b0e6b`](https://github.com/AresSC2/ares-sc2/commit/23b0e6b37092a10a3e555dbd6dc2b72c9bd88cb2))
+
 ## v2.13.1 (2024-06-02)
 
 ### Fix
