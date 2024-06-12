@@ -399,18 +399,12 @@ class PlacementManager(Manager, IManagerMediator):
             )
         )
 
+        building_at_base: Point2 = location
         if building_size in self.placements_dict[location]:
-            potential_placements: dict[Point2:dict] = self.placements_dict[location][
-                building_size
-            ]
-            # find all available building_size placements at this base location
-            available: list[Point2] = [
-                placement
-                for placement in potential_placements
-                if potential_placements[placement]["available"]
-                and not potential_placements[placement]["worker_on_route"]
-                and self.can_place_structure(placement, structure_type)
-            ]
+            available: list[Point2] = self._find_potential_placements_at_base(
+                building_size, location, structure_type, within_psionic_matrix
+            )
+
             # no available placements at base_location
             if len(available) == 0:
                 if not find_alternative:
@@ -429,22 +423,17 @@ class PlacementManager(Manager, IManagerMediator):
                         f"No available {building_size} found near location: "
                         f"{base_location}, trying near {location}"
                     )
-                    potential_placements: dict[Point2:dict] = self.placements_dict[
-                        location
-                    ][building_size]
-                    available: list[Point2] = [
-                        placement
-                        for placement in potential_placements
-                        if potential_placements[placement]["available"]
-                        and not potential_placements[placement]["worker_on_route"]
-                        and self.can_place_structure(placement, structure_type)
-                    ]
+                    available: list[Point2] = self._find_potential_placements_at_base(
+                        building_size, location, structure_type, within_psionic_matrix
+                    )
+
                     if len(available) == 0:
                         logger.warning(
                             f"No {building_size} found near location: {location}"
                         )
                     # FOUND SOMETHING! Break out and continue logic after this loop
                     else:
+                        building_at_base = location
                         break
 
             if len(available) == 0:
@@ -454,7 +443,7 @@ class PlacementManager(Manager, IManagerMediator):
             # get closest available by default
             if not closest_to:
                 final_placement: Point2 = min(
-                    available, key=lambda k: cy_distance_to_squared(k, base_location)
+                    available, key=lambda k: cy_distance_to_squared(k, building_at_base)
                 )
             else:
                 final_placement: Point2 = min(
@@ -487,46 +476,51 @@ class PlacementManager(Manager, IManagerMediator):
                 ]:
                     final_placement = min(
                         _available,
-                        key=lambda k: cy_distance_to_squared(k, base_location),
+                        key=lambda k: cy_distance_to_squared(k, building_at_base),
                     )
             # prioritize production pylons if they exist
             elif structure_type == UnitID.PYLON:
                 if available := [
                     a
                     for a in available
-                    if self.placements_dict[location][building_size][a]["optimal_pylon"]
+                    if self.placements_dict[building_at_base][building_size][a][
+                        "optimal_pylon"
+                    ]
                     # don't wall in, user should intentionally pass wall parameter
-                    and not self.placements_dict[location][building_size][a]["is_wall"]
+                    and not self.placements_dict[building_at_base][building_size][a][
+                        "is_wall"
+                    ]
                 ]:
                     final_placement = min(
                         available,
-                        key=lambda k: cy_distance_to_squared(k, base_location),
+                        key=lambda k: cy_distance_to_squared(k, building_at_base),
                     )
                 elif available := [
                     a
                     for a in available
-                    if self.placements_dict[location][building_size][a][
+                    if self.placements_dict[building_at_base][building_size][a][
                         "production_pylon"
                     ]
                     # don't wall in, user should intentionally pass wall parameter
-                    and not self.placements_dict[location][building_size][a]["is_wall"]
+                    and not self.placements_dict[building_at_base][building_size][a][
+                        "is_wall"
+                    ]
                 ]:
                     final_placement = min(
                         available,
-                        key=lambda k: cy_distance_to_squared(k, base_location),
+                        key=lambda k: cy_distance_to_squared(k, building_at_base),
                     )
-
-            if self.ai.race == Race.Protoss and within_psionic_matrix:
-                build_near: Point2 = location
-                two_by_twos: dict = self.placements_dict[location][
+            elif within_psionic_matrix:
+                build_near: Point2 = building_at_base
+                two_by_twos: dict = self.placements_dict[building_at_base][
                     BuildingSize.TWO_BY_TWO
                 ]
                 if optimal_pylon := [
                     a
                     for a in two_by_twos
-                    if self.placements_dict[location][BuildingSize.TWO_BY_TWO][a][
-                        "optimal_pylon"
-                    ]
+                    if self.placements_dict[building_at_base][BuildingSize.TWO_BY_TWO][
+                        a
+                    ]["optimal_pylon"]
                 ]:
                     build_near = optimal_pylon[0]
                 final_placement = self._find_placement_near_pylon(
@@ -534,12 +528,15 @@ class PlacementManager(Manager, IManagerMediator):
                 )
                 if not final_placement:
                     logger.warning(
-                        f"Can't find placement near pylon near {base_location}."
+                        f"Can't find placement near pylon near {building_at_base}."
                     )
                     return
 
             if reserve_placement:
-                self.worker_on_route_tracker[final_placement] = location
+                self.worker_on_route_tracker[final_placement] = building_at_base
+                potential_placements: dict[Point2:dict] = self.placements_dict[
+                    building_at_base
+                ][building_size]
                 potential_placements[final_placement]["worker_on_route"] = True
                 potential_placements[final_placement]["time_requested"] = self.ai.time
 
@@ -547,6 +544,38 @@ class PlacementManager(Manager, IManagerMediator):
 
         else:
             logger.warning(f"No {building_size} present in placement bookkeeping.")
+
+    def _find_potential_placements_at_base(
+        self,
+        building_size: BuildingSize,
+        location: Point2,
+        structure_type: UnitID,
+        within_psionic_matrix: bool,
+    ) -> list[Point2]:
+        potential_placements: dict[Point2:dict] = self.placements_dict[location][
+            building_size
+        ]
+        available: list[Point2] = [
+            placement
+            for placement in potential_placements
+            if potential_placements[placement]["available"]
+            and not potential_placements[placement]["worker_on_route"]
+            and self.can_place_structure(placement, structure_type)
+        ]
+        if within_psionic_matrix:
+            pylons = self.manager_mediator.get_own_structures_dict[UnitID.PYLON]
+            available = [
+                a
+                for a in available
+                if cy_pylon_matrix_covers(
+                    a,
+                    pylons,
+                    self.ai.game_info.terrain_height.data_numpy,
+                    pylon_build_progress=1.0,
+                )
+            ]
+
+        return available
 
     def _find_placement_near_pylon(
         self,
