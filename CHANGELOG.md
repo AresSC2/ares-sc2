@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.14.2 (2024-06-12)
+
+### Fix
+
+* Search pylons at alternative bases for placement ([`437cab8`](https://github.com/AresSC2/ares-sc2/commit/437cab86c87b35a2b41d6d63881cca729f9f89cc))
+
 ## v2.14.1 (2024-06-09)
 
 ### Fix
