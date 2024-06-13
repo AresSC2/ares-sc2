@@ -180,11 +180,18 @@ class PlacementManager(Manager, IManagerMediator):
         """Calculate building formations on game commencement."""
         if self.ai.arcade_mode:
             return
-
+        start: float = time.time()
         self.points_to_avoid_grid = np.zeros(
             self.ai.game_info.placement_grid.data_numpy.shape, dtype=np.uint8
         )
-        start: float = time.time()
+        for destructible in self.ai.destructables:
+            if destructible.type_id == UnitID.UNBUILDABLEPLATESDESTRUCTIBLE:
+                pos: Point2 = destructible.position
+                start_x: int = int(pos.x - 2)
+                start_y: int = int(pos.y - 2)
+                self.points_to_avoid_grid[
+                    start_y : start_y + 4, start_x : start_x + 4
+                ] = 1
         self.race_to_building_solver_method[self.ai.race]()
         finish: float = time.time()
         logger.info(f"Solved placement formation in {(finish - start)*1000} ms")
