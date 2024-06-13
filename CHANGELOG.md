@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.14.3 (2024-06-13)
+
+### Fix
+
+* Add unbuildable plates to avoid grid when generating placements ([`d98c5e4`](https://github.com/AresSC2/ares-sc2/commit/d98c5e4460ac195f6cdb9c979e651db9128acbce))
+
 ## v2.14.2 (2024-06-12)
 
 ### Fix
