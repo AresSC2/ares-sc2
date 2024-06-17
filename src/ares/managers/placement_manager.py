@@ -70,6 +70,11 @@ class PlacementManager(Manager, IManagerMediator):
         BuildingSize.THREE_BY_THREE: 1.5,
         BuildingSize.TWO_BY_TWO: 1.0,
     }
+    UNBUILDABLES: set[UnitID] = {
+        UnitID.UNBUILDABLEPLATESDESTRUCTIBLE,
+        UnitID.UNBUILDABLEBRICKSDESTRUCTIBLE,
+        UnitID.UNBUILDABLEROCKSDESTRUCTIBLE,
+    }
     PSIONIC_MATRIX_RANGE_PYLON: float = 6.5
     PSIONIC_MATRIX_RANGE_PRISM: float = 3.75
 
@@ -185,12 +190,12 @@ class PlacementManager(Manager, IManagerMediator):
             self.ai.game_info.placement_grid.data_numpy.shape, dtype=np.uint8
         )
         for destructible in self.ai.destructables:
-            if destructible.type_id == UnitID.UNBUILDABLEPLATESDESTRUCTIBLE:
+            if destructible.type_id in self.UNBUILDABLES:
                 pos: Point2 = destructible.position
-                start_x: int = int(pos.x - 2)
-                start_y: int = int(pos.y - 2)
+                start_x: int = int(pos.x - 1)
+                start_y: int = int(pos.y - 1)
                 self.points_to_avoid_grid[
-                    start_y : start_y + 4, start_x : start_x + 4
+                    start_y : start_y + 2, start_x : start_x + 2
                 ] = 1
         self.race_to_building_solver_method[self.ai.race]()
         finish: float = time.time()
