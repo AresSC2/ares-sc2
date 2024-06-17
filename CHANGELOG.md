@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.14.4 (2024-06-17)
+
+### Fix
+
+* Check for all buildable plate types ([`9ffdfdb`](https://github.com/AresSC2/ares-sc2/commit/9ffdfdbdec40d1459abc92312244016832887727))
+
 ## v2.14.3 (2024-06-13)
 
 ### Fix
