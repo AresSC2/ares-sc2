@@ -84,6 +84,11 @@ race. For each build name, ensure that there is a corresponding build name under
 be careful adding build steps that are impossible to commence. Such as adding a barracks before a 
 supply depot or a gateway before pylon.
 
+Further to this, be careful adding steps where units require morphing from other units. If you
+want banelings then it's up to the author to ensure zerglings are around. If you require an Archon
+then two templar should exist to ensure the morph is successful. The build runner will not fill
+in the gaps for you.
+
 
 ### Valid build order options
 Each item in the build order should contain a string, with the first word being the command. 
