@@ -110,6 +110,7 @@ class AresBot(CustomBotAI):
             tuple[AbilityId, set[int], Optional[Union[Unit, Point2]]]
         ] = []
         self._drop_unload_actions: list[tuple[int, int]] = []
+        self._archon_morph_actions: list[list] = []
 
         self.arcade_mode: bool = False
 
@@ -123,6 +124,9 @@ class AresBot(CustomBotAI):
 
     def do_unload_container(self, container_tag: int, index: int = 0) -> None:
         self._drop_unload_actions.append((container_tag, index))
+
+    def request_archon_morph(self, templar: list[Unit]) -> None:
+        self._archon_morph_actions.append(templar)
 
     # noinspection PyFinal
     def _prepare_units(self):
@@ -378,6 +382,8 @@ class AresBot(CustomBotAI):
             await self._give_units_same_order(
                 same_order[0], same_order[1], same_order[2]
             )
+        for archon_morph_action in self._archon_morph_actions:
+            await self._do_archon_morph(archon_morph_action)
         self.manager_hub.path_manager.reset_grids(self.actual_iteration)
         await self.manager_hub.placement_manager.do_warp_ins()
         return await super(AresBot, self)._after_step()
@@ -471,6 +477,11 @@ class AresBot(CustomBotAI):
             and unit.type_id in GATEWAY_UNITS
         ):
             self.build_order_runner.set_step_started(True)
+        if (
+            not self.build_order_runner.build_completed
+            and unit.type_id == UnitID.ARCHON
+        ):
+            self.build_order_runner.set_step_complete(UnitID.ARCHON)
         await self.manager_hub.on_unit_created(unit)
 
     async def on_unit_destroyed(self, unit_tag: int) -> None:
@@ -795,6 +806,7 @@ class AresBot(CustomBotAI):
 
         self._drop_unload_actions = []
         self._same_order_actions = []
+        self._archon_morph_actions = []
 
     def _should_add_unit(self, unit: RawUnit) -> bool:
         """Whether the given unit should be tracked.
@@ -882,7 +894,7 @@ class AresBot(CustomBotAI):
         structures_dict: dict[UnitID:Units] = self.mediator.get_own_structures_dict
         own_army_dict: dict[UnitID:Units] = self.mediator.get_own_army_dict
         build_from_dict: dict[UnitID:Units] = structures_dict
-        if self.race == Race.Zerg:
+        if self.race != Race.Terran:
             build_from_dict: dict[UnitID:Units] = {
                 **structures_dict,
                 **own_army_dict,
@@ -905,9 +917,9 @@ class AresBot(CustomBotAI):
                     if AbilityId.WARPGATETRAIN_ZEALOT in b.abilities
                 ]
 
-            requires_techlab: bool = TRAIN_INFO[structure_type][unit_type].get(
-                "requires_techlab", False
-            )
+            requires_techlab: bool = self.race == Race.Terran and TRAIN_INFO[
+                structure_type
+            ][unit_type].get("requires_techlab", False)
             if not requires_techlab:
                 build_from_tags.extend(
                     [
@@ -953,7 +965,10 @@ class AresBot(CustomBotAI):
         # limit to powered structures
         if self.race == Race.Protoss:
             build_structures = [
-                s for s in build_structures if s.is_powered or s.type_id == UnitID.NEXUS
+                s
+                for s in build_structures
+                if s.is_powered
+                or s.type_id in {UnitID.NEXUS, UnitID.DARKTEMPLAR, UnitID.HIGHTEMPLAR}
             ]
 
         return build_structures

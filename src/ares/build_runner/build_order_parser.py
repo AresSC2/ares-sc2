@@ -179,20 +179,24 @@ class BuildOrderParser:
         BuildOrderStep :
             A new build step to put in a build order.
         """
+        trained_from: set[UnitID]
+        if unit_id == UnitID.ARCHON:
+            trained_from = {UnitID.DARKTEMPLAR, UnitID.HIGHTEMPLAR}
+        else:
+            trained_from = UNIT_TRAINED_FROM[unit_id]
+
+        check_supply_cost: bool = unit_id not in {UnitID.ARCHON, UnitID.BANELING}
         return lambda: BuildOrderStep(
             command=unit_id,
-            start_condition=lambda: self.ai.can_afford(unit_id)
-            and self.ai.tech_ready_for_unit(unit_id)
-            and len(
-                self.ai.get_build_structures(
-                    UNIT_TRAINED_FROM[unit_id],
-                    unit_id,
-                )
+            start_condition=lambda: (
+                self.ai.can_afford(unit_id, check_supply_cost=check_supply_cost)
+                or unit_id == UnitID.ARCHON
             )
-            > 0,
+            and self.ai.tech_ready_for_unit(unit_id)
+            and len(self.ai.get_build_structures(trained_from, unit_id)) > 0,
             # if start condition is True a train order will be issued
             # therefore it will automatically complete the step
-            end_condition=lambda: True,
+            end_condition=lambda: unit_id != UnitID.ARCHON,
         )
 
     def _generate_upgrade_build_step(self, upgrade_id: UpgradeId) -> Callable:

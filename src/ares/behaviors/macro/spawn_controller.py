@@ -12,7 +12,9 @@ from sc2.unit import Unit
 
 if TYPE_CHECKING:
     from ares import AresBot
+
 from ares.behaviors.macro import MacroBehavior
+from ares.consts import UnitRole
 from ares.managers.manager_mediator import ManagerMediator
 
 
@@ -124,15 +126,26 @@ class SpawnController(MacroBehavior):
 
             tech_ready_for.append(unit_type_id)
 
+            trained_from: set[UnitID]
+            if unit_type_id == UnitID.ARCHON:
+                trained_from = {UnitID.HIGHTEMPLAR, UnitID.DARKTEMPLAR}
+            else:
+                trained_from = UNIT_TRAINED_FROM[unit_type_id]
+
             # get all idle build structures/units we can create this unit from
             build_structures: list[Unit] = ai.get_build_structures(
-                UNIT_TRAINED_FROM[unit_type_id],
+                trained_from,
                 unit_type_id,
                 self.__build_dict,
                 self.ignored_build_from_tags,
             )
             # there is no possible way to build this unit, skip even if higher priority
             if len(build_structures) == 0:
+                continue
+
+            # archon is a special case that can't be handled generically
+            if unit_type_id == UnitID.ARCHON:
+                self._handle_archon_morph(ai, build_structures, mediator)
                 continue
 
             # prioritize spawning close to spawn target
@@ -143,7 +156,7 @@ class SpawnController(MacroBehavior):
 
             # can't afford unit?
             # then we might want to break out loop till we can afford
-            if not ai.can_afford(unit_type_id):
+            if not self._can_afford(ai, unit_type_id):
                 if (
                     self.freeflow_mode
                     or num_total_units < self.ignore_proportions_below_unit_count
@@ -209,25 +222,7 @@ class SpawnController(MacroBehavior):
                 proportion_sum, 1.0
             ), f"The army comp proportions should equal 1.0, got {proportion_sum}"
 
-        did_action: bool = False
-        for unit, value in self.__build_dict.items():
-            did_action = True
-            mediator.clear_role(tag=unit.tag)
-            if value == UnitID.BANELING:
-                unit(AbilityId.MORPHTOBANELING_BANELING)
-            elif value == UnitID.RAVAGER:
-                unit(AbilityId.MORPHTORAVAGER_RAVAGER)
-            # prod building is warp gate, but we really
-            # want to spawn from psionic field
-            elif unit.type_id == UnitID.WARPGATE:
-                mediator.request_warp_in(
-                    build_from=unit, unit_type=value, target=self.spawn_target
-                )
-            else:
-                unit.train(value)
-                ai.num_larva_left -= 1
-
-        return did_action
+        return self._morph_units(ai, mediator)
 
     def _add_to_build_dict(
         self,
@@ -299,3 +294,46 @@ class SpawnController(MacroBehavior):
             maximum,
         )
         return amount, supply_cost, cost
+
+    @staticmethod
+    def _can_afford(ai: "AresBot", unit_type_id: UnitID) -> bool:
+        if unit_type_id == UnitID.ARCHON:
+            return True
+        return ai.can_afford(unit_type_id)
+
+    @staticmethod
+    def _handle_archon_morph(
+        ai: "AresBot", build_structures: list[Unit], mediator: ManagerMediator
+    ) -> None:
+        unit_role_dict: dict[UnitRole, set] = mediator.get_unit_role_dict
+        build_structures = [
+            b
+            for b in build_structures
+            if b.tag not in unit_role_dict[UnitRole.MORPHING] and b.is_ready
+        ]
+        if len(build_structures) < 2:
+            return
+
+        templar: list[Unit] = build_structures[:2]
+        ai.request_archon_morph(templar)
+
+    def _morph_units(self, ai: "AresBot", mediator: ManagerMediator) -> bool:
+        did_action: bool = False
+        for unit, value in self.__build_dict.items():
+            did_action = True
+            mediator.clear_role(tag=unit.tag)
+            if value == UnitID.BANELING:
+                unit(AbilityId.MORPHTOBANELING_BANELING)
+            elif value == UnitID.RAVAGER:
+                unit(AbilityId.MORPHTORAVAGER_RAVAGER)
+            # prod building is warp gate, but we really
+            # want to spawn from psionic field
+            elif unit.type_id == UnitID.WARPGATE:
+                mediator.request_warp_in(
+                    build_from=unit, unit_type=value, target=self.spawn_target
+                )
+            else:
+                unit.train(value)
+                ai.num_larva_left -= 1
+
+        return did_action

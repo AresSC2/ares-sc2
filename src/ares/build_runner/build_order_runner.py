@@ -357,6 +357,11 @@ class BuildOrderRunner:
                 # backup here just in case
                 elif isinstance(command, UpgradeId):
                     self.ai.research(command)
+                elif command == UnitID.ARCHON:
+                    army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
+                    SpawnController(army_comp, freeflow_mode=True, maximum=1).execute(
+                        self.ai, self.config, self.mediator
+                    )
 
             # end condition active, complete step
             else:

@@ -30,6 +30,8 @@ def viking_tank(self) -> dict:
 ```
 Things to note:
 
+ - `SpawnController` will not produce build structures for you. Please be especially careful
+of this fact when morphing units. For example Archons, Banelings, Ravagers, Lurkers or Brood Lords.
  - The `proportion` values should add up to 1.0 (0.69 + 0.13 + 0.16 + 0.02 = 1.0)
  - Each declared unit should be given a priority, where 0 is the highest. This allows resources
 to be saved for important units.

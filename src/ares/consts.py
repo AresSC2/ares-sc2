@@ -389,6 +389,7 @@ class UnitRole(str, Enum):
     HARASSING = "HARASSING"  # units that are harassing
     IDLE = "IDLE"  # not doing anything
     MAP_CONTROL = "MAP_CONTROL"  # units controlling the map (lings/hellions?)
+    MORPHING = "MORPHING"  # units currently morphing
     OFFENSIVE_REPAIR = "OFFENSIVE_REPAIR"  # with the main force
     OVERLORD_HUNTER = "OVERLORD_HUNTER"  # units looking for overlords
     PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # does not get reassigned automatically
