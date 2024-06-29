@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.15.0 (2024-06-29)
+
+### Feature
+
+* Support archons in spawn controller and build runner ([`0f1bbab`](https://github.com/AresSC2/ares-sc2/commit/0f1bbabd974ae3ee5ebe15ed131bc1902dcffc8a))
+
+### Documentation
+
+* Add some warnings about morphing units from other units ([`503d376`](https://github.com/AresSC2/ares-sc2/commit/503d3762ef4c251c7b040cab9af2c25572c7413b))
+
 ## v2.14.4 (2024-06-17)
 
 ### Fix
