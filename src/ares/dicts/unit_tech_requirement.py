@@ -3,6 +3,7 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 UNIT_TECH_REQUIREMENT: dict[UnitID, list[UnitID]] = dict(
     {
         UnitID.ADEPT: [UnitID.GATEWAY, UnitID.CYBERNETICSCORE],
+        UnitID.ARCHON: [],
         UnitID.BANELING: [UnitID.BANELINGNEST],
         UnitID.BANSHEE: [UnitID.STARPORT, UnitID.STARPORTTECHLAB],
         UnitID.BARRACKS: [UnitID.SUPPLYDEPOT],

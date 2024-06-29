@@ -251,6 +251,17 @@ class CustomBotAI(BotAI):
                 )
             )
 
+    async def _do_archon_morph(self, templar: list[Unit]) -> None:
+        command = raw_pb.ActionRawUnitCommand(
+            ability_id=AbilityId.MORPH_ARCHON.value,
+            unit_tags=[templar[0].tag, templar[1].tag],
+            queue_command=False,
+        )
+        action = raw_pb.ActionRaw(unit_command=command)
+        await self.client._execute(
+            action=sc_pb.RequestAction(actions=[sc_pb.Action(action_raw=action)])
+        )
+
     async def unload_by_tag(self, container: Unit, unit_tag: int) -> None:
         """Unload a unit from a container based on its tag. Thanks, Sasha!"""
         index: int = 0
