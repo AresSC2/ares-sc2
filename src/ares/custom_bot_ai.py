@@ -192,7 +192,7 @@ class CustomBotAI(BotAI):
         self,
         order: AbilityId,
         unit_tags: Union[List[int], set[int]],
-        target: Optional[Union[Point2, int]] = None,
+        target: Optional[Union[Point2, Unit, int]] = None,
     ) -> None:
         """
         Give units corresponding to the given tags the same order.
@@ -234,6 +234,18 @@ class CustomBotAI(BotAI):
                 )
             )
         else:
+            tag: int
+            if isinstance(target, Unit):
+                tag = target.tag
+            elif isinstance(target, int):
+                tag = target
+            else:
+                logger.warning(
+                    f"Got {target} argument, and not sure what to do with it. "
+                    f" `_give_units_same_order` will not execute."
+                )
+                return
+
             # noinspection PyProtectedMember
             await self.client._execute(
                 action=sc_pb.RequestAction(
@@ -242,7 +254,7 @@ class CustomBotAI(BotAI):
                             action_raw=raw_pb.ActionRaw(
                                 unit_command=raw_pb.ActionRawUnitCommand(
                                     ability_id=order.value,
-                                    target_unit_tag=target,
+                                    target_unit_tag=tag,
                                     unit_tags=unit_tags,
                                 )
                             )
