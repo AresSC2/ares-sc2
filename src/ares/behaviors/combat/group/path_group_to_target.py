@@ -80,6 +80,13 @@ class PathGroupToTarget(CombatGroupBehavior):
     prevent_duplicate: bool = True
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+        assert isinstance(
+            self.start, Point2
+        ), f"{self.start} should be `Point2`, got {type(self.start)}"
+        assert isinstance(
+            self.target, Point2
+        ), f"{self.target} should be `Point2`, got {type(self.target)}"
+
         if len(self.group) == 0:
             return False
 
