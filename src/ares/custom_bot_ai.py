@@ -240,8 +240,10 @@ class CustomBotAI(BotAI):
             elif isinstance(target, int):
                 tag = target
             else:
-                logger.warning(f"Got {target} argument, and not sure what to do with it. "
-                               f" `_give_units_same_order` will not execute.")
+                logger.warning(
+                    f"Got {target} argument, and not sure what to do with it. "
+                    f" `_give_units_same_order` will not execute."
+                )
                 return
 
             # noinspection PyProtectedMember
