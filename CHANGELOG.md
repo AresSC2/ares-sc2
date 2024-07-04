@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.15.1 (2024-07-04)
+
+### Fix
+
+* Better handling of target types in _give_units_same_order ([`f6d00a7`](https://github.com/AresSC2/ares-sc2/commit/f6d00a7e5ef25b96a8954d58e50b6204af477fa6))
+
 ## v2.15.0 (2024-06-29)
 
 ### Feature
