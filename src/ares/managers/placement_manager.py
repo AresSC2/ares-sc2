@@ -527,6 +527,7 @@ class PlacementManager(Manager, IManagerMediator):
                 two_by_twos: dict = self.placements_dict[building_at_base][
                     BuildingSize.TWO_BY_TWO
                 ]
+                # build near optimal pylon, if we don't have too much there
                 if optimal_pylon := [
                     a
                     for a in two_by_twos
@@ -534,7 +535,17 @@ class PlacementManager(Manager, IManagerMediator):
                         a
                     ]["optimal_pylon"]
                 ]:
-                    build_near = optimal_pylon[0]
+                    potential_build_near: Point2 = optimal_pylon[0]
+                    three_by_threes: dict = self.placements_dict[building_at_base][
+                        BuildingSize.THREE_BY_THREE
+                    ]
+                    close_to_pylon: list[Point2] = [
+                        p
+                        for p in three_by_threes
+                        if cy_distance_to_squared(p, potential_build_near) < 42.25
+                    ]
+                    if len(close_to_pylon) < 4:
+                        build_near = optimal_pylon[0]
                 final_placement = self._find_placement_near_pylon(
                     available, build_near, pylon_build_progress
                 )
