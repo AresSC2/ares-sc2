@@ -7,6 +7,7 @@ from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_data import Cost
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -78,8 +79,12 @@ class SpawnController(MacroBehavior):
     __supply_available: float = 0.0
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        # Nothing can be spawned for less than 25 min (ravager), prevent code execution
-        if ai.minerals < 25:
+        # allow gateways to morph before issuing commands
+        if UpgradeId.WARPGATERESEARCH in ai.state.upgrades and [
+            g
+            for g in mediator.get_own_structures_dict[UnitID.GATEWAY]
+            if g.is_ready and g.is_idle
+        ]:
             return False
 
         self.__supply_available = ai.supply_left

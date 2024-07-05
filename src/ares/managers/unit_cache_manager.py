@@ -8,7 +8,6 @@ from cython_extensions import cy_unit_pending
 from sc2.data import Race
 from sc2.game_data import AbilityData
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
@@ -70,9 +69,6 @@ class UnitCacheManager(Manager, IManagerMediator):
             ManagerRequestType.GET_OLD_OWN_ARMY_DICT: lambda kwargs: (
                 self.old_own_army
             ),
-            ManagerRequestType.GET_ENEMY_ARMY_CENTER_MASS: lambda kwargs: (
-                self.enemy_army_center_mass
-            ),
             ManagerRequestType.GET_CACHED_OWN_ARMY: lambda kwargs: self.own_army,
             ManagerRequestType.GET_CACHED_OWN_ARMY_DICT: lambda kwargs: (
                 self.own_army_dict
@@ -89,7 +85,6 @@ class UnitCacheManager(Manager, IManagerMediator):
             ManagerRequestType.GET_REMOVED_UNITS: lambda kwargs: self.removed_units,
         }
         self.enemy_army: Units = Units([], ai)
-        self.enemy_army_center_mass: Point2 = self.ai.game_info.map_center
         self.enemy_workers: Units = Units([], ai)
         self.own_army: Units = Units([], ai)
         self.enemy_army_tags: Set[int] = set()

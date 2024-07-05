@@ -1603,23 +1603,6 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_army_center_mass(self) -> Point2:
-        """Get the point containing the largest amount of the enemy army.
-
-        UnitCacheManager
-
-        Returns
-        -------
-        Point2 :
-            Enemy army center mass location.
-
-        """
-        return self.manager_request(
-            ManagerName.UNIT_CACHE_MANAGER,
-            ManagerRequestType.GET_ENEMY_ARMY_CENTER_MASS,
-        )
-
-    @property
     def get_enemy_army_dict(self) -> DefaultDict[UnitID, Units]:
         """Get the dictionary of enemy army unit types to the units themselves.
 
