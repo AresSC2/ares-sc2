@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.16.0 (2024-07-05)
+
+### Feature
+
+* Spawn controller allows gateways to morph ([`d98c394`](https://github.com/AresSC2/ares-sc2/commit/d98c394269d44c406f1dcdc5080577eb3c02edad))
+
+### Fix
+
+* Attempt to prevent artosis pylon ([`f6a38ea`](https://github.com/AresSC2/ares-sc2/commit/f6a38ea738547e6bf2514ca1028b017de42b0b77))
+
 ## v2.15.1 (2024-07-04)
 
 ### Fix
