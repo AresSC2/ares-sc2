@@ -10,7 +10,7 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.units import Units
 
-from ares.consts import ADD_ONS, ID, TARGET, TECHLAB_TYPES
+from ares.consts import ADD_ONS, GATEWAY_UNITS, ID, TARGET, TECHLAB_TYPES
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 if TYPE_CHECKING:
@@ -126,6 +126,8 @@ class ProductionController(MacroBehavior):
 
             train_from: set[UnitID] = UNIT_TRAINED_FROM[unit_type_id]
             trained_from: UnitID = next(iter(UNIT_TRAINED_FROM[unit_type_id]))
+            if unit_type_id in GATEWAY_UNITS:
+                trained_from = UnitID.GATEWAY
 
             if self._not_started_but_in_building_tracker(ai, mediator, trained_from):
                 continue
