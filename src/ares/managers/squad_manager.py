@@ -515,8 +515,14 @@ class SquadManager(Manager, IManagerMediator):
                 num_units_in_main_group = amount
                 main_group_position = squad.squad_position
 
-        self._squads_dict[role][main_group_id][self.SQUAD_OBJECT].set_main_squad(True)
-        self._role_to_main_squad_pos[role] = main_group_position
+        for squad in squads:
+            squad_id: str = squad.squad_id
+            main_squad: bool = squad_id == main_group_id
+            self._squads_dict[role][squad_id][self.SQUAD_OBJECT].set_main_squad(
+                main_squad
+            )
+            if main_squad:
+                self._role_to_main_squad_pos[role] = main_group_position
 
     def _get_position_of_main_squad(self, role: UnitRole) -> Point2:
         squads = self._squads_list_for_role(role)
