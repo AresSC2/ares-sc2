@@ -598,6 +598,7 @@ GATEWAY_UNITS: set[UnitID] = {
     UnitID.STALKER,
     UnitID.DARKTEMPLAR,
     UnitID.HIGHTEMPLAR,
+    UnitID.SENTRY,
 }
 
 # These are not really rocks, but end up in the destructible collection
