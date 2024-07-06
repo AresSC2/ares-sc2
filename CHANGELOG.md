@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.16.2 (2024-07-06)
+
+### Fix
+
+* Prevent production controller from trying to build warpgate ([`e696364`](https://github.com/AresSC2/ares-sc2/commit/e696364d65237b0e9e239de0ccf57d615593f987))
+
 ## v2.16.1 (2024-07-06)
 
 ### Fix
