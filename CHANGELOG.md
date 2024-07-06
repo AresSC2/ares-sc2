@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.16.1 (2024-07-06)
+
+### Fix
+
+* Update main squad attribute correctly ([`a649a2b`](https://github.com/AresSC2/ares-sc2/commit/a649a2b827638f7c18b64c0c927231f9af5ed9be))
+
 ## v2.16.0 (2024-07-05)
 
 ### Feature
