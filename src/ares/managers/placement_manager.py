@@ -414,7 +414,11 @@ class PlacementManager(Manager, IManagerMediator):
         building_at_base: Point2 = location
         if building_size in self.placements_dict[location]:
             available: list[Point2] = self._find_potential_placements_at_base(
-                building_size, location, structure_type, within_psionic_matrix
+                building_size,
+                location,
+                structure_type,
+                within_psionic_matrix,
+                pylon_build_progress,
             )
 
             # no available placements at base_location
@@ -574,6 +578,7 @@ class PlacementManager(Manager, IManagerMediator):
         location: Point2,
         structure_type: UnitID,
         within_psionic_matrix: bool,
+        pylon_build_progress: float = 1.0,
     ) -> list[Point2]:
         potential_placements: dict[Point2:dict] = self.placements_dict[location][
             building_size
@@ -594,7 +599,7 @@ class PlacementManager(Manager, IManagerMediator):
                     a,
                     pylons,
                     self.ai.game_info.terrain_height.data_numpy,
-                    pylon_build_progress=1.0,
+                    pylon_build_progress=pylon_build_progress,
                 )
             ]
 
@@ -615,7 +620,7 @@ class PlacementManager(Manager, IManagerMediator):
                 a,
                 pylons,
                 self.ai.game_info.terrain_height.data_numpy,
-                pylon_build_progress=1.0,
+                pylon_build_progress=pylon_build_progress,
             )
         ]:
             return min(
