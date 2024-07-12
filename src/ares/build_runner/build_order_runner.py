@@ -229,10 +229,22 @@ class BuildOrderRunner:
             ]
         ):
             return
+
+        start_at_supply: int = step.start_at_supply
+        start_condition_triggered: bool = step.start_condition()
+        # start condition is active for a structure? reduce the supply threshold
+        # this allows a worker to be sent earlier
         if (
-            step.start_condition()
+            self.ai.race == Race.Protoss
+            and start_condition_triggered
+            and step.command in ALL_STRUCTURES
+            and step.command != UnitID.PYLON
+        ):
+            start_at_supply -= 1
+        if (
+            start_condition_triggered
             and not self.current_step_started
-            and self.ai.supply_used >= step.start_at_supply
+            and self.ai.supply_used >= start_at_supply
         ):
             command: UnitID = step.command
             if command in ADD_ONS:
@@ -245,6 +257,9 @@ class BuildOrderRunner:
                 persistent_worker_available: bool = False
                 if self.persistent_worker:
                     for worker in persistent_workers:
+                        if self.ai.race == Race.Protoss:
+                            persistent_worker_available = True
+                            break
                         if worker.tag in building_tracker:
                             target: Point2 = building_tracker[worker.tag][TARGET]
                             if [
@@ -377,6 +392,11 @@ class BuildOrderRunner:
 
                 self.current_step_started = False
                 self.current_step_complete = False
+                if step.command == UnitID.PYLON:
+                    self.mediator.switch_roles(
+                        from_role=UnitRole.PERSISTENT_BUILDER,
+                        to_role=UnitRole.GATHERING,
+                    )
 
     async def get_position(
         self, structure_type: UnitID, target: Optional[str]
@@ -427,13 +447,14 @@ class BuildOrderRunner:
                 base_location = self.ai.start_location
             else:
                 base_location = self._get_target(target)
-            return self.mediator.request_building_placement(
+            if pos := self.mediator.request_building_placement(
                 base_location=base_location,
                 structure_type=structure_type,
                 wall=at_wall,
                 within_psionic_matrix=within_psionic_matrix,
                 pylon_build_progress=0.5,
-            )
+            ):
+                return pos
         else:
             if target == BuildOrderTargetOptions.RAMP:
                 if structure_type == self.ai.supply_type:
@@ -465,26 +486,17 @@ class BuildOrderRunner:
 
     def _assign_persistent_worker(self) -> None:
         """Assign a worker that does not get assigned back to gathering."""
-        if (
-            # terran specific for now
-            self.ai.race == Race.Terran
-            and self.ai.time > 9.0
-            and not self.assigned_persistent_worker
-        ):
-            if worker := self.mediator.select_worker(
-                target_position=self.ai.start_location
-            ):
-                self.mediator.assign_role(
-                    tag=worker.tag, role=UnitRole.PERSISTENT_BUILDER
-                )
-                self.assigned_persistent_worker = True
-                move_to: Point2 = self.mediator.request_building_placement(
-                    base_location=self.ai.start_location,
-                    structure_type=UnitID.SUPPLYDEPOT,
-                    wall=True,
-                    reserve_placement=False,
-                )
-                worker.move(move_to)
+        if self.ai.race != Race.Zerg and not self.assigned_persistent_worker:
+            pos, time = self._get_position_and_supply_of_first_supply()
+            if self.ai.time >= time:
+                if worker := self.mediator.select_worker(
+                    target_position=self.ai.start_location
+                ):
+                    self.mediator.assign_role(
+                        tag=worker.tag, role=UnitRole.PERSISTENT_BUILDER
+                    )
+                    self.assigned_persistent_worker = True
+                    worker.move(pos)
 
     def _produce_workers(self):
         if (
@@ -549,3 +561,31 @@ class BuildOrderRunner:
             case BuildOrderTargetOptions.THIRD:
                 return self.mediator.get_own_expansions[1][0]
         return self.ai.start_location
+
+    def _get_position_and_supply_of_first_supply(self) -> tuple[Point2, float]:
+        """
+        Iterate through the build order, and work out
+        where first supply structure will go.
+        Used to send worker early
+
+        Returns
+        -------
+
+        """
+        for step in self.build_order:
+            if step.command in {UnitID.SUPPLYDEPOT, UnitID.PYLON}:
+                target: Point2 = self._get_target(step.target)
+                time = (
+                    3.0
+                    if step.start_at_supply <= 13 or target == self.mediator.get_own_nat
+                    else 9.0
+                )
+
+                return (
+                    self.mediator.request_building_placement(
+                        base_location=target,
+                        structure_type=self.ai.supply_type,
+                        reserve_placement=False,
+                    ),
+                    time,
+                )
