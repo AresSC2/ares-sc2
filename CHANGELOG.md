@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.17.0 (2024-07-12)
+
+### Feature
+
+* Improve premoving build probe timing ([`2ebdc14`](https://github.com/AresSC2/ares-sc2/commit/2ebdc14cdd96fe3ca1213e62d2e9fed4366b13bf))
+
 ## v2.16.2 (2024-07-06)
 
 ### Fix
