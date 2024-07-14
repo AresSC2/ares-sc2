@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.18.0 (2024-07-14)
+
+### Feature
+
+* Add intel manager with mediator access ([`68ec246`](https://github.com/AresSC2/ares-sc2/commit/68ec24640ca35bc6f06defcdac9cff16c372e060))
+
 ## v2.17.0 (2024-07-12)
 
 ### Feature
