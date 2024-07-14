@@ -386,6 +386,281 @@ class ManagerMediator(IManagerMediator):
         )
 
     """
+    IntelManager
+    """
+
+    @property
+    def get_enemy_expanded(self) -> bool:
+        """Has the enemy expanded?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_EXPANDED
+        )
+
+    @property
+    def get_enemy_four_gate(self) -> bool:
+        """Has the enemy gone four gate?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_FOUR_GATE
+        )
+
+    @property
+    def get_enemy_has_base_outside_natural(self) -> bool:
+        """Has the enemy expanded outside of their natural?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER,
+            ManagerRequestType.GET_ENEMY_HAS_BASE_OUTSIDE_NATURAL,
+        )
+
+    @property
+    def get_enemy_ling_rushed(self) -> bool:
+        """Has the enemy ling rushed?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_LING_RUSHED
+        )
+
+    @property
+    def get_enemy_marine_rush(self) -> bool:
+        """Is the enemy currently marine rushing?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_MARINE_RUSH
+        )
+
+    @property
+    def get_enemy_marauder_rush(self) -> bool:
+        """Is the enemy currently marauder rushing?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_MARAUDER_RUSH
+        )
+
+    @property
+    def get_enemy_ravager_rush(self) -> Point2:
+        """Has the enemy ravager rushed?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_RAVAGER_RUSH
+        )
+
+    @property
+    def get_enemy_roach_rushed(self) -> Point2:
+        """Did the enemy roach rush?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_ROACH_RUSHED
+        )
+
+    @property
+    def get_enemy_was_greedy(self) -> Point2:
+        """Was the enemy greedy?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_WAS_GREEDY
+        )
+
+    @property
+    def get_enemy_went_four_gate(self) -> Point2:
+        """The enemy went four gate this game?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_WENT_FOUR_GATE
+        )
+
+    @property
+    def get_enemy_went_marine_rush(self) -> Point2:
+        """The enemy went marine rush this game?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_WENT_MARINE_RUSH
+        )
+
+    @property
+    def get_enemy_went_marauder_rush(self) -> Point2:
+        """The enemy went marauder rush this game?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_WENT_MARAUDER_RUSH
+        )
+
+    @property
+    def get_enemy_went_reaper(self) -> Point2:
+        """The enemy opened with reaper this game?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_WENT_REAPER
+        )
+
+    @property
+    def get_enemy_worker_rushed(self) -> Point2:
+        """The enemy went for a worker rush this game?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_ENEMY_WORKER_RUSHED
+        )
+
+    @property
+    def get_is_proxy_zealot(self) -> bool:
+        """There is currently proxy zealot attempt from enemy?
+
+        WARNING: Opinionated method, please write your own if you don't
+        agree with this decision.
+
+        Intel Manager
+
+        Returns
+        -------
+        bool
+
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_IS_PROXY_ZEALOT
+        )
+
+    """
     FlyingStructureManager
     """
 

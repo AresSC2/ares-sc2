@@ -14,6 +14,7 @@ from ares.managers.combat_sim_manager import CombatSimManager
 from ares.managers.data_manager import DataManager
 from ares.managers.enemy_to_base_manager import EnemyToBaseManager
 from ares.managers.flying_structure_manager import FlyingStructureManager
+from ares.managers.intel_manager import IntelManager
 from ares.managers.manager_mediator import ManagerMediator
 from ares.managers.path_manager import PathManager
 from ares.managers.placement_manager import PlacementManager
@@ -45,6 +46,7 @@ class Hub:
         enemy_to_base_manager: EnemyToBaseManager = None,
         unit_cache_manager: UnitCacheManager = None,
         ability_tracker_manager: AbilityTrackerManager = None,
+        intel_manager: IntelManager = None,
         unit_role_manager: UnitRoleManager = None,
         unit_memory_manager: UnitMemoryManager = None,
         placement_manager: PlacementManager = None,
@@ -110,6 +112,11 @@ class Hub:
             if not ability_tracker_manager
             else ability_tracker_manager
         )
+        self.intel_manager: IntelManager = (
+            IntelManager(ai, config, self.manager_mediator)
+            if not intel_manager
+            else intel_manager
+        )
         self.unit_role_manager: UnitRoleManager = (
             UnitRoleManager(ai, config, self.manager_mediator)
             if not unit_role_manager
@@ -173,6 +180,7 @@ class Hub:
             self.ability_tracker_manager,
             self.placement_manager,
             self.enemy_to_base_manager,
+            self.intel_manager,
             self.combat_sim_manager,
             self.flying_structures_manager,
             self.squad_manager,
