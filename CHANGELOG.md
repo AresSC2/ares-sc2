@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.18.1 (2024-07-16)
+
+### Fix
+
+* Rename local variable so prod pylons get found ([`2b646d0`](https://github.com/AresSC2/ares-sc2/commit/2b646d0a9139b9d48f69baaf02b18533ba59f7be))
+* Increase y stride on extra 2x2 to prevent blockages ([`05dce96`](https://github.com/AresSC2/ares-sc2/commit/05dce960a5b69a51703d52d5934433d78da9cb9d))
+* Prevent build runner calling placement query unnecessary ([`bce45cf`](https://github.com/AresSC2/ares-sc2/commit/bce45cfb08d411d2d16d56c632cc7db1f4a4d6a6))
+
 ## v2.18.0 (2024-07-14)
 
 ### Feature
