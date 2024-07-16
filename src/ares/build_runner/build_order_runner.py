@@ -580,6 +580,8 @@ class BuildOrderRunner:
                     if step.start_at_supply <= 13 or target == self.mediator.get_own_nat
                     else 9.0
                 )
+                if self.ai.time < time:
+                    return self.ai.start_location, 999.9
 
                 return (
                     self.mediator.request_building_placement(
