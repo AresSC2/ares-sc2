@@ -988,7 +988,7 @@ class PlacementManager(Manager, IManagerMediator):
             two_by_two_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
                 x_stride=2,
-                y_stride=2,
+                y_stride=3,
                 x_bounds=raw_x_bounds,
                 y_bounds=raw_y_bounds,
                 creep_grid=creep_grid,
