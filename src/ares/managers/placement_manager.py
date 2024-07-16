@@ -496,7 +496,7 @@ class PlacementManager(Manager, IManagerMediator):
                     )
             # prioritize production pylons if they exist
             elif structure_type == UnitID.PYLON:
-                if available := [
+                if available_opt := [
                     a
                     for a in available
                     if self.placements_dict[building_at_base][building_size][a][
@@ -508,7 +508,7 @@ class PlacementManager(Manager, IManagerMediator):
                     ]
                 ]:
                     final_placement = min(
-                        available,
+                        available_opt,
                         key=lambda k: cy_distance_to_squared(k, building_at_base),
                     )
                 elif available := [
@@ -988,7 +988,7 @@ class PlacementManager(Manager, IManagerMediator):
             two_by_two_positions = cy_find_building_locations(
                 kernel=np.ones((2, 2), dtype=np.uint8),
                 x_stride=2,
-                y_stride=2,
+                y_stride=3,
                 x_bounds=raw_x_bounds,
                 y_bounds=raw_y_bounds,
                 creep_grid=creep_grid,
