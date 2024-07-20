@@ -591,3 +591,5 @@ class BuildOrderRunner:
                     ),
                     time,
                 )
+
+        return self.ai.start_location, 999.9
