@@ -16,7 +16,8 @@ from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 if TYPE_CHECKING:
     from ares import AresBot
 
-from ares.behaviors.macro import BuildStructure, MacroBehavior, RestorePower
+from ares.behaviors.macro import BuildStructure, MacroBehavior
+from ares.behaviors.macro.restore_power import RestorePower
 from ares.managers.manager_mediator import ManagerMediator
 
 
