@@ -16,7 +16,7 @@ from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 if TYPE_CHECKING:
     from ares import AresBot
 
-from ares.behaviors.macro import BuildStructure, MacroBehavior
+from ares.behaviors.macro import BuildStructure, MacroBehavior, RestorePower
 from ares.managers.manager_mediator import ManagerMediator
 
 
@@ -64,6 +64,9 @@ class ProductionController(MacroBehavior):
     ignore_below_proportion: float = 0.05
         If we don't want many of this unit, no point adding production.
         Will check if possible to build unit first.
+    should_repower_structures: bool = True
+        Search for unpowered structures, and build a new
+        pylon as needed.
     """
 
     army_composition_dict: dict[UnitID, dict[str, float, str, int]]
@@ -71,11 +74,16 @@ class ProductionController(MacroBehavior):
     unit_pending_progress: float = 0.8
     ignore_below_unit_count: int = 0
     ignore_below_proportion: float = 0.05
+    should_repower_structures: bool = True
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert (
             ai.race != Race.Zerg
         ), "ProductionController behavior is for Protoss and Terran only"
+
+        if ai.race == Race.Protoss and self.should_repower_structures:
+            if RestorePower().execute(ai, config, mediator):
+                return True
 
         army_comp_dict: dict = self.army_composition_dict
 
