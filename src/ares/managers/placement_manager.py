@@ -101,6 +101,9 @@ class PlacementManager(Manager, IManagerMediator):
             ManagerRequestType.CAN_PLACE_STRUCTURE: lambda kwargs: (
                 self.can_place_structure(**kwargs)
             ),
+            ManagerRequestType.GET_PLACEMENTS_DICT: lambda kwargs: (
+                self.placements_dict
+            ),
             ManagerRequestType.REQUEST_BUILDING_PLACEMENT: lambda kwargs: (
                 self.request_building_placement(**kwargs)
             ),
@@ -373,7 +376,7 @@ class PlacementManager(Manager, IManagerMediator):
         wall : bool, optional
             Request a wall structure placement.
             Will find alternative if no wall placements available.
-        find_alternative : bool, optional (NOT YET IMPLEMENTED)
+        find_alternative : bool, optional
             If no placements available at base_location, find
             alternative at nearby base.
         reserve_placement : bool, optional

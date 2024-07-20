@@ -1288,6 +1288,66 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
+    @property
+    def get_placements_dict(self, **kwargs) -> dict:
+        """Get the placement dict ares calculated at beginning
+        of the game.
+
+        Structure of dictionary:
+
+        base_loc is a Point2 key for every expansion location on map.
+
+        ```
+        placement_dict = {
+            base_loc: Point2:
+                BuildingSize.TWO_BY_TWO: {
+                    building_pos: Point2((2, 2)):
+                        {
+                            available: True,
+                            has_addon: False
+                            taken: False,
+                            is_wall: True,
+                            building_tag: 0,
+                            worker_on_route: False,
+                            time_requested: 0.0,
+                            production_pylon: False,
+                            bunker: False,
+                            optimal_pylon: False
+                        },
+                        {...}
+                },
+                BuildingSize.THREE_BY_THREE: {
+                    building_pos: Point2((5, 5)):
+                        {
+                            available: True,
+                            has_addon: False
+                            taken: False,
+                            is_wall: True,
+                            building_tag: 0,
+                            worker_on_route: False,
+                            time_requested: 0.0,
+                            production_pylon: False,
+                            bunker: False,
+                            optimal_pylon: False
+                        },
+                        {...}
+                },
+            {...}
+        }
+        ```
+
+        PlacementManager
+
+
+        Returns
+        ----------
+        dict :
+            Indicating if structure can be placed at given position.
+        """
+        return self.manager_request(
+            ManagerName.PLACEMENT_MANAGER, ManagerRequestType.GET_PLACEMENTS_DICT
+        )
+
     def request_building_placement(self, **kwargs) -> Optional[Point2]:
         """Request a building placement from the precalculated building formation.
 
