@@ -44,3 +44,8 @@ class MyBot(AresBot):
         show_root_heading: false
         show_root_toc_entry: false 
 
+::: ares.behaviors.macro.restore_power
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+

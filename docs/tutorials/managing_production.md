@@ -74,4 +74,52 @@ class TestBot(AresBot):
 These behaviors can be further customized through arguments, 
 please refer to the [API docs](../api_reference/behaviors/macro_behaviors.md)
 
+## Setting up a `MacroPlan`
+
+With a `MacroPlan` you may add several macro behaviors to a single plan, by
+defining them in priority order you gain more control over how your macro
+tasks are executed versus littering your code with `self.register_behavior(...)`
+for several macro behaviors.
+
+Let's enhance our above example, we would like our bot to prioritize building supply.
+Followed by spawning units, then lastly adding production:
+
+```python
+from ares import AresBot
+from ares.behaviors.macro import (
+    AutoSupply, 
+    MacroPlan, 
+    ProductionController, 
+    SpawnController,
+)
+
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+
+class TestBot(AresBot):
+    
+    @property
+    def viking_tank(self) -> dict:
+        return {
+            UnitID.MARINE: {"proportion": 0.69, "priority": 4},
+            UnitID.SIEGETANK: {"proportion": 0.13, "priority": 0},
+            UnitID.VIKINGFIGHTER: {"proportion": 0.16, "priority": 3},
+            UnitID.RAVEN: {"proportion": 0.02, "priority": 1},
+        }
+
+    async def on_step(self, iteration: int) -> None:
+        await super(TestBot, self).on_step(iteration)
+        
+        production_location = self.start_location
+        
+        macro_plan: MacroPlan = MacroPlan()
+        macro_plan.add(AutoSupply(production_location))
+        macro_plan.add(SpawnController(self.viking_tank))
+        macro_plan.add(ProductionController(
+            self.viking_tank, production_location
+        ))
+        
+        # only need to register once for whole plan
+        self.register_behavior(macro_plan)
+```
+
 
