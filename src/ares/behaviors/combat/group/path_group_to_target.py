@@ -55,7 +55,7 @@ class PathGroupToTarget(CombatGroupBehavior):
         Path precision.
     smoothing : bool (default: False)
         Smooth out the path.
-    sense_danger : bool (default: True)
+    sense_danger : bool (default: False)
         Check for dangers, if none are present pathing query is skipped.
     danger_distance : float (default: 20.0)
         If sense_danger=True, how far to check for dangers?
@@ -74,7 +74,7 @@ class PathGroupToTarget(CombatGroupBehavior):
     success_at_distance: float = 0.0
     sensitivity: int = 12
     smoothing: bool = False
-    sense_danger: bool = True
+    sense_danger: bool = False
     danger_distance: float = 20.0
     danger_threshold: float = 5.0
     prevent_duplicate: bool = True
