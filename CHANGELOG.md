@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.19.1 (2024-07-20)
+
+### Fix
+
+* Circular import ([`ae855d8`](https://github.com/AresSC2/ares-sc2/commit/ae855d8480616b5d121d35c96bc249de9a43ae6d))
+
 ## v2.19.0 (2024-07-20)
 
 ### Feature
