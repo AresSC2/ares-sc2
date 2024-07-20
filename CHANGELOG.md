@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.19.0 (2024-07-20)
+
+### Feature
+
+* Add RestorePower behavior ([`465a67a`](https://github.com/AresSC2/ares-sc2/commit/465a67a511468c87623a8db21759416bc182a26d))
+
+### Documentation
+
+* Add macro plan example to tutorial ([`9449aef`](https://github.com/AresSC2/ares-sc2/commit/9449aef2e132d45c24bccf437c6182bd26ba413c))
+
 ## v2.18.1 (2024-07-16)
 
 ### Fix
