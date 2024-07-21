@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.19.2 (2024-07-21)
+
+### Fix
+
+* Refactor find pylon placement to prevent crash ([`5d62c47`](https://github.com/AresSC2/ares-sc2/commit/5d62c47c48025cf00a1c6b6c1a7cefd8de01dc13))
+
 ## v2.19.1 (2024-07-20)
 
 ### Fix
