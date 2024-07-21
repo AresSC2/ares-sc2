@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -55,13 +55,8 @@ class RestorePower(MacroBehavior):
                 if self._already_restoring(structure, mediator):
                     continue
 
-                base_loc, pylon_placement = self._get_pylon_placement(
-                    structure, ai, mediator
-                )
-                if pylon_placement:
-                    return BuildStructure(
-                        base_loc, UnitID.PYLON, closest_to=pylon_placement
-                    ).execute(ai, config, mediator)
+                if self._restoring_power(structure, ai, config, mediator):
+                    return True
 
         return False
 
@@ -94,9 +89,9 @@ class RestorePower(MacroBehavior):
         return False
 
     @staticmethod
-    def _get_pylon_placement(
-        structure: Unit, ai: "AresBot", mediator: ManagerMediator
-    ) -> Optional[tuple[Point2, Point2]]:
+    def _restoring_power(
+        structure: Unit, ai: "AresBot", config: dict, mediator: ManagerMediator
+    ) -> bool:
         """Given an unpowered structure, find a pylon position.
 
         Parameters
@@ -133,6 +128,8 @@ class RestorePower(MacroBehavior):
                     include_addon=False,
                 )
             ]:
-                return base_loc, available[0]
+                return BuildStructure(
+                    base_loc, UnitID.PYLON, closest_to=available[0]
+                ).execute(ai, config, mediator)
 
-        return
+        return False
