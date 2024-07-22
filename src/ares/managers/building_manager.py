@@ -306,7 +306,7 @@ class BuildingManager(Manager, IManagerMediator):
                         )
                         continue
 
-                elif (
+                if (
                     (not worker.is_constructing_scv or worker.is_idle)
                     and self.ai.can_afford(structure_id)
                     and self.ai.tech_requirement_progress(structure_id) == 1.0
