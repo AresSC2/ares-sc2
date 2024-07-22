@@ -333,17 +333,6 @@ class IntelManager(Manager, IManagerMediator):
         ):
             self.enemy_went_reaper = True
 
-        # check for greed
-        if not self.get_enemy_was_greedy and 170.0 < self.ai.time < 270.0:
-            # zerg expanded and no queens by certain time
-            if (
-                self.ai.enemy_race == Race.Zerg
-                and self.get_enemy_expanded
-                and len(self.manager_mediator.get_enemy_army_dict[UnitID.QUEEN]) == 0
-            ):
-                logger.info(f"{self.ai.time}: Enemy greed detected")
-                self.get_enemy_was_greedy = True
-
     def _check_for_enemy_rush(self):
         if self.ai.enemy_race == Race.Zerg and not self.enemy_ling_rushed:
             if (

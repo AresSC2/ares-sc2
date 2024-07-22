@@ -12,6 +12,7 @@ from cython_extensions import (
     cy_distance_to_squared,
     cy_sorted_by_distance_to,
 )
+from sc2.data import Race
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -318,6 +319,7 @@ class ResourceManager(Manager, IManagerMediator):
         select_persistent_builder: bool = False,
         only_select_persistent_builder: bool = False,
         min_health_perc: float = 0.0,
+        min_shield_perc: float = 0.0,
     ) -> Optional[Unit]:
         """Select a worker.
 
@@ -342,6 +344,8 @@ class ResourceManager(Manager, IManagerMediator):
             If True, don't find an alternative worker
         min_health_perc :
             Only select workers above this health percentage.
+        min_shield_perc :
+            Only select workers above this shield percentage.
 
         Returns
         -------
@@ -369,6 +373,8 @@ class ResourceManager(Manager, IManagerMediator):
         workers: Units = self.manager_mediator.get_units_from_roles(
             roles={UnitRole.GATHERING, UnitRole.IDLE}, unit_type=self.ai.worker_type
         ).filter(lambda u: u.health_percentage >= min_health_perc)
+        if self.ai.race == Race.Protoss and min_shield_perc > 0.0:
+            workers = workers.filter(lambda u: u.shield_percentage >= min_shield_perc)
         # there is a chance we have no workers
         if not workers or not target_position:
             return

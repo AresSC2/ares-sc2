@@ -1469,7 +1469,10 @@ class ManagerMediator(IManagerMediator):
             If True we can select the persistent_builder if it's available.
         only_select_persistent_builder : bool
             If True, don't find an alternative worker
-        min_health_perc : float (optional)
+        min_health_perc :
+            Only select workers above this health percentage.
+        min_shield_perc :
+            Only select workers above this shield percentage.
 
         Returns
         -------
