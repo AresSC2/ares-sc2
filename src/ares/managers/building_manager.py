@@ -203,7 +203,7 @@ class BuildingManager(Manager, IManagerMediator):
                 tags_to_remove.add(worker_tag)
                 continue
 
-            target: Point2 = self.building_tracker[worker_tag][TARGET]
+            target: Union[Point2, Unit] = self.building_tracker[worker_tag][TARGET]
             worker = self.ai.unit_tag_dict.get(worker_tag, None)
             if not worker:
                 dead_tags_to_remove.add(worker_tag)
@@ -233,6 +233,14 @@ class BuildingManager(Manager, IManagerMediator):
                     continue
 
             distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
+
+            # TODO: This is a workaround for a strange bug where the client
+            #   returns an error when issuing a build gas command occasionally
+            #   this seems to fix it for now
+            if self.ai.race == Race.Protoss and structure_id in GAS_BUILDINGS:
+                if self.ai.can_afford(structure_id):
+                    worker.build_gas(target)
+                continue
 
             # if terran, check for unfinished structure
             existing_unfinished_structure: Optional[Unit] = None
@@ -298,7 +306,7 @@ class BuildingManager(Manager, IManagerMediator):
                         )
                         continue
 
-                if (
+                elif (
                     (not worker.is_constructing_scv or worker.is_idle)
                     and self.ai.can_afford(structure_id)
                     and self.ai.tech_requirement_progress(structure_id) == 1.0
