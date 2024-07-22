@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.20.1 (2024-07-22)
+
+### Fix
+
+* Allow building logic to be reached ([`4801734`](https://github.com/AresSC2/ares-sc2/commit/48017346ee71930414f217cafe22fd1c1f4b8368))
+
 ## v2.20.0 (2024-07-22)
 
 ### Feature
