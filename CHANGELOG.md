@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.20.0 (2024-07-22)
+
+### Feature
+
+* Add min shield perc arg to select worker ([`7946fbf`](https://github.com/AresSC2/ares-sc2/commit/7946fbfbbb7a976eae4f883a9631ec3798e960a1))
+
+### Fix
+
+* Temp fix for probe sometimes not building gas ([`d6b7337`](https://github.com/AresSC2/ares-sc2/commit/d6b73370a303c04d18d09eaed4c410aec688824f))
+
 ## v2.19.2 (2024-07-21)
 
 ### Fix
