@@ -8,6 +8,7 @@ from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.dicts.unit_unit_alias import UNIT_UNIT_ALIAS
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
+from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.consts import ADD_ONS, GATEWAY_UNITS, ID, TARGET, TECHLAB_TYPES
@@ -72,7 +73,7 @@ class ProductionController(MacroBehavior):
 
     army_composition_dict: dict[UnitID, dict[str, float, str, int]]
     base_location: Point2
-    unit_pending_progress: float = 0.8
+    unit_pending_progress: float = 0.75
     ignore_below_unit_count: int = 0
     ignore_below_proportion: float = 0.05
     should_repower_structures: bool = True
@@ -81,7 +82,6 @@ class ProductionController(MacroBehavior):
         assert (
             ai.race != Race.Zerg
         ), "ProductionController behavior is for Protoss and Terran only"
-
         if ai.race == Race.Protoss and self.should_repower_structures:
             if RestorePower().execute(ai, config, mediator):
                 return True
@@ -106,6 +106,10 @@ class ProductionController(MacroBehavior):
         structure_dict: dict[UnitID, Units] = mediator.get_own_structures_dict
 
         flying_structures: dict[int, dict] = mediator.get_flying_structure_tracker
+        collection_rate: int = (
+            ai.state.score.collection_rate_minerals
+            + ai.state.score.collection_rate_vespene
+        )
 
         # iterate through desired army comp starting with the highest priority unit
         for unit_type_id, army_comp_info in sorted(
@@ -179,9 +183,23 @@ class ProductionController(MacroBehavior):
                 if prod_flying:
                     continue
 
+            # income might not support more production
+            existing_structures: list[Unit] = []
+            for structure_type in train_from:
+                existing_structures.extend(structure_dict[structure_type])
+            divide_by: int = 420 if unit_type_id in GATEWAY_UNITS else 760
+            if len(existing_structures) >= int(collection_rate / divide_by):
+                continue
+
             # might have production almost ready
             almost_ready: bool = False
             for structure_type in train_from:
+                if structure_type == UnitID.WARPGATE and [
+                    s for s in structure_dict[structure_type] if not s.is_ready
+                ]:
+                    almost_ready = True
+                    break
+
                 for s in structure_dict[structure_type]:
                     if s.orders:
                         if s.orders[0].progress >= self.unit_pending_progress:
@@ -202,7 +220,8 @@ class ProductionController(MacroBehavior):
                 f"Where 0 has highest priority."
             )
 
-            max_pending = int(target_proportion * 10)
+            # add max depending on income
+            max_pending = int(collection_rate / 1000)
 
             if ai.structure_pending(trained_from) >= max_pending:
                 continue
@@ -213,7 +232,8 @@ class ProductionController(MacroBehavior):
             if built:
                 logger.info(
                     f"Adding {trained_from} so that we can build "
-                    f"more {unit_type_id}, Current proportion: {current_proportion}"
+                    f"more {unit_type_id}. Current proportion: {current_proportion}"
+                    f" Target proportion: {target_proportion}"
                 )
             return built
 
@@ -260,6 +280,9 @@ class ProductionController(MacroBehavior):
         structures_dict: dict = ai.mediator.get_own_structures_dict
         tech_required: list[UnitID] = UNIT_TECH_REQUIREMENT[unit_type_id]
         without_techlabs: list[UnitID] = [s for s in tech_required if s not in ADD_ONS]
+        _trained_from: list[Unit] = structures_dict[trained_from].copy()
+        if unit_type_id in GATEWAY_UNITS:
+            _trained_from.extend(structures_dict[UnitID.WARPGATE])
 
         for structure_type in UNIT_TECH_REQUIREMENT[unit_type_id]:
             if ai.structure_pending(structure_type):
@@ -271,16 +294,7 @@ class ProductionController(MacroBehavior):
                 can_add_tech_lab: bool = True
                 # there might be idle structure with tech lab anyway
                 # can't be used since tech structures not present
-                if (
-                    len(
-                        [
-                            s
-                            for s in structures_dict[trained_from]
-                            if s.has_techlab and s.is_idle
-                        ]
-                    )
-                    > 0
-                ):
+                if len([s for s in _trained_from if s.has_techlab and s.is_idle]) > 0:
                     can_add_tech_lab = False
                 else:
                     for type_id in without_techlabs:
@@ -292,7 +306,7 @@ class ProductionController(MacroBehavior):
 
                 if base_structures := [
                     s
-                    for s in structures_dict[trained_from]
+                    for s in _trained_from
                     if s.is_ready and s.is_idle and not s.has_add_on
                 ]:
                     base_structures[0].build(structure_type)
