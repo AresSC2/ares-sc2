@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.20.2 (2024-07-24)
+
+### Fix
+
+* Ensure teching up works as expected in ProductionController ([`5525d0f`](https://github.com/AresSC2/ares-sc2/commit/5525d0fc48115fe7edd4ee523ad9fc830cfe4906))
+* Check warpgate when considering if gateways are present ([`5cb545d`](https://github.com/AresSC2/ares-sc2/commit/5cb545d12b52d84af8b0674e3bef182a38bc0af8))
+
 ## v2.20.1 (2024-07-22)
 
 ### Fix
