@@ -439,24 +439,21 @@ class PlacementManager(Manager, IManagerMediator):
                 )
                 for location in locations:
                     logger.warning(
-                        f"No available {building_size} found near location: "
-                        f"{base_location}, trying near {location}"
+                        f"{self.ai.time_formatted}: No available {building_size} found "
+                        f"near location: {base_location}, trying near {location}"
                     )
                     available: list[Point2] = self._find_potential_placements_at_base(
                         building_size, location, structure_type, within_psionic_matrix
                     )
-
-                    if len(available) == 0:
-                        logger.warning(
-                            f"No {building_size} found near location: {location}"
-                        )
-                    # FOUND SOMETHING! Break out and continue logic after this loop
-                    else:
+                    if len(available) > 0:
                         building_at_base = location
                         break
 
             if len(available) == 0:
-                logger.warning(f"No available {building_size} found, giving up")
+                logger.info(
+                    f"{self.ai.time_formatted}: No available {building_size}"
+                    f" found anywhere on map, giving up."
+                )
                 return
 
             # get closest available by default

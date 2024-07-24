@@ -93,6 +93,7 @@ class BuildOrderRunner:
         self._chosen_opening: str = chosen_opening
         if BUILDS in self.config:
             build: list[str] = config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
+            logger.info(f"Running build from yml file: {chosen_opening}")
             if self.AUTO_SUPPLY_AT_SUPPLY in config[BUILDS][chosen_opening]:
                 try:
                     self.auto_supply_at_supply = int(

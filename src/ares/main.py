@@ -987,6 +987,9 @@ class AresBot(CustomBotAI):
         bool
 
         """
+        structures: list[Unit] = self.mediator.get_own_structures_dict[structure_type]
+        if structure_type == UnitID.GATEWAY:
+            structures.extend(self.mediator.get_own_structures_dict[UnitID.WARPGATE])
         return (
             len(self.mediator.get_own_structures_dict[structure_type]) > 0
             or self.mediator.get_building_counter[structure_type] > 0

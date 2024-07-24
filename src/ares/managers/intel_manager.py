@@ -335,14 +335,15 @@ class IntelManager(Manager, IManagerMediator):
 
     def _check_for_enemy_rush(self):
         if self.ai.enemy_race == Race.Zerg and not self.enemy_ling_rushed:
+            enemy_lings: list[Unit] = self.manager_mediator.get_enemy_army_dict[
+                UnitID.ZERGLING
+            ]
             if (
                 self.ai.time < 150.0
                 and len(
                     [
                         ling
-                        for ling in self.manager_mediator.get_enemy_army_dict[
-                            UnitID.ZERGLING
-                        ]
+                        for ling in enemy_lings
                         if cy_distance_to_squared(ling.position, self.ai.start_location)
                         < 2500.0
                     ]
@@ -352,18 +353,11 @@ class IntelManager(Manager, IManagerMediator):
                 logger.info(f"{self.ai.time}: enemy ling rush detected")
                 self.enemy_ling_rushed = True
 
-            if (
-                self.ai.time < 180.0
-                and len(
-                    [
-                        ling
-                        for ling in self.manager_mediator.get_enemy_army_dict[
-                            UnitID.ZERGLING
-                        ]
-                    ]
-                )
-                > 7
-            ):
+            if self.ai.time < 180.0 and len(enemy_lings) > 7:
+                logger.info(f"{self.ai.time}: enemy ling rush detected")
+                self.enemy_ling_rushed = True
+
+            if self.ai.time < 90.0 and len(enemy_lings) > 4:
                 logger.info(f"{self.ai.time}: enemy ling rush detected")
                 self.enemy_ling_rushed = True
 
