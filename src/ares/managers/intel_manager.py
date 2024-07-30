@@ -127,6 +127,12 @@ class IntelManager(Manager, IManagerMediator):
             Everything that could possibly be returned from the Manager fits in there
 
         """
+        if self.ai.arcade_mode:
+            logger.warning(
+                f"Mediator requests to intel manager doesn't work on arcade mode."
+                f"The following request will return None: {request}"
+            )
+            return
         return self.manager_requests_dict[request](kwargs)
 
     @property_cache_once_per_frame
@@ -324,6 +330,9 @@ class IntelManager(Manager, IManagerMediator):
         return False
 
     async def update(self, iteration: int) -> None:
+        if self.ai.arcade_mode:
+            return
+
         self._check_for_enemy_rush()
 
         if (
