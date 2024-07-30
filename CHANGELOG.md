@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.20.3 (2024-07-30)
+
+### Fix
+
+* Prevent intel manager running on arcade mode ([`27c428c`](https://github.com/AresSC2/ares-sc2/commit/27c428ccfa380ac45a5b02262dd4172503cbb3df))
+
 ## v2.20.2 (2024-07-24)
 
 ### Fix
