@@ -49,7 +49,7 @@ ADD . /root/ares-sc2
 # then to the actual working directory
 WORKDIR /root/ares-sc2
 
-RUN mv test/maps/* ~/StarCraftII/maps
+RUN mv tests/maps/* ~/StarCraftII/maps
 
 RUN poetry install
 
