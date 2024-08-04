@@ -1,13 +1,19 @@
 import random
 import sys
-from os import path
+from os.path import dirname, abspath, join
 
 from sc2 import maps
 from sc2.main import run_game
 
-from ares import AresBot
+d = dirname(dirname(abspath(__file__)))
+sys.path.append(f"{d}\\..")
+sys.path.append(f"{d}\\..\src")
 
-sys.path.append(path.join(path.dirname(__file__), "../.."))
+d = dirname(dirname(abspath(__file__)))
+sys.path.append(join(d))
+sys.path.append(join(d, "..\src"))
+
+from ares import AresBot
 
 from sc2.data import Difficulty, Race
 from sc2.player import Bot, Computer
@@ -18,11 +24,12 @@ class DummyBot(AresBot):
         super().__init__()
 
     async def on_step(self, iteration: int):
+        await super(DummyBot, self).on_step(iteration)
         for unit in self.units:
             unit.attack(self.enemy_start_locations[0])
 
     async def on_start(self) -> None:
-        pass
+        await super(DummyBot, self).on_start()
 
 
 # Start game
