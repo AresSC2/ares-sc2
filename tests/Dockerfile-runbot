@@ -24,7 +24,6 @@ RUN apt-get install --assume-yes --no-install-recommends --no-show-upgraded \
     gcc \
     tree \
     gpg \
-    python-dev \
     procps \
     lsof \
     apt-transport-https \
