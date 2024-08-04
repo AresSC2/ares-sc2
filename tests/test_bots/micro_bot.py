@@ -5,13 +5,17 @@ from os.path import dirname, abspath, join
 from sc2 import maps
 from sc2.main import run_game
 
-d = dirname(dirname(abspath(__file__)))
-sys.path.append(f"{d}\\..")
-sys.path.append(f"{d}\\..\src")
+# Get the directory of the current file
+current_dir = dirname(__file__)
 
-d = dirname(dirname(abspath(__file__)))
-sys.path.append(join(d))
-sys.path.append(join(d, "..\src"))
+# Go two directories up
+two_up = abspath(join(current_dir, "..", ".."))
+
+# Append the src folder to the path
+src_path = join(two_up, "src")
+
+# Add the src folder to the system path
+sys.path.append(src_path)
 
 from ares import AresBot
 
