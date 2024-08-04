@@ -1,5 +1,5 @@
-#name: Python actions
-#
+name: Run ares test bots
+
 on:
   pull_request:
     branches:
@@ -33,11 +33,11 @@ jobs:
         tree
     - name: Load and build docker image
       run: |
-        docker build -t test_image -f test/Dockerfile-runbot .
+        docker build -t test_image -f tests/Dockerfile-runbot .
 
     - name: Run bots
       run: |
         docker run -it -d --name app1 test_image
         docker exec -i app1 bash -c "tree"
-        docker exec -i app1 bash -c "python ./test/travis_test_script.py ./test/test_bots/${{ matrix.opponents }}"
+        docker exec -i app1 bash -c "python ./tests/travis_test_script.py ./tests/test_bots/${{ matrix.opponents }}"
         docker rm -f app1
