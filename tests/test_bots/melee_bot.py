@@ -9,16 +9,17 @@ from ares import AresBot
 
 sys.path.append(path.join(path.dirname(__file__), "../.."))
 
-import sc2
 from sc2.data import Difficulty, Race
 from sc2.player import Bot, Computer
+
 
 class DummyBot(AresBot):
     def __init__(self):
         super().__init__()
 
     async def on_step(self, iteration: int):
-        pass
+        for unit in self.units:
+            unit.attack(self.enemy_start_locations[0])
 
     async def on_start(self) -> None:
         pass
@@ -28,12 +29,12 @@ class DummyBot(AresBot):
 if __name__ == "__main__":
     random_map = random.choice(
         [
-        "Equilibrium513AIE",
-        "Gresvan513AIE",
-        "GoldenAura513AIE",
-        "HardLead513AIE",
-        "Oceanborn513AIE",
-        "SiteDelta513AIE"
+            "Equilibrium513AIE",
+            "Gresvan513AIE",
+            "GoldenAura513AIE",
+            "HardLead513AIE",
+            "Oceanborn513AIE",
+            "SiteDelta513AIE",
         ]
     )
     run_game(

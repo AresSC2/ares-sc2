@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        opponents: [ vs_blizzard_protoss.py, vs_blizzard_zerg.py, vs_blizzard_terran.py ]
+        opponents: [ melee_bot.py, micro_bot.py ]
 
     steps:
     - uses: actions/setup-python@v5
@@ -39,5 +39,5 @@ jobs:
       run: |
         docker run -it -d --name app1 test_image
         docker exec -i app1 bash -c "tree"
-        docker exec -i app1 bash -c "python ./test/travis_test_script.py ./test/${{ matrix.opponents }}"
+        docker exec -i app1 bash -c "python ./test/travis_test_script.py ./test/test_bots/${{ matrix.opponents }}"
         docker rm -f app1

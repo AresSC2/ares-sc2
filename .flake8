@@ -8,7 +8,9 @@ exclude =
     MapAnalyzer
     sc2_helper
     cython_extensions
+    tests/test_bots
     tests/generate_pickle_data.py.py
     tests/test_run.py
     tests/conftest.py
     tests/load_bot_from_pickle.py
+    tests/travis_test_script.py
