@@ -18,12 +18,13 @@ from sc2.main import run_game
 from sc2.player import Bot, Computer
 from sc2.protocol import ProtocolError
 
-from ares import AresBot
-
 # This allows Ares to be imported
 d = dirname(dirname(abspath(__file__)))
 sys.path.append(f"{d}\\")
 sys.path.append(f"{d}\\src")
+
+from ares import AresBot
+from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 
 class ExporterBot(AresBot):
@@ -33,7 +34,7 @@ class ExporterBot(AresBot):
 
     async def on_step(self, iteration):
         await super(ExporterBot, self).on_step(iteration)
-        if iteration == 4:
+        if iteration > 20:
             # file_path = self.get_pickle_file_path()
             # logger.info(f"Saving pickle file to {file_path}.xz")
             # await self.store_data_to_file(file_path)
@@ -42,13 +43,6 @@ class ExporterBot(AresBot):
             logger.info(f"Saving pickle file to {file_path}.xz")
             await self.store_data_to_file(file_path)
             await self.client.leave()
-
-    def get_combat_file_path(self) -> str:
-        folder_path = os.path.dirname(__file__)
-        subfolder_name = "combat_pickle_data"
-        file_name = f"{self.map_name}.xz"
-        file_path = os.path.join(folder_path, subfolder_name, file_name)
-        return file_path
 
     def get_pickle_file_path(self) -> str:
         folder_path = os.path.dirname(__file__)
@@ -87,46 +81,31 @@ class ExporterBot(AresBot):
         await self.client.debug_control_enemy()
         await self.client.debug_god()
 
-        # Spawn one of each unit
-        # TODO: Create some scenarios to test units here
-        #   This current logic, means all pathing breaks in pickle tests
-        # valid_units: Set[UnitTypeId] = {
-        #     UnitTypeId(unit_id)
-        #     for unit_id, data in self.game_data.units.items()
-        #     if data._proto.race != Race.NoRace
-        #     and data._proto.race != Race.Random
-        #     and data._proto.available
-        #     # Dont cloak units
-        #     and UnitTypeId(unit_id) != UnitTypeId.MOTHERSHIP
-        #     and (
-        #         data._proto.mineral_cost
-        #         or data._proto.movement_speed
-        #         or data._proto.weapons
-        #     )
-        # }
-        #
-        # # Create units for self
-        # await self.client.debug_create_unit(
-        #     [[valid_unit, 1, self.start_location, 1] for valid_unit in valid_units]
-        # )
-        # # Create units for enemy
-        # await self.client.debug_create_unit(
-        #     [
-        #         [valid_unit, 1, self.enemy_start_locations[0], 2]
-        #         for valid_unit in valid_units
-        #     ]
-        # )
+        # Create units for self
+        await self.client.debug_create_unit(
+            [
+                [valid_unit, 1, self.start_location, 1]
+                for valid_unit in UNIT_TECH_REQUIREMENT.keys()
+            ]
+        )
+        # Create units for enemy
+        await self.client.debug_create_unit(
+            [
+                [valid_unit, 1, self.enemy_start_locations[0], 2]
+                for valid_unit in UNIT_TECH_REQUIREMENT.keys()
+            ]
+        )
 
 
 def main():
 
     maps_ = [
-        "GresvanAIE",
-        "GoldenauraAIE",
-        "InfestationStationAIE",
-        "RoyalBloodAIE",
-        "DragonScalesAIE",
-        "AncientCisternAIE",
+        "Equilibrium513AIE",
+        "Gresvan513AIE",
+        "GoldenAura513AIE",
+        "HardLead513AIE",
+        "Oceanborn513AIE",
+        "SiteDelta513AIE",
     ]
 
     for map_ in maps_:

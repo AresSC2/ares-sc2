@@ -114,6 +114,9 @@ Indicates how much code is covered by tests
 Run coverage through `pytest`:
 `pytest --cov=src --cov-report term-missing --cov-report=html`
 
+Run specific tests
+`pytest -v -s tests/managers/test_building_manager.py::TestBuildingManager::test_construct_gas`
+
 [Offical docs](https://coverage.readthedocs.io/en/6.5.0/config.html)
 
 

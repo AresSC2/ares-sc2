@@ -43,3 +43,30 @@ class TestBuildingManager:
             worker.tag
             in bot.manager_hub.unit_role_manager.unit_role_dict[UnitRole.BUILDING]
         )
+
+    def test_remove_unit(self, bot: AresBot, event_loop):
+        # arrange
+        building_manager: BuildingManager = bot.manager_hub.building_manager
+        worker: Unit = bot.workers[0]
+        tracker = building_manager.building_tracker
+
+        # act
+        building_manager.build_with_specific_worker(
+            worker, UnitID.COMMANDCENTER, bot.mediator.get_own_nat
+        )
+        assert worker.tag in tracker
+        building_manager.remove_unit(worker.tag)
+
+        assert worker.tag not in tracker
+
+    @pytest.mark.asyncio
+    async def test_is_pending(self, bot: AresBot, event_loop):
+        # arrange
+        building_manager: BuildingManager = bot.manager_hub.building_manager
+        worker: Unit = bot.workers[0]
+        building_manager.build_with_specific_worker(
+            worker, UnitID.COMMANDCENTER, bot.mediator.get_own_nat
+        )
+
+        # act
+        assert building_manager.is_pending(UnitID.COMMANDCENTER, 1)

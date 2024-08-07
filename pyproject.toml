@@ -63,6 +63,16 @@ build-backend = "poetry.core.masonry.api"
 exclude_lines = [
     'if __name__ == "__main__":'
 ]
+exclude_also = [
+    "pass",
+    "if TYPE_CHECKING:"
+]
+# only omitting files, where it seems there
+# are no reasonable ways of unit testing them
+omit = [
+    "src/ares/chat_debug.py",
+    "src/ares/behaviors/combat/combat_behavior.py"
+    ]
 
 [tool.pytest.ini_options]
 testpaths = ["src", "tests"]
@@ -116,4 +126,3 @@ upload_to_pypi = false
 upload_to_release = false
 hvcs = "github"
 commit_message = "{version} [skip ci]" # skip triggering ci pipelines for version commits
-

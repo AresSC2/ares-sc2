@@ -18,7 +18,7 @@ class AttackTarget(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import AttackTarget
+    from ares.behaviors.combat.individual import AttackTarget
 
     unit: Unit
     target: Unit

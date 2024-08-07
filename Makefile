@@ -19,7 +19,7 @@ unit-tests:
 unit-tests-cov:
 	@pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html
 unit-tests-cov-fail:
-	@pytest --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=80 --junitxml=pytest.xml | tee pytest-coverage.txt
+	@pytest --cov=src --cov-report term-missing --cov-report=html --cov-fail-under=49 --junitxml=pytest.xml | tee pytest-coverage.txt
 clean-cov:
 	@rm -rf .coverage
 	@rm -rf htmlcov

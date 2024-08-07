@@ -35,7 +35,7 @@ class ChatDebug:
         """
         self.ai: CustomBotAI = ai
 
-    async def parse_commands(self) -> None:
+    async def parse_commands(self) -> None:  # pragma: no cover
         """Read chat since last iteration and send debug command if it matches.
 
         Returns
@@ -120,7 +120,7 @@ class ChatDebug:
         amount: int,
         unit_id: UnitID,
         player_id: int = 1,
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Create units at player camera location.
 
         Parameters
@@ -143,7 +143,7 @@ class ChatDebug:
 
     async def _destroy_units(
         self, num_to_destroy: int, unit_id: UnitID, player_id: int = 1
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Destroy units for provided player.
 
         Parameters
