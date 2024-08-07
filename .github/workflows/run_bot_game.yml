@@ -1,0 +1,43 @@
+name: Run ares test bots
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+
+jobs:
+  run_test_bots:
+    name: Run test bots
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+
+    strategy:
+      fail-fast: true
+      matrix:
+        opponents: [ melee_bot.py, micro_bot.py ]
+
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Print directories and files
+      run: |
+        sudo apt-get install tree
+        tree
+    - name: Load and build docker image
+      run: |
+        docker build -t test_image -f tests/Dockerfile-runbot .
+
+    - name: Run bots
+      run: |
+        docker run -it -d --name app1 test_image
+        docker exec -i app1 bash -c "tree"
+        docker exec -i app1 bash -c "poetry run python ./tests/travis_test_script.py ./tests/test_bots/${{ matrix.opponents }}"
+        docker rm -f app1

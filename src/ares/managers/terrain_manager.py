@@ -1,7 +1,6 @@
 """Calculations involving terrain.
 
 """
-import math
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
@@ -583,37 +582,6 @@ class TerrainManager(Manager, IManagerMediator):
 
         return positions
 
-    @staticmethod
-    def rotate(origin: Point2, point: Point2, angle: float) -> Point2:
-        """Rotate point counterclockwise around the origin in radians.
-
-        Parameters
-        ----------
-        origin :
-            Point to use as the origin for the rotation.
-        point :
-            Point that needs to be rotated.
-        angle :
-            Angle of rotation.
-
-        Returns
-        -------
-        Point2 :
-            The rotated point.
-
-        """
-        qx = (
-            origin.x
-            + math.cos(angle) * (point.x - origin.x)
-            - math.sin(angle) * (point.y - origin.y)
-        )
-        qy = (
-            origin.y
-            + math.sin(angle) * (point.x - origin.x)
-            + math.cos(angle) * (point.y - origin.y)
-        )
-        return Point2((qx, qy))
-
     def get_base_to_choke_information(self) -> Dict[Point2, Dict[ChokeArea, int]]:
         """Get pathing distance from each base to every choke point on the map.
 
@@ -674,7 +642,7 @@ class TerrainManager(Manager, IManagerMediator):
             _positions_blocked_by_enemy_burrowed_units
         )
 
-    async def _draw_information(self) -> None:
+    async def _draw_information(self) -> None:  # pragma: no cover
         self.ai.draw_text_on_world(self.own_nat, "Natural")
         self.ai.draw_text_on_world(self.own_third, f"Third {self.own_third}")
         self.ai.draw_text_on_world(self.own_fourth, f"Fourth {self.own_fourth}")

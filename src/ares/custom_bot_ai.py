@@ -32,7 +32,7 @@ class CustomBotAI(BotAI):
     unit_tag_dict: Dict[int, Unit]
     worker_type: UnitID
 
-    async def on_step(self, iteration: int):
+    async def on_step(self, iteration: int):  # pragma: no cover
         """Here because all abstract methods have to be implemented.
 
         Gets overridden in Ares.
@@ -55,7 +55,7 @@ class CustomBotAI(BotAI):
         size: int = 12,
         y_offset: int = 0,
         color=(0, 255, 255),
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """Print out text to the game screen.
 
         Parameters
@@ -193,7 +193,7 @@ class CustomBotAI(BotAI):
         order: AbilityId,
         unit_tags: Union[List[int], set[int]],
         target: Optional[Union[Point2, Unit, int]] = None,
-    ) -> None:
+    ) -> None:  # pragma: no cover
         """
         Give units corresponding to the given tags the same order.
         @param order: the order to give to all units
@@ -263,7 +263,7 @@ class CustomBotAI(BotAI):
                 )
             )
 
-    async def _do_archon_morph(self, templar: list[Unit]) -> None:
+    async def _do_archon_morph(self, templar: list[Unit]) -> None:  # pragma: no cover
         command = raw_pb.ActionRawUnitCommand(
             ability_id=AbilityId.MORPH_ARCHON.value,
             unit_tags=[templar[0].tag, templar[1].tag],
@@ -274,7 +274,9 @@ class CustomBotAI(BotAI):
             action=sc_pb.RequestAction(actions=[sc_pb.Action(action_raw=action)])
         )
 
-    async def unload_by_tag(self, container: Unit, unit_tag: int) -> None:
+    async def unload_by_tag(
+        self, container: Unit, unit_tag: int
+    ) -> None:  # pragma: no cover
         """Unload a unit from a container based on its tag. Thanks, Sasha!"""
         index: int = 0
         # noinspection PyProtectedMember
@@ -291,7 +293,9 @@ class CustomBotAI(BotAI):
 
         await self.unload_container(container, index)
 
-    async def unload_container(self, container_tag: int, index: int = 0) -> None:
+    async def unload_container(
+        self, container_tag: int, index: int = 0
+    ) -> None:  # pragma: no cover
         # noinspection PyProtectedMember
         await self.client._execute(
             action=sc_pb.RequestAction(

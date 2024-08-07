@@ -67,7 +67,7 @@ class AresBot(CustomBotAI):
     cost_dict: Dict[UnitID, Cost]  #: UnitTypeId to cost for faster lookup later
     manager_hub: Hub  #: Hub in charge of handling the Managers
 
-    def __init__(self, game_step_override: Optional[int] = None):
+    def __init__(self, game_step_override: Optional[int] = None):  # pragma: no cover
         """Load config and set up necessary attributes.
 
         Parameters
@@ -129,7 +129,7 @@ class AresBot(CustomBotAI):
         self._archon_morph_actions.append(templar)
 
     # noinspection PyFinal
-    def _prepare_units(self):
+    def _prepare_units(self):  # pragma: no cover
         """Tweak of _prepare_units to include memory units in cached distances and some
         other tracking.
 
@@ -226,7 +226,7 @@ class AresBot(CustomBotAI):
 
         _ = self._cdist
 
-    async def on_before_start(self) -> None:
+    async def on_before_start(self) -> None:  # pragma: no cover
         """Train a drone and split workers before managers are set up
 
         Called before bot properly initializes
@@ -254,7 +254,7 @@ class AresBot(CustomBotAI):
         else:
             self.base_townhall_type = UnitID.HATCHERY
 
-    async def on_start(self) -> None:
+    async def on_start(self) -> None:  # pragma: no cover
         """Set up game step, managers, and information that requires game data
 
         Called just before the first step, all game info is available
@@ -326,7 +326,7 @@ class AresBot(CustomBotAI):
         self.manager_hub = Hub(self, self.config, manager_mediator)
         self.manager_hub.init_managers()
 
-    async def on_step(self, iteration: int) -> None:
+    async def on_step(self, iteration: int) -> None:  # pragma: no cover
         """Play the game
 
         Called on every game step

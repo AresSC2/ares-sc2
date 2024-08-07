@@ -239,10 +239,9 @@ class ResourceManager(Manager, IManagerMediator):
         """
         self.grid = self.manager_mediator.get_ground_grid
         if workers := self.manager_mediator.get_units_from_role(
-            role=UnitRole.GATHERING,
-            unit_type=self.ai.worker_type,
+            role=UnitRole.GATHERING
         ):
-            if iteration % 4 == 0:
+            if iteration % 4 == 0 or len(self.worker_to_mineral_patch_dict) == 0:
                 self._assign_workers(workers)
                 # keep memory of our townhalls, so we can deal with dead ths
                 for th in self.ai.townhalls:

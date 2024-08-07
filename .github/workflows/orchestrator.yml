@@ -12,10 +12,14 @@ jobs:
   call-linting-pipeline:
     name: Linting
     uses: ./.github/workflows/lint.yml
+  call-run-bot-game-pipeline:
+    name: Linting
+    uses: ./.github/workflows/run_bot_game.yml
   call-release-pipeline:
     name: Release
     needs:
       - call-testing-pipeline
       - call-linting-pipeline
+      - call-run-bot-game-pipeline
     uses: ./.github/workflows/release.yml
     secrets: inherit

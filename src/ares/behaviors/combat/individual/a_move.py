@@ -19,7 +19,7 @@ class AMove(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import AMove
+    from ares.behaviors.combat.individual import AMove
 
     self.register_behavior(AMove(unit, self.game_info.map_center))
     ```
