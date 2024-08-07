@@ -9,16 +9,6 @@ from sc2.main import run_game
 from sc2.position import Point2
 from sc2.unit import Unit
 
-from ares.behaviors.combat import CombatManeuver
-from ares.behaviors.combat.individual import AMove, PathUnitToTarget
-from ares.behaviors.macro import (
-    AutoSupply,
-    MacroPlan,
-    Mining,
-    ProductionController,
-    SpawnController,
-)
-
 # Get the directory of the current file
 current_dir = dirname(__file__)
 
@@ -35,6 +25,15 @@ from sc2.data import Difficulty, Race
 from sc2.player import Bot, Computer
 
 from ares import AresBot
+from ares.behaviors.combat import CombatManeuver
+from ares.behaviors.combat.individual import AMove, PathUnitToTarget
+from ares.behaviors.macro import (
+    AutoSupply,
+    MacroPlan,
+    Mining,
+    ProductionController,
+    SpawnController,
+)
 
 
 class DummyBot(AresBot):

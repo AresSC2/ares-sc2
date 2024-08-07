@@ -7,8 +7,6 @@ from sc2 import maps
 from sc2.main import run_game
 from sc2.position import Point2
 
-from ares.behaviors.combat.individual import AMove, KeepUnitSafe, PathUnitToTarget
-
 # Get the directory of the current file
 current_dir = dirname(__file__)
 
@@ -26,6 +24,7 @@ from sc2.player import Bot, Computer
 
 from ares import AresBot
 from ares.behaviors.combat import CombatManeuver
+from ares.behaviors.combat.individual import AMove, KeepUnitSafe, PathUnitToTarget
 
 
 class DummyBot(AresBot):
