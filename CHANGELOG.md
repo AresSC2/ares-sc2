@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.20.4 (2024-08-07)
+
+### Fix
+
+* Imports in test bots ([`24ac400`](https://github.com/AresSC2/ares-sc2/commit/24ac40033678b51b9de33402ffd8733f7340c4ae))
+
 ## v2.20.3 (2024-07-30)
 
 ### Fix
