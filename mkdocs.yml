@@ -35,10 +35,12 @@ nav:
       - tutorials/index.md
       - Assigning Unit Roles: tutorials/assigning_unit_roles.md
       - Build Runner: tutorials/build_runner.md
+      - Chat Debug: tutorials/chat_debug.md
       - Combat Maneuver Example: tutorials/combat_maneuver_example.md
       - Creating Custom Behaviors: tutorials/custom_behaviors.md
       - Config File: tutorials/config_file.md
       - Gotchas: tutorials/gotchas.md
+      - Influence and Pathing: tutorials/influence_and_pathing.md
       - Managing Production: tutorials/managing_production.md
       - Migrating from python-sc2: tutorials/migrating.md
       - Unit Squads and Group Behaviors: tutorials/unit_squads_group_behaviors.md

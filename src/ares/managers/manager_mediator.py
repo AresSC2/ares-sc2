@@ -215,6 +215,22 @@ class ManagerMediator(IManagerMediator):
         )
 
     def cancel_structure(self, **kwargs) -> None:
+        """Cancel a structure and remove from internal ares bookkeeping.
+
+        If you try cancelling without calling this method, ares may try
+        to keep rebuilding the cancelled structure.
+
+        BuildingManager.
+
+        Parameters
+        ----------
+        structure : UnitTypeIdId
+            The AbilityId that was used.
+
+        Returns
+        ----------
+        None
+        """
         return self.manager_request(
             ManagerName.BUILDING_MANAGER,
             ManagerRequestType.CANCEL_STRUCTURE,

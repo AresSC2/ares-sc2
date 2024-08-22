@@ -4,6 +4,10 @@
 Please feel free to contribute or raise an issue for anything that is missing or broke.
 
 ## Get Started Quickly with `ares-sc2`
+
+We recommend all users to take a read of the [gotcha's tutorial](./tutorials/gotchas.md) once
+they begin developing their `ares` bot.
+
 ### New bot author
 For authors eager to establish a local bot development environment right away, we 
 recommend using the [ares-sc2-bot-template](https://github.com/AresSC2/ares-sc2-bot-template) and
@@ -19,8 +23,11 @@ usual within the blank starter bot, making it a good option for learning the bas
 Migrating your existing bot made with [python-sc2](https://github.com/BurnySc2/python-sc2) to `ares-sc2`,
 is a fairly straight forward process in most instances. Check out the [migration tutorial](tutorials/migrating.md).
 
+
+
 In any case glancing through the [tutorials](tutorials/index.md) and
 the [api docs](api_reference/index.md) should give you an idea of what `ares-sc2` can offer.
+
 
 
 ## About
@@ -39,8 +46,6 @@ Feel free to add your own bot here
  - [Aristaeus (P)](https://github.com/august-k/Aristaeus)
  - [Nani-Z (Z) micro ladder bot](https://github.com/DrekkSama/Nani-Z)
  - [oops (R) micro ladder bot](https://github.com/raspersc2/oops)
-
-[//]: # ( - [Phobos &#40;T&#41;]&#40;https://github.com/AresSC2/phobos&#41;)
  - [QueenBot (Z)](https://github.com/AresSC2/QueenBot)
  - [12PoolBot (Z)](https://github.com/vschmidt91/12PoolBot)
  
