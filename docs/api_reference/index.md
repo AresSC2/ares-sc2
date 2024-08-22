@@ -2,13 +2,12 @@
 title: API Reference
 ---
 
+Explore the menu to access the available features, organized into two main sections:
 
-Utilize the menu to delve into the available functionalities, currently organized into three primary sections:
-
- - `Behaviors` - Discover the art of crafting personalized combat maneuvers or macro plans. 
-Each Behavior can be executed individually, tailored to your specific requirements.
- - `Manager mediator` - Seamlessly orchestrating numerous managers in the background, the mediator serves 
-as the recommended approach to access data and functions within these managers.
+ - Behaviors: Learn how to create custom combat strategies or macro plans. Each behavior can be run 
+independently, allowing you to adapt them to your specific needs.
+ - Manager Mediator: This tool coordinates multiple managers in the background and is the preferred 
+method for accessing the data and functions within these managers.
 
 Convenient methods globally available:
 ::: ares.main

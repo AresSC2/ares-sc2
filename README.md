@@ -35,7 +35,7 @@ self.register_behavior(
     )
 )
 ```
-![formation](https://github.com/raspersc2/oops/assets/63355562/946686eb-cc75-4271-ae1e-3b9f5c424e47)
+![protoss](https://github.com/user-attachments/assets/31a2cbf1-a95b-492c-89eb-563013cc6b75)
 
  - Various grids with populated enemy influence.
 

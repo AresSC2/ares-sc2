@@ -166,6 +166,8 @@ class BuildingManager(Manager, IManagerMediator):
                 self.manager_mediator.assign_role(
                     tag=worker.tag, role=UnitRole.GATHERING
                 )
+                if mfs := self.ai.mineral_field:
+                    worker.gather(cy_closest_to(self.ai.start_location, mfs))
 
     def _handle_construction_orders(self) -> None:
         """Construct tracked buildings.
