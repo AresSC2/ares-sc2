@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.20.5 (2024-08-22)
+
+### Fix
+
+* Old building workers get a gather command when reassigned ([`ee93896`](https://github.com/AresSC2/ares-sc2/commit/ee938962ead79031b3b3e7fa20f6c23e734a5863))
+
+### Documentation
+
+* Chat debug and influence tutorials ([`033bd9f`](https://github.com/AresSC2/ares-sc2/commit/033bd9f459310299ec4b276c8bb8ab6d2501a3fb))
+* New gotchas tutorial, replaces tips and tricks ([`a64810e`](https://github.com/AresSC2/ares-sc2/commit/a64810e562649ed6e2c6e9550268167831fe8440))
+
 ## v2.20.4 (2024-08-07)
 
 ### Fix
