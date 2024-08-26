@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 
 import numpy as np
 from loguru import logger
+from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -111,6 +112,7 @@ class Mining(MacroBehavior):
         # for each mineral tag, get the position in front of the mineral
         min_target: dict[int, Point2] = mediator.get_mineral_target_dict
         main_enemy_ground_threats: Optional[Units] = None
+        race: Race = ai.race
         if self.self_defence_active:
             main_enemy_ground_threats = mediator.get_main_ground_threats_near_townhall
 
@@ -153,13 +155,18 @@ class Mining(MacroBehavior):
                         mediator.remove_gas_building(gas_building_tag=resource_tag)
                     continue
 
+            perc_health: float = (
+                worker.health_percentage
+                if race != Race.Protoss
+                else worker.shield_health_percentage
+            )
             # keeping worker safe is first priority
             if self.keep_safe and (
                 # lib zone / nukes etc
                 not pos_safe(grid=avoidance_grid, position=worker_position)
                 # retreat based on self.flee_at_health_perc value
                 or (
-                    worker.health_percentage <= health_perc
+                    perc_health <= health_perc
                     and not pos_safe(grid=grid, position=worker_position)
                 )
             ):
@@ -171,15 +178,14 @@ class Mining(MacroBehavior):
                     resource_position,
                     dist_to_resource,
                 )
-                continue
 
-            if main_enemy_ground_threats and self._worker_attacking_enemy(
+            elif main_enemy_ground_threats and self._worker_attacking_enemy(
                 ai, dist_to_resource, worker
             ):
-                continue
+                pass
 
             # do we have record of this worker? If so mine from the relevant resource
-            if ai.townhalls and (assigned_mineral_patch or assigned_gas_building):
+            elif ai.townhalls and (assigned_mineral_patch or assigned_gas_building):
                 # we are far away, path to min field to avoid enemies
                 if dist_to_resource > 6.0 and not worker.is_carrying_resource:
                     worker.move(
