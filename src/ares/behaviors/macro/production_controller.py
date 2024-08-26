@@ -187,6 +187,12 @@ class ProductionController(MacroBehavior):
             existing_structures: list[Unit] = []
             for structure_type in train_from:
                 existing_structures.extend(structure_dict[structure_type])
+            # target proportion is low, don't add extra pending
+            if target_proportion <= 0.15 and (
+                any([ai.structure_pending(type_id) for type_id in train_from])
+            ):
+                continue
+
             divide_by: int = 420 if unit_type_id in GATEWAY_UNITS else 760
             if len(existing_structures) >= int(collection_rate / divide_by):
                 continue
