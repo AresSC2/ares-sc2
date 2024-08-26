@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.20.6 (2024-08-26)
+
+### Fix
+
+* Prevent over producing production for low proportion units ([`5df3685`](https://github.com/AresSC2/ares-sc2/commit/5df368524236fe800868b7c6a5b110354077c172))
+* Probes factor in shields when fleeing ([`5116422`](https://github.com/AresSC2/ares-sc2/commit/51164228504df8713f2ff31de8b20d43fc09f37b))
+
 ## v2.20.5 (2024-08-22)
 
 ### Fix
