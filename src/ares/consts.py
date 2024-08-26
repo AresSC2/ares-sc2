@@ -400,12 +400,17 @@ class UnitRole(str, Enum):
         "DROP_UNITS_ATTACKING"  # units dropped off, that now need to attack
     )
     DROP_UNITS_TO_LOAD = "DROP_UNITS_TO_LOAD"  # units that require picking up
-    # reserved roles for flanking
     FLANK_GROUP_ONE = "FLANK_GROUP_ONE"
     FLANK_GROUP_TWO = "FLANK_GROUP_TWO"
     FLANK_GROUP_THREE = "FLANK_GROUP_THREE"
     GATHERING = "GATHERING"  # workers that are mining
     HARASSING = "HARASSING"  # units that are harassing
+    HARASSING_ADEPT = "HARASSING_ADEPT"
+    HARASSING_BANSHEE = "HARASSING_BANSHEE"
+    HARASSING_ORACLE = "HARASSING_ORACLE"
+    HARASSING_PHOENIX = "HARASSING_PHOENIX"
+    HARASSING_REAPER = "HARASSING_REAPER"
+    HARASSING_LINGS = "HARASSING_LINGS"
     IDLE = "IDLE"  # not doing anything
     MAP_CONTROL = "MAP_CONTROL"  # units controlling the map (lings/hellions?)
     MORPHING = "MORPHING"  # units currently morphing
