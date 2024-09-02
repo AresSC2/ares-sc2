@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.21.0 (2024-09-02)
+
+### Feature
+
+* Improved placement layout of protoss main wall ([`9b5f6ac`](https://github.com/AresSC2/ares-sc2/commit/9b5f6ac98315109f6cf9193ba49c17bb582c5fa9))
+
+### Fix
+
+* UseAbility behavior returns False if ability not possible ([`95d4ee7`](https://github.com/AresSC2/ares-sc2/commit/95d4ee7055ef2d22e25150bdb423e802ab6d244d))
+
 ## v2.20.6 (2024-08-26)
 
 ### Fix
