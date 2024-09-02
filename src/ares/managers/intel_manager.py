@@ -209,7 +209,8 @@ class IntelManager(Manager, IManagerMediator):
             or (self.ai.time < 210.0 and num_marauders >= 2)
             or (self.ai.time < 160.0 and num_marauders >= 1)
         ):
-            logger.info(f"{self.ai.time_formatted}: marauder rush detected")
+            if not self.get_enemy_went_marauder_rush:
+                logger.info(f"{self.ai.time_formatted}: marauder rush detected")
             self.get_enemy_went_marauder_rush = True
             return True
 

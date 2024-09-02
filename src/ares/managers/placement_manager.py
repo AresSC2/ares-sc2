@@ -1,7 +1,16 @@
 import time
 from itertools import product
 from math import ceil
-from typing import TYPE_CHECKING, Any, Callable, Coroutine, DefaultDict, Optional, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Coroutine,
+    DefaultDict,
+    FrozenSet,
+    Optional,
+    Union,
+)
 
 import numpy as np
 from cython_extensions import (
@@ -800,7 +809,7 @@ class PlacementManager(Manager, IManagerMediator):
             # calculate the wall positions first
             if el == self.ai.start_location:
                 max_dist = 22
-                self._calculate_main_ramp_placements(el)
+                self._calculate_terran_main_ramp_placements(el)
 
             area_points: set[
                 tuple[int, int]
@@ -911,7 +920,7 @@ class PlacementManager(Manager, IManagerMediator):
             # calculate the wall positions first
             if el == self.ai.start_location:
                 max_dist = 22
-                self._calculate_main_ramp_placements(el)
+                self._calculate_protoss_main_ramp_placements(el)
 
             area_points: set[
                 tuple[int, int]
@@ -1069,14 +1078,43 @@ class PlacementManager(Manager, IManagerMediator):
             "optimal_pylon": optimal_pylon,
         }
 
-    def _calculate_main_ramp_placements(self, el: Point2) -> None:
-        set_production_pylon: bool = self.ai.race == Race.Protoss
-        ramp = self.ai.main_base_ramp
-        center_pos: Point2 = (
-            ramp.barracks_correct_placement
-            if self.ai.race == Race.Terran
-            else ramp.barracks_in_middle
+    def _calculate_protoss_main_ramp_placements(self, el: Point2) -> None:
+        pylon_pos: Point2 = self.ai.main_base_ramp.protoss_wall_pylon
+        buildings: FrozenSet[Point2] = self.ai.main_base_ramp.protoss_wall_buildings
+
+        self._add_placement_position(
+            BuildingSize.TWO_BY_TWO, el, pylon_pos, wall=True, production_pylon=True
         )
+        building_positions = [pos for pos in buildings]
+        self._add_placement_position(
+            BuildingSize.THREE_BY_THREE, el, building_positions[0], wall=True
+        )
+        self._add_placement_position(
+            BuildingSize.THREE_BY_THREE, el, building_positions[1], wall=True
+        )
+        ramp_2x2_x = int(pylon_pos.x - 1.0)
+        ramp_2x2_y = int(pylon_pos.y - 1.0)
+
+        building_wall_1_x = int(building_positions[0].x - 1.5)
+        building_wall_1_y = int(building_positions[0].y - 1.5)
+        building_wall_2_x = int(building_positions[1].x - 1.5)
+        building_wall_2_y = int(building_positions[1].y - 1.5)
+
+        self.points_to_avoid_grid[
+            ramp_2x2_y : ramp_2x2_y + 2, ramp_2x2_x : ramp_2x2_x + 2
+        ] = 1
+        self.points_to_avoid_grid[
+            building_wall_1_y : building_wall_1_y + 3,
+            building_wall_1_x : building_wall_1_x + 3,
+        ] = 1
+        self.points_to_avoid_grid[
+            building_wall_2_y : building_wall_2_y + 3,
+            building_wall_2_x : building_wall_2_x + 3,
+        ] = 1
+
+    def _calculate_terran_main_ramp_placements(self, el: Point2) -> None:
+        ramp = self.ai.main_base_ramp
+        center_pos: Point2 = ramp.barracks_correct_placement
         self._add_placement_position(
             BuildingSize.THREE_BY_THREE, el, center_pos, wall=True
         )
@@ -1086,14 +1124,12 @@ class PlacementManager(Manager, IManagerMediator):
             el,
             corner_positions[0],
             wall=True,
-            production_pylon=set_production_pylon,
         )
         self._add_placement_position(
             BuildingSize.TWO_BY_TWO,
             el,
             corner_positions[1],
             wall=True,
-            production_pylon=set_production_pylon,
         )
         ramp_3x3_x = int(ramp.barracks_correct_placement.x - 1.5)
         ramp_3x3_y = int(ramp.barracks_correct_placement.y - 1.5)

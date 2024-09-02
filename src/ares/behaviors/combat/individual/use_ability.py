@@ -49,6 +49,9 @@ class UseAbility(CombatIndividualBehavior):
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
+        if self.ability not in self.unit.abilities:
+            return False
+
         if self.target:
             self.unit(self.ability, self.target)
         else:
