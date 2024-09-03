@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.21.2 (2024-09-03)
+
+### Fix
+
+* Check for warpgate presence when teching up in ProductionController ([`2e56ef1`](https://github.com/AresSC2/ares-sc2/commit/2e56ef11f8ebd3b9cbfa167592378918b736d6c6))
+
 ## v2.21.1 (2024-09-03)
 
 ### Fix
