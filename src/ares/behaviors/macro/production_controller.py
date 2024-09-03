@@ -294,6 +294,13 @@ class ProductionController(MacroBehavior):
             if ai.structure_pending(structure_type):
                 continue
 
+            checks: list[UnitID] = [structure_type]
+            if structure_type == UnitID.GATEWAY:
+                checks.append(UnitID.WARPGATE)
+
+            if any(ai.structure_present_or_pending(check) for check in checks):
+                continue
+
             if structure_type in TECHLAB_TYPES:
                 if not ai.can_afford(structure_type):
                     continue
@@ -323,9 +330,7 @@ class ProductionController(MacroBehavior):
                     return True
 
             # found something to build?
-            elif ai.tech_requirement_progress(
-                structure_type
-            ) == 1.0 and not ai.structure_present_or_pending(structure_type):
+            elif ai.tech_requirement_progress(structure_type) == 1.0:
                 building: bool = BuildStructure(
                     self.base_location, structure_type
                 ).execute(ai, ai.config, ai.mediator)
