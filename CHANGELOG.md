@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.21.1 (2024-09-03)
+
+### Fix
+
+* Remove unneeded logic that was modifying structures_dict for no reason ([`3a9ad82`](https://github.com/AresSC2/ares-sc2/commit/3a9ad8282f88eb2074fd7498369779d29875e0eb))
+* Prevent build runner incorrectly ending step ([`9da0284`](https://github.com/AresSC2/ares-sc2/commit/9da02848023782c5f50cfb50f11d40af0a0c4d23))
+* Teching up can be reached if build structures are present ([`d94bb5e`](https://github.com/AresSC2/ares-sc2/commit/d94bb5ea8f3efb2f7d9faa5cfc199de5d09918da))
+
 ## v2.21.0 (2024-09-02)
 
 ### Feature
