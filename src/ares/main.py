@@ -476,7 +476,7 @@ class AresBot(CustomBotAI):
             and UpgradeId.WARPGATERESEARCH in self.state.upgrades
             and unit.type_id in GATEWAY_UNITS
         ):
-            self.build_order_runner.set_step_started(True)
+            self.build_order_runner.set_step_started(True, unit.type_id)
         if (
             not self.build_order_runner.build_completed
             and unit.type_id == UnitID.ARCHON
@@ -987,9 +987,6 @@ class AresBot(CustomBotAI):
         bool
 
         """
-        structures: list[Unit] = self.mediator.get_own_structures_dict[structure_type]
-        if structure_type == UnitID.GATEWAY:
-            structures.extend(self.mediator.get_own_structures_dict[UnitID.WARPGATE])
         return (
             len(self.mediator.get_own_structures_dict[structure_type]) > 0
             or self.mediator.get_building_counter[structure_type] > 0

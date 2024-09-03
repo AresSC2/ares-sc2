@@ -143,8 +143,9 @@ class BuildOrderRunner:
         ):
             self.current_step_complete = True
 
-    def set_step_started(self, value: bool) -> None:
-        self.current_step_started = value
+    def set_step_started(self, value: bool, command) -> None:
+        if command == self.build_order[self.build_step].command:
+            self.current_step_started = value
 
     @property
     def build_completed(self) -> bool:
