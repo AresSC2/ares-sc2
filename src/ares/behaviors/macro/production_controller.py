@@ -145,6 +145,10 @@ class ProductionController(MacroBehavior):
             if self._not_started_but_in_building_tracker(ai, mediator, trained_from):
                 continue
 
+            # we need to tech up
+            if self._teching_up(ai, unit_type_id, trained_from):
+                return True
+
             # get all idle build structures/units we can create this unit from
             # if we can already build this unit, we don't need production.
             if (
@@ -157,10 +161,6 @@ class ProductionController(MacroBehavior):
                 > 0
             ):
                 continue
-
-            # we need to tech up
-            if self._teching_up(ai, unit_type_id, trained_from):
-                return True
 
             # are we low on resources? don't add production
             if not ai.can_afford(trained_from):
@@ -335,3 +335,5 @@ class ProductionController(MacroBehavior):
                         f"can build more {unit_type_id}"
                     )
                 return building
+
+        return False
