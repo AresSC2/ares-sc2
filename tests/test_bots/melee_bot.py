@@ -68,7 +68,8 @@ class DummyBot(AresBot):
         self.register_behavior(Mining())
         macro_plan: MacroPlan = MacroPlan()
         macro_plan.add(AutoSupply(base_location=self.start_location))
-        macro_plan.add(ProductionController(self.army_comp, self.start_location))
+        if self.race != Race.Zerg:
+            macro_plan.add(ProductionController(self.army_comp, self.start_location))
         macro_plan.add(SpawnController(self.army_comp))
         self.register_behavior(macro_plan)
 
