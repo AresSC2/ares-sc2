@@ -476,7 +476,7 @@ class AresBot(CustomBotAI):
             and UpgradeId.WARPGATERESEARCH in self.state.upgrades
             and unit.type_id in GATEWAY_UNITS
         ):
-            self.build_order_runner.set_step_started(True)
+            self.build_order_runner.set_step_started(True, unit.type_id)
         if (
             not self.build_order_runner.build_completed
             and unit.type_id == UnitID.ARCHON
