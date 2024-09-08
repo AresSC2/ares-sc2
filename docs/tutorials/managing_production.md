@@ -82,12 +82,14 @@ tasks are executed versus littering your code with `self.register_behavior(...)`
 for several macro behaviors.
 
 Let's enhance our above example, we would like our bot to prioritize building supply.
-Followed by spawning units, then lastly adding production:
+Followed by workers, maintaining gas structures, spawning units, then lastly adding production:
 
 ```python
 from ares import AresBot
 from ares.behaviors.macro import (
     AutoSupply, 
+    BuildWorkers,
+    GasBuildingController,
     MacroPlan, 
     ProductionController, 
     SpawnController,
@@ -113,6 +115,8 @@ class TestBot(AresBot):
         
         macro_plan: MacroPlan = MacroPlan()
         macro_plan.add(AutoSupply(production_location))
+        macro_plan.add(BuildWorkers(to_count=48))
+        macro_plan.add(GasBuildingController(to_count=8))
         macro_plan.add(SpawnController(self.viking_tank))
         macro_plan.add(ProductionController(
             self.viking_tank, production_location
