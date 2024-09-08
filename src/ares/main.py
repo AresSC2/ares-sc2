@@ -178,6 +178,9 @@ class AresBot(CustomBotAI):
                 base_build=self.base_build,
             )
 
+            if unit_obj.type_id in ALL_GAS:
+                self.all_gas_buildings.append(unit_obj)
+
             index += 1
             self.all_units.append(unit_obj)
             self.unit_tag_dict[unit_obj.tag] = unit_obj

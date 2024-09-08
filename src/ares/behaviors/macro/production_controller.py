@@ -6,6 +6,7 @@ from loguru import logger
 from sc2.data import Race
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.dicts.unit_unit_alias import UNIT_UNIT_ALIAS
+from sc2.game_data import Cost
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -152,7 +153,8 @@ class ProductionController(MacroBehavior):
             # get all idle build structures/units we can create this unit from
             # if we can already build this unit, we don't need production.
             if (
-                len(
+                ai.supply_used < 198
+                and len(
                     ai.get_build_structures(
                         train_from,
                         unit_type_id,
@@ -193,7 +195,9 @@ class ProductionController(MacroBehavior):
             ):
                 continue
 
-            divide_by: int = 420 if unit_type_id in GATEWAY_UNITS else 760
+            cost: Cost = ai.calculate_cost(unit_type_id)
+            total_cost = cost.minerals + cost.vespene
+            divide_by: float = total_cost * 4.4
             if len(existing_structures) >= int(collection_rate / divide_by):
                 continue
 
@@ -212,7 +216,7 @@ class ProductionController(MacroBehavior):
                             almost_ready = True
                             break
                     # structure about to come online
-                    if 1.0 > s.build_progress >= self.unit_pending_progress:
+                    if 1.0 > s.build_progress >= 0.9:
                         almost_ready = True
                         break
 

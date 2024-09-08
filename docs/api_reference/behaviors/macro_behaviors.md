@@ -24,6 +24,16 @@ class MyBot(AresBot):
         show_root_heading: false
         show_root_toc_entry: false 
 
+::: ares.behaviors.macro.build_workers
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false
+
+::: ares.behaviors.macro.gas_building_controller
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+
 ::: ares.behaviors.macro.build_structure
     options:
         show_root_heading: false

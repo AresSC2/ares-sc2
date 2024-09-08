@@ -447,10 +447,6 @@ class PlacementManager(Manager, IManagerMediator):
                     key=lambda k: cy_distance_to_squared(k, base_location),
                 )
                 for location in locations:
-                    logger.warning(
-                        f"{self.ai.time_formatted}: No available {building_size} found "
-                        f"near location: {base_location}, trying near {location}"
-                    )
                     available: list[Point2] = self._find_potential_placements_at_base(
                         building_size, location, structure_type, within_psionic_matrix
                     )
