@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
-from ares.behaviors.macro import SpawnController
+from ares.behaviors.macro.spawn_controller import SpawnController
 
 if TYPE_CHECKING:
     from ares import AresBot

@@ -14,7 +14,7 @@ from sc2.unit import Unit
 if TYPE_CHECKING:
     from ares import AresBot
 
-from ares.behaviors.macro import MacroBehavior
+from ares.behaviors.macro.macro_behavior import MacroBehavior
 from ares.consts import UnitRole
 from ares.managers.manager_mediator import ManagerMediator
 
