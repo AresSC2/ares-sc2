@@ -2,6 +2,22 @@
 
 <!--next-version-placeholder-->
 
+## v2.22.0 (2024-09-08)
+
+### Feature
+
+* Add build workers behavior ([`be24cbf`](https://github.com/AresSC2/ares-sc2/commit/be24cbf64d081f2e195d697529fa56aaecf8cf79))
+* Add gas building controller ([`727650a`](https://github.com/AresSC2/ares-sc2/commit/727650aaab53df0fee4fd7b2e680ab22fdb0cffb))
+
+### Fix
+
+* Circular import ([`bf2fc66`](https://github.com/AresSC2/ares-sc2/commit/bf2fc66dfccabe463f481d02bccb9788ea600088))
+* Add missing tech requirement structures ([`c6aeb1c`](https://github.com/AresSC2/ares-sc2/commit/c6aeb1c7eea2d52979d96635688c3b21e1797efc))
+
+### Documentation
+
+* Add api reference for new behaviors ([`bdba0fe`](https://github.com/AresSC2/ares-sc2/commit/bdba0fe42ee51df0e9a0b50a81c137a236b3d1bf))
+
 ## v2.21.2 (2024-09-03)
 
 ### Fix
