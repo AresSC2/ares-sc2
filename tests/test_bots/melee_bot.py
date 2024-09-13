@@ -32,7 +32,7 @@ from ares.behaviors.macro import (
     MacroPlan,
     Mining,
     ProductionController,
-    SpawnController,
+    SpawnController, BuildWorkers, ExpansionController, GasBuildingController,
 )
 
 
@@ -68,6 +68,14 @@ class DummyBot(AresBot):
         self.register_behavior(Mining())
         macro_plan: MacroPlan = MacroPlan()
         macro_plan.add(AutoSupply(base_location=self.start_location))
+        macro_plan.add(BuildWorkers(100))
+        macro_plan.add(ExpansionController(to_count=4, max_pending=1))
+        macro_plan.add(
+            GasBuildingController(
+                to_count=100,
+                max_pending=100,
+            )
+        )
         if self.race != Race.Zerg:
             macro_plan.add(ProductionController(self.army_comp, self.start_location))
         macro_plan.add(SpawnController(self.army_comp))
