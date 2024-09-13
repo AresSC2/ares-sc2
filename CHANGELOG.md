@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.23.0 (2024-09-13)
+
+### Feature
+
+* Add expansion controller behavior ([`2da913a`](https://github.com/AresSC2/ares-sc2/commit/2da913a521f650e67db72c509753da33565cd16a))
+
 ## v2.22.0 (2024-09-08)
 
 ### Feature
