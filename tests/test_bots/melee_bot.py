@@ -29,10 +29,13 @@ from ares.behaviors.combat import CombatManeuver
 from ares.behaviors.combat.individual import AMove, PathUnitToTarget
 from ares.behaviors.macro import (
     AutoSupply,
+    BuildWorkers,
+    ExpansionController,
+    GasBuildingController,
     MacroPlan,
     Mining,
     ProductionController,
-    SpawnController, BuildWorkers, ExpansionController, GasBuildingController,
+    SpawnController,
 )
 
 
