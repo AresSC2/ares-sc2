@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.24.0 (2024-09-15)
+
+### Feature
+
+* Production controller rewrite ([`b719e97`](https://github.com/AresSC2/ares-sc2/commit/b719e97cce7d6b1f0e7747eb75988081f6e254c7))
+
 ## v2.23.0 (2024-09-13)
 
 ### Feature
