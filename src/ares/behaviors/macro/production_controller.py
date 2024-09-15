@@ -57,25 +57,35 @@ class ProductionController(MacroBehavior):
         With a priority integer to give units emphasis.
     base_location : Point2
         Where abouts do we build production?
-    unit_pending_progress : float (default = 0.8)
+    add_production_at_bank : Tuple[int, int], optional
+        When we reach this bank size, work out what extra production
+        would be useful.
+        Tuple where first value is minerals and second is vespene.
+        (default = `(300, 300)`)
+    alpha : float, optional
+        Controls how much production to add when bank is
+        higher than `add_production_at_bank`.
+        (default = `0.9`)
+    unit_pending_progress : float, optional
         Check for production structures almost ready
         For example a marine might almost be ready, meaning
         we don't need to add extra production just yet.
-    ignore_below_unit_count : int (default = 0)
-        If there is little to no army, this behavior might
-        make undesirable decisions.
-    ignore_below_proportion: float = 0.05
+         (default = 0.8)
+    ignore_below_proportion: float, optional
         If we don't want many of this unit, no point adding production.
         Will check if possible to build unit first.
-    should_repower_structures: bool = True
+        Default is `0.05`
+    should_repower_structures: bool, optional
         Search for unpowered structures, and build a new
         pylon as needed.
+        Default is `True`
     """
 
     army_composition_dict: dict[UnitID, dict[str, float, str, int]]
     base_location: Point2
+    add_production_at_bank: tuple[int, int] = (300, 300)
+    alpha: float = 0.9
     unit_pending_progress: float = 0.75
-    ignore_below_unit_count: int = 0
     ignore_below_proportion: float = 0.05
     should_repower_structures: bool = True
 
@@ -88,7 +98,6 @@ class ProductionController(MacroBehavior):
                 return True
 
         army_comp_dict: dict = self.army_composition_dict
-
         assert isinstance(
             army_comp_dict, dict
         ), f"self.army_composition_dict should be dict type, got {type(army_comp_dict)}"
@@ -96,21 +105,19 @@ class ProductionController(MacroBehavior):
         # get the current standing army based on the army comp dict
         # note we don't consider units outside the army comp dict
         unit_types: list[UnitID] = [*army_comp_dict]
-        num_total_units: int = 0
-        for unit_type in unit_types:
-            num_total_units += mediator.get_own_unit_count(unit_type_id=unit_type)
 
-        if num_total_units < self.ignore_below_unit_count:
-            return False
-
+        num_total_units: int = sum(
+            [
+                mediator.get_own_unit_count(unit_type_id=unit_type)
+                for unit_type in unit_types
+            ]
+        )
         proportion_sum: float = 0.0
         structure_dict: dict[UnitID, Units] = mediator.get_own_structures_dict
-
         flying_structures: dict[int, dict] = mediator.get_flying_structure_tracker
-        collection_rate: int = (
-            ai.state.score.collection_rate_minerals
-            + ai.state.score.collection_rate_vespene
-        )
+        # +1 to avoid division by zero
+        collection_rate_minerals: int = ai.state.score.collection_rate_minerals + 1
+        collection_rate_vespene: int = ai.state.score.collection_rate_vespene + 1
 
         # iterate through desired army comp starting with the highest priority unit
         for unit_type_id, army_comp_info in sorted(
@@ -120,118 +127,73 @@ class ProductionController(MacroBehavior):
                 f"army_composition_dict expects UnitTypeId type as keys, "
                 f"got {type(unit_type_id)}"
             )
-            target_proportion: float = army_comp_info["proportion"]
-            proportion_sum += target_proportion
+
             num_this_unit: int = mediator.get_own_unit_count(unit_type_id=unit_type_id)
             current_proportion: float = num_this_unit / (num_total_units + 1e-16)
-
-            # already have enough of this unit type, don't need production
-            # add a bit of multiplier so not to overreact when near threshold
-            if current_proportion * 1.1 >= target_proportion:
-                continue
-
-            # we don't want to add extra production for this unit
-            # but ensure it's possible to build at some point
-            if (
-                target_proportion < self.ignore_below_proportion
-                and ai.tech_ready_for_unit(unit_type_id)
-            ):
-                continue
-
+            target_proportion: float = army_comp_info["proportion"]
+            proportion_sum += target_proportion
             train_from: set[UnitID] = UNIT_TRAINED_FROM[unit_type_id]
             trained_from: UnitID = next(iter(UNIT_TRAINED_FROM[unit_type_id]))
             if unit_type_id in GATEWAY_UNITS:
                 trained_from = UnitID.GATEWAY
 
-            if self._not_started_but_in_building_tracker(ai, mediator, trained_from):
-                continue
-
-            # we need to tech up
-            if self._teching_up(ai, unit_type_id, trained_from):
-                return True
-
-            # get all idle build structures/units we can create this unit from
-            # if we can already build this unit, we don't need production.
-            if (
-                ai.supply_used < 198
-                and len(
-                    ai.get_build_structures(
-                        train_from,
-                        unit_type_id,
-                    )
-                )
-                > 0
-            ):
-                continue
-
-            # are we low on resources? don't add production
-            if not ai.can_afford(trained_from):
-                continue
-
-            if not ai.tech_ready_for_unit(unit_type_id):
-                continue
-
-            # if we have a production building floating, wait
-            if ai.race == Race.Terran:
-                prod_flying: bool = False
-                # might have this structure flying
-                for tag in flying_structures:
-                    if unit := ai.unit_tag_dict.get(tag, None):
-                        if unit.type_id in UNIT_UNIT_ALIAS:
-                            for s_id in train_from:
-                                if UNIT_UNIT_ALIAS[unit.type_id] == s_id:
-                                    prod_flying = True
-                                    break
-                if prod_flying:
-                    continue
-
-            # income might not support more production
             existing_structures: list[Unit] = []
             for structure_type in train_from:
                 existing_structures.extend(structure_dict[structure_type])
-            # target proportion is low, don't add extra pending
+
+            # we need to tech up, no further action is required
+            if self._teching_up(ai, unit_type_id, trained_from):
+                return True
+
+            # we have a worker on route to build this production
+            # leave alone for now
+            if self._not_started_but_in_building_tracker(ai, mediator, trained_from):
+                continue
+
+            # we can afford prod, work out how much prod to support
+            # based on income
+            if (
+                ai.minerals > self.add_production_at_bank[0]
+                and ai.vespene > self.add_production_at_bank[1]
+            ):
+                if self._building_production_due_to_bank(
+                    ai,
+                    unit_type_id,
+                    collection_rate_minerals,
+                    collection_rate_vespene,
+                    existing_structures,
+                    trained_from,
+                    target_proportion,
+                ):
+                    return True
+
+            # target proportion is low and something is pending, don't add extra yet
             if target_proportion <= 0.15 and (
                 any([ai.structure_pending(type_id) for type_id in train_from])
             ):
                 continue
 
+            # existing production is enough for our income?
             cost: Cost = ai.calculate_cost(unit_type_id)
             total_cost = cost.minerals + cost.vespene
-            divide_by: float = total_cost * 4.4
-            if len(existing_structures) >= int(collection_rate / divide_by):
+            divide_by: float = total_cost * 4.2
+            if len(existing_structures) >= int(
+                (collection_rate_minerals + collection_rate_vespene) / divide_by
+            ):
                 continue
 
-            # might have production almost ready
-            almost_ready: bool = False
-            for structure_type in train_from:
-                if structure_type == UnitID.WARPGATE and [
-                    s for s in structure_dict[structure_type] if not s.is_ready
-                ]:
-                    almost_ready = True
-                    break
-
-                for s in structure_dict[structure_type]:
-                    if s.orders:
-                        if s.orders[0].progress >= self.unit_pending_progress:
-                            almost_ready = True
-                            break
-                    # structure about to come online
-                    if 1.0 > s.build_progress >= 0.9:
-                        almost_ready = True
-                        break
-
-            if almost_ready:
+            # if Terran has a production building floating, wait
+            if self.is_flying_production(ai, flying_structures, train_from):
                 continue
 
-            priority: int = army_comp_info["priority"]
-            assert 0 <= priority < 11, (
-                f"Priority for {unit_type_id} is set to {priority},"
-                f"it should be an integer between 0 - 10."
-                f"Where 0 has highest priority."
-            )
+            # already have enough of this unit type, don't need production
+            if current_proportion * 1.05 >= target_proportion:
+                continue
 
             # add max depending on income
-            max_pending = int(collection_rate / 1000)
+            max_pending = int(
+                (collection_rate_minerals + collection_rate_vespene) / 1000
+            )
 
             if ai.structure_pending(trained_from) >= max_pending:
                 continue
@@ -245,10 +207,64 @@ class ProductionController(MacroBehavior):
                     f"more {unit_type_id}. Current proportion: {current_proportion}"
                     f" Target proportion: {target_proportion}"
                 )
-            return built
+                return built
 
-        # this would mean we went through the main for loop
-        # and didn't do anything
+        # we checked everything and no action is required
+        return False
+
+    def _building_production_due_to_bank(
+        self,
+        ai: "AresBot",
+        unit_type_id: UnitID,
+        collection_rate_minerals: int,
+        collection_rate_vespene: int,
+        existing_structures: list[Unit],
+        trained_from: UnitID,
+        target_proportion: float,
+    ) -> bool:
+        # work out how many units we could afford at once
+        cost_of_unit: Cost = ai.calculate_cost(unit_type_id)
+        simul_afford_min: int = int(
+            (collection_rate_minerals / (cost_of_unit.minerals + 1))
+            * self.alpha
+            * target_proportion
+        )
+        simul_afford_ves: int = int(
+            (collection_rate_vespene / (cost_of_unit.vespene + 1))
+            * self.alpha
+            * target_proportion
+        )
+        num_existing: int = len([s for s in existing_structures if s.is_ready])
+        num_production: int = num_existing + ai.structure_pending(trained_from)
+
+        if num_production < simul_afford_min and num_production < simul_afford_ves:
+            if BuildStructure(self.base_location, trained_from).execute(
+                ai, ai.config, ai.mediator
+            ):
+                logger.info(f"Adding {trained_from} as income level will support this.")
+                return True
+        return False
+
+    def is_flying_production(
+        self, ai: "AresBot", flying_structures: dict, train_from: set[UnitID]
+    ) -> bool:
+        if ai.race == Race.Terran:
+            prod_flying: bool = False
+            # might have this structure flying
+            for tag in flying_structures:
+                if unit := ai.unit_tag_dict.get(tag, None):
+                    # make sure flying structure is nearby
+                    if (
+                        unit.type_id in UNIT_UNIT_ALIAS
+                        and cy_distance_to_squared(unit.position, self.base_location)
+                        < 360.0
+                    ):
+                        for s_id in train_from:
+                            if UNIT_UNIT_ALIAS[unit.type_id] == s_id:
+                                prod_flying = True
+                                break
+            if prod_flying:
+                return True
         return False
 
     @staticmethod
@@ -302,9 +318,6 @@ class ProductionController(MacroBehavior):
             if structure_type == UnitID.GATEWAY:
                 checks.append(UnitID.WARPGATE)
 
-            if any(ai.structure_present_or_pending(check) for check in checks):
-                continue
-
             if structure_type in TECHLAB_TYPES:
                 if not ai.can_afford(structure_type):
                     continue
@@ -329,9 +342,12 @@ class ProductionController(MacroBehavior):
                     base_structures[0].build(structure_type)
                     logger.info(
                         f"Adding {structure_type} so that we can "
-                        f"build more {unit_type_id}"
+                        f"tech towards {unit_type_id}"
                     )
                     return True
+
+            if any(ai.structure_present_or_pending(check) for check in checks):
+                continue
 
             # found something to build?
             elif ai.tech_requirement_progress(structure_type) == 1.0:
@@ -341,7 +357,7 @@ class ProductionController(MacroBehavior):
                 if building:
                     logger.info(
                         f"Adding {structure_type} so that we "
-                        f"can build more {unit_type_id}"
+                        f"can tech towards {unit_type_id}"
                     )
                 return building
 
