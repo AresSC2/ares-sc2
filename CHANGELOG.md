@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.25.0 (2024-09-16)
+
+### Feature
+
+* Dont add proportion production if idle build structures exist ([`09eefe1`](https://github.com/AresSC2/ares-sc2/commit/09eefe196229f7db2b28819865bf84ad70f6ad9a))
+
+### Fix
+
+* Add gaps in building formation to prevent some wall off scenarios ([`752d468`](https://github.com/AresSC2/ares-sc2/commit/752d468484dc5dde02b0e3373a06b7c7ef5941be))
+* Get scout and building workers to return resources ([`48275cc`](https://github.com/AresSC2/ares-sc2/commit/48275cc3cfee073c6b8a955346648cce9e0d0be7))
+
 ## v2.24.0 (2024-09-15)
 
 ### Feature
