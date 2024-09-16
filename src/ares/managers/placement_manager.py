@@ -816,7 +816,7 @@ class PlacementManager(Manager, IManagerMediator):
 
             three_by_three_positions = cy_find_building_locations(
                 kernel=np.ones((5, 3), dtype=np.uint8),
-                x_stride=5,
+                x_stride=6,
                 y_stride=3,
                 x_bounds=raw_x_bounds,
                 y_bounds=raw_y_bounds,
@@ -985,7 +985,7 @@ class PlacementManager(Manager, IManagerMediator):
             num_found: int = len(three_by_three_positions)
             for i, pos in enumerate(three_by_three_positions):
                 # drop some placements to avoid walling in
-                if num_found > 6 and i % 6 == 0:
+                if num_found > 6 and i % 4 == 0:
                     continue
                 x: float = pos[0]
                 y: float = pos[1]
@@ -1021,7 +1021,7 @@ class PlacementManager(Manager, IManagerMediator):
             num_found: int = len(two_by_two_positions)
             for i, pos in enumerate(two_by_two_positions):
                 # drop some placements to avoid walling in
-                if num_found > 6 and i % 2 == 0:
+                if num_found > 6 and i % 5 == 0:
                     continue
                 x: float = pos[0]
                 y: float = pos[1]
