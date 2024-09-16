@@ -176,7 +176,7 @@ class ProductionController(MacroBehavior):
             # existing production is enough for our income?
             cost: Cost = ai.calculate_cost(unit_type_id)
             total_cost = cost.minerals + cost.vespene
-            divide_by: float = total_cost * 4.2
+            divide_by: float = total_cost * 4.5
             if len(existing_structures) >= int(
                 (collection_rate_minerals + collection_rate_vespene) / divide_by
             ):
@@ -188,6 +188,10 @@ class ProductionController(MacroBehavior):
 
             # already have enough of this unit type, don't need production
             if current_proportion * 1.05 >= target_proportion:
+                continue
+
+            # already could build this unit if we wanted to?
+            if self._can_already_produce(train_from, structure_dict):
                 continue
 
             # add max depending on income
@@ -243,6 +247,25 @@ class ProductionController(MacroBehavior):
             ):
                 logger.info(f"Adding {trained_from} as income level will support this.")
                 return True
+        return False
+
+    def _can_already_produce(self, train_from, structure_dict) -> bool:
+        for structure_type in train_from:
+            if structure_type == UnitID.WARPGATE and [
+                s for s in structure_dict[structure_type] if not s.is_ready
+            ]:
+                return True
+
+            for s in structure_dict[structure_type]:
+                if s.is_ready and s.is_idle:
+                    return True
+                if s.orders:
+                    if s.orders[0].progress >= self.unit_pending_progress:
+                        return True
+                # structure about to come online
+                if 1.0 > s.build_progress >= 0.9:
+                    return True
+
         return False
 
     def is_flying_production(
@@ -345,6 +368,7 @@ class ProductionController(MacroBehavior):
                         f"tech towards {unit_type_id}"
                     )
                     return True
+                continue
 
             if any(ai.structure_present_or_pending(check) for check in checks):
                 continue
