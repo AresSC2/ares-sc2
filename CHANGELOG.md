@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.25.1 (2024-09-16)
+
+### Fix
+
+* Worker return resource only if worker exists ([`d6ae746`](https://github.com/AresSC2/ares-sc2/commit/d6ae746475a1e9d6df0c7359ff4cffced0ba8ca1))
+
 ## v2.25.0 (2024-09-16)
 
 ### Feature
