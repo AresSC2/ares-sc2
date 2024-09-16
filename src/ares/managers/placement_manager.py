@@ -829,7 +829,11 @@ class PlacementManager(Manager, IManagerMediator):
                 avoid_creep=True,
             )
 
-            for pos in three_by_three_positions:
+            num_found: int = len(three_by_three_positions)
+            for i, pos in enumerate(three_by_three_positions):
+                # drop some placements to avoid walling in
+                if num_found > 6 and i % 6 == 0:
+                    continue
                 x: float = pos[0]
                 y: float = pos[1]
                 point2_pos: Point2 = Point2((x, y))
@@ -913,10 +917,11 @@ class PlacementManager(Manager, IManagerMediator):
             start_y: int = int(el.y - 4.5)
             self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
             max_dist: int = 16
+            wall_pylon: Point2 = None
             # calculate the wall positions first
             if el == self.ai.start_location:
                 max_dist = 22
-                self._calculate_protoss_main_ramp_placements(el)
+                wall_pylon = self._calculate_protoss_main_ramp_placements(el)
 
             area_points: set[
                 tuple[int, int]
@@ -945,6 +950,8 @@ class PlacementManager(Manager, IManagerMediator):
                 x: float = pos[0]
                 y: float = pos[1]
                 point2_pos: Point2 = Point2((x, y))
+                if wall_pylon and cy_distance_to_squared(wall_pylon, point2_pos) < 56.0:
+                    continue
                 if self.ai.get_terrain_height(point2_pos) == self.ai.get_terrain_height(
                     el
                 ):
@@ -958,7 +965,10 @@ class PlacementManager(Manager, IManagerMediator):
                         avoid_y : avoid_y + 2, avoid_x : avoid_x + 2
                     ] = 1
 
-            three_by_three_positions = cy_find_building_locations(
+            # -1 from the bounding box, to avoid building 3x3 right on edge
+            # raw_x_bounds = (raw_x_bounds[0] - 1, raw_x_bounds[1] - 1)
+            # raw_y_bounds = (raw_y_bounds[0] - 1, raw_y_bounds[1] - 1)
+            three_by_three_positions: list = cy_find_building_locations(
                 kernel=np.ones((3, 3), dtype=np.uint8),
                 x_stride=3,
                 y_stride=3,
@@ -972,7 +982,11 @@ class PlacementManager(Manager, IManagerMediator):
                 building_height=3,
                 avoid_creep=True,
             )
-            for pos in three_by_three_positions:
+            num_found: int = len(three_by_three_positions)
+            for i, pos in enumerate(three_by_three_positions):
+                # drop some placements to avoid walling in
+                if num_found > 6 and i % 6 == 0:
+                    continue
                 x: float = pos[0]
                 y: float = pos[1]
                 point2_pos: Point2 = Point2((x, y))
@@ -1004,7 +1018,11 @@ class PlacementManager(Manager, IManagerMediator):
                 building_height=2,
                 avoid_creep=True,
             )
-            for pos in two_by_two_positions:
+            num_found: int = len(two_by_two_positions)
+            for i, pos in enumerate(two_by_two_positions):
+                # drop some placements to avoid walling in
+                if num_found > 6 and i % 2 == 0:
+                    continue
                 x: float = pos[0]
                 y: float = pos[1]
                 point2_pos: Point2 = Point2((x, y))
@@ -1074,7 +1092,17 @@ class PlacementManager(Manager, IManagerMediator):
             "optimal_pylon": optimal_pylon,
         }
 
-    def _calculate_protoss_main_ramp_placements(self, el: Point2) -> None:
+    def _calculate_protoss_main_ramp_placements(self, el: Point2) -> Point2:
+        """
+
+        Parameters
+        ----------
+        el
+
+        Returns
+        -------
+        The pylon position
+        """
         pylon_pos: Point2 = self.ai.main_base_ramp.protoss_wall_pylon
         buildings: FrozenSet[Point2] = self.ai.main_base_ramp.protoss_wall_buildings
 
@@ -1107,6 +1135,8 @@ class PlacementManager(Manager, IManagerMediator):
             building_wall_2_y : building_wall_2_y + 3,
             building_wall_2_x : building_wall_2_x + 3,
         ] = 1
+
+        return pylon_pos
 
     def _calculate_terran_main_ramp_placements(self, el: Point2) -> None:
         ramp = self.ai.main_base_ramp
