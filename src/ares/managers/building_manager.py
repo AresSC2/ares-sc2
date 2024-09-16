@@ -207,12 +207,13 @@ class BuildingManager(Manager, IManagerMediator):
 
             target: Union[Point2, Unit] = self.building_tracker[worker_tag][TARGET]
             worker = self.ai.unit_tag_dict.get(worker_tag, None)
-            if worker.is_carrying_resource:
-                worker.return_resource()
-                continue
 
             if not worker:
                 dead_tags_to_remove.add(worker_tag)
+                continue
+
+            if worker.is_carrying_resource:
+                worker.return_resource()
                 continue
 
             # leave the worker alone
