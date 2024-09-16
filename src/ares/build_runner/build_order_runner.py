@@ -334,8 +334,9 @@ class BuildOrderRunner:
                 if worker := self.mediator.select_worker(
                     target_position=self.ai.start_location
                 ):
-                    for i, target in enumerate(step.target):
-                        worker.move(target, queue=i != 0)
+                    worker.return_resource()
+                    for target in step.target:
+                        worker.move(target, queue=True)
                     self.mediator.assign_role(
                         tag=worker.tag, role=UnitRole.BUILD_RUNNER_SCOUT
                     )
