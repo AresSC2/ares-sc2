@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.25.2 (2024-09-16)
+
+### Fix
+
+* Add T corridoor to help prevent wall off ([`499587e`](https://github.com/AresSC2/ares-sc2/commit/499587ea1d1f5437496dedb0f7eaf2c7cf5f3acb))
+
 ## v2.25.1 (2024-09-16)
 
 ### Fix
