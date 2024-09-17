@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.25.3 (2024-09-17)
+
+### Fix
+
+* Widen coridoor between 3x3 structures ([`04cf455`](https://github.com/AresSC2/ares-sc2/commit/04cf455b953d9c70dc4ec5e8611198ad89eb593a))
+
 ## v2.25.2 (2024-09-16)
 
 ### Fix
