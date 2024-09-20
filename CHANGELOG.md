@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.25.4 (2024-09-20)
+
+### Fix
+
+* Prevent transforming warpgates blocking build runner ([`335bcbe`](https://github.com/AresSC2/ares-sc2/commit/335bcbe00397ab2a88896c6300dc67f92f58049e))
+
 ## v2.25.3 (2024-09-17)
 
 ### Fix
