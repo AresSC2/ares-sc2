@@ -354,7 +354,7 @@ class PathManager(Manager, IManagerMediator):
         )
 
     def find_closest_safe_spot(
-        self, from_pos: Point2, grid: np.ndarray, radius: int = 15
+        self, from_pos: Point2, grid: np.ndarray, radius: int = 7
     ) -> Point2:
         """Find the closest point with the lowest cost on a grid.
 
