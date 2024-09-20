@@ -281,7 +281,7 @@ class Mining(MacroBehavior):
         -------
         """
         worker.move(
-            mediator.find_closest_safe_spot(from_pos=resource_position, grid=grid)
+            mediator.find_closest_safe_spot(from_pos=worker.position, grid=grid)
         )
 
     def _do_standard_mining(self, ai: "AresBot", worker: Unit, resource: Unit) -> None:
