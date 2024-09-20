@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.25.5 (2024-09-20)
+
+### Fix
+
+* Crash on keeping worker safe ([`19ca95c`](https://github.com/AresSC2/ares-sc2/commit/19ca95ce2cafb8dc8f8d0e7718b8626362d5aefd))
+
 ## v2.25.4 (2024-09-20)
 
 ### Fix
