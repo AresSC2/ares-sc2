@@ -280,12 +280,9 @@ class Mining(MacroBehavior):
         Returns
         -------
         """
-        if dist_to_resource > 5.0:
-            worker.gather(resource)
-        else:
-            worker.move(
-                mediator.find_closest_safe_spot(from_pos=resource_position, grid=grid)
-            )
+        worker.move(
+            mediator.find_closest_safe_spot(from_pos=resource_position, grid=grid)
+        )
 
     def _do_standard_mining(self, ai: "AresBot", worker: Unit, resource: Unit) -> None:
         worker_tag: int = worker.tag

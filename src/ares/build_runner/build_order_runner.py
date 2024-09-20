@@ -227,7 +227,7 @@ class BuildOrderRunner:
             and [
                 g
                 for g in self.mediator.get_own_structures_dict[UnitID.GATEWAY]
-                if g.is_ready
+                if g.is_ready and g.is_idle
             ]
         ):
             return
