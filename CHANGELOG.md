@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.26.0 (2024-09-29)
+
+### Feature
+
+* Build runner allows switching openings on the fly ([`d1939bb`](https://github.com/AresSC2/ares-sc2/commit/d1939bb833e07a128cce92129fe62696bf65ad19))
+
+### Documentation
+
+* Add a section on switching openings during game ([`540bd54`](https://github.com/AresSC2/ares-sc2/commit/540bd546dba82c5b2da5c02b9388999292e14f62))
+
 ## v2.25.5 (2024-09-20)
 
 ### Fix
