@@ -293,3 +293,15 @@ If omitted the default spawn target is our start location.
 # this is perfectly fine
 - 36 adept
 ```
+
+### Switch openings on the fly
+It's possible to switch openings on the fly, `ares` will attempt to work out
+which build steps have already completed and find a reasonable point in the
+new build order to resume from.
+
+You should pass a valid opening name from your builds yaml file, something like:
+```python
+if self.opponent_is_cheesing:
+    self.build_order_runner.switch_opening("DefensiveOpening")
+```
+Note that if an incorrect opening name is passed here the bot will terminate.

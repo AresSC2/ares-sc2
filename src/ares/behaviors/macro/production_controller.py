@@ -12,7 +12,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.consts import ADD_ONS, GATEWAY_UNITS, ID, TARGET, TECHLAB_TYPES
+from ares.consts import ADD_ONS, GATEWAY_UNITS, TECHLAB_TYPES
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 if TYPE_CHECKING:
@@ -147,7 +147,7 @@ class ProductionController(MacroBehavior):
 
             # we have a worker on route to build this production
             # leave alone for now
-            if self._not_started_but_in_building_tracker(ai, mediator, trained_from):
+            if ai.not_started_but_in_building_tracker(trained_from):
                 continue
 
             # we can afford prod, work out how much prod to support
@@ -288,39 +288,6 @@ class ProductionController(MacroBehavior):
                                 break
             if prod_flying:
                 return True
-        return False
-
-    @staticmethod
-    def _not_started_but_in_building_tracker(
-        ai: "AresBot", mediator: ManagerMediator, structure_type: UnitID
-    ) -> bool:
-        """
-        Figures out if worker in on route to build something, and
-        that structure_type doesn't exist yet.
-
-        Parameters
-        ----------
-        ai
-        mediator
-        structure_type
-
-        Returns
-        -------
-
-        """
-        building_tracker: dict = mediator.get_building_tracker_dict
-        for tag, info in building_tracker.items():
-            structure_id: UnitID = building_tracker[tag][ID]
-            if structure_id != structure_type:
-                continue
-
-            target: Point2 = building_tracker[tag][TARGET]
-
-            if not ai.structures.filter(
-                lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
-            ):
-                return True
-
         return False
 
     def _teching_up(
