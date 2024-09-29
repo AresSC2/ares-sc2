@@ -17,9 +17,10 @@ from sc2.position import Point2, Point3
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.consts import ALL_STRUCTURES
+from ares.consts import ALL_STRUCTURES, ID, TARGET
 from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
+from ares.managers.manager_mediator import ManagerMediator
 
 
 class CustomBotAI(BotAI):
@@ -31,6 +32,7 @@ class CustomBotAI(BotAI):
     gas_type: UnitID
     unit_tag_dict: Dict[int, Unit]
     worker_type: UnitID
+    mediator: ManagerMediator
 
     async def on_step(self, iteration: int):  # pragma: no cover
         """Here because all abstract methods have to be implemented.
@@ -107,6 +109,34 @@ class CustomBotAI(BotAI):
                 if unit.type_id not in ALL_STRUCTURES and unit.type_id != UnitID.NUKE
             ]
         )
+
+    def not_started_but_in_building_tracker(self, structure_type: UnitID) -> bool:
+        """
+        Figures out if worker in on route to build something, and
+        that structure_type doesn't exist yet.
+
+        Parameters
+        ----------
+        structure_type
+
+        Returns
+        -------
+
+        """
+        building_tracker: dict = self.mediator.get_building_tracker_dict
+        for tag, info in building_tracker.items():
+            structure_id: UnitID = building_tracker[tag][ID]
+            if structure_id != structure_type:
+                continue
+
+            target: Point2 = building_tracker[tag][TARGET]
+
+            if not self.structures.filter(
+                lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
+            ):
+                return True
+
+        return False
 
     def pending_or_complete_upgrade(self, upgrade_id: UpgradeId) -> bool:
         if upgrade_id in self.state.upgrades:
