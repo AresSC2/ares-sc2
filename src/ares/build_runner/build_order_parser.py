@@ -1,8 +1,9 @@
+from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable, Optional, Union
 
 import numpy as np
-from cython_extensions import cy_towards
+from cython_extensions import cy_towards, cy_unit_pending
 from loguru import logger
 from map_analyzer import MapData, Region
 from sc2.data import Race
@@ -29,8 +30,6 @@ class BuildOrderParser:
     -----------
     ai: `AresBot`
         The bot instance.
-    raw_build_order: List[str]
-        The list of build order strings.
     build_order_step_dict: Optional[Dict]
         A dictionary of `BuildOrderStep` objects representing
         the recognized build order commands.
@@ -42,14 +41,15 @@ class BuildOrderParser:
     """
 
     ai: "AresBot"
-    raw_build_order: list[str]
     build_order_step_dict: dict = None
 
     def __post_init__(self) -> None:
         """Initializes the `build_order_step_dict` attribute."""
         self.build_order_step_dict = self._generate_build_step_dict()
 
-    def parse(self) -> list[BuildOrderStep]:
+    def parse(
+        self, raw_build_order: list[str], remove_completed: bool = False
+    ) -> list[BuildOrderStep]:
         """Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
 
         Returns:
@@ -58,12 +58,15 @@ class BuildOrderParser:
             The list of `BuildOrderStep` objects parsed from `raw_build_order`.
         """
         build_order: list[BuildOrderStep] = []
-        for raw_step in self.raw_build_order:
+        for raw_step in raw_build_order:
             if isinstance(raw_step, str):
                 build_order = self._parse_string_command(raw_step, build_order)
             elif isinstance(raw_step, dict):
                 build_order = self._parse_dict_command(raw_step, build_order)
 
+        # incase we switched from a different build
+        if remove_completed:
+            build_order = self._remove_completed_steps(build_order)
         return build_order
 
     def _generate_build_step_dict(self) -> dict:
@@ -527,3 +530,79 @@ class BuildOrderParser:
             case BuildOrderTargetOptions.THIRD:
                 return self.ai.mediator.get_own_expansions[1][0]
         return self.ai.start_location
+
+    def _remove_completed_steps(
+        self, build_order: list[BuildOrderStep]
+    ) -> list[BuildOrderStep]:
+        """
+        Provided a build order, look for steps already completed.
+        This is useful when switching from one opening to another.
+
+        Parameters
+        ----------
+        build_order
+
+        Returns
+        -------
+
+        """
+        indices_to_remove: list[int] = []
+
+        num_same_steps_found: dict[UnitID, int] = defaultdict(int)
+        # pretend we already built things we spawn with
+        # makes working this out easier
+        num_same_steps_found[self.ai.base_townhall_type] = 1
+        num_same_steps_found[UnitID.OVERLORD] = 1
+        num_same_steps_found[self.ai.worker_type] = 12
+
+        for i, step in enumerate(build_order):
+            command: Union[AbilityId, UnitID, UpgradeId] = step.command
+            if command == BuildOrderOptions.WORKER_SCOUT:
+                logger.info(
+                    f"Removing {command} from build order. "
+                    f"Please note worker scouts are always "
+                    f"removed when switching build orders"
+                )
+                indices_to_remove.append(i)
+
+            # remove any steps that chrono the nexus
+            # not ideal but helps build order not getting stuck
+            elif isinstance(command, AbilityId):
+                if (
+                    command == AbilityId.EFFECT_CHRONOBOOST
+                    and step.target == UnitID.NEXUS
+                ):
+                    logger.info(f"Removing {command} from build order")
+                    indices_to_remove.append(i)
+            elif isinstance(command, UnitID):
+                if command in ALL_STRUCTURES:
+                    num_existing: int = len(
+                        self.ai.mediator.get_own_structures_dict[command]
+                    )
+                    on_route: int = int(
+                        self.ai.not_started_but_in_building_tracker(command)
+                    )
+                    total_present: int = num_existing + on_route
+                else:
+                    num_units: int = len(self.ai.mediator.get_own_army_dict[command])
+                    pending: int = cy_unit_pending(self.ai, command)
+                    total_present: int = num_units + pending
+
+                if total_present == 0:
+                    continue
+
+                # while there are less of these steps then what are present
+                if num_same_steps_found[command] < total_present:
+                    logger.info(f"Removing {command} from build order")
+                    num_same_steps_found[command] += 1
+                    indices_to_remove.append(i)
+
+            elif isinstance(command, UpgradeId):
+                if self.ai.pending_or_complete_upgrade(command):
+                    logger.info(f"Removing {command} from build order")
+                    indices_to_remove.append(i)
+
+        for index in sorted(indices_to_remove, reverse=True):
+            del build_order[index]
+
+        return build_order

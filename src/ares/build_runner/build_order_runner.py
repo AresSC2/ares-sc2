@@ -90,35 +90,12 @@ class BuildOrderRunner:
         self.auto_supply_at_supply: int = 200
         self.constant_worker_production_till: int = 0
         self.persistent_worker: bool = True
-        self._chosen_opening: str = chosen_opening
-        if BUILDS in self.config:
-            build: list[str] = config[BUILDS][chosen_opening][OPENING_BUILD_ORDER]
-            logger.info(f"Running build from yml file: {chosen_opening}")
-            if self.AUTO_SUPPLY_AT_SUPPLY in config[BUILDS][chosen_opening]:
-                try:
-                    self.auto_supply_at_supply = int(
-                        config[BUILDS][chosen_opening][self.AUTO_SUPPLY_AT_SUPPLY]
-                    )
-                except ValueError as e:
-                    logger.warning(f"Error: {e}")
-            if self.CONSTANT_WORKER_PRODUCTION_TILL in config[BUILDS][chosen_opening]:
-                try:
-                    self.constant_worker_production_till = int(
-                        config[BUILDS][chosen_opening][
-                            self.CONSTANT_WORKER_PRODUCTION_TILL
-                        ]
-                    )
-                except ValueError as e:
-                    logger.warning(f"Error: {e}")
-            if self.PERSISTENT_WORKER in config[BUILDS][chosen_opening]:
-                self.persistent_worker = config[BUILDS][chosen_opening][
-                    self.PERSISTENT_WORKER
-                ]
-        else:
-            build: list[str] = []
 
-        build_order_parser: BuildOrderParser = BuildOrderParser(self.ai, build)
-        self.build_order: list[BuildOrderStep] = build_order_parser.parse()
+        self.build_order: list[BuildOrderStep] = []
+        self._build_order_parser: BuildOrderParser = BuildOrderParser(self.ai)
+        self._chosen_opening: str = chosen_opening
+        self.configure_opening_from_yml_file(config, chosen_opening)
+
         self.build_step: int = 0
         self.current_step_started: bool = False
         self.current_step_complete: bool = False
@@ -135,6 +112,53 @@ class BuildOrderRunner:
         )
         self._opening_build_completed = True
 
+    def configure_opening_from_yml_file(
+        self, config: dict, opening_name: str, remove_completed: bool = False
+    ) -> None:
+        if BUILDS in self.config:
+            assert isinstance(
+                config[BUILDS], dict
+            ), "Opening builds are not configured correctly in the yml file"
+
+            assert opening_name in config[BUILDS].keys(), (
+                f"Trying to parse an opening called {opening_name} but "
+                f"I can't find it. Spelling perhaps?"
+            )
+
+            build: list[str] = config[BUILDS][opening_name][OPENING_BUILD_ORDER]
+            logger.info(
+                f"{self.ai.time_formatted}: Running build from yml file: {opening_name}"
+            )
+            if self.AUTO_SUPPLY_AT_SUPPLY in config[BUILDS][opening_name]:
+                try:
+                    self.auto_supply_at_supply = int(
+                        config[BUILDS][opening_name][self.AUTO_SUPPLY_AT_SUPPLY]
+                    )
+                except ValueError as e:
+                    logger.warning(f"Error: {e}")
+            if self.CONSTANT_WORKER_PRODUCTION_TILL in config[BUILDS][opening_name]:
+                try:
+                    self.constant_worker_production_till = int(
+                        config[BUILDS][opening_name][
+                            self.CONSTANT_WORKER_PRODUCTION_TILL
+                        ]
+                    )
+                except ValueError as e:
+                    logger.warning(f"Error: {e}")
+            if self.PERSISTENT_WORKER in config[BUILDS][opening_name]:
+                self.persistent_worker = config[BUILDS][opening_name][
+                    self.PERSISTENT_WORKER
+                ]
+
+            self.build_step: int = 0
+            self.current_step_started: bool = False
+            self.current_step_complete: bool = False
+            self.current_build_position: Point2 = self.ai.start_location
+            self.assigned_persistent_worker: bool = False
+            self._temporary_build_step: int = -1
+
+            self.build_order = self._build_order_parser.parse(build, remove_completed)
+
     def set_step_complete(self, value: UnitID) -> None:
         if (
             self.build_step < len(self.build_order)
@@ -146,6 +170,13 @@ class BuildOrderRunner:
     def set_step_started(self, value: bool, command) -> None:
         if command == self.build_order[self.build_step].command:
             self.current_step_started = value
+
+    def switch_opening(self, opening_name: str, remove_completed: bool = True) -> None:
+        if self._chosen_opening != opening_name:
+            self._chosen_opening = opening_name
+            self.configure_opening_from_yml_file(
+                self.config, opening_name, remove_completed=remove_completed
+            )
 
     @property
     def build_completed(self) -> bool:
