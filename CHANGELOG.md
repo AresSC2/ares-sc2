@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.27.0 (2024-10-17)
+
+### Feature
+
+* New upgrade controller ([`36cbbf5`](https://github.com/AresSC2/ares-sc2/commit/36cbbf5e054889d937ed8c8e56e3b412fa609a8e))
+* Refactor teching up into a seperate behavior ([`17f109c`](https://github.com/AresSC2/ares-sc2/commit/17f109cfc4e55e4b7e63af652a229d3b0bcc45b6))
+
 ## v2.26.0 (2024-09-29)
 
 ### Feature
