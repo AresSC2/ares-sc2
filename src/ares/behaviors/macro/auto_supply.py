@@ -33,8 +33,13 @@ class AutoSupply(MacroBehavior):
     base_location : Point2
         The base location where supply should be built.
     return_true_if_supply_required : bool
-        If can't afford supply but it's required, return true?
+        Can't afford supply, but it's required, return true?
         Useful if creating a `MacroPlan`
+
+    Returns
+    ----------
+    bool :
+        True if this Behavior carried out an action.
     """
 
     base_location: Point2
