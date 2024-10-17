@@ -12,8 +12,8 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.consts import ADD_ONS, GATEWAY_UNITS, TECHLAB_TYPES
-from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
+from ares.behaviors.macro.tech_up import BUILD_TECHLAB_FROM, TechUp
+from ares.consts import GATEWAY_UNITS
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -142,8 +142,15 @@ class ProductionController(MacroBehavior):
                 existing_structures.extend(structure_dict[structure_type])
 
             # we need to tech up, no further action is required
-            if self._teching_up(ai, unit_type_id, trained_from):
+            if TechUp(
+                unit_type_id,
+                base_location=self.base_location,
+                ignore_existing_techlabs=current_proportion < target_proportion,
+            ).execute(ai, config, mediator):
                 return True
+
+            if ai.tech_requirement_progress(trained_from) < 0.95:
+                continue
 
             # we have a worker on route to build this production
             # leave alone for now
@@ -207,7 +214,7 @@ class ProductionController(MacroBehavior):
             )
             if built:
                 logger.info(
-                    f"Adding {trained_from} so that we can build "
+                    f"{ai.time_formatted} Adding {trained_from} so that we can build "
                     f"more {unit_type_id}. Current proportion: {current_proportion}"
                     f" Target proportion: {target_proportion}"
                 )
@@ -290,66 +297,23 @@ class ProductionController(MacroBehavior):
                 return True
         return False
 
-    def _teching_up(
-        self, ai: "AresBot", unit_type_id: UnitID, trained_from: UnitID
+    def _add_techlab_to_existing(
+        self, ai: "AresBot", unit_type_id: UnitID, researched_from_id
     ) -> bool:
         structures_dict: dict = ai.mediator.get_own_structures_dict
-        tech_required: list[UnitID] = UNIT_TECH_REQUIREMENT[unit_type_id]
-        without_techlabs: list[UnitID] = [s for s in tech_required if s not in ADD_ONS]
-        _trained_from: list[Unit] = structures_dict[trained_from].copy()
-        if unit_type_id in GATEWAY_UNITS:
-            _trained_from.extend(structures_dict[UnitID.WARPGATE])
-
-        for structure_type in UNIT_TECH_REQUIREMENT[unit_type_id]:
-            if ai.structure_pending(structure_type):
-                continue
-
-            checks: list[UnitID] = [structure_type]
-            if structure_type == UnitID.GATEWAY:
-                checks.append(UnitID.WARPGATE)
-
-            if structure_type in TECHLAB_TYPES:
-                if not ai.can_afford(structure_type):
-                    continue
-                can_add_tech_lab: bool = True
-                # there might be idle structure with tech lab anyway
-                # can't be used since tech structures not present
-                if len([s for s in _trained_from if s.has_techlab and s.is_idle]) > 0:
-                    can_add_tech_lab = False
-                else:
-                    for type_id in without_techlabs:
-                        if len(structures_dict[type_id]) == 0:
-                            can_add_tech_lab = False
-
-                if not can_add_tech_lab:
-                    continue
-
-                if base_structures := [
-                    s
-                    for s in _trained_from
-                    if s.is_ready and s.is_idle and not s.has_add_on
-                ]:
-                    base_structures[0].build(structure_type)
-                    logger.info(
-                        f"Adding {structure_type} so that we can "
-                        f"tech towards {unit_type_id}"
-                    )
-                    return True
-                continue
-
-            if any(ai.structure_present_or_pending(check) for check in checks):
-                continue
-
-            # found something to build?
-            elif ai.tech_requirement_progress(structure_type) == 1.0:
-                building: bool = BuildStructure(
-                    self.base_location, structure_type
-                ).execute(ai, ai.config, ai.mediator)
-                if building:
-                    logger.info(
-                        f"Adding {structure_type} so that we "
-                        f"can tech towards {unit_type_id}"
-                    )
-                return building
-
+        build_techlab_from: UnitID = BUILD_TECHLAB_FROM[researched_from_id]
+        _build_techlab_from_structures: list[Unit] = structures_dict[
+            build_techlab_from
+        ].copy()
+        if without_techlabs := [
+            s
+            for s in _build_techlab_from_structures
+            if s.is_ready and s.is_idle and not s.has_add_on
+        ]:
+            without_techlabs[0].build(researched_from_id)
+            logger.info(
+                f"{ai.time_formatted} Adding {researched_from_id} so that we can "
+                f"build more {unit_type_id}"
+            )
+            return True
         return False
