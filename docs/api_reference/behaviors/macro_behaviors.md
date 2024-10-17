@@ -24,6 +24,11 @@ class MyBot(AresBot):
         show_root_heading: false
         show_root_toc_entry: false 
 
+::: ares.behaviors.macro.build_structure
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+
 ::: ares.behaviors.macro.build_workers
     options:
         show_root_heading: false
@@ -37,12 +42,7 @@ class MyBot(AresBot):
 ::: ares.behaviors.macro.gas_building_controller
     options:
         show_root_heading: false
-        show_root_toc_entry: false 
-
-::: ares.behaviors.macro.build_structure
-    options:
-        show_root_heading: false
-        show_root_toc_entry: false 
+        show_root_toc_entry: false
 
 ::: ares.behaviors.macro.mining
     options:
@@ -54,13 +54,22 @@ class MyBot(AresBot):
         show_root_heading: false
         show_root_toc_entry: false 
 
-::: ares.behaviors.macro.spawn_controller
-    options:
-        show_root_heading: false
-        show_root_toc_entry: false 
-
 ::: ares.behaviors.macro.restore_power
     options:
         show_root_heading: false
         show_root_toc_entry: false 
 
+::: ares.behaviors.macro.spawn_controller
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false
+
+::: ares.behaviors.macro.tech_up
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+
+::: ares.behaviors.macro.upgrade_controller
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false

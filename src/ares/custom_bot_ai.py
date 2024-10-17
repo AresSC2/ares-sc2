@@ -10,6 +10,7 @@ from s2clientprotocol import sc2api_pb2 as sc_pb
 from s2clientprotocol import ui_pb2 as ui_pb
 from sc2.bot_ai import BotAI
 from sc2.constants import EQUIVALENTS_FOR_TECH_PROGRESS
+from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
@@ -145,7 +146,13 @@ class CustomBotAI(BotAI):
         creationAbilityID = self.game_data.upgrades[
             upgrade_id.value
         ].research_ability.exact_id
-        for structure in self.structures:
+
+        researched_from: UnitID = UPGRADE_RESEARCHED_FROM[upgrade_id]
+        upgrade_from_structures: Units = self.mediator.get_own_structures_dict[
+            researched_from
+        ]
+
+        for structure in upgrade_from_structures:
             for order in structure.orders:
                 if order.ability.exact_id == creationAbilityID:
                     return True
