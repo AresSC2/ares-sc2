@@ -101,6 +101,12 @@ class TechUp(MacroBehavior):
         if tech_progress == 1.0 and not ai.structure_present_or_pending(
             researched_from_id
         ):
+            # need a gateway, but we have a warpgate already
+            if (
+                researched_from_id == UnitID.GATEWAY
+                and mediator.get_own_structures_dict[UnitID.WARPGATE]
+            ):
+                return False
             logger.info(
                 f"{ai.time_formatted} Building {researched_from_id} "
                 f"for {self.desired_tech}"
