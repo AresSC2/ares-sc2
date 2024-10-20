@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.27.1 (2024-10-20)
+
+### Fix
+
+* Check for alternative warpgate structure ([`0a3c442`](https://github.com/AresSC2/ares-sc2/commit/0a3c44227318d3bfdb476e8239cd020b862a4c40))
+
 ## v2.27.0 (2024-10-17)
 
 ### Feature
