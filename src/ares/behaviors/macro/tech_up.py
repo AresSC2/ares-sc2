@@ -154,7 +154,7 @@ class TechUp(MacroBehavior):
                         only_select_persistent_builder=self.only_select_persistent_builder,
                         base_location=self.base_location,
                         structure_id=structure_type,
-                    )
+                    ).execute(ai, config, mediator)
                     if building:
                         logger.info(
                             f"{ai.time_formatted} Adding {structure_type} to"
