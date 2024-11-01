@@ -50,6 +50,10 @@ class UpgradeController(MacroBehavior):
         List of desired upgrades.
     base_location : Point2
         Where to build upgrade buildings.
+    select_persistent_builder: bool
+        If True we can select the persistent_builder if it's available.
+    only_select_persistent_builder: bool
+        If True, don't find an alternative worker
 
     Returns
     ----------
@@ -59,6 +63,8 @@ class UpgradeController(MacroBehavior):
 
     upgrade_list: list[UpgradeId]
     base_location: Point2
+    select_persistent_builder: bool = False
+    only_select_persistent_builder: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         for upgrade in self.upgrade_list:
@@ -73,7 +79,10 @@ class UpgradeController(MacroBehavior):
             # there is nowhere to research this from, tech up to it
             if not researched_from:
                 teching: bool = TechUp(
-                    desired_tech=upgrade, base_location=self.base_location
+                    desired_tech=upgrade,
+                    base_location=self.base_location,
+                    select_persistent_builder=self.select_persistent_builder,
+                    only_select_persistent_builder=self.only_select_persistent_builder,
                 ).execute(ai, config, mediator)
                 # we've carried out an action, return True
                 if teching:

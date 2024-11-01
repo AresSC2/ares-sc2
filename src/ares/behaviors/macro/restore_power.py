@@ -37,7 +37,18 @@ class RestorePower(MacroBehavior):
 
     self.register_behavior(RestorePower())
     ```
+
+    Attributes
+    ----------
+    select_persistent_builder: bool
+        If True we can select the persistent_builder if it's available.
+    only_select_persistent_builder: bool
+        If True, don't find an alternative worker
+
     """
+
+    select_persistent_builder: bool = False
+    only_select_persistent_builder: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if structures_no_power := [

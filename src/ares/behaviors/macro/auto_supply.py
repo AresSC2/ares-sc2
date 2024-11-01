@@ -35,6 +35,10 @@ class AutoSupply(MacroBehavior):
     return_true_if_supply_required : bool
         Can't afford supply, but it's required, return true?
         Useful if creating a `MacroPlan`
+    select_persistent_builder: bool
+        If True we can select the persistent_builder if it's available.
+    only_select_persistent_builder: bool
+        If True, don't find an alternative worker
 
     Returns
     ----------
@@ -44,6 +48,8 @@ class AutoSupply(MacroBehavior):
 
     base_location: Point2
     return_true_if_supply_required: bool = True
+    select_persistent_builder: bool = False
+    only_select_persistent_builder: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if self._num_supply_required(ai, mediator) > 0:
@@ -54,9 +60,12 @@ class AutoSupply(MacroBehavior):
                     ai.num_larva_left -= 1
                     return True
             else:
-                BuildStructure(self.base_location, supply_type).execute(
-                    ai, config, mediator
-                )
+                BuildStructure(
+                    self.base_location,
+                    supply_type,
+                    select_persistent_builder=self.select_persistent_builder,
+                    only_select_persistent_builder=self.only_select_persistent_builder,
+                ).execute(ai, config, mediator)
             return self.return_true_if_supply_required
 
         return False

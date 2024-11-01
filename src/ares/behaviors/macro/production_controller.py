@@ -79,6 +79,10 @@ class ProductionController(MacroBehavior):
         Search for unpowered structures, and build a new
         pylon as needed.
         Default is `True`
+    select_persistent_builder: bool
+        If True we can select the persistent_builder if it's available.
+    only_select_persistent_builder: bool
+        If True, don't find an alternative worker
     """
 
     army_composition_dict: dict[UnitID, dict[str, float, str, int]]
@@ -88,6 +92,8 @@ class ProductionController(MacroBehavior):
     unit_pending_progress: float = 0.75
     ignore_below_proportion: float = 0.05
     should_repower_structures: bool = True
+    select_persistent_builder: bool = False
+    only_select_persistent_builder: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert (
@@ -209,9 +215,12 @@ class ProductionController(MacroBehavior):
             if ai.structure_pending(trained_from) >= max_pending:
                 continue
 
-            built = BuildStructure(self.base_location, trained_from).execute(
-                ai, ai.config, ai.mediator
-            )
+            built = BuildStructure(
+                self.base_location,
+                trained_from,
+                select_persistent_builder=self.select_persistent_builder,
+                only_select_persistent_builder=self.only_select_persistent_builder,
+            ).execute(ai, ai.config, ai.mediator)
             if built:
                 logger.info(
                     f"{ai.time_formatted} Adding {trained_from} so that we can build "
@@ -249,9 +258,12 @@ class ProductionController(MacroBehavior):
         num_production: int = num_existing + ai.structure_pending(trained_from)
 
         if num_production < simul_afford_min and num_production < simul_afford_ves:
-            if BuildStructure(self.base_location, trained_from).execute(
-                ai, ai.config, ai.mediator
-            ):
+            if BuildStructure(
+                self.base_location,
+                trained_from,
+                select_persistent_builder=self.select_persistent_builder,
+                only_select_persistent_builder=self.only_select_persistent_builder,
+            ).execute(ai, ai.config, ai.mediator):
                 logger.info(f"Adding {trained_from} as income level will support this.")
                 return True
         return False

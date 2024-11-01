@@ -47,6 +47,10 @@ class TechUp(MacroBehavior):
     ignore_existing_techlabs : bool
         Will keep building techlabs even if others exist
         (default = False)
+    select_persistent_builder: bool
+        If True we can select the persistent_builder if it's available.
+    only_select_persistent_builder: bool
+        If True, don't find an alternative worker
 
     Returns
     ----------
@@ -58,6 +62,8 @@ class TechUp(MacroBehavior):
     desired_tech: Union[UpgradeId, UnitID]
     base_location: Point2
     ignore_existing_techlabs: bool = False
+    select_persistent_builder: bool = False
+    only_select_persistent_builder: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert isinstance(
@@ -111,9 +117,12 @@ class TechUp(MacroBehavior):
                 f"{ai.time_formatted} Building {researched_from_id} "
                 f"for {self.desired_tech}"
             )
-            return BuildStructure(ai.start_location, researched_from_id).execute(
-                ai, config, mediator
-            )
+            return BuildStructure(
+                ai.start_location,
+                researched_from_id,
+                select_persistent_builder=self.select_persistent_builder,
+                only_select_persistent_builder=self.only_select_persistent_builder,
+            ).execute(ai, config, mediator)
 
         # we can't even build the upgrade building :(
         # figure out what to build to get there
@@ -141,8 +150,11 @@ class TechUp(MacroBehavior):
                 # found something to build?
                 if ai.tech_requirement_progress(structure_type) == 1.0:
                     building: bool = BuildStructure(
-                        self.base_location, structure_type
-                    ).execute(ai, ai.config, ai.mediator)
+                        select_persistent_builder=self.select_persistent_builder,
+                        only_select_persistent_builder=self.only_select_persistent_builder,
+                        base_location=self.base_location,
+                        structure_id=structure_type,
+                    )
                     if building:
                         logger.info(
                             f"{ai.time_formatted} Adding {structure_type} to"

@@ -4,10 +4,13 @@ from typing import TYPE_CHECKING, Optional
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
+from sc2.unit import Unit
+from sc2.units import Units
 
 if TYPE_CHECKING:
     from ares import AresBot
 from ares.behaviors.macro.macro_behavior import MacroBehavior
+from ares.consts import UnitRole
 from ares.managers.manager_mediator import ManagerMediator
 
 
@@ -39,12 +42,18 @@ class BuildStructure(MacroBehavior):
         (Only main base currently supported)
     closest_to : Point2 (optional)
         Find placement at this base closest to
+    select_persistent_builder: bool
+        If True we can select the persistent_builder if it's available.
+    only_select_persistent_builder: bool
+        If True, don't find an alternative worker
     """
 
     base_location: Point2
     structure_id: UnitID
     wall: bool = False
     closest_to: Optional[Point2] = None
+    select_persistent_builder: bool = False
+    only_select_persistent_builder: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert (
@@ -62,9 +71,9 @@ class BuildStructure(MacroBehavior):
             within_psionic_matrix=within_psionic_matrix,
             closest_to=self.closest_to,
         ):
-            if worker := mediator.select_worker(
-                target_position=placement,
-                force_close=True,
+            if worker := self.select_worker(
+                mediator,
+                placement=placement,
             ):
                 mediator.build_with_specific_worker(
                     worker=worker,
@@ -73,3 +82,23 @@ class BuildStructure(MacroBehavior):
                 )
                 return True
         return False
+
+    def select_worker(
+        self,
+        mediator: ManagerMediator,
+        placement: Point2,
+    ) -> Optional[Unit]:
+        """Select a worker to build with."""
+        if self.select_persistent_builder:
+            persistent_workers: Units = mediator.get_units_from_role(
+                role=UnitRole.PERSISTENT_BUILDER
+            )
+            for worker in persistent_workers:
+                if (
+                    not worker.is_constructing_scv
+                    and worker not in mediator.get_building_tracker_dict
+                ):
+                    return worker
+            if self.only_select_persistent_builder:
+                return None
+        return mediator.select_worker(target_position=placement, force_close=True)
