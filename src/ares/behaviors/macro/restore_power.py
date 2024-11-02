@@ -129,7 +129,7 @@ class RestorePower(MacroBehavior):
                 )
             ]:
                 return BuildStructure(
-                    base_loc, UnitID.PYLON, closest_to=available[0]
+                    base_loc, UnitID.PYLON, closest_to=available[0], wall=True
                 ).execute(ai, config, mediator)
 
         return False
