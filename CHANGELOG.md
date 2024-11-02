@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.27.2 (2024-11-02)
+
+### Fix
+
+* Restore power can repower at wall properly ([`cff0fb9`](https://github.com/AresSC2/ares-sc2/commit/cff0fb949a79a62014bbae2323ce5b60552260a7))
+
 ## v2.27.1 (2024-10-20)
 
 ### Fix
