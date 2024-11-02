@@ -9,6 +9,8 @@ from sc2.main import run_game
 from sc2.position import Point2
 from sc2.unit import Unit
 
+from behaviors.macro import TechUp
+
 # Get the directory of the current file
 current_dir = dirname(__file__)
 
@@ -37,9 +39,11 @@ from ares.behaviors.macro import (
     ProductionController,
     SpawnController,
 )
+from ares.consts import UnitRole
 
 
 class DummyBot(AresBot):
+    persistent_worker_tag: int
     def __init__(self):
         super().__init__()
 
@@ -67,11 +71,16 @@ class DummyBot(AresBot):
     async def on_step(self, iteration: int):
         await super(DummyBot, self).on_step(iteration)
 
+        if iteration == 0:
+            self.persistent_worker_tag = self.units(UnitTypeId.PROBE).random.tag
+            self.mediator.assign_role(tag=self.persistent_worker_tag, role=UnitRole.PERSISTENT_BUILDER)
+
         # while here test out some macro and combat behaviors
         self.register_behavior(Mining())
         macro_plan: MacroPlan = MacroPlan()
         macro_plan.add(AutoSupply(base_location=self.start_location))
-        macro_plan.add(BuildWorkers(100))
+        # macro_plan.add(BuildWorkers(100))
+        macro_plan.add(TechUp(desired_tech=UnitTypeId.TEMPEST, base_location=self.start_location, select_persistent_builder=True, only_select_persistent_builder=True))
         macro_plan.add(ExpansionController(to_count=4, max_pending=1))
         macro_plan.add(
             GasBuildingController(
@@ -113,12 +122,12 @@ class DummyBot(AresBot):
             [[self.worker_type, 30, self.start_location, 1]]
         )
 
-        await self.client.debug_create_unit(
-            [
-                [unit_type, 8, self.start_location, 1]
-                for unit_type in desired_army[self.race]
-            ]
-        )
+        # await self.client.debug_create_unit(
+        #     [
+        #         [unit_type, 8, self.start_location, 1]
+        #         for unit_type in desired_army[self.race]
+        #     ]
+        # )
 
 
 # Start game
@@ -136,7 +145,7 @@ if __name__ == "__main__":
     run_game(
         maps.get(random_map),
         [
-            Bot(Race.Random, DummyBot(), "DummyBot"),
+            Bot(Race.Protoss, DummyBot(), "DummyBot"),
             Computer(Race.Protoss, Difficulty.CheatInsane),
         ],
         realtime=False,
