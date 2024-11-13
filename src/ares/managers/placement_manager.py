@@ -833,8 +833,13 @@ class PlacementManager(Manager, IManagerMediator):
                 x: float = pos[0]
                 y: float = pos[1]
                 point2_pos: Point2 = Point2((x, y))
-                if self.ai.get_terrain_height(point2_pos) == self.ai.get_terrain_height(
-                    el
+                if (
+                    self.ai.get_terrain_height(point2_pos)
+                    == self.ai.get_terrain_height(el)
+                    and cy_distance_to_squared(
+                        point2_pos, self.ai.main_base_ramp.top_center
+                    )
+                    > 49.0
                 ):
                     self._add_placement_position(
                         BuildingSize.THREE_BY_THREE, el, point2_pos
