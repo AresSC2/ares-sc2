@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.27.3 (2024-11-13)
+
+### Fix
+
+* Prevent 3x3 too close to existing T wall ([`bad58b1`](https://github.com/AresSC2/ares-sc2/commit/bad58b1cb35914b1434952951ade1b56d6268500))
+
 ## v2.27.2 (2024-11-02)
 
 ### Fix
