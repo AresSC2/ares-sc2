@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Optional, Union
 
-from behaviors.macro.mining import WORKER_TYPES
 from cython_extensions import cy_distance_to_squared, cy_towards
 from cython_extensions.combat_utils import cy_attack_ready
 from cython_extensions.units_utils import cy_in_attack_range
@@ -30,6 +29,7 @@ from ares.consts import (
     GATEWAY_UNITS,
     OPENING_BUILD_ORDER,
     TARGET,
+    WORKER_TYPES,
     BuildOrderOptions,
     BuildOrderTargetOptions,
     UnitRole,
