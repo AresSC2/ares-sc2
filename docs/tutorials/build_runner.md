@@ -305,3 +305,15 @@ if self.opponent_is_cheesing:
     self.build_order_runner.switch_opening("DefensiveOpening")
 ```
 Note that if an incorrect opening name is passed here the bot will terminate.
+
+### Switching off gas steal logic
+The build runner will automatically attempt to prevent the enemy stealing your
+gas buildings, turn this off via the `ShouldHandleGasSteal` like so:
+
+```yml
+Builds:
+    DummyBuild:
+        ShouldHandleGasSteal: False
+        OpeningBuildOrder:
+            - 12 worker_scout
+```

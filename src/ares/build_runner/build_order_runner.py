@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING, Optional, Union
 
+from behaviors.macro.mining import WORKER_TYPES
 from cython_extensions import cy_distance_to_squared, cy_towards
+from cython_extensions.combat_utils import cy_attack_ready
+from cython_extensions.units_utils import cy_in_attack_range
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
@@ -76,6 +79,7 @@ class BuildOrderRunner:
         BuildOrderOptions.OVERLORD_SCOUT,
         BuildOrderOptions.WORKER_SCOUT,
     }
+    SHOULD_HANDLE_GAS_STEAL: str = "ShouldHandleGasSteal"
 
     def __init__(
         self,
@@ -104,6 +108,8 @@ class BuildOrderRunner:
         self.assigned_persistent_worker: bool = False
 
         self._temporary_build_step: int = -1
+        self.should_handle_gas_steal: bool = True
+        self._geyser_tag_to_probe_tag: dict[int, int] = dict()
 
     def set_build_completed(self) -> None:
         logger.info("Build order completed")
@@ -148,6 +154,11 @@ class BuildOrderRunner:
             if self.PERSISTENT_WORKER in config[BUILDS][opening_name]:
                 self.persistent_worker = config[BUILDS][opening_name][
                     self.PERSISTENT_WORKER
+                ]
+
+            if self.SHOULD_HANDLE_GAS_STEAL in config[BUILDS][opening_name]:
+                self.should_handle_gas_steal = config[BUILDS][opening_name][
+                    self.SHOULD_HANDLE_GAS_STEAL
                 ]
 
             self.build_step: int = 0
@@ -211,6 +222,9 @@ class BuildOrderRunner:
         """
         if self.persistent_worker:
             self._assign_persistent_worker()
+        # prevent enemy stealing our main gas buildings
+        if self.should_handle_gas_steal:
+            self._handle_gas_steal()
         if len(self.build_order) > 0:
             if self._temporary_build_step != -1:
                 await self.do_step(self.build_order[self._temporary_build_step])
@@ -283,6 +297,11 @@ class BuildOrderRunner:
             if command in ADD_ONS:
                 self.current_step_started = True
             elif command in ALL_STRUCTURES:
+                # let the gas steal preventer handle this step
+                if command in GAS_BUILDINGS and len(self._geyser_tag_to_probe_tag) > 0:
+                    self.current_step_started = True
+                    return
+
                 persistent_workers: Units = self.mediator.get_units_from_role(
                     role=UnitRole.PERSISTENT_BUILDER
                 )
@@ -457,7 +476,6 @@ class BuildOrderRunner:
             existing_gas_buildings: Units = self.ai.all_units(GAS_BUILDINGS)
             if available_geysers := self.ai.vespene_geyser.filter(
                 lambda g: not existing_gas_buildings.closer_than(5.0, g)
-                and self.ai.townhalls.closer_than(12.0, g)
             ):
                 return available_geysers.closest_to(self.ai.start_location)
         elif structure_type == self.ai.base_townhall_type:
@@ -627,3 +645,78 @@ class BuildOrderRunner:
                 )
 
         return self.ai.start_location, 999.9
+
+    def _handle_gas_steal(self) -> None:
+        enemy_workers: list[Unit] = [
+            w
+            for w in self.ai.enemy_units
+            if w.type_id in WORKER_TYPES
+            and cy_distance_to_squared(w.position, self.ai.start_location) < 144.0
+        ]
+
+        # there are enemy workers around
+        geysers: list[Unit] = [
+            u
+            for u in self.ai.vespene_geyser
+            if cy_distance_to_squared(u.position, self.ai.start_location) < 144.0
+            and not [
+                g
+                for g in self.ai.all_gas_buildings
+                if cy_distance_to_squared(u.position, g.position) < 25.0
+            ]
+        ]
+
+        if enemy_workers:
+            for geyser in geysers:
+                if geyser.tag not in self._geyser_tag_to_probe_tag:
+                    if worker := self.mediator.select_worker(
+                        target_position=geyser.position, force_close=True
+                    ):
+                        self.mediator.assign_role(
+                            tag=worker.tag, role=UnitRole.GAS_STEAL_PREVENTER
+                        )
+                        self._geyser_tag_to_probe_tag[geyser.tag] = worker.tag
+                        worker.move(geyser.position)
+
+        to_remove: (list[tuple]) = []
+        for geyser_tag, worker_tag in self._geyser_tag_to_probe_tag.items():
+            assigned_worker_tag: int = self._geyser_tag_to_probe_tag[geyser_tag]
+            if geyser_tag in self.ai.unit_tag_dict:
+                geyser: Unit = self.ai.unit_tag_dict[geyser_tag]
+
+                # gas building exists here now, clean up
+                if [
+                    g
+                    for g in self.ai.all_gas_buildings
+                    if cy_distance_to_squared(geyser.position, g.position) < 25.0
+                ]:
+                    to_remove.append((geyser_tag, worker_tag))
+
+                elif assigned_worker_tag in self.ai.unit_tag_dict:
+                    worker = self.ai.unit_tag_dict[assigned_worker_tag]
+
+                    # target other enemy worker if it comes in range
+                    if in_range := cy_in_attack_range(worker, enemy_workers):
+                        if cy_attack_ready(self.ai, worker, in_range[0]):
+                            worker.attack(in_range[0])
+                            continue
+
+                    if self.build_order[
+                        self.build_step
+                    ].command in GAS_BUILDINGS and self.ai.can_afford(
+                        self.build_order[self.build_step].command
+                    ):
+                        worker.build_gas(geyser)
+                    else:
+                        worker.move(geyser.position)
+                # worker doesn't exist for some reason
+                else:
+                    to_remove.append((geyser_tag, worker_tag))
+            # geyser doesn't exist for some reason
+            else:
+                to_remove.append((geyser_tag, worker_tag))
+
+        for remove in to_remove:
+            if remove[0] in self._geyser_tag_to_probe_tag:
+                del self._geyser_tag_to_probe_tag[remove[0]]
+            self.mediator.assign_role(tag=remove[1], role=UnitRole.GATHERING)
