@@ -224,8 +224,8 @@ class ManagerMediator(IManagerMediator):
 
         Parameters
         ----------
-        structure : UnitTypeIdId
-            The AbilityId that was used.
+        structure : Unit
+            The actual structure to cancel.
 
         Returns
         ----------
