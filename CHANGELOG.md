@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.0 (2024-11-16)
+
+### Feature
+
+* Build runner handles gas steal ([`8729acf`](https://github.com/AresSC2/ares-sc2/commit/8729acf5067b5275dd24e44e1a7e9cb9b0c72216))
+
+### Fix
+
+* Import from correct place ([`5dadd53`](https://github.com/AresSC2/ares-sc2/commit/5dadd53e5e1028a08c0bc775c8627a4871eb8191))
+
 ## v2.27.3 (2024-11-13)
 
 ### Fix
