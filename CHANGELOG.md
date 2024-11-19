@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.1 (2024-11-19)
+
+### Fix
+
+* Handle gas steal only runs if there is a build order ([`edb374e`](https://github.com/AresSC2/ares-sc2/commit/edb374edcba28339998eb5fe74c08878a0a12d9f))
+* Handle gas steal edge case ([`33caf5b`](https://github.com/AresSC2/ares-sc2/commit/33caf5b247e68e2b340ddb11092a89bcaa4caee8))
+
 ## v2.28.0 (2024-11-16)
 
 ### Feature
