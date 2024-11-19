@@ -222,10 +222,12 @@ class BuildOrderRunner:
         """
         if self.persistent_worker:
             self._assign_persistent_worker()
-        # prevent enemy stealing our main gas buildings
-        if self.should_handle_gas_steal:
-            self._handle_gas_steal()
+
         if len(self.build_order) > 0:
+            # prevent enemy stealing our main gas buildings
+            if self.should_handle_gas_steal:
+                self._handle_gas_steal()
+
             if self._temporary_build_step != -1:
                 await self.do_step(self.build_order[self._temporary_build_step])
             else:
