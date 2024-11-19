@@ -647,6 +647,12 @@ class BuildOrderRunner:
         return self.ai.start_location, 999.9
 
     def _handle_gas_steal(self) -> None:
+        can_assign: bool = True
+        if self.build_order[self.build_step].command in GAS_BUILDINGS and (
+            len(self._geyser_tag_to_probe_tag) > 0 or self.current_step_started
+        ):
+            can_assign = False
+
         enemy_workers: list[Unit] = [
             w
             for w in self.ai.enemy_units
@@ -654,29 +660,30 @@ class BuildOrderRunner:
             and cy_distance_to_squared(w.position, self.ai.start_location) < 144.0
         ]
 
-        # there are enemy workers around
-        geysers: list[Unit] = [
-            u
-            for u in self.ai.vespene_geyser
-            if cy_distance_to_squared(u.position, self.ai.start_location) < 144.0
-            and not [
-                g
-                for g in self.ai.all_gas_buildings
-                if cy_distance_to_squared(u.position, g.position) < 25.0
+        if can_assign:
+            # there are enemy workers around
+            geysers: list[Unit] = [
+                u
+                for u in self.ai.vespene_geyser
+                if cy_distance_to_squared(u.position, self.ai.start_location) < 144.0
+                and not [
+                    g
+                    for g in self.ai.all_gas_buildings
+                    if cy_distance_to_squared(u.position, g.position) < 25.0
+                ]
             ]
-        ]
 
-        if enemy_workers:
-            for geyser in geysers:
-                if geyser.tag not in self._geyser_tag_to_probe_tag:
-                    if worker := self.mediator.select_worker(
-                        target_position=geyser.position, force_close=True
-                    ):
-                        self.mediator.assign_role(
-                            tag=worker.tag, role=UnitRole.GAS_STEAL_PREVENTER
-                        )
-                        self._geyser_tag_to_probe_tag[geyser.tag] = worker.tag
-                        worker.move(geyser.position)
+            if enemy_workers:
+                for geyser in geysers:
+                    if geyser.tag not in self._geyser_tag_to_probe_tag:
+                        if worker := self.mediator.select_worker(
+                            target_position=geyser.position, force_close=True
+                        ):
+                            self.mediator.assign_role(
+                                tag=worker.tag, role=UnitRole.GAS_STEAL_PREVENTER
+                            )
+                            self._geyser_tag_to_probe_tag[geyser.tag] = worker.tag
+                            worker.move(geyser.position)
 
         to_remove: (list[tuple]) = []
         for geyser_tag, worker_tag in self._geyser_tag_to_probe_tag.items():
@@ -684,8 +691,9 @@ class BuildOrderRunner:
             if geyser_tag in self.ai.unit_tag_dict:
                 geyser: Unit = self.ai.unit_tag_dict[geyser_tag]
 
+                # no enemy workers, or
                 # gas building exists here now, clean up
-                if [
+                if not enemy_workers or [
                     g
                     for g in self.ai.all_gas_buildings
                     if cy_distance_to_squared(geyser.position, g.position) < 25.0
