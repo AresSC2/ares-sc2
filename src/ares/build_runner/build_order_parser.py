@@ -100,7 +100,7 @@ class BuildOrderParser:
                 command=self.ai.gas_type,
                 start_condition=lambda: self.ai.minerals >= 0
                 if self.ai.race == Race.Zerg
-                else 50,
+                else self.ai.minerals >= 50,
                 end_condition=lambda: self.ai.structures.filter(
                     lambda s: 0.00001 <= s.build_progress < 0.05
                     and s.type_id == self.ai.gas_type
