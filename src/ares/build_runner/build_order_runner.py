@@ -416,7 +416,28 @@ class BuildOrderRunner:
             # end condition hasn't yet activated
             if not self.current_step_complete:
                 command: Union[UnitID, UpgradeId] = step.command
-                if command in ADD_ONS and self.ai.can_afford(command):
+                # sometimes gas building didn't go through
+                # due to conflict with gas steal
+                if (
+                    command in GAS_BUILDINGS
+                    and len(self._geyser_tag_to_probe_tag) == 0
+                    and self.mediator.get_building_counter[command] == 0
+                ):
+                    if worker := self.mediator.select_worker(
+                        target_position=self.current_build_position, force_close=True
+                    ):
+                        if next_building_position := await self.get_position(
+                            step.command, step.target
+                        ):
+                            self.current_build_position = next_building_position
+                            self.mediator.build_with_specific_worker(
+                                worker=worker,
+                                structure_type=command,
+                                pos=self.current_build_position,
+                                assign_role=worker.tag
+                                in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
+                            )
+                elif command in ADD_ONS and self.ai.can_afford(command):
                     if base_structures := [
                         s
                         for s in self.ai.structures
@@ -649,9 +670,16 @@ class BuildOrderRunner:
         return self.ai.start_location, 999.9
 
     def _handle_gas_steal(self) -> None:
+        """
+        Attempt to prevent enemy stealing gas
+        Returns
+        -------
+
+        """
         can_assign: bool = True
+        # already got a gas building in BO, don't assign right now
         if self.build_order[self.build_step].command in GAS_BUILDINGS and (
-            len(self._geyser_tag_to_probe_tag) > 0 or self.current_step_started
+            self.current_step_started
         ):
             can_assign = False
 
@@ -662,8 +690,9 @@ class BuildOrderRunner:
             and cy_distance_to_squared(w.position, self.ai.start_location) < 144.0
         ]
 
-        if can_assign:
-            # there are enemy workers around
+        # if we need to assign and enemy workers are around
+        if can_assign and enemy_workers:
+            # check for available geysers
             geysers: list[Unit] = [
                 u
                 for u in self.ai.vespene_geyser
@@ -674,19 +703,20 @@ class BuildOrderRunner:
                     if cy_distance_to_squared(u.position, g.position) < 25.0
                 ]
             ]
+            # now check if we should assign workers to geysers
+            for geyser in geysers:
+                if geyser.tag not in self._geyser_tag_to_probe_tag:
+                    if worker := self.mediator.select_worker(
+                        target_position=geyser.position, force_close=True
+                    ):
+                        self.mediator.assign_role(
+                            tag=worker.tag, role=UnitRole.GAS_STEAL_PREVENTER
+                        )
+                        self._geyser_tag_to_probe_tag[geyser.tag] = worker.tag
+                        worker.move(geyser.position)
 
-            if enemy_workers:
-                for geyser in geysers:
-                    if geyser.tag not in self._geyser_tag_to_probe_tag:
-                        if worker := self.mediator.select_worker(
-                            target_position=geyser.position, force_close=True
-                        ):
-                            self.mediator.assign_role(
-                                tag=worker.tag, role=UnitRole.GAS_STEAL_PREVENTER
-                            )
-                            self._geyser_tag_to_probe_tag[geyser.tag] = worker.tag
-                            worker.move(geyser.position)
-
+        # iterate through our geyser records
+        # control the worker / work out if we need to remove
         to_remove: (list[tuple]) = []
         for geyser_tag, worker_tag in self._geyser_tag_to_probe_tag.items():
             assigned_worker_tag: int = self._geyser_tag_to_probe_tag[geyser_tag]
@@ -711,6 +741,7 @@ class BuildOrderRunner:
                             worker.attack(in_range[0])
                             continue
 
+                    # build order wants a gas, so build it here
                     if self.build_order[
                         self.build_step
                     ].command in GAS_BUILDINGS and self.ai.can_afford(
