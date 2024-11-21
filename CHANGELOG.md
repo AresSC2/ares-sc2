@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.2 (2024-11-21)
+
+### Fix
+
+* Handle conflict with gas steal to ensure order goes through ([`9e928f6`](https://github.com/AresSC2/ares-sc2/commit/9e928f64728d4b57ba54aaa192dcdd338df9cd6b))
+
 ## v2.28.1 (2024-11-19)
 
 ### Fix
