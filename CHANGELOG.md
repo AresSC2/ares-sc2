@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.3 (2024-11-24)
+
+### Fix
+
+* Prevent chrono action on structure already with chrono active ([`7938191`](https://github.com/AresSC2/ares-sc2/commit/79381911b89b99f5ffcb51917b7ee602c6b12bd5))
+
 ## v2.28.2 (2024-11-21)
 
 ### Fix
