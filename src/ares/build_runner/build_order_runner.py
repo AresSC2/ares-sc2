@@ -4,6 +4,7 @@ from cython_extensions import cy_distance_to_squared, cy_towards
 from cython_extensions.combat_utils import cy_attack_ready
 from cython_extensions.units_utils import cy_in_attack_range
 from sc2.data import Race
+from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
@@ -555,7 +556,9 @@ class BuildOrderRunner:
         # this block is currently for chrono
         if isinstance(target, UnitID):
             if valid_structures := self.ai.structures.filter(
-                lambda s: s.build_progress == 1.0 and s.type_id == target
+                lambda s: s.build_progress == 1.0
+                and s.type_id == target
+                and not s.has_buff(BuffId.CHRONOBOOSTENERGYCOST)
             ):
                 return valid_structures.first
 
