@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.4 (2024-11-26)
+
+### Fix
+
+* Revert to intended maps in test melee bot ([`9bbd2c7`](https://github.com/AresSC2/ares-sc2/commit/9bbd2c77dad984ca2a0f690a75c513169e1c0935))
+* Find placements on small area expansions ([`9ff9bc3`](https://github.com/AresSC2/ares-sc2/commit/9ff9bc3e682bc16d953294f5b76d88c4e2fe1622))
+* Prevent scenario where protoss walls itself ([`df478e6`](https://github.com/AresSC2/ares-sc2/commit/df478e682e6cbf454e331837b1efea60bb0acd73))
+
 ## v2.28.3 (2024-11-24)
 
 ### Fix
