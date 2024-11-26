@@ -1022,7 +1022,10 @@ class PlacementManager(Manager, IManagerMediator):
             num_found: int = len(two_by_two_positions)
             for i, pos in enumerate(two_by_two_positions):
                 # don't add any too near to top ramp
-                if cy_distance_to_squared(pos, self.ai.main_base_ramp.top_center) < 30.0:
+                if (
+                    cy_distance_to_squared(pos, self.ai.main_base_ramp.top_center)
+                    < 30.0
+                ):
                     continue
                 # drop some placements to avoid walling in
                 if num_found > 6 and i % 5 == 0:
