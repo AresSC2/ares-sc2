@@ -36,6 +36,10 @@ jobs:
       - name: Run unit-tests
         run: |
           set -o pipefail
+          poetry run make unit-tests
+      - name: Run unit-tests coverage
+        run: |
+          set -o pipefail
           poetry run make unit-tests-cov-fail
       # add pytest coverage report to PR
       - name: Pytest coverage comment

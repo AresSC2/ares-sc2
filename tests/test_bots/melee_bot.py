@@ -94,7 +94,7 @@ class DummyBot(AresBot):
             maneuver: CombatManeuver = CombatManeuver()
             maneuver.add(
                 PathUnitToTarget(
-                    unit=unit, grid=grid, target=target, success_at_distance=10.0
+                    unit=unit, grid=grid, target=target, success_at_distance=36.0
                 )
             )
             maneuver.add(AMove(unit=unit, target=target))
@@ -136,8 +136,9 @@ if __name__ == "__main__":
     run_game(
         maps.get(random_map),
         [
-            Bot(Race.Random, DummyBot(), "DummyBot"),
+            Bot(Race.Terran, DummyBot(), "DummyBot"),
             Computer(Race.Protoss, Difficulty.CheatInsane),
         ],
         realtime=False,
+        random_seed=2564,
     )

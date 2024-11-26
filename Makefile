@@ -15,7 +15,7 @@ lint-mypy-report:
 	@mypy ./src --html-report ./mypy_html
 
 unit-tests:
-	@pytest --doctest-modules
+	@pytest
 unit-tests-cov:
 	@pytest --doctest-modules --cov=src --cov-report term-missing --cov-report=html
 unit-tests-cov-fail:

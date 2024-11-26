@@ -813,10 +813,17 @@ class PlacementManager(Manager, IManagerMediator):
                 start_point=el, max_dist=max_dist
             )
             raw_x_bounds, raw_y_bounds = cy_get_bounding_box(area_points)
+            x_stride: int = (
+                7
+                if el == self.ai.start_location
+                or el == self.ai.enemy_start_locations[0]
+                or len(area_points) > 300
+                else 5
+            )
 
             three_by_three_positions = cy_find_building_locations(
                 kernel=np.ones((5, 3), dtype=np.uint8),
-                x_stride=7,
+                x_stride=x_stride,
                 y_stride=3,
                 x_bounds=raw_x_bounds,
                 y_bounds=raw_y_bounds,
@@ -1021,6 +1028,12 @@ class PlacementManager(Manager, IManagerMediator):
             )
             num_found: int = len(two_by_two_positions)
             for i, pos in enumerate(two_by_two_positions):
+                # don't add any too near to top ramp
+                if (
+                    cy_distance_to_squared(pos, self.ai.main_base_ramp.top_center)
+                    < 30.0
+                ):
+                    continue
                 # drop some placements to avoid walling in
                 if num_found > 6 and i % 5 == 0:
                     continue
@@ -1058,7 +1071,7 @@ class PlacementManager(Manager, IManagerMediator):
             for three_by_three in three_by_threes:
                 if cy_distance_to_squared(pylon_position, three_by_three) < 42.25:
                     num_three_by_threes += 1
-            if num_three_by_threes > most_three_by_threes:
+            if num_three_by_threes >= most_three_by_threes:
                 most_three_by_threes = num_three_by_threes
                 best_pylon_pos = pylon_position
 
