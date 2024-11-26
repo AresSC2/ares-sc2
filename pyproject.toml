@@ -43,9 +43,9 @@ pytest-cov = "^4.0.0"
 pytest-asyncio = "^0.21.1"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs = "^1.4.2"
+mkdocs = "^1.6.1"
 mkdocs-material = "^9.0.6"
-mkdocstrings = {extras = ["python"], version = "^0.20.0"}
+mkdocstrings = {extras = ["python"], version = "^0.27.0"}
 
 [tool.poetry.group.semver.dependencies]
 python-semantic-release = "^7.33.0"
