@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from cython_extensions import cy_distance_to_squared, cy_towards
 from cython_extensions.combat_utils import cy_attack_ready
-from cython_extensions.units_utils import cy_in_attack_range
+from cython_extensions.units_utils import cy_closest_to, cy_in_attack_range
 from sc2.data import Race
 from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -502,6 +502,30 @@ class BuildOrderRunner:
                 lambda g: not existing_gas_buildings.closer_than(5.0, g)
             ):
                 return available_geysers.closest_to(self.ai.start_location)
+            existing_gas_buildings: Units = self.ai.all_gas_buildings
+            # look for geysers with th nearby by default
+            if available_geysers := [
+                u
+                for u in self.ai.vespene_geyser
+                if not [
+                    g
+                    for g in existing_gas_buildings
+                    if cy_distance_to_squared(u.position, g.position) < 25.0
+                ]
+                and [
+                    th
+                    for th in self.ai.townhalls
+                    if cy_distance_to_squared(u.position, th.position) < 144.0
+                    and th.build_progress > 0.9
+                ]
+            ]:
+                return cy_closest_to(self.ai.start_location, available_geysers)
+            # else get any geyser to prevent getting stuck
+            elif any_other_geysers := self.ai.vespene_geyser.filter(
+                lambda g: not existing_gas_buildings.closer_than(5.0, g)
+            ):
+                return cy_closest_to(self.ai.start_location, any_other_geysers)
+
         elif structure_type == self.ai.base_townhall_type:
             return await self.ai.get_next_expansion()
         elif self.ai.race != Race.Zerg:
