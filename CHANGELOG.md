@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.5 (2024-12-01)
+
+### Fix
+
+* Prevent taking gas building not at townhalls ([`3cc34d8`](https://github.com/AresSC2/ares-sc2/commit/3cc34d84dc9278331bd0d9ade2e22016989a7216))
+
 ## v2.28.4 (2024-11-26)
 
 ### Fix
