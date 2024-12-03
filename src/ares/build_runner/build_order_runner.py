@@ -504,7 +504,7 @@ class BuildOrderRunner:
                 return available_geysers.closest_to(self.ai.start_location)
             existing_gas_buildings: Units = self.ai.all_gas_buildings
             # look for geysers with th nearby by default
-            if available_geysers := [
+            if _available_geysers := [
                 u
                 for u in self.ai.vespene_geyser
                 if not [
@@ -515,14 +515,15 @@ class BuildOrderRunner:
                 and [
                     th
                     for th in self.ai.townhalls
-                    if cy_distance_to_squared(u.position, th.position) < 144.0
-                    and th.build_progress > 0.9
+                    if cy_distance_to_squared(u.position, th.position) < 36.0
                 ]
             ]:
-                return cy_closest_to(self.ai.start_location, available_geysers)
+                return cy_closest_to(self.ai.start_location, _available_geysers)
             # else get any geyser to prevent getting stuck
-            elif any_other_geysers := self.ai.vespene_geyser.filter(
-                lambda g: not existing_gas_buildings.closer_than(5.0, g)
+            elif self.ai.minerals > 400 and (
+                any_other_geysers := self.ai.vespene_geyser.filter(
+                    lambda g: not existing_gas_buildings.closer_than(5.0, g)
+                )
             ):
                 return cy_closest_to(self.ai.start_location, any_other_geysers)
 
