@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.6 (2024-12-03)
+
+### Fix
+
+* Ensure geysers are taken near townhalls ([`938a52a`](https://github.com/AresSC2/ares-sc2/commit/938a52a69d5f280a9b3d328ccf125df05cce9aca))
+
 ## v2.28.5 (2024-12-01)
 
 ### Fix
