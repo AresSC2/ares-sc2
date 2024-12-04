@@ -498,11 +498,6 @@ class BuildOrderRunner:
         """
         if structure_type in GAS_BUILDINGS:
             existing_gas_buildings: Units = self.ai.all_units(GAS_BUILDINGS)
-            if available_geysers := self.ai.vespene_geyser.filter(
-                lambda g: not existing_gas_buildings.closer_than(5.0, g)
-            ):
-                return available_geysers.closest_to(self.ai.start_location)
-            existing_gas_buildings: Units = self.ai.all_gas_buildings
             # look for geysers with th nearby by default
             if _available_geysers := [
                 u
