@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.7 (2024-12-04)
+
+### Fix
+
+* Remove bad logic that took wrong gas in build runner ([`873591b`](https://github.com/AresSC2/ares-sc2/commit/873591bf5e59733a720a0234613e345a6f0e30bd))
+
 ## v2.28.6 (2024-12-03)
 
 ### Fix
