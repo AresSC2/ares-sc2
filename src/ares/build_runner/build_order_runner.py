@@ -510,7 +510,7 @@ class BuildOrderRunner:
                 and [
                     th
                     for th in self.ai.townhalls
-                    if cy_distance_to_squared(u.position, th.position) < 36.0
+                    if cy_distance_to_squared(u.position, th.position) < 144.0
                 ]
             ]:
                 return cy_closest_to(self.ai.start_location, _available_geysers)
