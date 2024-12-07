@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.28.8 (2024-12-07)
+
+### Fix
+
+* Ensure vespene geyser can be found in build runner ([`6c467a2`](https://github.com/AresSC2/ares-sc2/commit/6c467a205bac84987579b6ca98353c34b6eec9cf))
+
 ## v2.28.7 (2024-12-04)
 
 ### Fix
