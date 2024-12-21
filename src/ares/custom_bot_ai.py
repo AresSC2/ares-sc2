@@ -111,7 +111,7 @@ class CustomBotAI(BotAI):
             ]
         )
 
-    def not_started_but_in_building_tracker(self, structure_type: UnitID) -> bool:
+    def not_started_but_in_building_tracker(self, structure_type: UnitID) -> int:
         """
         Figures out if worker in on route to build something, and
         that structure_type doesn't exist yet.
@@ -124,6 +124,7 @@ class CustomBotAI(BotAI):
         -------
 
         """
+        num_in_tracker: int = 0
         building_tracker: dict = self.mediator.get_building_tracker_dict
         for tag, info in building_tracker.items():
             structure_id: UnitID = building_tracker[tag][ID]
@@ -135,9 +136,9 @@ class CustomBotAI(BotAI):
             if not self.structures.filter(
                 lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
             ):
-                return True
+                num_in_tracker += 1
 
-        return False
+        return num_in_tracker
 
     def pending_or_complete_upgrade(self, upgrade_id: UpgradeId) -> bool:
         if upgrade_id in self.state.upgrades:

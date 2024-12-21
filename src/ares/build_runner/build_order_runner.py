@@ -530,7 +530,10 @@ class BuildOrderRunner:
                 and structure_type in STRUCTURE_TO_BUILDING_SIZE
                 and structure_type != UnitID.PYLON
             )
-            at_wall: bool = target == BuildOrderTargetOptions.RAMP
+            at_wall: bool = target in {
+                BuildOrderTargetOptions.RAMP,
+                BuildOrderTargetOptions.NAT_WALL,
+            }
             close_enemy_to_ramp: list[Unit] = [
                 e
                 for e in self.ai.enemy_units
@@ -547,6 +550,7 @@ class BuildOrderRunner:
                 base_location=base_location,
                 structure_type=structure_type,
                 wall=at_wall,
+                first_pylon=self.ai.time < 60.0,
                 within_psionic_matrix=within_psionic_matrix,
                 pylon_build_progress=0.5,
             ):
@@ -650,6 +654,8 @@ class BuildOrderRunner:
                 return self.ai.game_info.map_center
             case BuildOrderTargetOptions.NAT:
                 return self.mediator.get_own_nat
+            case BuildOrderTargetOptions.NAT_WALL:
+                return self.mediator.get_own_nat
             case BuildOrderTargetOptions.RAMP:
                 return self.ai.main_base_ramp.top_center
             case BuildOrderTargetOptions.SIXTH:
@@ -686,6 +692,8 @@ class BuildOrderRunner:
                         base_location=target,
                         structure_type=self.ai.supply_type,
                         reserve_placement=False,
+                        first_pylon=self.ai.time < 30 and step.command == UnitID.PYLON,
+                        wall=True,
                     ),
                     time,
                 )
