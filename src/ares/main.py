@@ -3,6 +3,7 @@ from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import yaml
+from config_parser import ConfigParser
 from cython_extensions import cy_unit_pending
 from loguru import logger
 from s2clientprotocol.raw_pb2 import Unit as RawUnit
@@ -22,12 +23,12 @@ from sc2.units import Units
 from ares.behavior_exectioner import BehaviorExecutioner
 from ares.behaviors.behavior import Behavior
 from ares.build_runner.build_order_runner import BuildOrderRunner
-from ares.config_parser import ConfigParser
 from ares.consts import (
     ADD_ONS,
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
     CHAT_DEBUG,
+    CONFIG_FILE,
     DEBUG,
     DEBUG_GAME_STEP,
     DEBUG_OPTIONS,
@@ -77,15 +78,13 @@ class AresBot(CustomBotAI):
             specified elsewhere
         """
         super().__init__()
-        # use this Dict when compiling
-        # self.config: Dict = CONFIG
         # otherwise we use the config.yml file
         __ares_config_location__: str = path.realpath(
             path.join(getcwd(), path.dirname(__file__))
         )
         self.__user_config_location__: str = path.abspath(".")
         config_parser: ConfigParser = ConfigParser(
-            __ares_config_location__, self.__user_config_location__
+            __ares_config_location__, self.__user_config_location__, CONFIG_FILE
         )
 
         self.config = config_parser.parse()

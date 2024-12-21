@@ -3,8 +3,6 @@ from os import path
 
 import yaml
 
-from ares.consts import CONFIG_FILE
-
 
 @dataclass
 class ConfigParser:
@@ -22,6 +20,7 @@ class ConfigParser:
 
     ares_config_location: str
     user_config_location: str
+    config_file_name: str
 
     def parse(self) -> dict:
         """
@@ -33,8 +32,12 @@ class ConfigParser:
             Internal parsed config.yml by default, or the merged internal and
             users config files.
         """
-        internal_config_path: str = path.join(self.ares_config_location, CONFIG_FILE)
-        user_config_path: str = path.join(self.user_config_location, CONFIG_FILE)
+        internal_config_path: str = path.join(
+            self.ares_config_location, self.config_file_name
+        )
+        user_config_path: str = path.join(
+            self.user_config_location, self.config_file_name
+        )
         if path.isfile(internal_config_path):
             with open(internal_config_path, "r") as config_file:
                 internal_config: dict = yaml.safe_load(config_file)
@@ -51,8 +54,7 @@ class ConfigParser:
         # there is a user config and internal config, sort out the differences
         return self._merge_config_files(internal_config, user_config)
 
-    @staticmethod
-    def _merge_config_files(internal_config: dict, user_config: dict) -> dict:
+    def _merge_config_files(self, internal_config: dict, user_config: dict) -> dict:
         """
         Merge internal and user config files so we are left with just one.
 
@@ -71,14 +73,18 @@ class ConfigParser:
         Dict :
             A single config dictionary where user values override default values.
         """
-        config: dict = internal_config.copy()
-        # iterate through internal config, and search for matching values in user config
-        for k, v in internal_config.items():
-            value_type = type(v)
-            if value_type == dict and k in user_config:
-                config[k] = internal_config[k] | user_config[k]
-
-            elif k in user_config and isinstance(user_config[k], value_type):
-                config[k] = user_config[k]
-
-        return config
+        """Recursively merge override dictionary into default dictionary."""
+        for key, value in user_config.items():
+            if (
+                isinstance(value, dict)
+                and key in internal_config
+                and isinstance(internal_config[key], dict)
+            ):
+                # Recursively merge dictionaries
+                internal_config[key] = self._merge_config_files(
+                    internal_config[key], value
+                )
+            else:
+                # Override or add the value
+                internal_config[key] = value
+        return internal_config

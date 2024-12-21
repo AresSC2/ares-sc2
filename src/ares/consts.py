@@ -19,6 +19,7 @@ ATTACK_ENGAGE_CLOSER_THAN: str = "AttackEngageIfTargetCloserThan"
 BLINDING_CLOUD: str = "BlindingCloud"
 BOOST_BACK_TO_TOWNHALL: str = "BoostBackToTownHall"
 BUILD_CHOICES: str = "BuildChoices"
+BUILDING_PLACEMENTS: str = "building_placements.yml"
 BUILDS: str = "Builds"
 CHAT_DEBUG: str = "ChatDebug"
 COMBAT: str = "Combat"
@@ -142,6 +143,17 @@ UPGRADES: Set[str] = {"UPGRADES"}
 """Enums"""
 
 
+class BuildingPlacementOptions(str, Enum):
+    LOWER_SPAWN = "LowerSpawn"
+    UPPER_SPAWN = "UpperSpawn"
+    VS_ZERG_NAT_WALL = "VsZergNatWall"
+    FIRST_PYLON = "FirstPylon"
+    PYLONS = "Pylons"
+    THREE_BY_THREES = "ThreeByThrees"
+    STATIC_DEFENCES = "StaticDefences"
+    GATE_KEEPER = "GateKeeper"
+
+
 class BuildingSize(str, Enum):
     FIVE_BY_FIVE = "FIVE_BY_FIVE"
     THREE_BY_THREE = "THREE_BY_THREE"
@@ -178,6 +190,7 @@ class BuildOrderTargetOptions(str, Enum):
     FOURTH = "FOURTH"
     MAP_CENTER = "MAP_CENTER"
     NAT = "NAT"
+    NAT_WALL = "NAT_WALL"
     RAMP = "RAMP"
     SIXTH = "SIXTH"
     SPAWN = "SPAWN"
@@ -288,6 +301,7 @@ class ManagerRequestType(str, Enum):
     # PlacementManager
     CAN_PLACE_STRUCTURE = "CAN_PLACE_STRUCTURE"
     GET_PLACEMENTS_DICT = "GET_PLACEMENTS_DICT"
+    GET_PVZ_NAT_GATEKEEPER_POS = "GET_PVZ_NAT_GATEKEEPER_POS"
     REQUEST_BUILDING_PLACEMENT = "REQUEST_BUILDING_PLACEMENT"
     REQUEST_WARP_IN = "REQUEST_WARP_IN_SPOT"
 
@@ -404,6 +418,7 @@ class UnitRole(str, Enum):
     FLANK_GROUP_TWO = "FLANK_GROUP_TWO"
     FLANK_GROUP_THREE = "FLANK_GROUP_THREE"
     GAS_STEAL_PREVENTER = "GAS_STEAL_PREVENTER"
+    GATE_KEEPER = "GATE_KEEPER"
     GATHERING = "GATHERING"  # workers that are mining
     HARASSING = "HARASSING"  # units that are harassing
     HARASSING_ADEPT = "HARASSING_ADEPT"
