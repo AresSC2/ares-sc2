@@ -13,7 +13,6 @@ from typing import (
 )
 
 import numpy as np
-from config_parser import ConfigParser
 from cython_extensions import (
     cy_can_place_structure,
     cy_distance_to_squared,
@@ -30,6 +29,7 @@ from sc2.position import Point2, Point3
 from sc2.unit import Unit
 from sc2.units import Units
 
+from ares.config_parser import ConfigParser
 from ares.consts import (
     BUILDING_PLACEMENTS,
     DEBUG,

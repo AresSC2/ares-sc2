@@ -2,7 +2,6 @@ from math import ceil
 from typing import TYPE_CHECKING, Any, Coroutine, DefaultDict, Optional, Union
 
 import numpy as np
-from consts import ManagerName, ManagerRequestType, UnitTreeQueryType
 from cython_extensions import (
     cy_can_place_structure,
     cy_distance_to_squared,
@@ -10,13 +9,15 @@ from cython_extensions import (
     cy_sorted_by_distance_to,
 )
 from loguru import logger
-from managers.manager import Manager
-from managers.manager_mediator import IManagerMediator, ManagerMediator
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
+
+from ares.consts import ManagerName, ManagerRequestType, UnitTreeQueryType
+from ares.managers.manager import Manager
+from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
 if TYPE_CHECKING:
     from ares import AresBot

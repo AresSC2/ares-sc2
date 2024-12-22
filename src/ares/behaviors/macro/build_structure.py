@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
-from consts import BuildingSize
 from cython_extensions.geometry import cy_distance_to_squared
-from dicts.structure_to_building_size import STRUCTURE_TO_BUILDING_SIZE
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
+
+from ares.consts import BuildingSize
+from ares.dicts.structure_to_building_size import STRUCTURE_TO_BUILDING_SIZE
 
 if TYPE_CHECKING:
     from ares import AresBot

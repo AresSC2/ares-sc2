@@ -3,7 +3,6 @@ from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import yaml
-from config_parser import ConfigParser
 from cython_extensions import cy_unit_pending
 from loguru import logger
 from s2clientprotocol.raw_pb2 import Unit as RawUnit
@@ -23,6 +22,7 @@ from sc2.units import Units
 from ares.behavior_exectioner import BehaviorExecutioner
 from ares.behaviors.behavior import Behavior
 from ares.build_runner.build_order_runner import BuildOrderRunner
+from ares.config_parser import ConfigParser
 from ares.consts import (
     ADD_ONS,
     ADD_SHADES_ON_FRAME,
