@@ -2,6 +2,21 @@
 
 <!--next-version-placeholder-->
 
+## v2.29.0 (2024-12-22)
+
+### Feature
+
+* Added attributes to BuildStructure to make it more flexible ([`6e17526`](https://github.com/AresSC2/ares-sc2/commit/6e17526df06e85f65ada5e60a30bf0e05d0d3f50))
+* Support protoss natural wall user configuration ([`d4224bc`](https://github.com/AresSC2/ares-sc2/commit/d4224bc9fe77d52a3d4fb3ae4758c4ad4b57625d))
+
+### Fix
+
+* Correct imports ([`8f47248`](https://github.com/AresSC2/ares-sc2/commit/8f47248eb6fe4a7be967fce2e251b4f2a3b0d1a6))
+
+### Documentation
+
+* Add custom building placement docs ([`56385af`](https://github.com/AresSC2/ares-sc2/commit/56385aff4de61e2f75c5618f3f8be8b6fee9ca1a))
+
 ## v2.28.8 (2024-12-07)
 
 ### Fix
