@@ -18,6 +18,7 @@ into this file like below.
 Protoss:
     AbyssalReef:
         VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
             UpperSpawn:
                 FirstPylon: [[64., 105.]]
                 Pylons: [[63., 112.]]
@@ -32,6 +33,7 @@ Protoss:
                 GateKeeper: [[137.25, 38.6]]
     Acropolis:
         VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
             UpperSpawn:
                 FirstPylon: [ [ 35., 109. ] ]
                 Pylons: [ [ 32., 109. ] ]
@@ -42,10 +44,11 @@ Protoss:
                 FirstPylon: [ [ 141., 63. ] ]
                 Pylons: [ [ 144., 63. ] ]
                 ThreeByThrees: [ [ 137.5, 66.5 ], [ 141.5, 66.5 ], [ 144.5, 66.5 ] ]
-                StaticDefences: [ [ 137., 64. ] ]
+                StaticDefences: [ [ 137., 63. ] ]
                 GateKeeper: [ [ 139.3, 67.4 ] ]
     Automaton:
         VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
             UpperSpawn:
                 FirstPylon: [ [ 141., 139. ] ]
                 Pylons: [ [ 140., 142. ] ]
@@ -60,6 +63,7 @@ Protoss:
                 GateKeeper: [ [ 47.15, 45.3 ] ]
     Ephemeron:
         VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
             UpperSpawn:
                 FirstPylon: [ [ 37., 112. ] ]
                 Pylons: [ [ 37., 109. ] ]
@@ -74,6 +78,7 @@ Protoss:
                 GateKeeper: [ [ 119.7, 47.4 ] ]
     Interloper:
         VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
             UpperSpawn:
                 FirstPylon: [ [ 31., 112. ] ]
                 Pylons: [ [ 31., 109. ] ]
@@ -88,6 +93,7 @@ Protoss:
                 GateKeeper: [ [ 115.78, 55.75 ] ]
     Thunderbird:
         VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
             UpperSpawn:
                 FirstPylon: [ [ 46., 106. ] ]
                 Pylons: [ [ 46., 103. ] ]
@@ -100,6 +106,7 @@ Protoss:
                 ThreeByThrees: [ [ 139.5, 46.5 ], [ 139.5, 50.5 ], [ 139.5, 53.5 ] ]
                 StaticDefences: [ [ 144., 48. ] ]
                 GateKeeper: [ [ 138.64, 48.49 ] ]
+
 
 ```
 

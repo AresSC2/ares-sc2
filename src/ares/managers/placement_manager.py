@@ -560,6 +560,20 @@ class PlacementManager(Manager, IManagerMediator):
             ):
                 for building_type in placements:
                     if building_type == BuildingPlacementOptions.VS_ZERG_NAT_WALL:
+                        if (
+                            BuildingPlacementOptions.AVAILABLE_VS_RACES
+                            in placements[building_type]
+                        ):
+                            races: set[str] = {
+                                race
+                                for race in placements[building_type][
+                                    BuildingPlacementOptions.AVAILABLE_VS_RACES
+                                ]
+                            }
+
+                            if not any([race in self.ai.enemy_race.name for race in races]):
+                                continue
+
 
                         upper_spawn: bool = (
                             self.ai.start_location.y
