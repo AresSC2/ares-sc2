@@ -571,9 +571,10 @@ class PlacementManager(Manager, IManagerMediator):
                                 ]
                             }
 
-                            if not any([race in self.ai.enemy_race.name for race in races]):
+                            if not any(
+                                [race in self.ai.enemy_race.name for race in races]
+                            ):
                                 continue
-
 
                         upper_spawn: bool = (
                             self.ai.start_location.y
