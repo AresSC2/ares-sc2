@@ -7,18 +7,7 @@ if TYPE_CHECKING:
 
 
 class Behavior(Protocol):
-    """Interface that all behaviors should adhere to.
-
-    Notes
-    -----
-    This is in POC stage currently, final design yet to be established.
-    Currently only used for `Mining`, but should support combat tasks.
-    Should also allow users to creat their own `Behavior` classes.
-    And design should allow a series of behaviors to be executed for
-    the same set of tags.
-
-    Additionally, `async` methods need further thought.
-    """
+    """Interface that all behaviors should adhere to."""
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         """Execute the implemented behavior.

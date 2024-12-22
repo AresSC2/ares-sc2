@@ -126,6 +126,7 @@ class BuildOrderTargetOptions(str, Enum):
     FOURTH = "FOURTH"
     MAP_CENTER = "MAP_CENTER"
     NAT = "NAT"
+    NAT_WALL = "NAT_WALL"
     RAMP = "RAMP"
     SIXTH = "SIXTH"
     SPAWN = "SPAWN"

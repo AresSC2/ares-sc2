@@ -1,0 +1,85 @@
+Protoss:
+    AbyssalReef:
+        VsZergNatWall:
+            UpperSpawn:
+                FirstPylon: [[64., 105.]]
+                Pylons: [[63., 112.]]
+                ThreeByThrees: [[68.5, 109.5], [66.5, 106.5], [60.5, 106.5]]
+                StaticDefences: [[64., 110.]]
+                GateKeeper: [[62.25, 105.86]]
+            LowerSpawn:
+                FirstPylon: [[136., 39.]]
+                Pylons: [[137., 32.]]
+                ThreeByThrees: [[131.5, 34.5], [133.5, 37.5], [139.5, 37.5]]
+                StaticDefences: [[136., 36.]]
+                GateKeeper: [[137.25, 38.6]]
+    Acropolis:
+        VsZergNatWall:
+            UpperSpawn:
+                FirstPylon: [ [ 35., 109. ] ]
+                Pylons: [ [ 32., 109. ] ]
+                ThreeByThrees: [ [ 38.5, 106.5 ], [ 34.5, 105.5 ], [ 31.5, 105.5 ] ]
+                StaticDefences: [ [ 39., 109. ] ]
+                GateKeeper: [ [ 36.6, 105.6 ] ]
+            LowerSpawn:
+                FirstPylon: [ [ 141., 63. ] ]
+                Pylons: [ [ 144., 63. ] ]
+                ThreeByThrees: [ [ 137.5, 66.5 ], [ 141.5, 66.5 ], [ 144.5, 66.5 ] ]
+                StaticDefences: [ [ 137., 64. ] ]
+                GateKeeper: [ [ 139.3, 67.4 ] ]
+    Automaton:
+        VsZergNatWall:
+            UpperSpawn:
+                FirstPylon: [ [ 141., 139. ] ]
+                Pylons: [ [ 140., 142. ] ]
+                ThreeByThrees: [ [ 138.5, 133.5 ], [ 136.5, 137.5 ], [ 136.5, 140.5 ] ]
+                StaticDefences: [ [ 142., 136. ] ]
+                GateKeeper: [ [ 136.9, 135.6 ] ]
+            LowerSpawn:
+                FirstPylon: [ [ 43., 42. ] ]
+                Pylons: [ [ 44., 39. ] ]
+                ThreeByThrees: [ [ 45.5, 46.5 ], [ 47.5, 42.5 ], [ 47.5, 39.5 ] ]
+                StaticDefences: [ [ 42., 45. ] ]
+                GateKeeper: [ [ 47.15, 45.3 ] ]
+    Ephemeron:
+        VsZergNatWall:
+            UpperSpawn:
+                FirstPylon: [ [ 37., 112. ] ]
+                Pylons: [ [ 37., 109. ] ]
+                ThreeByThrees: [ [ 42.5, 114.5 ], [ 42.5, 110.5 ], [ 41.5, 107.5 ] ]
+                StaticDefences: [ [ 38., 115. ] ]
+                GateKeeper: [ [ 43.1, 112.58 ] ]
+            LowerSpawn:
+                FirstPylon: [ [ 125., 49. ] ]
+                Pylons: [ [ 125., 52. ] ]
+                ThreeByThrees: [ [ 120.5, 45.5 ], [ 120.5, 49.5 ], [ 120.5, 52.5 ] ]
+                StaticDefences: [ [ 125., 46. ] ]
+                GateKeeper: [ [ 119.7, 47.4 ] ]
+    Interloper:
+        VsZergNatWall:
+            UpperSpawn:
+                FirstPylon: [ [ 31., 112. ] ]
+                Pylons: [ [ 31., 109. ] ]
+                ThreeByThrees: [ [ 35.5, 114.5 ], [ 35.5, 110.5 ], [ 35.5, 107.5 ] ]
+                StaticDefences: [ [ 31., 115. ] ]
+                GateKeeper: [ [ 36.16, 112.68 ] ]
+            LowerSpawn:
+                FirstPylon: [ [ 121., 56. ] ]
+                Pylons: [ [ 121., 59. ] ]
+                ThreeByThrees: [ [ 116.5, 53.5 ], [ 116.5, 57.5 ], [ 116.5, 60.5 ] ]
+                StaticDefences: [ [ 121., 53. ] ]
+                GateKeeper: [ [ 115.78, 55.75 ] ]
+    Thunderbird:
+        VsZergNatWall:
+            UpperSpawn:
+                FirstPylon: [ [ 46., 106. ] ]
+                Pylons: [ [ 46., 103. ] ]
+                ThreeByThrees: [ [ 50.5, 109.5 ], [ 50.5, 105.5 ], [ 50.5, 102.5 ] ]
+                StaticDefences: [ [ 46., 109. ] ]
+                GateKeeper: [ [ 51.18, 107.67 ] ]
+            LowerSpawn:
+                FirstPylon: [ [ 144., 51 ] ]
+                Pylons: [ [ 144., 54. ] ]
+                ThreeByThrees: [ [ 139.5, 46.5 ], [ 139.5, 50.5 ], [ 139.5, 53.5 ] ]
+                StaticDefences: [ [ 144., 48. ] ]
+                GateKeeper: [ [ 138.64, 48.49 ] ]

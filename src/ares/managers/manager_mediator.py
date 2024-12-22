@@ -1364,6 +1364,24 @@ class ManagerMediator(IManagerMediator):
             ManagerName.PLACEMENT_MANAGER, ManagerRequestType.GET_PLACEMENTS_DICT
         )
 
+    @property
+    def get_pvz_nat_gatekeeping_pos(self, **kwargs) -> Union[Point2, None]:
+        """Get the gatekeeper position in a PvZ natural wall if available.
+
+        WARNING: This can return `None` so your code should account for this.
+
+        PlacementManager
+
+
+        Returns
+        ----------
+        Optional[Point2] :
+            Position of gatekeeper in natural wall
+        """
+        return self.manager_request(
+            ManagerName.PLACEMENT_MANAGER, ManagerRequestType.GET_PVZ_NAT_GATEKEEPER_POS
+        )
+
     def request_building_placement(self, **kwargs) -> Optional[Point2]:
         """Request a building placement from the precalculated building formation.
 
@@ -1376,18 +1394,25 @@ class ManagerMediator(IManagerMediator):
             This should be a expansion location.
         structure_type : UnitID
             Structure type requested.
-        wall : bool, optional
+        first_pylon : bool (default=False)
+            Try to take designated first pylon if available.
+        static_defence : bool (default=False)
+            Try to take designated static defence placements if available.
+        wall : bool (default=False)
             Request a wall structure placement.
             Will find alternative if no wall placements available.
-        find_alternative : bool, optional (NOT YET IMPLEMENTED)
+        find_alternative : bool (default=True)
             If no placements available at base_location, find
             alternative at nearby base.
-        reserve_placement : bool, optional
-            Reserve this booking for a while, so another customer doesnt
+        reserve_placement : bool (default=True)
+            Reserve this booking for a while, so another customer doesn't
             request it.
-        within_psionic_matrix : bool, optional
+        within_psionic_matrix : bool (default=False)
             Protoss specific -> calculated position have power?
-        closest_to : Optional[Point2]
+        pylon_build_progress : float (default=1.0)
+            Only relevant if `within_psionic_matrix = True`
+        closest_to : Point2, optional
+            Find placement at base closest to this
 
         Returns
         ----------
@@ -1414,7 +1439,7 @@ class ManagerMediator(IManagerMediator):
             location.
         """
         return self.manager_request(
-            ManagerName.PLACEMENT_MANAGER,
+            ManagerName.WARP_IN_MANAGER,
             ManagerRequestType.REQUEST_WARP_IN,
             **kwargs,
         )

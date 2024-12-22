@@ -28,6 +28,7 @@ from ares.consts import (
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
     CHAT_DEBUG,
+    CONFIG_FILE,
     DEBUG,
     DEBUG_GAME_STEP,
     DEBUG_OPTIONS,
@@ -77,15 +78,13 @@ class AresBot(CustomBotAI):
             specified elsewhere
         """
         super().__init__()
-        # use this Dict when compiling
-        # self.config: Dict = CONFIG
         # otherwise we use the config.yml file
         __ares_config_location__: str = path.realpath(
             path.join(getcwd(), path.dirname(__file__))
         )
         self.__user_config_location__: str = path.abspath(".")
         config_parser: ConfigParser = ConfigParser(
-            __ares_config_location__, self.__user_config_location__
+            __ares_config_location__, self.__user_config_location__, CONFIG_FILE
         )
 
         self.config = config_parser.parse()
@@ -388,7 +387,7 @@ class AresBot(CustomBotAI):
         for archon_morph_action in self._archon_morph_actions:
             await self._do_archon_morph(archon_morph_action)
         self.manager_hub.path_manager.reset_grids(self.actual_iteration)
-        await self.manager_hub.placement_manager.do_warp_ins()
+        await self.manager_hub.warp_in_manager.do_warp_ins()
         return await super(AresBot, self)._after_step()
 
     def register_behavior(self, behavior: Behavior) -> None:
