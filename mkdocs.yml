@@ -37,8 +37,9 @@ nav:
       - Build Runner: tutorials/build_runner.md
       - Chat Debug: tutorials/chat_debug.md
       - Combat Maneuver Example: tutorials/combat_maneuver_example.md
-      - Creating Custom Behaviors: tutorials/custom_behaviors.md
       - Config File: tutorials/config_file.md
+      - Creating Custom Behaviors: tutorials/custom_behaviors.md
+      - Custom Building Placements: tutorials/custom_building_placements.md
       - Gotchas: tutorials/gotchas.md
       - Influence and Pathing: tutorials/influence_and_pathing.md
       - Managing Production: tutorials/managing_production.md
