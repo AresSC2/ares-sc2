@@ -144,6 +144,7 @@ UPGRADES: Set[str] = {"UPGRADES"}
 
 
 class BuildingPlacementOptions(str, Enum):
+    AVAILABLE_VS_RACES = "AvailableVsRaces"
     LOWER_SPAWN = "LowerSpawn"
     UPPER_SPAWN = "UpperSpawn"
     VS_ZERG_NAT_WALL = "VsZergNatWall"
