@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.30.0 (2024-12-22)
+
+### Feature
+
+* Building placements set per enemy race ([`362f76b`](https://github.com/AresSC2/ares-sc2/commit/362f76b0c727b1b83ddb1319cf234b8fd6bd74c1))
+
 ## v2.29.0 (2024-12-22)
 
 ### Feature
