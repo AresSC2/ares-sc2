@@ -395,6 +395,7 @@ class ManagerName(str, Enum):
     UNIT_CACHE_MANAGER = "UnitCacheManager"
     UNIT_MEMORY_MANAGER = "UnitMemoryManager"
     UNIT_ROLE_MANAGER = "UnitRoleManager"
+    WARP_IN_MANAGER = "WarpInManager"
 
 
 class UnitRole(str, Enum):

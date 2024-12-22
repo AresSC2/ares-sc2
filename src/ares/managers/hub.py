@@ -24,6 +24,7 @@ from ares.managers.terrain_manager import TerrainManager
 from ares.managers.unit_cache_manager import UnitCacheManager
 from ares.managers.unit_memory_manager import UnitMemoryManager
 from ares.managers.unit_role_manager import UnitRoleManager
+from ares.managers.warp_in_manager import WarpInManager
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -166,6 +167,9 @@ class Hub:
         self.squad_manager: SquadManager = SquadManager(
             ai, config, self.manager_mediator
         )
+        self.warp_in_manager: WarpInManager = WarpInManager(
+            ai, config, self.manager_mediator
+        )
 
         # in order of priority
         self.managers: list["Manager"] = [
@@ -179,6 +183,7 @@ class Hub:
             self.building_manager,
             self.ability_tracker_manager,
             self.placement_manager,
+            self.warp_in_manager,
             self.enemy_to_base_manager,
             self.intel_manager,
             self.combat_sim_manager,

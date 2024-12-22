@@ -1365,7 +1365,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_pvz_nat_gatekeeping_pos(self, **kwargs) -> Optional[Point2]:
+    def get_pvz_nat_gatekeeping_pos(self, **kwargs) -> Union[Point2, None]:
         """Get the gatekeeper position in a PvZ natural wall if available.
 
         WARNING: This can return `None` so your code should account for this.
@@ -1439,7 +1439,7 @@ class ManagerMediator(IManagerMediator):
             location.
         """
         return self.manager_request(
-            ManagerName.PLACEMENT_MANAGER,
+            ManagerName.WARP_IN_MANAGER,
             ManagerRequestType.REQUEST_WARP_IN,
             **kwargs,
         )

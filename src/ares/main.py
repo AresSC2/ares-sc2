@@ -387,7 +387,7 @@ class AresBot(CustomBotAI):
         for archon_morph_action in self._archon_morph_actions:
             await self._do_archon_morph(archon_morph_action)
         self.manager_hub.path_manager.reset_grids(self.actual_iteration)
-        await self.manager_hub.placement_manager.do_warp_ins()
+        await self.manager_hub.warp_in_manager.do_warp_ins()
         return await super(AresBot, self)._after_step()
 
     def register_behavior(self, behavior: Behavior) -> None:
