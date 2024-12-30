@@ -1,6 +1,4 @@
-"""Enable cross manager communication.
-
-"""
+"""Enable cross manager communication."""
 
 from abc import ABCMeta, abstractmethod
 from typing import (
@@ -9,7 +7,6 @@ from typing import (
     Callable,
     DefaultDict,
     Dict,
-    List,
     Optional,
     Set,
     Tuple,
@@ -76,7 +73,7 @@ class ManagerMediator(IManagerMediator):
     def __init__(self) -> None:
         self.managers: Dict[str, "Manager"] = {}  # noqa
 
-    def add_managers(self, managers: List["Manager"]) -> None:  # noqa
+    def add_managers(self, managers: list["Manager"]) -> None:  # noqa
         """Generate manager dictionary.
 
         Parameters:
@@ -769,7 +766,7 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
-    def find_lowest_cost_points(self, **kwargs) -> List[Point2]:
+    def find_lowest_cost_points(self, **kwargs) -> list[Point2]:
         """Find the point(s) with the lowest cost within `radius` from `from_pos`.
 
         PathManager
@@ -1038,7 +1035,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_whole_map_array(self) -> List[List[int]]:
+    def get_whole_map_array(self) -> list[list[int]]:
         """Get the list containing every point on the map.
 
         PathManager
@@ -1415,7 +1412,7 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
-    def get_behind_mineral_positions(self, **kwargs) -> List[Point2]:
+    def get_behind_mineral_positions(self, **kwargs) -> list[Point2]:
         """Finds 3 spots behind the mineral line
 
         This is useful for building structures out of typical cannon range.
@@ -1614,7 +1611,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_ol_spots(self) -> List[Point2]:
+    def get_ol_spots(self) -> list[Point2]:
         """High ground Overlord hiding spots.
 
         TerrainManager
@@ -1629,7 +1626,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_expansions(self) -> List[Tuple[Point2, float]]:
+    def get_own_expansions(self) -> list[Tuple[Point2, float]]:
         """Get the expansions.
 
         TerrainManager
@@ -1871,7 +1868,7 @@ class ManagerMediator(IManagerMediator):
 
     def get_units_in_range(
         self, **kwargs
-    ) -> Union[Dict[Union[int, Tuple[float, float]], Units], List[Units]]:
+    ) -> Union[Dict[Union[int, Tuple[float, float]], Units], list[Units]]:
         """Get units in range of other units or points.
 
         UnitMemoryManager
