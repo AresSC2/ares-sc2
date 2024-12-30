@@ -28,18 +28,11 @@ class AutoSupply(MacroBehavior):
     self.register_behavior(AutoSupply(self.start_location))
     ```
 
-    Attributes
-    ----------
-    base_location : Point2
-        The base location where supply should be built.
-    return_true_if_supply_required : bool
-        Can't afford supply, but it's required, return true?
-        Useful if creating a `MacroPlan`
+    Attributes:
+        base_location: The base location where supply should be built.
+        return_true_if_supply_required: If supply can't be afforded but is
+            required, return true. Useful for creating a `MacroPlan`.
 
-    Returns
-    ----------
-    bool :
-        True if this Behavior carried out an action.
     """
 
     base_location: Point2

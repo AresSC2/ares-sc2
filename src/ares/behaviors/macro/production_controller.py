@@ -49,36 +49,25 @@ class ProductionController(MacroBehavior):
 
     ```
 
-    Attributes
-    ----------
-    army_composition_dict : dict[UnitID: float, bool]
-        A dictionary that details how an army composition should be made up.
-        The proportional values should all add up to 1.0.
-        With a priority integer to give units emphasis.
-    base_location : Point2
-        Where abouts do we build production?
-    add_production_at_bank : Tuple[int, int], optional
-        When we reach this bank size, work out what extra production
-        would be useful.
-        Tuple where first value is minerals and second is vespene.
-        (default = `(300, 300)`)
-    alpha : float, optional
-        Controls how much production to add when bank is
-        higher than `add_production_at_bank`.
-        (default = `0.9`)
-    unit_pending_progress : float, optional
-        Check for production structures almost ready
-        For example a marine might almost be ready, meaning
-        we don't need to add extra production just yet.
-         (default = 0.8)
-    ignore_below_proportion: float, optional
-        If we don't want many of this unit, no point adding production.
-        Will check if possible to build unit first.
-        Default is `0.05`
-    should_repower_structures: bool, optional
-        Search for unpowered structures, and build a new
-        pylon as needed.
-        Default is `True`
+    Attributes:
+        army_composition_dict: A dictionary detailing how an army composition
+            should be made up. The proportional values should all add up to 1.0,
+            with a priority integer for unit emphasis.
+        base_location: The location where production should be built.
+        add_production_at_bank: When the bank reaches this size, calculate what
+            extra production would be useful. Tuple where the first value is
+            minerals and the second is vespene. Defaults to `(300, 300)`.
+        alpha: Controls how much production to add when the bank is higher than
+            `add_production_at_bank`. Defaults to `0.9`.
+        unit_pending_progress: Check for production structures almost ready.
+            For example, a marine might almost be ready, meaning we don't need to
+            add extra production just yet. Defaults to `0.8`.
+        ignore_below_proportion: If we don't want many of a unit, there's no point
+            adding production. Checks if it's possible to build a unit first.
+            Defaults to `0.05`.
+        should_repower_structures: Search for unpowered structures and build a
+            new pylon if needed. Defaults to `True`.
+
     """
 
     army_composition_dict: dict[UnitID, dict[str, float, str, int]]

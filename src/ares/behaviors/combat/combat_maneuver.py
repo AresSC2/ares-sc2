@@ -76,10 +76,9 @@ class CombatManeuver(Behavior):
             self.register_behavior(mine_drop)
     ```
 
-    Attributes
-    ----------
-    micros : list[Behavior] (optional, default: [])
-        A list of behaviors that should be executed. (Optional)
+    Attributes:
+        micros: A list of behaviors that should be executed. Defaults to an empty list.
+
     """
 
     micros: list[Behavior] = field(default_factory=list)
@@ -91,14 +90,9 @@ class CombatManeuver(Behavior):
         ],
     ) -> None:
         """
-        Parameters
-        ----------
-        behavior : CombatBehavior
-            Add a new combat behavior to the current maneuver object.
+        Args:
+            behavior: Add a new combat behavior to the current maneuver object.
 
-        Returns
-        -------
-            None
         """
         self.micros.append(behavior)
 

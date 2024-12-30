@@ -25,10 +25,9 @@ class BuildWorkers(MacroBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    to_count : int
-        The target count of workers we want to hit.
+    Attributes:
+        to_count: The target count of workers we want to hit.
+
     """
 
     to_count: int

@@ -24,16 +24,13 @@ class KeepGroupSafe(CombatGroupBehavior):
     self.register_behavior(AMoveGroup(units, self.game_info.map_center))
     ```
 
-    Attributes
-    ----------
-    group : list[Unit]
-        Units we want to control.
-    close_enemy : Union[Units, list[Unit]]
-        Nearby enemy.
-    grid : np.ndarray
-        Grid we should check for safety.
-    attack_in_range_enemy : bool (default=True)
-        Attack in range if weapon is ready.
+    Attributes:
+        group: Units we want to control.
+        close_enemy: Nearby enemy.
+        grid: Grid we should check for safety.
+        attack_in_range_enemy: Whether to attack in range if weapon is ready.
+            Defaults to True.
+
     """
 
     group: list[Unit]

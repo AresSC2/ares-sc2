@@ -460,7 +460,7 @@ class PathManager(Manager, IManagerMediator):
         sensitivity: int = 5,
         smoothing: bool = False,
         sense_danger: bool = True,
-        danger_distance: int = 20,
+        danger_distance: int = 20.0,
         danger_threshold: float = 5.0,
     ) -> Point2:
         """Find the next point in a path.
@@ -575,18 +575,13 @@ class PathManager(Manager, IManagerMediator):
     ) -> bool:
         """Check if the given position is considered dangerous.
 
-        Parameters
-        ----------
-        grid :
-            The grid to evaluate safety on.
-        position :
-            The position to check the safety of.
-        weight_safety_limit :
-            The maximum value the point can have on the grid to be considered safe.
+        Parameters:
+            grid: The grid to evaluate safety on.
+            position: The position to check the safety of.
+            weight_safety_limit: The maximum value the point can
+                have on the grid to be considered safe.
 
-        Returns
-        -------
-        bool:
+        Returns:
             True if the position is considered safe, False otherwise.
 
         """
@@ -595,14 +590,8 @@ class PathManager(Manager, IManagerMediator):
     def reset_grids(self, iteration: int) -> None:
         """Get fresh grids so that the influence can be updated.
 
-        Parameters
-        ----------
-        iteration :
-            The current game iteration.
-
-        Returns
-        -------
-
+        Parameters:
+            iteration: The current game iteration.
         """
         self.air_grid = self._cached_clean_air_grid.copy()
         self.air_vs_ground_grid = self._cached_clean_air_vs_ground_grid.copy()
@@ -625,16 +614,9 @@ class PathManager(Manager, IManagerMediator):
         """Add influence to the relevant grid.
 
         Called from _prepare_units.
-        Work in progress.
 
-        Parameters
-        ----------
-        enemy :
-            The enemy unit to add the influence of.
-
-        Returns
-        -------
-
+        Parameters:
+            enemy: The enemy unit to add the influence of.
         """
 
         if not enemy.is_ready and not enemy.is_cloaked and not enemy.is_burrowed:
@@ -646,14 +628,8 @@ class PathManager(Manager, IManagerMediator):
 
         Called from _prepare_units.
 
-        Parameters
-        ----------
-        enemy :
-            The enemy structure to add the influence of.
-
-        Returns
-        -------
-
+        Parameters:
+            enemy: The enemy structure to add the influence of.
         """
         # these will expire out of our vision, don't add to grid
         if enemy.type_id == UnitID.AUTOTURRET and enemy.is_snapshot:
@@ -662,12 +638,7 @@ class PathManager(Manager, IManagerMediator):
             self._add_structure_influence(enemy)
 
     def _add_effects(self) -> None:
-        """Add effects influence to map.
-
-        Returns
-        -------
-
-        """
+        """Add effects influence to map."""
         effect_values: Dict = self.config[PATHING][EFFECTS]
 
         for effect in self.ai.state.effects:
@@ -795,14 +766,8 @@ class PathManager(Manager, IManagerMediator):
     def _add_structure_influence(self, structure: Unit) -> None:
         """Add structure influence to map.
 
-        Parameters
-        ----------
-        structure :
-            The structure to add the influence of.
-
-        Returns
-        -------
-
+        Parameters:
+            structure: The structure to add the influence of.
         """
         if structure.type_id == UnitID.PHOTONCANNON:
             (
@@ -886,14 +851,8 @@ class PathManager(Manager, IManagerMediator):
     def _add_unit_influence(self, unit: Unit) -> None:
         """Add unit influence to maps.
 
-        Parameters
-        ----------
-        unit :
-            The unit to add the influence of.
-
-        Returns
-        -------
-
+        Parameters:
+        unit: The unit to add the influence of.
         """
         if unit.type_id in WEIGHT_COSTS:
             weight_values = WEIGHT_COSTS[unit.type_id]
@@ -993,16 +952,9 @@ class PathManager(Manager, IManagerMediator):
         TODO: Could perhaps be renamed as misleading name, cost is added to the main
             grids but not all
 
-        Parameters
-        ----------
-        unit :
-            Unit to add the costs of.
-        weight_values :
-            Dictionary containing the weights of units.
-
-        Returns
-        -------
-
+        Parameters:
+            unit: Unit to add the costs of.
+            weight_values: Dictionary containing the weights of units.
         """
         if unit.type_id == UnitID.AUTOTURRET:
             (
@@ -1075,37 +1027,25 @@ class PathManager(Manager, IManagerMediator):
     def _add_delayed_effect(
         self,
         position: Point2,
-        effect_dict: Dict,
+        effect_dict: dict,
     ) -> None:
         """Add an effect that we know exists but is not in the game observation.
 
-        Parameters
-        ----------
-        position :
-            Where to add the effect.
-        effect_dict :
-            Currently tracked effects.
-
-        Returns
-        -------
+        Parameters:
+            position: Where to add the effect.
+            effect_dict: Currently tracked effects.
 
         """
         # no record of this yet
         if position not in effect_dict:
             effect_dict[position] = self.ai.state.game_loop
 
-    def _clear_delayed_effects(self, effect_dict: Dict, effect_duration: int) -> None:
+    def _clear_delayed_effects(self, effect_dict: dict, effect_duration: int) -> None:
         """Remove delayed effects when they've expired.
 
-        Parameters
-        ----------
-        effect_dict :
-            Currently tracked effects.
-        effect_duration :
-            How long the effect lasts.
-
-        Returns
-        -------
+        Parameters:
+            effect_dict: Currently tracked effects.
+            effect_duration: How long the effect lasts.
 
         """
         current_frame: int = self.ai.state.game_loop
@@ -1127,20 +1067,11 @@ class PathManager(Manager, IManagerMediator):
     ) -> None:
         """Add the costs of the delayed effects to the grids.
 
-        Parameters
-        ----------
-        cost :
-            Cost of the effect.
-        radius :
-            How far around the center position the cost should be added.
-        effect_dict :
-            Currently tracked effects.
-        react_on_frame :
-            When units should begin reacting to this effect.
-
-        Returns
-        -------
-
+        Parameters:
+            cost: Cost of the effect.
+            radius: How far around the center position the cost should be added.
+            effect_dict: Currently tracked effects.
+            react_on_frame: When units should begin reacting to this effect.
         """
         current_frame: int = self.ai.state.game_loop
         for position, frame_commenced in effect_dict.items():
@@ -1170,12 +1101,7 @@ class PathManager(Manager, IManagerMediator):
                 )
 
     def _update_delayed_effects(self) -> None:
-        """Update manually tracked effects.
-
-        Returns
-        -------
-
-        """
+        """Update manually tracked effects."""
         # these effects disappear from the observation, so we have to manually add them
         self._add_delayed_effects_to_grids(
             cost=self.config[PATHING][EFFECTS][CORROSIVE_BILE][COST],

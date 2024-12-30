@@ -35,17 +35,13 @@ class PickUpCargo(CombatIndividualBehavior):
     self.register_behavior(PickUpCargo(unit, grid, pickup_targets))
     ```
 
-    Attributes
-    ----------
-    unit : Unit
-        The container unit.
-    grid : np.ndarray
-        Pathing grid for container unit.
-    pickup_targets : Union[Units, list[Unit]]
-        Units we want to load into the container.
-    cargo_switch_to_role : UnitRole (default: None)
-        Sometimes useful to switch cargo tp new role
-        immediately after loading.
+    Attributes:
+        unit: The container unit.
+        grid: Pathing grid for the container unit.
+        pickup_targets: Units we want to load into the container.
+        cargo_switch_to_role: Sometimes useful to switch cargo to
+            a new role immediately after loading. Defaults to None.
+
     """
 
     unit: Unit

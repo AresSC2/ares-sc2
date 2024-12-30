@@ -41,25 +41,17 @@ class RangedMicroRecipes:
         )
         ```
 
-        Parameters
-        ----------
-        unit :
-            The unit we want to control
-        enemy_units :
-            The intended grid this unit should path on.
-        target :
-            General target this unit should move to.
-        grid :
-            Reference to ares-sc2 mediator object.
-        dist_to_target :
-            How far to search for safe spots.
-        keep_safe :
-            Should keep unit safe if nothing else to do?
+        Parameters:
+            unit: The unit to control.
+            enemy_units: The enemy units this unit should avoid.
+            target: General target this unit should move to.
+            grid: The grid to path on.
+            dist_to_target: Distance to the target.
+            keep_safe: Should the unit stay safe if no other actions are needed?
 
-        Returns
-        -------
-        CombatManeuver :
-            A CombatManeuver object that should be registered.
+        Returns:
+            CombatManeuver: A CombatManeuver object that should be registered.
+
         """
         ranged_micro_maneuver: CombatManeuver = CombatManeuver()
         ranged_micro_maneuver.add(ShootTargetInRange(unit, enemy_units))

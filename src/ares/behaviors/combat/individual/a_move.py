@@ -24,12 +24,10 @@ class AMove(CombatIndividualBehavior):
     self.register_behavior(AMove(unit, self.game_info.map_center))
     ```
 
-    Attributes
-    ----------
-    unit : Unit
-        The unit to stay safe.
-    target: Point2
-        Where the unit is going.
+    Attributes:
+        unit: The unit to stay safe.
+        target: Where the unit is going.
+
     """
 
     unit: Unit

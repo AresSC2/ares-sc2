@@ -33,32 +33,24 @@ class BuildStructure(MacroBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    base_location : Point2
-        The base location to build near.
-    structure_id : UnitTypeId
-        The structure type we want to build.
-    max_on_route : int (default=1)
-        The max number of workers on route to build this.
-    first_pylon : bool (default=False)
-        Will look for first pylon in placements dict
-    static_defence : bool (default=False)
-        Will look for static defence in placements dict
-    wall : bool (default=False)
-        Find wall placement if possible.
-        (Only main base currently supported)
-    closest_to : Point2 (optional)
-        Find placement at this base closest to
-    to_count: int (default=0)
-        Prevent going over this amount in total.
-        0 (default) turns this check off
-    to_count_per_base: int (default=0)
-        Prevent going over this amount at this base_location.
-        0 (default) turns this check off
-    tech_progress_check: float (optional=0.85)
-        Check if tech is ready before trying to build.
-        Setting value to 0.0 turns this check off
+    Attributes:
+        base_location: The base location to build near.
+        structure_id: The structure type we want to build.
+        max_on_route: The max number of workers on route to build this. Defaults to 1.
+        first_pylon: Will look for the first pylon in placements dict.
+            Defaults to False.
+        static_defence: Will look for static defense in placements dict.
+            Defaults to False.
+        wall: Find wall placement if possible. Only the main base is currently
+            supported. Defaults to False.
+        closest_to: Find placement at this base closest to the given point. Optional.
+        to_count: Prevent going over this amount in total.
+            Defaults to 0, turning this check off.
+        to_count_per_base: Prevent going over this amount at this base location.
+            Defaults to 0, turning this check off.
+        tech_progress_check: Check if tech is ready before trying to build.
+            Defaults to 0.85; setting it to 0.0 turns this check off.
+
     """
 
     base_location: Point2

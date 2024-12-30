@@ -53,27 +53,25 @@ class Mining(MacroBehavior):
     self.register_behavior(Mining())
     ```
 
-    Attributes
-    ----------
-    flee_at_health_perc : float, optional
-        If worker is in danger, at what health perc should it flee (default is 0.5).
-    keep_safe : bool, optional
-        Workers flee if they are in danger? (default is True).
-    long_distance_mine : bool, optional
-        If worker has nothing to do, can it long distance mine (default is True).
-    mineral_boost : bool, optional
-        Turn mineral boosting off / on (default is True).
-    vespene_boost : bool, optional
-        Turn vespene boosting off / on (only active when workers_per_gas < 3)
-        WARNING: VESPENE BOOSTING CURRENTLY NOT WORKING
-        (default is True).
-    workers_per_gas : bool, optional (default: 3)
-        Control how many workers are assigned to each gas.
-    self_defence_active : bool, optional (default: True)
-        If set to True, workers will have some basic defence.
-        Certain workers will attack enemy in range.
-    safe_long_distance_mineral_fields : Optional[Units], optional (default is None)
-        Used internally, value is set if a worker starts long distance mining.
+    Attributes:
+        flee_at_health_perc: If worker is in danger, at what
+            health percentage should it flee? Defaults to 0.5.
+        keep_safe: Should workers flee if they are in danger?
+            Defaults to True.
+        long_distance_mine: Can the worker long distance mine if it has nothing to do?
+            Defaults to True.
+        mineral_boost: Turn mineral boosting on or off. Defaults to True.
+        vespene_boost: Turn vespene boosting on or off
+            (only active when workers_per_gas < 3).
+            WARNING: VESPENE BOOSTING CURRENTLY NOT WORKING.
+            Defaults to True.
+        workers_per_gas: Control how many workers are assigned to each gas.
+            Defaults to 3.
+        self_defence_active: If set to True, workers will have some basic defence.
+            Certain workers will attack enemy in range. Defaults to True.
+        safe_long_distance_mineral_fields: Used internally, set when a worker starts
+            long distance mining. Defaults to None.
+
     """
 
     flee_at_health_perc: float = 0.5

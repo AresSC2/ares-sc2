@@ -28,21 +28,14 @@ class ExpansionController(MacroBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    to_count : int
-        The target base count.
-    can_afford_check : bool, optional
-        Check we can afford expansion.
-        Setting this to False will allow worker to move
-        to location ready to build expansion.
-        (default is `True`)
-    check_location_is_safe : bool, optional
-        Check we don't knowingly expand at a dangerous location.
-        (default is `True`)
-    max_pending : int, optional
-        Maximum pending townhalls at any time.
-        (default is `1`)
+    Attributes:
+        to_count: The target base count.
+        can_afford_check: Check if we can afford expansion. Setting this to False
+            will allow the worker to move to a location ready to build the expansion.
+            Defaults to True.
+        check_location_is_safe: Check if we don't knowingly expand at a dangerous
+            location. Defaults to True.
+        max_pending: Maximum pending townhalls at any time. Defaults to 1.
     """
 
     to_count: int

@@ -34,12 +34,9 @@ class WorkerKiteBack(CombatIndividualBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    unit: Unit
-        The unit to shoot.
-    target : Unit
-        The unit we want to shoot at.
+    Attributes:
+        unit: The unit to shoot.
+        target: The unit we want to shoot at.
     """
 
     unit: Unit

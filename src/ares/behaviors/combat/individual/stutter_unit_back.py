@@ -29,16 +29,12 @@ class StutterUnitBack(CombatIndividualBehavior):
     self.register_behavior(StutterUnitBack(unit, target))
     ```
 
-    Attributes
-    ----------
-    unit: Unit
-        The unit to shoot.
-    target : Unit
-        The unit we want to shoot at.
-    kite_via_pathing : bool
-        Kite back using pathing? Value for `grid` must be present.
-    grid : Optional[np.ndarray]
-        Pass in if using kite_via_pathing.
+    Attributes:
+        unit: The unit to shoot.
+        target: The unit we want to shoot at.
+        kite_via_pathing: Kite back using pathing? Value for `grid` must be present.
+        grid: Pass in if using `kite_via_pathing`.
+
     """
 
     unit: Unit

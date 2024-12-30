@@ -19,13 +19,12 @@ if TYPE_CHECKING:
 class AbilityTrackerManager(Manager, IManagerMediator):
     """Manager to handle manually tracking abilities of units.
 
-    Attributes
-    ----------
-    ability_frame_cd_dict : Dict[AbilityId, int]
-        Dictionary with the cooldown of usable abilities for faster lookup.
-    unit_to_ability_dict : Dict[int, Dict[AbilityId, int]]
-        Dictionary of the unit tag to a dictionary of each Ability and when it was last
-        used.
+    Attributes:
+        ability_frame_cd_dict: Dictionary with the cooldown of
+            usable abilities for faster lookup.
+        unit_to_ability_dict: Dictionary of the unit tag to a
+            dictionary of each Ability and when it was last used.
+
 
     """
 
