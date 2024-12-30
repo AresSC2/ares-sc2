@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.30.1 (2024-12-30)
+
+### Fix
+
+* Convert numpy style docstrings to google type ([`4143556`](https://github.com/AresSC2/ares-sc2/commit/41435563429b55164bc32d76bf6e2a3cc1578a9c))
+
 ## v2.30.0 (2024-12-22)
 
 ### Feature
