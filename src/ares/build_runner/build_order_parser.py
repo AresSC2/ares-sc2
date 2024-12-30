@@ -27,17 +27,13 @@ class BuildOrderParser:
     """Parses a build order string into a list of `BuildOrderStep`.
 
     Attributes:
-    -----------
-    ai: `AresBot`
-        The bot instance.
-    build_order_step_dict: Optional[Dict]
-        A dictionary of `BuildOrderStep` objects representing
-        the recognized build order commands.
+        ai: The bot instance.
+        build_order_step_dict: A dictionary of `BuildOrderStep` objects representing
+            the recognized build order commands.
 
     Methods:
-    --------
-    parse() -> List[BuildOrderStep]:
-        Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
+        parse: Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
+
     """
 
     ai: "AresBot"

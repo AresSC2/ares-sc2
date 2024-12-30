@@ -460,7 +460,7 @@ class PathManager(Manager, IManagerMediator):
         sensitivity: int = 5,
         smoothing: bool = False,
         sense_danger: bool = True,
-        danger_distance: int = 20,
+        danger_distance: int = 20.,
         danger_threshold: float = 5.0,
     ) -> Point2:
         """Find the next point in a path.

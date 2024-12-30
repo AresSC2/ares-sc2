@@ -30,18 +30,13 @@ class StutterGroupBack(CombatGroupBehavior):
     """Stutter a group back in unison.
 
 
-    Attributes
-    ----------
-    group : Unit
-        The group of units we want to control.
-    group_tags: Point2
-        The group unit tags.
-    group_position : Point2
-        The position where this group is situated.
-    target : Union[Point2, Unit]
-        Target for the group.
-    grid : np.ndarray
-        Grid this group will use to path on.
+    Attributes:
+        group: The group of units we want to control.
+        group_tags: The group unit tags.
+        group_position: The position where this group is situated.
+        target: Target for the group.
+        grid: Grid this group will use to path on.
+
     """
 
     group: list[Unit]
@@ -70,7 +65,7 @@ class StutterGroupBack(CombatGroupBehavior):
             if group_safe:
                 return True
             if len(self.group) > 1:
-                move_to_target: Point2 = self.calculate_retreat_position(ai)
+                move_to_target: Point2 = self._calculate_retreat_position(ai)
                 safe_spot: Point2 = mediator.find_closest_safe_spot(
                     from_pos=move_to_target, grid=self.grid
                 )
@@ -100,18 +95,8 @@ class StutterGroupBack(CombatGroupBehavior):
 
         return True
 
-    def calculate_retreat_position(self, ai: "AresBot") -> Point2:
-        """
-        Search 8 directions for somewhere to retreat to.
-
-        Parameters
-        ----------
-        ai
-
-        Returns
-        -------
-
-        """
+    def _calculate_retreat_position(self, ai: "AresBot") -> Point2:
+        """Search 8 directions for somewhere to retreat to."""
         distance = len(self.group) * 1.5
 
         map_bounds = ai.game_info.map_size

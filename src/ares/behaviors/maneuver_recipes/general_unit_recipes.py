@@ -37,34 +37,27 @@ class GeneralUnitRecipes:
             )
         )
         ```
+        Parameters:
+            unit: The unit to control.
+            grid: The grid this unit should path on.
+            target: The general target for the unit to move to.
+            mediator: A reference to the ares-sc2 mediator object.
+            success_at_distance: The distance from the target at which
+                the pathing task is considered complete.
+                Defaults to 0.0
+            radius: The radius to search for safe spots.
+                Defaults to 12.
+            sensitivity: The precision of the pathing query.
+                A value of 1 indicates highly accurate pathing.
+                Defaults to 2.
+            sense_danger: Whether to search for nearby danger on the grid.
+                If no danger is found, the pathing query will be skipped.
+                Defaults to True.
+            smoothing: Whether to smooth out the path.
+                Defaults to False.
 
-        Parameters
-        ----------
-        unit :
-            The unit we want to control
-        grid :
-            The intended grid this unit should path on.
-        target :
-            General target this unit should move to.
-        mediator :
-            Reference to ares-sc2 mediator object.
-        success_at_distance :
-            If unit is within this distance to target,
-            we consider the pathing task complete.
-        radius :
-            How far to search for safe spots.
-        sensitivity :
-            How precise the pathing query should be.
-            1 for a highly accurate path
-        sense_danger :
-            Search for near danger on `grid`
-            If none are found, skip pathing query
-        smoothing :
-            Smooth out the path
 
-        Returns
-        -------
-        CombatManeuver :
+        Returns: CombatManeuver
             A CombatManeuver object with a single PathUnitToTarget behavior.
         """
         maneuver: CombatManeuver = CombatManeuver()

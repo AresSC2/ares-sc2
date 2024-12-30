@@ -30,15 +30,12 @@ class ShootTargetInRange(CombatIndividualBehavior):
     self.register_behavior(ShootTargetInRange(unit, target))
     ```
 
-    Attributes
-    ----------
-    unit: Unit
-        The unit to shoot.
-    targets : Union[list[Unit], Units]
-        Units we want to check.
-    extra_range: float (optional)
-        Look outside unit weapon range.
-        This might be useful for hunting down low hp units.
+    Attributes:
+        unit: The unit to shoot.
+        targets: Units we want to check.
+        extra_range: Look outside the unit's weapon range.
+            This might be useful for hunting down low HP units.
+
     """
 
     unit: Unit

@@ -28,12 +28,10 @@ class DropCargo(CombatIndividualBehavior):
     self.register_behavior(DropCargo(unit, target))
     ```
 
-    Attributes
-    ----------
-    unit : Unit
-        The container unit.
-    target : Point2
-        The target position where to drop the cargo.
+    Attributes:
+        unit: The container unit.
+        target: The target position where to drop the cargo.
+
     """
 
     unit: Unit

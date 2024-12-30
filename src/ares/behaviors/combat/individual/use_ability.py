@@ -32,14 +32,11 @@ class UseAbility(CombatIndividualBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    ability : AbilityId
-        The ability we want to use.
-    unit : Unit
-        The unit to use the ability.
-    target: Union[Point2, Unit, None]
-        Target for this ability.
+    Attributes:
+        ability: The ability we want to use.
+        unit: The unit to use the ability.
+        target: Target for this ability.
+
     """
 
     ability: AbilityId

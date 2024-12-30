@@ -24,14 +24,10 @@ class AMoveGroup(CombatGroupBehavior):
     self.register_behavior(AMoveGroup(units, self.game_info.map_center))
     ```
 
-    Attributes
-    ----------
-    group : list[Unit]
-        Units we want to control.
-    group_tags : set[int]
-        The group unit tags.
-    target: Point2
-        Where the unit is going.
+    Attributes:
+        group (list[Unit]): Units we want to control.
+        group_tags (set[int]): The group unit tags.
+        target (Point2): Where the unit is going.
     """
 
     group: list[Unit]

@@ -29,12 +29,10 @@ class KeepUnitSafe(CombatIndividualBehavior):
     self.register_behavior(KeepUnitSafe(unit, grid))
     ```
 
-    Attributes
-    ----------
-    unit : Unit
-        The unit to stay safe.
-    grid : np.ndarray
-        2D Grid which usually contains enemy influence.
+    Attributes:
+        unit: The unit to stay safe.
+        grid: 2D grid which usually contains enemy influence.
+
     """
 
     unit: Unit

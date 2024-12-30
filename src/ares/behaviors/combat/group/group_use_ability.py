@@ -30,24 +30,19 @@ class GroupUseAbility(CombatGroupBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    ability: AbilityId
-        Ability we want to use.
-    group : list[Unit]
-        Units we want to control.
-    group_tags : set[int]
-        The group unit tags.
-    target: Union[Point2, Unit, None]
-        The target for this ability.
-    sync_command: bool (default=True)
-        If True, wait for all units to be ready before trying ability
+    Attributes:
+        ability: Ability we want to use.
+        group: Units we want to control.
+        group_tags: The group unit tags.
+        target: The target for this ability.
+        sync_command: (default=True) If True, wait for all units
+            to be ready before trying ability.
     """
 
     ability: AbilityId
     group: list[Unit]
     group_tags: set[int]
-    target: Union[Point2, Unit]
+    target: Union[Point2, Unit, None]
     sync_command: bool = True
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:

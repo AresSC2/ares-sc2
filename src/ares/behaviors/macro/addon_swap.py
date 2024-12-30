@@ -35,12 +35,9 @@ class AddonSwap(MacroBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    structure_needing_addon : Unit
-        The structure type we want the addon for
-    addon_required : UnitID
-        Type of addon required
+    Attributes:
+        structure_needing_addon: The structure type we want the addon for.
+        addon_required: Type of addon required.
     """
 
     structure_needing_addon: Unit

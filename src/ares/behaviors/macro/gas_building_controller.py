@@ -27,14 +27,13 @@ class GasBuildingController(MacroBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    to_count : int
-        How many gas buildings would we like?
-    max_pending : int (optional)
-        How many gas pending at any time?
-    closest_to : Point2 (optional)
-        Find available geyser closest to this location.
+    Attributes:
+        to_count: How many gas buildings would we like?
+        max_pending: How many gas buildings can be pending at any time?
+            Defaults to 1.
+        closest_to: Find available geyser closest to this location.
+            Optional, defaults to `None`
+
     """
 
     to_count: int

@@ -16,19 +16,14 @@ class CombatIndividualBehavior(Behavior, Protocol):
         Compared to CombatBehavior a MacroBehavior may be a larger isolated task.
         No need to return anything for a macro behavior.
 
-        Parameters
-        ----------
-        ai :
-            Bot object that will be running the game.
-        config :
-            Dictionary with the data from the configuration file.
-        mediator :
-            ManagerMediator used for getting information from other managers.
+        Args:
+            ai: Bot object that will be running the game.
+            config: Dictionary with the data from the configuration file.
+            mediator: ManagerMediator used for getting information from other managers.
 
-        Returns
-        ----------
-        bool :
-            True if this CombatIndividualBehavior carried out an action.
-            False otherwise.
+        Returns:
+            bool: True if this CombatIndividualBehavior carried out an action,
+                False otherwise.
+
         """
         ...

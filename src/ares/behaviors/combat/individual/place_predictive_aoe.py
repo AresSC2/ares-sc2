@@ -24,18 +24,14 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
     TODO: Guess where the enemy is going based on how it's been moving.
         Cythonize this.
 
-    Attributes
-    ----------
-    unit: Unit
-        The unit to fire the AoE.
-    path : List[Point2]
-        How we're getting to the target position (the last point in the list)
-    enemy_center_unit: Unit
-        Enemy unit to calculate positions based on.
-    aoe_ability: AbilityId
-        AoE ability to use.
-    ability_delay: int
-        Amount of frames between using the ability and the ability occurring.
+    Attributes:
+        unit: The unit to fire the AoE.
+        path: How we're getting to the target position (the last point in the list).
+        enemy_center_unit: Enemy unit to calculate positions based on.
+        aoe_ability: AoE ability to use.
+        ability_delay: Amount of frames between using the ability and
+            the ability occurring.
+
     """
 
     unit: Unit

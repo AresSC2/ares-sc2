@@ -39,28 +39,27 @@ class SpawnController(MacroBehavior):
 
     ```
 
-    Attributes
-    ----------
-    army_composition_dict : dict[UnitID: float, bool]
-        A dictionary that details how an army composition should be made up.
-        The proportional values should all add up to 1.0.
-        With a priority integer to give units emphasis.
-    freeflow_mode : bool (default: False)
-        If set to True, army comp proportions are ignored, and resources
-        will be spent freely.
-    ignore_proportions_below_unit_count : int (default 0)
-        In early game units effect the army proportions significantly.
-        This allows some units to be freely built before proportions are respected.
-    over_produce_on_low_tech : bool (default True)
-        If there is only tech available for one unit, this will allow this
-        unit to be constantly produced.
-    ignored_build_from_tags : set[int]
-        Prevent spawn controller from morphing from these tags
-        Example: Prevent selecting barracks that needs to build an addon
-    maximum : int (default 20)
-        The maximum unit type we can produce in a single step.
-    spawn_target : Union[Point2, None] (default None)
-        Prioritize spawning units near this location.
+    Attributes:
+        army_composition_dict: A dictionary detailing how an army
+            composition should be made up. The proportional values should
+            all add up to 1.0, with a priority integer for unit emphasis.
+        freeflow_mode: If set to True, army composition proportions are ignored,
+            and resources will be spent freely.
+            Defaults to `False`.
+        ignore_proportions_below_unit_count: In early game, units affect the
+            army proportions significantly. This allows some units to be freely
+            built before proportions are respected. Defaults to `0`.
+        over_produce_on_low_tech: If only one tech is available for a unit,
+            this allows that unit to be constantly produced.
+            Defaults to `True`.
+        ignored_build_from_tags: A set of tags to prevent the spawn controller
+            from morphing from these tags.
+            Example: Prevent selecting barracks that need to build an addon.
+        maximum: The maximum number of a unit type that can be produced
+            in a single step. Defaults to `20`.
+        spawn_target: A location to prioritize spawning units near.
+        Defaults to `None`.
+
 
     """
 

@@ -12,19 +12,14 @@ class Behavior(Protocol):
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         """Execute the implemented behavior.
 
-        Parameters
-        ----------
-        ai :
-            Bot object that will be running the game.
-        config :
-            Dictionary with the data from the configuration file.
-        mediator :
-            ManagerMediator used for getting information from other managers.
+        Parameters:
+            ai: Bot object that will be running the game.
+            config: Dictionary with the data from the configuration file.
+            mediator: ManagerMediator used for getting information from other managers.
 
-        Returns
-        -------
-        bool :
-            Return value depends on combat / macro behavior interfaces.
+        Returns:
+            bool: Return value depends on combat/macros behavior interfaces.
             See those interfaces for more info.
+
         """
         ...

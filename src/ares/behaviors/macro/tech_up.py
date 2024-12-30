@@ -38,20 +38,12 @@ class TechUp(MacroBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    desired_tech : Union[UpgradeId, UnitTypeId]
-        What is the desired thing we want?
-    base_location : bool
-        The main building location to make tech.
-    ignore_existing_techlabs : bool
-        Will keep building techlabs even if others exist
-        (default = False)
-
-    Returns
-    ----------
-    bool :
-        True if this Behavior carried out an action.
+    Attributes:
+        desired_tech: The desired upgrade or unit type.
+        base_location: The main building location to make tech.
+        ignore_existing_techlabs: If set to `True`, will
+            keep building techlabs even if others exist.
+            Defaults to `False`.
 
     """
 

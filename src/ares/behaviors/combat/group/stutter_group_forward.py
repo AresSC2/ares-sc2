@@ -18,19 +18,13 @@ if TYPE_CHECKING:
 class StutterGroupForward(CombatGroupBehavior):
     """Stutter a group forward in unison.
 
-    Attributes
-    ----------
-    group : list[Unit]
-        The group of units we want to control.
-    group_tags: set[int]
-        The group unit tags.
-    group_position : Point2
-        The position where this group is situated.
-    target : Union[Point2, Unit]
-        Target for the group.
-        Used if no enemies present.
-    enemies : Union[Units, list[Unit]]
-        The enemy units we want to stutter towards
+    Attributes:
+        group: The group of units we want to control.
+        group_tags: The group unit tags.
+        group_position: The position where this group is situated.
+        target: Target for the group, used if no enemies are present.
+        enemies: The enemy units we want to stutter towards.
+
     """
 
     group: list[Unit]

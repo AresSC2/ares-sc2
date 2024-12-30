@@ -42,31 +42,22 @@ class BuildOrderRunner:
     """
     A class to run a build order for an AI.
 
-    Attributes
-    ----------
-    ai : AresBot
-        The AI that the build order is for.
-    _chosen_opening : str
-        The name of the opening being used for the build order.
-    config : dict
-        The configuration dictionary for the AI.
-    mediator : ManagerMediator
-        The ManagerMediator object used for communicating with managers.
-    build_order : list[BuildOrderStep]
-        The build order list.
-    build_step : int
-        The current build order step index.
-    current_step_started : bool
-        True if the current build order step has started, False otherwise.
-    _opening_build_completed : bool
-        True if the opening build is completed, False otherwise.
+    Attributes:
+        ai: The AI that the build order is for.
+        _chosen_opening: The name of the opening being used for the build order.
+        config: The configuration dictionary for the AI.
+        mediator: The ManagerMediator object used for communicating with managers.
+        build_order: The build order list.
+        build_step: The current build order step index.
+        current_step_started: True if the current build order step has started,
+            False otherwise.
+        _opening_build_completed: True if the opening build is completed,
+            False otherwise.
 
-    Methods
-    -------
-    run_build()
-        Runs the build order.
-    do_step(step: BuildOrderStep)
-        Runs a specific build order step.
+    Methods:
+        run_build: Runs the build order.
+        do_step: Runs a specific build order step.
+
     """
 
     AUTO_SUPPLY_AT_SUPPLY: str = "AutoSupplyAtSupply"
@@ -484,17 +475,14 @@ class BuildOrderRunner:
         "expand @ nat" :
             ``if structure_type == self.ai.base_townhall_type and target == "NAT":``
                 ``return self.manager_mediator.get_own_nat``
-        Parameters
-        ----------
-        structure_type :
-            The type of structure to build
-        target :
-            Where the structure should be built
-        Returns
-        -------
-        Point2, Unit :
+        Parameters:
+            structure_type: The type of structure to build
+            target: Where the structure should be built
+
+        Returns:
             The actual game location where the structure should be built
-            Or vespene geyser Unit for gas buildings
+            or vespene geyser Unit for gas buildings
+
         """
         if structure_type in GAS_BUILDINGS:
             existing_gas_buildings: Units = self.ai.all_units(GAS_BUILDINGS)
@@ -568,14 +556,13 @@ class BuildOrderRunner:
 
     def get_structure(self, target: str) -> Optional[Unit]:
         """Get the first structure matching the specified type.
-        Parameters
-        ----------
-        target :
-            Type of building to be returned.
-        Returns
-        -------
-        Optional[Unit] :
-            Unit of the structure type if found.
+
+        Parameters:
+            target: Type of building to be returned
+
+        Returns:
+            The unit of the structure type if found, otherwise None
+
         """
         # this block is currently for chrono
         if isinstance(target, UnitID):

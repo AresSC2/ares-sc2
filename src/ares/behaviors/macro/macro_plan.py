@@ -36,10 +36,9 @@ class MacroPlan(Behavior):
     self.ai.register_behavior(macro_plan)
     ```
 
-    Attributes
-    ----------
-    macros : list[Behavior] (optional, default: [])
-        A list of behaviors that should be executed
+    Attributes:
+        macros: A list of behaviors that should be executed. Defaults to an empty list.
+
     """
 
     macros: list[Behavior] = field(default_factory=list)

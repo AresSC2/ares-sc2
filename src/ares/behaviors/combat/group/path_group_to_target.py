@@ -37,32 +37,24 @@ class PathGroupToTarget(CombatGroupBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    start : Point2
-        Where to start the path query.
-    group: list[Unit]
-        The actual group units.
-    group_tags : set[int]
-        The units to path.
-    grid : np.ndarray
-        2D Grid to path on.
-    target : Point2
-        Target destination.
-    success_at_distance : float (default: 0.0)
-        If unit has got this close, consider path behavior complete.
-    sensitivity : int (default: 5)
-        Path precision.
-    smoothing : bool (default: False)
-        Smooth out the path.
-    sense_danger : bool (default: False)
-        Check for dangers, if none are present pathing query is skipped.
-    danger_distance : float (default: 20.0)
-        If sense_danger=True, how far to check for dangers?
-    danger_threshold : float (default: 5.0)
-        Influence at which a danger is respected.
-    prevent_duplicate : bool (default: True)
-        Try to prevent spamming action.
+    Attributes:
+        start: Where to start the path query.
+        group: The actual group units.
+        group_tags: The units to path.
+        grid: 2D grid to path on.
+        target: Target destination.
+        success_at_distance: If the unit has gotten this close,
+            consider the path behavior complete. Defaults to 0.0.
+        sensitivity: Path precision. Defaults to 5.
+        smoothing: Whether to smooth out the path. Defaults to False.
+        sense_danger: Whether to check for dangers. If none are present,
+            the pathing query is skipped. Defaults to False.
+        danger_distance: If `sense_danger` is True, how far to check for dangers.
+            Defaults to 20.0.
+        danger_threshold: Influence at which a danger is respected.
+            Defaults to 5.0.
+        prevent_duplicate: Whether to try to prevent spamming actions.
+            Defaults to True.
     """
 
     start: Point2

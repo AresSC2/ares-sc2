@@ -35,34 +35,21 @@ class DropShipRecipes:
         WARNING: Ensure `units_to_transport` are not already near
         the dropoff point, or this might cause an infinite cycle.
 
-        Parameters
-        ----------
-        unit :
-            This is the medivac / prism / overlord
-        units_to_transport :
-            Units we want to transport.
-            This can be an empty list if the units are
-            already in the dropship cargo.
-        air_grid :
-            The airgrid our dropship can path on
-        target :
-            Where to drop our cargo:
-        should_drop_units : Optional
-            Drop off units when reaching destination
-        keep_dropship_safe : Optional
-            Setting this to true will keep dropship safe
-            if nothing else to do.
-        cargo_switch_to_role : Optional
-            When picking up a unit this will switch their role.
-            This is useful in that soon as the unit
-            is dropped off it will be ready to do its
-            new task.
-        success_at_distance : Optional
-            The pathing behavior will be considered complete
-            when this distance from `target`.
+    Parameters:
+        unit: The medivac, prism, or overlord.
+        units_to_transport: Units to be transported, can be empty
+            if they are already in the dropship cargo.
+        air_grid: The airgrid for dropship pathing.
+        target: The destination for cargo drop.
+        should_drop_units: Whether to drop units when reaching the destination.
+            Defaults to True
+        keep_dropship_safe: If set to True, the dropship will be
+            kept safe if no other tasks are present. Defaults to True.
+        cargo_switch_to_role: Switch the unit's role when picked up, useful for
+            task readiness after drop. Defaults to None.
+        success_at_distance: The behavior is complete when the unit is within
+            this distance from `target`. Defaults to 2.0.
 
-        Returns
-        -------
         """
         maneuver: CombatManeuver = CombatManeuver()
         maneuver.add(

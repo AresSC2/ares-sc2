@@ -44,17 +44,10 @@ class UpgradeController(MacroBehavior):
     )
     ```
 
-    Attributes
-    ----------
-    upgrade_list : list[UpgradeId]
-        List of desired upgrades.
-    base_location : Point2
-        Where to build upgrade buildings.
+    Attributes:
+        upgrade_list: List of desired upgrades.
+        base_location: Location to build upgrade buildings.
 
-    Returns
-    ----------
-    bool :
-        True if this Behavior carried out an action.
     """
 
     upgrade_list: list[UpgradeId]
