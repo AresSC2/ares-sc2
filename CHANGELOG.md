@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.30.2 (2025-01-01)
+
+### Fix
+
+* Gas building controller max pending works for Terran ([`09aa111`](https://github.com/AresSC2/ares-sc2/commit/09aa111348118e1d936b78a0537eb61dcf77235d))
+
 ## v2.30.1 (2024-12-30)
 
 ### Fix
