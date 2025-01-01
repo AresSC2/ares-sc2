@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Optional
 
 from cython_extensions import cy_distance_to_squared, cy_sorted_by_distance_to
+from sc2.data import Race
 from sc2.position import Point2
 from sc2.units import Units
 
@@ -41,9 +42,13 @@ class GasBuildingController(MacroBehavior):
     closest_to: Optional[Point2] = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        num_gas: int = (
-            len(ai.gas_buildings) + mediator.get_building_counter[ai.gas_type]
-        )
+        num_gas: int
+        if ai.race == Race.Terran:
+            num_gas = ai.not_started_but_in_building_tracker(ai.gas_type) + len(
+                ai.gas_buildings
+            )
+        else:
+            num_gas = len(ai.gas_buildings) + mediator.get_building_counter[ai.gas_type]
         # we have enough gas / building gas then don't attempt behavior
         if (
             num_gas >= self.to_count
