@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.31.0 (2025-01-05)
+
+### Feature
+
+* Workers can flee if too much danger ([`4704683`](https://github.com/AresSC2/ares-sc2/commit/4704683888325de549eb495f453e0408e6f2009e))
+
+### Fix
+
+* Correct import ([`8b05e06`](https://github.com/AresSC2/ares-sc2/commit/8b05e069dbb44beaf36114f81576e4d4d9637cbd))
+
 ## v2.30.2 (2025-01-01)
 
 ### Fix
