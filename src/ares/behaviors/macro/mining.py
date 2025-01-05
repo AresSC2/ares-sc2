@@ -2,7 +2,6 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Optional
 
 import numpy as np
-from ares.behaviors.combat.individual.speed_mining import SpeedMining
 from cython_extensions.units_utils import cy_sorted_by_distance_to
 from loguru import logger
 from sc2.data import Race
@@ -10,6 +9,8 @@ from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
+
+from ares.behaviors.combat.individual.speed_mining import SpeedMining
 
 if TYPE_CHECKING:
     from ares import AresBot
