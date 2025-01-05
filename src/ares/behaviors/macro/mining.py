@@ -71,6 +71,8 @@ class Mining(MacroBehavior):
             Certain workers will attack enemy in range. Defaults to True.
         safe_long_distance_mineral_fields: Used internally, set when a worker starts
             long distance mining. Defaults to None.
+        weight_safety_limit: Workers will flee if enemy influence is above this number.
+            Defaults to 12.0
 
     """
 
@@ -167,14 +169,12 @@ class Mining(MacroBehavior):
                     perc_health <= health_perc
                     and not pos_safe(grid=grid, position=worker_position)
                 )
+                or not pos_safe(grid=grid, position=worker_position, weight_safety_limit=self.weight_safety_limit)
             ):
                 self._keep_worker_safe(
                     mediator,
                     grid,
-                    worker,
-                    resource,
-                    resource_position,
-                    dist_to_resource,
+                    worker
                 )
 
             elif main_enemy_ground_threats and self._worker_attacking_enemy(
