@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Optional
 
 import numpy as np
-from behaviors.combat.individual.speed_mining import SpeedMining
+from ares.behaviors.combat.individual.speed_mining import SpeedMining
 from cython_extensions.units_utils import cy_sorted_by_distance_to
 from loguru import logger
 from sc2.data import Race
