@@ -2,10 +2,11 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable, Optional
 
 import numpy as np
+from behaviors.combat.individual.speed_mining import SpeedMining
+from cython_extensions.units_utils import cy_sorted_by_distance_to
 from loguru import logger
 from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -24,19 +25,12 @@ from cython_extensions import (
 )
 
 from ares.behaviors.macro import MacroBehavior
-from ares.consts import (
-    GAS_BUILDINGS,
-    MINING,
-    TOWNHALL_DISTANCE_FACTOR,
-    UnitRole,
-    UnitTreeQueryType,
-)
+from ares.consts import GAS_BUILDINGS, MINING, TOWNHALL_DISTANCE_FACTOR, UnitRole
 from ares.managers.manager_mediator import ManagerMediator
 
 TOWNHALL_RADIUS: float = 2.75
 # how far from townhall should we return speed miners to
 TOWNHALL_TARGET: float = TOWNHALL_RADIUS * 1.21
-WORKER_TYPES: set[UnitID] = {UnitID.DRONE, UnitID.PROBE, UnitID.SCV, UnitID.MULE}
 
 
 @dataclass
@@ -85,6 +79,7 @@ class Mining(MacroBehavior):
     self_defence_active: bool = True
     safe_long_distance_mineral_fields: Optional[Units] = None
     locked_action_tags: dict[int, float] = field(default_factory=dict)
+    weight_safety_limit: float = 12.0
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         workers: Units = mediator.get_units_from_role(
@@ -169,13 +164,13 @@ class Mining(MacroBehavior):
                     perc_health <= health_perc
                     and not pos_safe(grid=grid, position=worker_position)
                 )
-                or not pos_safe(grid=grid, position=worker_position, weight_safety_limit=self.weight_safety_limit)
-            ):
-                self._keep_worker_safe(
-                    mediator,
-                    grid,
-                    worker
+                or not pos_safe(
+                    grid=grid,
+                    position=worker_position,
+                    weight_safety_limit=self.weight_safety_limit,
                 )
+            ):
+                self._keep_worker_safe(mediator, grid, worker)
 
             elif main_enemy_ground_threats and self._worker_attacking_enemy(
                 ai, dist_to_resource, worker
@@ -237,46 +232,22 @@ class Mining(MacroBehavior):
             # this worker really has nothing to do, keep it safe at least
             # don't mine from anywhere since user requested no `long_distance_mine`
             elif not pos_safe(grid=grid, position=worker_position):
-                self._keep_worker_safe(
-                    mediator,
-                    grid,
-                    worker,
-                    resource,
-                    resource_position,
-                    dist_to_resource,
-                )
+                self._keep_worker_safe(mediator, grid, worker)
 
         mediator.set_workers_per_gas(amount=self.workers_per_gas)
         return True
 
     @staticmethod
     def _keep_worker_safe(
-        mediator: ManagerMediator,
-        grid: np.ndarray,
-        worker: Unit,
-        resource: Unit,
-        resource_position: Point2,
-        dist_to_resource: float,
+        mediator: ManagerMediator, grid: np.ndarray, worker: Unit
     ) -> None:
         """Logic for keeping workers in danger safe.
 
-        Parameters
-        ----------
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        grid :
-            Ground grid with enemy influence.
-        worker :
-            Worker to keep safe.
-        resource :
-            Resource worker is assigned to.
-        resource_position :
-            Resource this worker is assigned to.
-        dist_to_resource :
-            How far away are we from intended resource?
-
-        Returns
-        -------
+        Parameters:
+            mediator: ManagerMediator used for getting information from
+                other managers.
+            grid: Ground grid with enemy influence.
+            worker: Worker to keep safe.
         """
         worker.move(
             mediator.find_closest_safe_spot(from_pos=worker.position, grid=grid)
@@ -344,7 +315,10 @@ class Mining(MacroBehavior):
         -------
 
         """
-        if worker.is_gathering:
+        if (
+            worker.is_gathering
+            and worker.order_target not in mediator.get_mineral_patch_to_list_of_workers
+        ):
             return
 
         completed_bases: Units = ai.townhalls.ready
@@ -436,7 +410,7 @@ class Mining(MacroBehavior):
         worker_tag_to_townhall_tag,
         worker_position: Point2,
         target_position: Point2,
-    ) -> None:
+    ) -> bool:
         """Perform the trick so that worker does not decelerate.
 
         This avoids worker deceleration when mining by issuing a Move command near a
@@ -444,24 +418,20 @@ class Mining(MacroBehavior):
         worker is close enough to immediately perform the action instead of issuing a
         Gather command and letting the SC2 engine manage the worker.
 
-        Parameters
-        ----------
-        ai :
-            Main AresBot object
-        distance_to_townhall_factor :
-            Multiplier used for finding the target of the Move command when returning
-            resources.
-        target :
-            Mineral field or Townhall that the worker should be moving toward/performing
-            an action on.
-        worker :
-            The worker being boosted.
-        worker_tag_to_townhall_tag :
-            The townhall this worker belongs to, or where resources will be returned.
-        worker_position :
-            Pass in for optimization purposes.
-        target_position :
-            Pass in for optimization purposes.
+        Parameters:
+            ai: Main AresBot object
+            distance_to_townhall_factor: Multiplier used for finding the target
+                of the Move command when returning resources.
+            target: Mineral field or Townhall that the worker should be
+                moving toward/performing an action on.
+            worker: The worker being boosted.
+            worker_tag_to_townhall_tag: The townhall this worker belongs to,
+                or where resources will be returned.
+            worker_position: Pass in for optimization purposes.
+            target_position: Pass in for optimization purposes.
+
+        Returns:
+            Whether this method carries out an action
         """
 
         if target.is_mineral_field or target.is_vespene_geyser:
@@ -472,6 +442,7 @@ class Mining(MacroBehavior):
                     f"{target_position} not found in resource_target_pos, "
                     f"no action will be provided for f{worker.tag}"
                 )
+                return False
         else:
             resource_target_pos: Point2 = Point2(
                 cy_towards(target_position, worker_position, TOWNHALL_TARGET)
@@ -483,122 +454,51 @@ class Mining(MacroBehavior):
         elif not target.is_mineral_field and not target.vespene_contents:
             ai.mediator.remove_gas_building(gas_building_tag=target.tag)
 
-        closest_th: Unit = cy_closest_to(worker_position, ai.townhalls)
+        try:
+            townhall: Unit = ai.unit_tag_dict[worker_tag_to_townhall_tag[worker.tag]]
+        except KeyError:
+            townhall: Unit = cy_closest_to(worker_position, ai.townhalls)
 
-        # fix realtime bug where worker is stuck with a move command but already
-        # returned minerals
-        if (
-            len(worker.orders) == 1
-            and worker.orders[0].ability.id == AbilityId.MOVE
-            and worker.order_target == closest_th.tag
-        ):
-            worker(AbilityId.SMART, target)
-
-        elif (worker.is_returning or worker.is_carrying_resource) and len(
-            worker.orders
-        ) < 2:
-            try:
-                townhall: Unit = ai.unit_tag_dict[
-                    worker_tag_to_townhall_tag[worker.tag]
-                ]
-            except KeyError:
-                townhall: Unit = closest_th
-
-            target_pos: Point2 = townhall.position
-
-            target_pos: Point2 = Point2(
-                cy_towards(
-                    target_pos,
-                    worker_position,
-                    TOWNHALL_RADIUS * distance_to_townhall_factor,
-                )
-            )
-
-            if 0.5625 < cy_distance_to_squared(worker_position, target_pos) < 4.0:
-                worker.move(target_pos)
-                worker(AbilityId.SMART, townhall, True)
-            # not at right distance to get boost command, but doesn't have return
-            # resource command for some reason
-            elif not worker.is_returning:
-                worker(AbilityId.SMART, townhall)
-
-        elif not worker.is_returning and len(worker.orders) < 2:
-            min_distance: float = 0.5625 if target.is_mineral_field else 0.01
-            max_distance: float = 4.0 if target.is_mineral_field else 0.25
-            if (
-                min_distance
-                < cy_distance_to_squared(worker_position, resource_target_pos)
-                < max_distance
-                or worker.is_idle
-            ):
-                worker.move(resource_target_pos)
-                worker(AbilityId.SMART, target, True)
-
-        # on rare occasion above conditions don't hit and worker goes idle
-        elif worker.is_idle or not worker.is_moving:
-            if worker.is_carrying_resource:
-                worker.return_resource(closest_th)
-            else:
-                worker.gather(target)
+        return SpeedMining(
+            worker,
+            target,
+            worker_position,
+            resource_target_pos,
+            distance_to_townhall_factor,
+            townhall,
+        ).execute(ai, ai.mediator, ai.config)
 
     @staticmethod
     def _safe_long_distance_mineral_fields(
         ai: "AresBot", mediator: ManagerMediator
-    ) -> Optional[Units]:
+    ) -> list[Unit]:
         """Find mineral fields for long distance miners.
 
-        Parameters
-        ----------
-        ai :
-            Main AresBot object
-        mediator :
-            Manager mediator to interact with the managers
+        Parameters:
+            ai: Main AresBot object
+            mediator: Manager mediator to interact with the managers
 
-        Returns
-        -------
-            Optional[Units] :
-                Units object of safe mineral patches if mineral patches still exist,
-                None otherwise.
+        Returns:
+            Units object of safe mineral patches if mineral patches still exist
         """
         if not ai.mineral_field:
             return
 
-        th_tags: set[int] = ai.townhalls.tags
-        mf_to_enemy: dict[int, Units] = mediator.get_units_in_range(
-            start_points=ai.mineral_field,
-            distances=30,
-            query_tree=UnitTreeQueryType.AllEnemy,
-            return_as_dict=True,
-        )
-
-        mf_to_own: dict[int, Units] = mediator.get_units_in_range(
-            start_points=ai.mineral_field,
-            distances=8,
-            query_tree=UnitTreeQueryType.AllOwn,
-            return_as_dict=True,
-        )
-
-        enemy_ground_dangerous_tags: set[int] = ai.enemy_units.filter(
-            lambda e: e.can_attack_ground and e.type_id not in WORKER_TYPES
-        ).tags
-
-        safe_fields = []
-        for mf in ai.mineral_field:
-            if th_tags & mf_to_own[mf.tag].tags:  # intersection
-                # there's a shared tag in our units close to the mineral field and our
-                # townhalls
+        assigned_patches: dict[int, set] = mediator.get_mineral_patch_to_list_of_workers
+        grid: np.ndarray = mediator.get_ground_grid
+        mfs: list[Unit] = cy_sorted_by_distance_to(ai.mineral_field, ai.start_location)
+        weight_safety_limit: float = 6.0
+        if ai.state.score.collection_rate_minerals < 300:
+            weight_safety_limit = 100.0
+        safe_mfs: list[Unit] = []
+        for mf in mfs:
+            if mf in assigned_patches or not mediator.is_position_safe(
+                grid=grid, position=mf.position, weight_safety_limit=weight_safety_limit
+            ):
                 continue
-            else:
-                found = False
-                for tag in mf_to_enemy[mf.tag].tags:
-                    if tag in enemy_ground_dangerous_tags:
-                        # there's an enemy nearby
-                        found = True
-                        break
-                if found:
-                    continue
-                safe_fields.append(mf)
-        return Units(safe_fields, ai)
+            safe_mfs.append(mf)
+
+        return safe_mfs
 
     @staticmethod
     def _worker_attacking_enemy(

@@ -35,8 +35,6 @@ Mining:
     BoostBackToTownHall: True
     GeyserDistanceFactor: 1.05
     GeyserThreshold: 0.05
-    # TODO: Don't think this is used currently, investigate
-    #   Seems ResourceManager uses a MINING_RADIUS const instead
     MineralDistanceFactor: 1.25
     TownhallDistanceFactor: 1.08
 
