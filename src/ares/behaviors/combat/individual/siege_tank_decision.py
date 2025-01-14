@@ -12,7 +12,7 @@ from ares.behaviors.combat.individual import CombatIndividualBehavior
 from ares.consts import CHANGELING_TYPES
 from ares.dicts.unit_data import UNIT_DATA
 from ares.managers.manager_mediator import ManagerMediator
-from src.ares.consts import UnitTreeQueryType
+from ares.consts import UnitTreeQueryType
 
 if TYPE_CHECKING:
     from ares import AresBot
