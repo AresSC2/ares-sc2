@@ -2,6 +2,26 @@
 
 <!--next-version-placeholder-->
 
+## v2.32.0 (2025-01-14)
+
+### Feature
+
+* Add use AOE ability behavior ([`c8ff824`](https://github.com/AresSC2/ares-sc2/commit/c8ff8249f1aa6562c293d3ccb99a1ee12a665ff4))
+* Siege tank behavior ([`3610e33`](https://github.com/AresSC2/ares-sc2/commit/3610e337a3ded429bddf5ccb59e4d7d99048d55f))
+* Queen transfuse behavior ([`cbf73c2`](https://github.com/AresSC2/ares-sc2/commit/cbf73c2f08eb5c03d506448bc20e2bf9841bef21))
+* Raven auto turret behavior ([`eeeacb4`](https://github.com/AresSC2/ares-sc2/commit/eeeacb4ccf168e7f33bb35f9c93768429b7223fd))
+* Medivac heal behavior ([`4a9786e`](https://github.com/AresSC2/ares-sc2/commit/4a9786ecc28f7ab2bf58e95425721c8d8bd7aba2))
+* Ghost snipe behavior ([`c02f8e7`](https://github.com/AresSC2/ares-sc2/commit/c02f8e7852d95eeffdf2f06b235264da03a56ed8))
+
+### Fix
+
+* Correct import ([`8988cb9`](https://github.com/AresSC2/ares-sc2/commit/8988cb9b3b3591dc1150cf906af0d97541b0bfb9))
+* Squad initially calculated correctly ([`d0d4022`](https://github.com/AresSC2/ares-sc2/commit/d0d40224fdf44262bc67aea4b0ccb90ccc761ba2))
+
+### Documentation
+
+* Add docs for new behaviors ([`7e52448`](https://github.com/AresSC2/ares-sc2/commit/7e524485feab70d1a9018c6ea2b2c9078b79b453))
+
 ## v2.31.0 (2025-01-05)
 
 ### Feature
