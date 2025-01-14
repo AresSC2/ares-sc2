@@ -218,11 +218,6 @@ class SquadManager(Manager, IManagerMediator):
         )
         squads: list[UnitSquad] = self._squads_list_for_role(role)
 
-        # we need to regenerate the squads with fresh unit collections etc
-        self._regenerate_squads(role, squads, units)
-
-        squads = self._squads_list_for_role(role)
-
         # need to merge squads, remove stray units from squads etc
         self._handle_existing_squads_assignment(role, squads, squad_radius)
 
@@ -231,9 +226,10 @@ class SquadManager(Manager, IManagerMediator):
         ]
         if unassigned_units:
             # now handle all units not currently assigned
-            self._squad_assignment(
-                role, unassigned_units, squad_radius, self._squads_list_for_role(role)
-            )
+            self._squad_assignment(role, unassigned_units, squad_radius)
+        squads = self._squads_list_for_role(role)
+        # we need to regenerate the squads with fresh unit collections etc
+        self._regenerate_squads(role, squads, units)
 
         self._find_main_squad(role)
 
@@ -258,11 +254,7 @@ class SquadManager(Manager, IManagerMediator):
         ]
 
     def _squad_assignment(
-        self,
-        role: UnitRole,
-        unassigned_units: list[Unit],
-        squad_radius: float,
-        squads: list[UnitSquad],
+        self, role: UnitRole, unassigned_units: list[Unit], squad_radius: float
     ) -> None:
         """
         We have a unit not in any squad, work out what to do.
@@ -279,6 +271,7 @@ class SquadManager(Manager, IManagerMediator):
 
         """
         for unit in unassigned_units:
+            squads = self._squads_list_for_role(role)
             tag: int = unit.tag
             # check if unit may join an existing squad
             squad_to_join: str = self._closest_squad_id(
@@ -328,7 +321,7 @@ class SquadManager(Manager, IManagerMediator):
                 closest_squad = squad
                 min_distance = current_distance
 
-        return closest_squad.squad_id if min_distance < squad_radius else ""
+        return closest_squad.squad_id if min_distance**0.5 < squad_radius else ""
 
     def _create_squad(self, role: UnitRole, tags: set[int]) -> None:
         """
