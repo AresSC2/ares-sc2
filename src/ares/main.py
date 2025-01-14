@@ -110,6 +110,7 @@ class AresBot(CustomBotAI):
         ] = []
         self._drop_unload_actions: list[tuple[int, int]] = []
         self._archon_morph_actions: list[list] = []
+        self.transfused_tags: set[int] = set()
 
         self.arcade_mode: bool = False
 
@@ -809,6 +810,7 @@ class AresBot(CustomBotAI):
         self._drop_unload_actions = []
         self._same_order_actions = []
         self._archon_morph_actions = []
+        self.transfused_tags = set()
 
     def _should_add_unit(self, unit: RawUnit) -> bool:
         """Whether the given unit should be tracked.
