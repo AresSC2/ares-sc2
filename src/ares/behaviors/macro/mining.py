@@ -10,7 +10,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.behaviors.combat.individual.speed_mining import SpeedMining
+from ares.behaviors.macro.speed_mining import SpeedMining
 
 if TYPE_CHECKING:
     from ares import AresBot

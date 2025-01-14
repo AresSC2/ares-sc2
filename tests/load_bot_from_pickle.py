@@ -17,7 +17,9 @@ d = dirname(dirname(abspath(__file__)))
 sys.path.append(f"{d}\\")
 sys.path.append(f"{d}\\src")
 
-from ares import AresBot, BuildOrderRunner, UnitRole
+from ares import AresBot
+from ares.build_runner.build_order_runner import BuildOrderRunner
+from ares.consts import UnitRole
 from tests.mock_config import MOCK_CONFIG
 
 

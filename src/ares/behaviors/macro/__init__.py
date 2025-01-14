@@ -10,5 +10,6 @@ from ares.behaviors.macro.mining import Mining
 from ares.behaviors.macro.production_controller import ProductionController
 from ares.behaviors.macro.restore_power import RestorePower
 from ares.behaviors.macro.spawn_controller import SpawnController
+from ares.behaviors.macro.speed_mining import SpeedMining
 from ares.behaviors.macro.tech_up import TechUp
 from ares.behaviors.macro.upgrade_controller import UpgradeController

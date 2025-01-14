@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from ares import AresBot, BuildOrderRunner
+from ares import AresBot
 
 pytest_plugins = ("pytest_asyncio",)
 
@@ -24,6 +24,8 @@ class TestBuildRunner:
 
     @pytest.mark.asyncio
     async def test_build_runner_complete(self, bot: AresBot, event_loop):
+        from ares.build_runner.build_order_runner import BuildOrderRunner
+
         build_runner: BuildOrderRunner = bot.build_order_runner
 
         build_runner.set_build_completed()

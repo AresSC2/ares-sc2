@@ -402,6 +402,7 @@ class ManagerName(str, Enum):
 class UnitRole(str, Enum):
     """Roles for units"""
 
+    ADEPT_SHADES = "ADEPT_SHADES"
     ATTACKING = "ATTACKING"
     # the main attacking squad on the map
     ATTACKING_MAIN_SQUAD = "ATTACKING_MAIN_SQUAD"
@@ -409,6 +410,7 @@ class UnitRole(str, Enum):
     ATTACKING_TRANSPORT_SQUAD = "ATTACKING_TRANSPORT_SQUAD"
     BASE_DEFENDER = "BASE_DEFENDER"  # units split off to defend expansions
     BASE_BLOCKER = "BASE_BLOCKER"  # blocking an enemy base
+    BANE_FODDER = "BANE_FODDER"  # units assigned to attack enemy banes
     BUILDING = "BUILDING"  # workers that have been assigned to create a building
     DEFENDING = "DEFENDING"  # units in a combat zone near one of our bases
     DROP_SHIP = "DROP_SHIP"  # medivacs / prism/ dropperlord
@@ -787,4 +789,12 @@ VICTORY_CLOSE_OR_BETTER: Set[EngagementResult] = VICTORY_DECISIVE_OR_BETTER | {
 
 VICTORY_MARGINAL_OR_BETTER: Set[EngagementResult] = VICTORY_CLOSE_OR_BETTER | {
     EngagementResult.VICTORY_MARGINAL
+}
+
+TIE_OR_BETTER: Set[EngagementResult] = VICTORY_MARGINAL_OR_BETTER | {
+    EngagementResult.TIE
+}
+
+LOSS_MARGINAL_OR_BETTER: Set[EngagementResult] = TIE_OR_BETTER | {
+    EngagementResult.LOSS_MARGINAL
 }
