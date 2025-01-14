@@ -9,10 +9,9 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.behaviors.combat.individual import CombatIndividualBehavior
-from ares.consts import CHANGELING_TYPES
+from ares.consts import CHANGELING_TYPES, UnitTreeQueryType
 from ares.dicts.unit_data import UNIT_DATA
 from ares.managers.manager_mediator import ManagerMediator
-from ares.consts import UnitTreeQueryType
 
 if TYPE_CHECKING:
     from ares import AresBot
