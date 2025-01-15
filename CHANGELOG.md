@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.32.1 (2025-01-15)
+
+### Fix
+
+* Add missing values to unit data dict ([`04cb10c`](https://github.com/AresSC2/ares-sc2/commit/04cb10c321f6c527cfde1e791f444b8d69b58dd4))
+
 ## v2.32.0 (2025-01-14)
 
 ### Feature
