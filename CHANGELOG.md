@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.32.2 (2025-01-17)
+
+### Fix
+
+* Anti armour missile actually works ([`91c52ab`](https://github.com/AresSC2/ares-sc2/commit/91c52abcca214753810c23fc4376a8b22cd13386))
+
 ## v2.32.1 (2025-01-15)
 
 ### Fix
