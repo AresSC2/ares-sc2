@@ -91,7 +91,10 @@ class UseAOEAbility(CombatIndividualBehavior):
 
         if self._can_cast(ai, mediator, position, radius):
             # need to cast on the actual unit
-            if self.ability_id == AbilityId.PARASITICBOMB_PARASITICBOMB:
+            if self.ability_id in {
+                AbilityId.PARASITICBOMB_PARASITICBOMB,
+                AbilityId.EFFECT_ANTIARMORMISSILE,
+            }:
                 self.unit(self.ability_id, cy_closest_to(position, self.targets))
             else:
                 self.unit(self.ability_id, Point2(position))
