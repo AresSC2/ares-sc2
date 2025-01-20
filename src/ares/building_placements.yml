@@ -84,7 +84,7 @@ Protoss:
                 StaticDefences: [ [ 46., 109. ] ]
                 GateKeeper: [ [ 51.18, 107.67 ] ]
             LowerSpawn:
-                FirstPylon: [ [ 144., 51 ] ]
+                FirstPylon: [ [ 144., 51. ] ]
                 Pylons: [ [ 144., 54. ] ]
                 ThreeByThrees: [ [ 139.5, 46.5 ], [ 139.5, 50.5 ], [ 139.5, 53.5 ] ]
                 StaticDefences: [ [ 144., 48. ] ]
