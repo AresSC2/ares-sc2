@@ -397,11 +397,17 @@ class IntelManager(Manager, IManagerMediator):
                 self.enemy_roach_rushed = True
 
         if not self.enemy_worker_rushed and self.ai.time < 180.0:
-            near_enemy_workers: Units = self.manager_mediator.get_units_in_range(
-                start_points=[self.ai.start_location],
-                distances=[15],
+            near_enemy: list[Units] = self.manager_mediator.get_units_in_range(
+                start_points=[
+                    self.ai.start_location,
+                    self.manager_mediator.get_own_nat,
+                ],
+                distances=[15, 16],
                 query_tree=UnitTreeQueryType.EnemyGround,
-            )[0].filter(lambda u: u.type_id in WORKER_TYPES)
-            if len(near_enemy_workers) >= 6:
-                logger.info(f"{self.ai.time}: worker rush detected")
-                self.enemy_worker_rushed = True
+            )
+            for enemy in near_enemy:
+                workers: list[Unit] = [u for u in enemy if u.type_id in WORKER_TYPES]
+                if len(workers) > 6:
+                    logger.info(f"{self.ai.time}: worker rush detected")
+                    self.enemy_worker_rushed = True
+                    break
