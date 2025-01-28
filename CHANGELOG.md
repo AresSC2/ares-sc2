@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.33.0 (2025-01-28)
+
+### Feature
+
+* Extend worker rush detection to natural ([`6d422e3`](https://github.com/AresSC2/ares-sc2/commit/6d422e3dd5900862508d79cd2b392c7f963089ff))
+
 ## v2.32.3 (2025-01-28)
 
 ### Fix
