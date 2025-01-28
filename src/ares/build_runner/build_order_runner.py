@@ -315,16 +315,16 @@ class BuildOrderRunner:
                                 and s.build_progress > 0.95
                             ]:
                                 persistent_worker_available = True
-                if worker := self.mediator.select_worker(
-                    target_position=self.current_build_position,
-                    force_close=True,
-                    select_persistent_builder=command != UnitID.REFINERY,
-                    only_select_persistent_builder=persistent_worker_available,
+                if next_building_position := await self.get_position(
+                    step.command, step.target
                 ):
-                    if next_building_position := await self.get_position(
-                        step.command, step.target
+                    self.current_build_position = next_building_position
+                    if worker := self.mediator.select_worker(
+                        target_position=self.current_build_position,
+                        force_close=True,
+                        select_persistent_builder=command != UnitID.REFINERY,
+                        only_select_persistent_builder=persistent_worker_available,
                     ):
-                        self.current_build_position = next_building_position
                         if self.mediator.build_with_specific_worker(
                             worker=worker,
                             structure_type=command,
