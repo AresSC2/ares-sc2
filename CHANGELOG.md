@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.32.3 (2025-01-28)
+
+### Fix
+
+* Prevent excessive gas assignments when preventing gas steal ([`7a8c506`](https://github.com/AresSC2/ares-sc2/commit/7a8c506ef59e757c924c847f7ff24b3ef27c8dfd))
+* Adjust worker selection so it's not unnecessary selected ([`7855252`](https://github.com/AresSC2/ares-sc2/commit/78552524b0e1c6232e15ee47e7d31f2e8cb5dfb9))
+
 ## v2.32.2 (2025-01-17)
 
 ### Fix
