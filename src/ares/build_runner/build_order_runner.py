@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from cython_extensions import cy_distance_to_squared, cy_towards
 from cython_extensions.combat_utils import cy_attack_ready
 from cython_extensions.units_utils import cy_closest_to, cy_in_attack_range
+from sc2.constants import ALL_GAS
 from sc2.data import Race
 from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -315,16 +316,16 @@ class BuildOrderRunner:
                                 and s.build_progress > 0.95
                             ]:
                                 persistent_worker_available = True
-                if worker := self.mediator.select_worker(
-                    target_position=self.current_build_position,
-                    force_close=True,
-                    select_persistent_builder=command != UnitID.REFINERY,
-                    only_select_persistent_builder=persistent_worker_available,
+                if next_building_position := await self.get_position(
+                    step.command, step.target
                 ):
-                    if next_building_position := await self.get_position(
-                        step.command, step.target
+                    self.current_build_position = next_building_position
+                    if worker := self.mediator.select_worker(
+                        target_position=self.current_build_position,
+                        force_close=True,
+                        select_persistent_builder=command != UnitID.REFINERY,
+                        only_select_persistent_builder=persistent_worker_available,
                     ):
-                        self.current_build_position = next_building_position
                         if self.mediator.build_with_specific_worker(
                             worker=worker,
                             structure_type=command,
@@ -696,8 +697,21 @@ class BuildOrderRunner:
         """
         can_assign: bool = True
         # already got a gas building in BO, don't assign right now
-        if self.build_order[self.build_step].command in GAS_BUILDINGS and (
-            self.current_step_started
+        if (
+            self.build_order[self.build_step].command in GAS_BUILDINGS
+            and (self.current_step_started)
+            or len(
+                [
+                    g
+                    for g in self.ai.gas_buildings
+                    if cy_distance_to_squared(g.position, self.ai.start_location)
+                    < 144.0
+                ]
+            )
+            >= 2
+            or any(
+                [self.mediator.get_building_counter[gas_type] for gas_type in ALL_GAS]
+            )
         ):
             can_assign = False
 
