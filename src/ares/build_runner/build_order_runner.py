@@ -338,17 +338,18 @@ class BuildOrderRunner:
             elif isinstance(command, UnitID) and command not in ALL_STRUCTURES:
                 army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
                 spawn_target: Point2 = self._get_target(step.target)
-                SpawnController(
+                did_spawn_action: bool = SpawnController(
                     army_comp, freeflow_mode=True, maximum=1, spawn_target=spawn_target
                 ).execute(self.ai, self.config, self.mediator)
-                if (
-                    UpgradeId.WARPGATERESEARCH in self.ai.state.upgrades
-                    and command in GATEWAY_UNITS
-                ):
-                    # main.on_unit_created will set self.current_step_started = True
-                    pass
-                else:
-                    self.current_step_started = True
+                if did_spawn_action:
+                    if (
+                        UpgradeId.WARPGATERESEARCH in self.ai.state.upgrades
+                        and command in GATEWAY_UNITS
+                    ):
+                        # main.on_unit_created will set self.current_step_started = True
+                        pass
+                    else:
+                        self.current_step_started = True
 
             elif isinstance(command, UpgradeId):
                 self.current_step_started = True
