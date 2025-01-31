@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.33.1 (2025-01-31)
+
+### Fix
+
+* Ensure spawn controller did an action before marking step started ([`ccc0d30`](https://github.com/AresSC2/ares-sc2/commit/ccc0d308472480814c2dec2b4d0d80eb0a243618))
+
 ## v2.33.0 (2025-01-28)
 
 ### Feature
