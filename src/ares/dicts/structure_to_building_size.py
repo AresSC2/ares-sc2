@@ -9,6 +9,7 @@ STRUCTURE_TO_BUILDING_SIZE: dict[UnitID, BuildingSize] = {
     UnitID.PHOTONCANNON: BuildingSize.TWO_BY_TWO,
     UnitID.PYLON: BuildingSize.TWO_BY_TWO,
     UnitID.SHIELDBATTERY: BuildingSize.TWO_BY_TWO,
+    UnitID.DARKSHRINE: BuildingSize.TWO_BY_TWO,
     # protoss 3x3
     UnitID.CYBERNETICSCORE: BuildingSize.THREE_BY_THREE,
     UnitID.FLEETBEACON: BuildingSize.THREE_BY_THREE,
