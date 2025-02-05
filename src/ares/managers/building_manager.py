@@ -327,7 +327,14 @@ class BuildingManager(Manager, IManagerMediator):
                 self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
 
         for tag in dead_tags_to_remove:
-            position: Point2 = self.building_tracker[tag][TARGET]
+            position: Optional[Point2] = self.building_tracker[tag][TARGET]
+            # some how there is no position
+            # removing will allow this to be readded if required
+            if not position:
+                self.building_counter[self.building_tracker[tag][ID]] -= 1
+                self.building_tracker.pop(tag, None)
+                continue
+
             if new_worker := self.manager_mediator.select_worker(
                 target_position=position, force_close=True
             ):
