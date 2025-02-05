@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.33.2 (2025-02-05)
+
+### Fix
+
+* Ensure position exists before updating building tracker ([`c70870d`](https://github.com/AresSC2/ares-sc2/commit/c70870d31af7d7ebf712f9c88ab11ab3570bc515))
+
 ## v2.33.1 (2025-01-31)
 
 ### Fix
