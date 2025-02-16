@@ -856,7 +856,7 @@ class ManagerMediator(IManagerMediator):
 
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_AIR_AVOIDANCE_GRID
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_AIR_AVOIDANCE_GRID
         )
 
     @property
@@ -876,7 +876,7 @@ class ManagerMediator(IManagerMediator):
             The air pathing grid.
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_AIR_GRID
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_AIR_GRID
         )
 
     @property
@@ -898,7 +898,7 @@ class ManagerMediator(IManagerMediator):
             The air vs ground pathing grid.
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_AIR_VS_GROUND_GRID
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_AIR_VS_GROUND_GRID
         )
 
     @property
@@ -920,7 +920,7 @@ class ManagerMediator(IManagerMediator):
             The clean ground pathing grid.
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_CACHED_GROUND_GRID
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_CACHED_GROUND_GRID
         )
 
     @property
@@ -942,7 +942,7 @@ class ManagerMediator(IManagerMediator):
             The climber pathing grid.
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_CLIMBER_GRID
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_CLIMBER_GRID
         )
 
     @property
@@ -963,7 +963,7 @@ class ManagerMediator(IManagerMediator):
 
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER,
+            ManagerName.GRID_MANAGER,
             ManagerRequestType.GET_FORCEFIELD_POSITIONS,
         )
 
@@ -978,7 +978,7 @@ class ManagerMediator(IManagerMediator):
 
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_GROUND_AVOIDANCE_GRID
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_GROUND_AVOIDANCE_GRID
         )
 
     @property
@@ -991,7 +991,7 @@ class ManagerMediator(IManagerMediator):
             The ground pathing grid.
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_GROUND_GRID
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_GROUND_GRID
         )
 
     @property
@@ -1004,7 +1004,7 @@ class ManagerMediator(IManagerMediator):
             The ground pathing grid.
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_GROUND_TO_AIR_GRID
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_GROUND_TO_AIR_GRID
         )
 
     @property
@@ -1030,7 +1030,7 @@ class ManagerMediator(IManagerMediator):
             The priority ground avoidance pathing grid.
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER,
+            ManagerName.GRID_MANAGER,
             ManagerRequestType.GET_PRIORITY_GROUND_AVOIDANCE_GRID,
         )
 

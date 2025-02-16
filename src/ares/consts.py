@@ -387,6 +387,7 @@ class ManagerName(str, Enum):
     DATA_MANAGER = "DataManager"
     ENEMY_TO_BASE_MANAGER = "EnemyToBaseManager"
     FLYING_STRUCTURE_MANAGER = "FlyingStructureManager"
+    GRID_MANAGER = "GridManager"
     INTEL_MANAGER = "IntelManager"
     PATH_MANAGER = "PathManager"
     PLACEMENT_MANAGER = "PlacementManager"

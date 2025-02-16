@@ -8,7 +8,7 @@ from sc2.unit import Unit
 
 from ares import AresBot
 from ares.dicts.weight_costs import WEIGHT_COSTS
-from ares.managers.path_manager import PathManager
+from ares.managers.grid_manager import GridManager
 
 pytest_plugins = ("pytest_asyncio",)
 
@@ -20,14 +20,14 @@ MAPS: list[Path] = [
 
 
 @pytest.mark.parametrize("bot", MAPS, indirect=True)
-class TestPathManager:
+class TestGridManager:
     scenarios = [(map_path.name, {"map_path": map_path}) for map_path in MAPS]
 
     def test_add_cost(self, bot: AresBot, event_loop):
         """
         Test that we found some placements at every expansion
         """
-        path_manager: PathManager = bot.manager_hub.path_manager
+        grid_manager: GridManager = bot.manager_hub.grid_manager
 
         # arrange
         grid: np.ndarray = bot.mediator.get_air_grid
@@ -38,7 +38,7 @@ class TestPathManager:
         assert grid[pos.rounded] == 1.0
 
         # act
-        path_manager.add_cost(pos, cost, 5.0, grid)
+        grid_manager.add_cost(pos, cost, 5.0, grid)
 
         # assert
         assert grid[pos.rounded] == cost + 1.0
@@ -47,14 +47,14 @@ class TestPathManager:
         """
         Test that we found some placements at every expansion
         """
-        path_manager: PathManager = bot.manager_hub.path_manager
+        grid_manager: GridManager = bot.manager_hub.grid_manager
 
         # arrange
         unit: Unit = bot.workers[0]
 
         # act
         # pretend influence added is a marine, for ease here
-        path_manager._add_cost_to_all_grids(unit, WEIGHT_COSTS[UnitID.MARINE])
+        grid_manager._add_cost_to_all_grids(unit, WEIGHT_COSTS[UnitID.MARINE])
 
         # assert
         # check all grids that a marine cost would be added to

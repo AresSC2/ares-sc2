@@ -14,6 +14,7 @@ from ares.managers.combat_sim_manager import CombatSimManager
 from ares.managers.data_manager import DataManager
 from ares.managers.enemy_to_base_manager import EnemyToBaseManager
 from ares.managers.flying_structure_manager import FlyingStructureManager
+from ares.managers.grid_manager import GridManager
 from ares.managers.intel_manager import IntelManager
 from ares.managers.manager_mediator import ManagerMediator
 from ares.managers.path_manager import PathManager
@@ -133,6 +134,7 @@ class Hub:
             if not placement_manager
             else placement_manager
         )
+        self.grid_manager: GridManager = GridManager(ai, config, self.manager_mediator)
         self.path_manager: PathManager = (
             PathManager(ai, config, self.manager_mediator)
             if not path_manager
@@ -177,6 +179,7 @@ class Hub:
             self.unit_role_manager,
             self.unit_cache_manager,
             self.unit_memory_manager,
+            self.grid_manager,
             self.path_manager,
             self.terrain_manager,
             self.resource_manager,
