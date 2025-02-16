@@ -113,3 +113,63 @@ class TestMediator:
         assert not bot.mediator.get_enemy_marauder_rush
         assert not bot.mediator.get_enemy_four_gate
         assert not bot.mediator.get_enemy_ravager_rush
+
+    def test_can_retrieve_all_grids(self, bot: AresBot, event_loop):
+        # arrange
+        # act
+        air_avoidance_grid = bot.mediator.get_air_avoidance_grid
+        air_grid = bot.mediator.get_air_grid
+        air_vs_ground_grid = bot.mediator.get_air_vs_ground_grid
+        cached_ground_grid = bot.mediator.get_cached_ground_grid
+        ground_grid = bot.mediator.get_ground_grid
+        climber = bot.mediator.get_climber_grid
+        ground_avoidance_grid = bot.mediator.get_ground_avoidance_grid
+        ground_to_air_grid = bot.mediator.get_ground_to_air_grid
+        priority_ground_avoidance_grid = bot.mediator.get_priority_ground_avoidance_grid
+        # assert
+        assert air_avoidance_grid is not None
+        assert air_grid is not None
+        assert air_vs_ground_grid is not None
+        assert cached_ground_grid is not None
+        assert ground_grid is not None
+        assert climber is not None
+        assert ground_avoidance_grid is not None
+        assert ground_to_air_grid is not None
+        assert priority_ground_avoidance_grid is not None
+        # also check each grid is the correct shape
+        assert air_avoidance_grid.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
+        assert air_grid.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
+        assert air_vs_ground_grid.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
+        assert cached_ground_grid.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
+        assert ground_grid.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
+        assert climber.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
+        assert ground_avoidance_grid.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
+        assert ground_to_air_grid.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
+        assert priority_ground_avoidance_grid.shape == (
+            bot.game_info.pathing_grid.width,
+            bot.game_info.pathing_grid.height,
+        )
