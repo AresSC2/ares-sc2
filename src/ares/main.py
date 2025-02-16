@@ -375,6 +375,7 @@ class AresBot(CustomBotAI):
 
         self.actual_iteration += 1
         if self.chat_debug:
+            # trunk-ignore(mypy/unreachable)
             await self.chat_debug.parse_commands()
 
     async def _after_step(self) -> int:
@@ -387,7 +388,7 @@ class AresBot(CustomBotAI):
             )
         for archon_morph_action in self._archon_morph_actions:
             await self._do_archon_morph(archon_morph_action)
-        self.manager_hub.path_manager.reset_grids(self.actual_iteration)
+        self.manager_hub.grid_manager.reset_grids(self.actual_iteration)
         await self.manager_hub.warp_in_manager.do_warp_ins()
         return await super(AresBot, self)._after_step()
 
@@ -575,7 +576,7 @@ class AresBot(CustomBotAI):
             if unit_id in ENEMY_VS_GROUND_STATIC_DEFENSE_TYPES:
                 enemy_vs_ground_static_defense_list.append(unit_obj)
             if update_managers:
-                self.manager_hub.path_manager.add_structure_influence(unit_obj)
+                self.manager_hub.grid_manager.add_structure_influence(unit_obj)
         else:
             self.enemy_units.append(unit_obj)
             if BuffId.PARASITICBOMB in unit_obj.buffs:
