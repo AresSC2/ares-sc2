@@ -8,7 +8,6 @@ from sc2.data import Race
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
-
 """Strings"""
 # general/config
 ACTIVE_GRID: str = "ActiveGrid"

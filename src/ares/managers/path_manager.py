@@ -33,6 +33,7 @@ class PathManager(Manager, IManagerMediator):
     All unit pathing should be done here
     This also exposes SC2MapAnalyzer api_reference through `self.map_data`
     """
+
     map_data: MapData
 
     def __init__(

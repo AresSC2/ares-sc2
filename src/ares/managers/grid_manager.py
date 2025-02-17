@@ -9,6 +9,13 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List
 
 import numpy as np
+from cython_extensions import cy_distance_to_squared
+from map_analyzer import MapData
+from sc2.ids.effect_id import EffectId
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2, Point3
+from sc2.unit import Unit
+
 from ares.consts import (
     ACTIVE_GRID,
     AIR,
@@ -26,6 +33,7 @@ from ares.consts import (
     DEBUG_OPTIONS,
     EFFECTS,
     EFFECTS_RANGE_BUFFER,
+    FEATURES,
     GROUND,
     GROUND_AVOIDANCE,
     GROUND_COST,
@@ -43,22 +51,16 @@ from ares.consts import (
     SHOW_PATHING_COST,
     STORM,
     TACTICAL_GROUND,
+    TACTICAL_GROUND_GRID,
     TOWNHALL_TYPES,
     UNITS,
     ManagerName,
-    ManagerRequestType, FEATURES, TACTICAL_GROUND_GRID,
+    ManagerRequestType,
 )
 from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
-from cython_extensions import cy_distance_to_squared
-from map_analyzer import MapData
-from sc2.ids.effect_id import EffectId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2, Point3
-from sc2.unit import Unit
-
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -152,7 +154,9 @@ class GridManager(Manager, IManagerMediator):
             ManagerRequestType.GET_PRIORITY_GROUND_AVOIDANCE_GRID: (
                 lambda kwargs: self.priority_ground_avoidance_grid
             ),
-            ManagerRequestType.GET_TACTICAL_GROUND_GRID: (lambda kwargs: self.tactical_ground_grid),
+            ManagerRequestType.GET_TACTICAL_GROUND_GRID: (
+                lambda kwargs: self.tactical_ground_grid
+            ),
         }
 
         self.air_grid: np.ndarray = self.map_data.get_clean_air_grid()
@@ -183,7 +187,9 @@ class GridManager(Manager, IManagerMediator):
             self._cached_clean_ground_grid.copy()
         )
 
-        self.tactical_ground_grid_enabled: bool = self.config[FEATURES][TACTICAL_GROUND_GRID]
+        self.tactical_ground_grid_enabled: bool = self.config[FEATURES][
+            TACTICAL_GROUND_GRID
+        ]
         # ensure grid exists so mediator request dont break
         self.tactical_ground_grid: np.ndarray = self.map_data.get_pyastar_grid(
             default_weight=200
@@ -246,16 +252,22 @@ class GridManager(Manager, IManagerMediator):
             for option, (grid, threshold) in debug_cases.items():
                 if self.config[DEBUG_OPTIONS][ACTIVE_GRID] == option:
                     if option == TACTICAL_GROUND:
-                        height: float = self.ai.get_terrain_z_height(self.ai.start_location)
+                        height: float = self.ai.get_terrain_z_height(
+                            self.ai.start_location
+                        )
                         indices = np.where(grid != threshold)
-                        for x, y in zip(indices[0], indices[1]):  # Properly zip the x and y coordinates
+                        for x, y in zip(
+                            indices[0], indices[1]
+                        ):  # Properly zip the x and y coordinates
                             pos: Point3 = Point3((x, y, height))
                             if grid[x, y] == np.inf:
                                 val: int = 9999
                             else:
                                 val: int = int(grid[x, y])
                             if val != 9999:
-                                self.ai.client.debug_text_world(str(val), pos, (201, 168, 79), 13)
+                                self.ai.client.debug_text_world(
+                                    str(val), pos, (201, 168, 79), 13
+                                )
                     else:
                         self.map_data.draw_influence_in_game(
                             grid, lower_threshold=threshold
@@ -358,7 +370,9 @@ class GridManager(Manager, IManagerMediator):
         self.priority_ground_avoidance_grid = self._cached_clean_ground_grid.copy()
         self.ground_to_air_grid = self._cached_clean_air_grid.copy()
         if self.tactical_ground_grid_enabled:
-            self.tactical_ground_grid = self.map_data.get_pyastar_grid(default_weight=200)
+            self.tactical_ground_grid = self.map_data.get_pyastar_grid(
+                default_weight=200
+            )
 
         # Refresh the cached ground grid every 8 steps, because things like structures/
         # minerals / rocks will change throughout the game
@@ -397,7 +411,6 @@ class GridManager(Manager, IManagerMediator):
             return
         if enemy.is_ready:
             self._add_structure_influence(enemy)
-
 
     def _add_effects(self) -> None:
         """Add effects influence to map."""

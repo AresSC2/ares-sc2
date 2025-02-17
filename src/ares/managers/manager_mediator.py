@@ -15,7 +15,6 @@ from typing import (
 )
 
 import numpy as np
-from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
 from map_analyzer import MapData
 from sc2.game_info import Ramp
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -24,6 +23,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 from scipy.spatial import KDTree
 
+from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
 
 if TYPE_CHECKING:
     from ares.managers.squad_manager import UnitSquad
@@ -45,7 +45,7 @@ class IManagerMediator(metaclass=ABCMeta):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """How requests will be structured.
 
@@ -88,7 +88,7 @@ class ManagerMediator(IManagerMediator):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """Function to request information from a manager.
 
