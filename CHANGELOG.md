@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v2.34.0 (2025-02-17)
+
+### Feature
+
+* Add tactical ground grid features and debug logic ([`db418f8`](https://github.com/AresSC2/ares-sc2/commit/db418f8d53ae6544a8bff8de69a3eef89785c45b))
+* Update army value calculations for unit data ([`0ef1e76`](https://github.com/AresSC2/ares-sc2/commit/0ef1e769ad75d5e0de60a0c7d679845ff911bf9b))
+
+### Fix
+
+* Disable debugging in production config ([`6ae8199`](https://github.com/AresSC2/ares-sc2/commit/6ae81996466a74017ae899d7594497729fe5bc6f))
+
 ## v2.33.2 (2025-02-05)
 
 ### Fix
