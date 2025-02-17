@@ -1,4 +1,5 @@
 """Enable cross manager communication."""
+from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
 from typing import (
@@ -44,7 +45,7 @@ class IManagerMediator(metaclass=ABCMeta):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """How requests will be structured.
 
@@ -87,7 +88,7 @@ class ManagerMediator(IManagerMediator):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """Function to request information from a manager.
 
@@ -842,7 +843,7 @@ class ManagerMediator(IManagerMediator):
     def get_air_avoidance_grid(self) -> np.ndarray:
         """Get the air avoidance pathing grid.
 
-        PathManager
+        GridManager
 
         Example:
         ```py
@@ -863,7 +864,7 @@ class ManagerMediator(IManagerMediator):
     def get_air_grid(self) -> np.ndarray:
         """Get the air pathing grid.
 
-        PathManager
+        GridManager
 
         Example:
         ```py
@@ -883,7 +884,7 @@ class ManagerMediator(IManagerMediator):
     def get_air_vs_ground_grid(self) -> np.ndarray:
         """Get the air vs ground pathing grid.
 
-        PathManager
+        GridManager
 
         Example:
         ```py
@@ -905,7 +906,7 @@ class ManagerMediator(IManagerMediator):
     def get_cached_ground_grid(self) -> np.ndarray:
         """Get a non-influence ground pathing grid.
 
-        PathManager
+        GridManager
 
         Example:
         ```py
@@ -927,7 +928,7 @@ class ManagerMediator(IManagerMediator):
     def get_climber_grid(self) -> np.ndarray:
         """Get the climber ground pathing grid for reapers and colossus.
 
-        PathManager
+        GridManager
 
         Example:
         ```py
@@ -949,7 +950,7 @@ class ManagerMediator(IManagerMediator):
     def get_forcefield_positions(self) -> list[Point2]:
         """Get positions of forcefields.
 
-        PathManager
+        GridManager
 
         Example:
         ```py
@@ -971,7 +972,7 @@ class ManagerMediator(IManagerMediator):
     def get_ground_avoidance_grid(self) -> np.ndarray:
         """Get the ground avoidance pathing grid.
 
-        PathManager
+        GridManager
 
         Returns:
             The ground avoidance pathing grid.
@@ -985,7 +986,7 @@ class ManagerMediator(IManagerMediator):
     def get_ground_grid(self) -> np.ndarray:
         """Get the ground pathing grid.
 
-        PathManager
+        GridManager
 
         Returns:
             The ground pathing grid.
@@ -998,7 +999,7 @@ class ManagerMediator(IManagerMediator):
     def get_ground_to_air_grid(self) -> np.ndarray:
         """Get the ground pathing grid.
 
-        PathManager
+        GridManager
 
         Returns:
             The ground pathing grid.
@@ -1017,14 +1018,14 @@ class ManagerMediator(IManagerMediator):
             The MapAnalyzer.MapData object being used.
         """
         return self.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_MAP_DATA
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_MAP_DATA
         )
 
     @property
     def get_priority_ground_avoidance_grid(self) -> np.ndarray:
         """Get the pathing grid containing things ground units should always avoid.
 
-        PathManager
+        GridManager
 
         Returns:
             The priority ground avoidance pathing grid.
@@ -1035,10 +1036,30 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
+    def get_tactical_ground_grid(self) -> np.ndarray:
+        """Get the tactical ground grid.
+
+        Normal pathable tiles with no units on them
+        have a value of 1000.0
+
+        Tiles with more enemy have value > 1000
+        Tiles with more friendly have value < 1000
+
+
+        GridManager
+
+        Returns:
+            The ground tactical grid.
+        """
+        return self.manager_request(
+            ManagerName.GRID_MANAGER, ManagerRequestType.GET_TACTICAL_GROUND_GRID
+        )
+
+    @property
     def get_whole_map_array(self) -> list[list[int]]:
         """Get the list containing every point on the map.
 
-        PathManager
+        GridManager
 
         Notes
         -----

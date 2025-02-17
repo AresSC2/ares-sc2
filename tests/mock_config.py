@@ -18,6 +18,7 @@ MOCK_CONFIG: dict = {
         "GroundEnemyLeavingBases": 24.0,
         "FlyingEnemyLeavingBases": 22.0,
     },
+    "Features": {"TacticalGroundGrid": True},
     "Building": {"CancelOrder": 18},
     "Mining": {
         "MineralBoost": True,
