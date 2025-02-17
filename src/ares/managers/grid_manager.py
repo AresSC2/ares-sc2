@@ -3,17 +3,14 @@
 This manager handles all grid-related operations including initialization,
 cost calculations, and influence management.
 """
-from typing import TYPE_CHECKING, Any, Dict, List, Union
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, Dict, List
 
 import numpy as np
-from cython_extensions import cy_distance_to_squared
-from map_analyzer import MapData
-from sc2.ids.effect_id import EffectId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
-from sc2.position import Point2
-from sc2.unit import Unit
-
 from ares.consts import (
+    ACTIVE_GRID,
     AIR,
     AIR_AVOIDANCE,
     AIR_COST,
@@ -45,14 +42,23 @@ from ares.consts import (
     RANGE_BUFFER,
     SHOW_PATHING_COST,
     STORM,
+    TACTICAL_GROUND,
     TOWNHALL_TYPES,
     UNITS,
     ManagerName,
-    ManagerRequestType,
+    ManagerRequestType, FEATURES, TACTICAL_GROUND_GRID,
 )
+from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.weight_costs import WEIGHT_COSTS
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
+from cython_extensions import cy_distance_to_squared
+from map_analyzer import MapData
+from sc2.ids.effect_id import EffectId
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.position import Point2, Point3
+from sc2.unit import Unit
+
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -146,6 +152,7 @@ class GridManager(Manager, IManagerMediator):
             ManagerRequestType.GET_PRIORITY_GROUND_AVOIDANCE_GRID: (
                 lambda kwargs: self.priority_ground_avoidance_grid
             ),
+            ManagerRequestType.GET_TACTICAL_GROUND_GRID: (lambda kwargs: self.tactical_ground_grid),
         }
 
         self.air_grid: np.ndarray = self.map_data.get_clean_air_grid()
@@ -176,8 +183,12 @@ class GridManager(Manager, IManagerMediator):
             self._cached_clean_ground_grid.copy()
         )
 
-        # vague attempt at not recalculating np.argwhere for danger tiles
-        self.calculated_danger_tiles: List[Dict[str, Union[np.ndarray, int]]] = []
+        self.tactical_ground_grid_enabled: bool = self.config[FEATURES][TACTICAL_GROUND_GRID]
+        # ensure grid exists so mediator request dont break
+        self.tactical_ground_grid: np.ndarray = self.map_data.get_pyastar_grid(
+            default_weight=200
+        )
+
         self.forcefield_positions: List[Point2] = []
         # biles / nukes
         self.delayed_effects: Dict[int, int] = {}
@@ -201,40 +212,55 @@ class GridManager(Manager, IManagerMediator):
         # nukes / biles
         self._update_delayed_effects()
 
-        if iteration % 4 == 0:
-            self.calculated_danger_tiles = []
-
         for unit in self.ai.enemy_units:
             if unit.type_id not in CHANGELING_TYPES:
                 self.add_unit_influence(unit)
+
+        unit_data: dict = UNIT_DATA
+        if self.tactical_ground_grid_enabled:
+            for unit in self.ai.all_own_units:
+                data: dict = unit_data[unit.type_id]
+                if not data["flying"]:
+                    self.tactical_ground_grid = self.map_data.add_cost(
+                        position=unit.position,
+                        radius=max(1.0, unit.radius) * 1.2,
+                        grid=self.tactical_ground_grid,
+                        weight=-data["army_value"],
+                    )
 
         # update creep grid
         self.creep_ground_grid = self.ground_grid.copy()
         self.creep_ground_grid[np.where(self.ai.state.creep.data_numpy.T != 1)] = np.inf
 
         if self.debug and self.config[DEBUG_OPTIONS][SHOW_PATHING_COST]:
-            if self.config[DEBUG_OPTIONS][AIR]:
-                self.map_data.draw_influence_in_game(self.air_grid, lower_threshold=1)
-            elif self.config[DEBUG_OPTIONS][AIR_VS_GROUND]:
-                self.map_data.draw_influence_in_game(
-                    self.air_vs_ground_grid, lower_threshold=40
-                )
-            elif self.config[DEBUG_OPTIONS][GROUND]:
-                self.map_data.draw_influence_in_game(
-                    self.ground_grid, lower_threshold=1
-                )
-            elif self.config[DEBUG_OPTIONS][GROUND_AVOIDANCE]:
-                self.map_data.draw_influence_in_game(
-                    self.ground_avoidance_grid, lower_threshold=1
-                )
-            elif self.config[DEBUG_OPTIONS][AIR_AVOIDANCE]:
-                self.map_data.draw_influence_in_game(
-                    self.air_avoidance_grid, lower_threshold=1
-                )
-            elif self.config[DEBUG_OPTIONS][GROUND_TO_AIR]:
-                self.map_data.draw_influence_in_game(
-                    self.ground_to_air_grid, lower_threshold=1
-                )
+            debug_cases: dict[str, Any] = {
+                AIR: (self.air_grid, 1),
+                AIR_VS_GROUND: (self.air_vs_ground_grid, 40),
+                GROUND: (self.ground_grid, 1),
+                GROUND_AVOIDANCE: (self.ground_avoidance_grid, 1),
+                AIR_AVOIDANCE: (self.air_avoidance_grid, 1),
+                GROUND_TO_AIR: (self.ground_to_air_grid, 1),
+                TACTICAL_GROUND: (self.tactical_ground_grid, 200),
+            }
+
+            for option, (grid, threshold) in debug_cases.items():
+                if self.config[DEBUG_OPTIONS][ACTIVE_GRID] == option:
+                    if option == TACTICAL_GROUND:
+                        height: float = self.ai.get_terrain_z_height(self.ai.start_location)
+                        indices = np.where(grid != threshold)
+                        for x, y in zip(indices[0], indices[1]):  # Properly zip the x and y coordinates
+                            pos: Point3 = Point3((x, y, height))
+                            if grid[x, y] == np.inf:
+                                val: int = 9999
+                            else:
+                                val: int = int(grid[x, y])
+                            if val != 9999:
+                                self.ai.client.debug_text_world(str(val), pos, (201, 168, 79), 13)
+                    else:
+                        self.map_data.draw_influence_in_game(
+                            grid, lower_threshold=threshold
+                        )
+                    break
 
     def add_cost(
         self,
@@ -331,6 +357,8 @@ class GridManager(Manager, IManagerMediator):
         self.ground_avoidance_grid = self._cached_clean_ground_grid.copy()
         self.priority_ground_avoidance_grid = self._cached_clean_ground_grid.copy()
         self.ground_to_air_grid = self._cached_clean_air_grid.copy()
+        if self.tactical_ground_grid_enabled:
+            self.tactical_ground_grid = self.map_data.get_pyastar_grid(default_weight=200)
 
         # Refresh the cached ground grid every 8 steps, because things like structures/
         # minerals / rocks will change throughout the game
@@ -370,131 +398,162 @@ class GridManager(Manager, IManagerMediator):
         if enemy.is_ready:
             self._add_structure_influence(enemy)
 
+
     def _add_effects(self) -> None:
         """Add effects influence to map."""
         effect_values: Dict = self.config[PATHING][EFFECTS]
+        effects_buffer = self.config[PATHING][EFFECTS_RANGE_BUFFER]
+
+        self._process_game_effects(effect_values, effects_buffer)
+        self._process_parasitic_bombs(effect_values, effects_buffer)
+
+    def _process_game_effects(self, effect_values: Dict, effects_buffer: float) -> None:
+        """Process all game effects and add their influence."""
+        effect_handlers = {
+            EffectId.BLINDINGCLOUDCP: self._handle_blinding_cloud,
+            "KD8CHARGE": self._handle_kd8_charge,
+            EffectId.LURKERMP: self._handle_lurker_spines,
+            EffectId.NUKEPERSISTENT: self._handle_nuke,
+            EffectId.PSISTORMPERSISTENT: self._handle_storm,
+            EffectId.RAVAGERCORROSIVEBILECP: self._handle_corrosive_bile,
+            self.FORCEFIELD: self._handle_forcefield,
+        }
+
+        liberator_effects = {
+            EffectId.LIBERATORTARGETMORPHDELAYPERSISTENT,
+            EffectId.LIBERATORTARGETMORPHPERSISTENT,
+        }
 
         for effect in self.ai.state.effects:
-            # blinding cloud
-            if effect.id == EffectId.BLINDINGCLOUDCP:
-                (
-                    self.climber_grid,
-                    self.ground_grid,
-                    self.ground_avoidance_grid,
-                ) = self.add_cost_to_multiple_grids(
-                    Point2.center(effect.positions),
-                    effect_values[BLINDING_CLOUD][COST],
-                    effect_values[BLINDING_CLOUD][RANGE]
-                    + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                    [self.climber_grid, self.ground_grid, self.ground_avoidance_grid],
-                )
-            elif effect.id == "KD8CHARGE":
-                (
-                    self.climber_grid,
-                    self.ground_grid,
-                    # self.ground_avoidance_grid,
-                ) = self.add_cost_to_multiple_grids(
-                    Point2.center(effect.positions),
-                    effect_values[KD8_CHARGE][COST],
-                    effect_values[KD8_CHARGE][RANGE]
-                    + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                    [self.climber_grid, self.ground_grid],
-                )
-            # liberator siege
-            elif effect.id in {
-                EffectId.LIBERATORTARGETMORPHDELAYPERSISTENT,
-                EffectId.LIBERATORTARGETMORPHPERSISTENT,
-            }:
-                (
-                    self.climber_grid,
-                    self.ground_grid,
-                    # self.ground_avoidance_grid,
-                ) = self.add_cost_to_multiple_grids(
-                    Point2.center(effect.positions),
-                    effect_values[LIBERATOR_ZONE][COST],
-                    effect_values[LIBERATOR_ZONE][RANGE]
-                    + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                    [self.climber_grid, self.ground_grid],
-                )
-            # lurker spines
-            elif effect.id == EffectId.LURKERMP:
-                for pos in effect.positions:
-                    (
-                        self.climber_grid,
-                        self.ground_grid,
-                        self.ground_avoidance_grid,
-                    ) = self.add_cost_to_multiple_grids(
-                        pos,
-                        effect_values[LURKER_SPINE][COST],
-                        effect_values[LURKER_SPINE][RANGE]
-                        + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                        [
-                            self.climber_grid,
-                            self.ground_grid,
-                            self.ground_avoidance_grid,
-                        ],
-                    )
-            # nukes
-            elif effect.id == EffectId.NUKEPERSISTENT:
-                self._add_delayed_effect(
-                    position=Point2.center(effect.positions),
-                    effect_dict=self.storms_dict,
-                )
-            # storms
-            elif effect.id == EffectId.PSISTORMPERSISTENT:
-                (
-                    self.air_grid,
-                    self.air_vs_ground_grid,
-                    self.climber_grid,
-                    self.ground_grid,
-                    self.air_avoidance_grid,
-                    self.ground_avoidance_grid,
-                    self.priority_ground_avoidance_grid,
-                ) = self.add_cost_to_multiple_grids(
-                    Point2.center(effect.positions),
-                    effect_values[STORM][COST],
-                    effect_values[STORM][RANGE]
-                    + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                    [
-                        self.air_grid,
-                        self.air_vs_ground_grid,
-                        self.climber_grid,
-                        self.ground_grid,
-                        self.air_avoidance_grid,
-                        self.ground_avoidance_grid,
-                        self.priority_ground_avoidance_grid,
-                    ],
-                )
-            # corrosive bile
-            elif effect.id == EffectId.RAVAGERCORROSIVEBILECP:
-                self._add_delayed_effect(
-                    position=Point2.center(effect.positions),
-                    effect_dict=self.biles_dict,
-                )
+            if effect.id in liberator_effects:
+                self._handle_liberator_siege(effect, effect_values, effects_buffer)
+            elif effect.id in effect_handlers:
+                effect_handlers[effect.id](effect, effect_values, effects_buffer)
 
-            # forcefields (currently just keeping track of them)
-            elif effect.id == self.FORCEFIELD:
-                # forcefields only have 1 position but it's still a set
-                self.forcefield_positions.append(effect.positions.pop())
-
+    def _process_parasitic_bombs(
+        self, effect_values: Dict, effects_buffer: float
+    ) -> None:
+        """Process parasitic bomb effects."""
         for position in self.ai.enemy_parasitic_bomb_positions:
-            (
-                self.air_grid,
-                self.air_vs_ground_grid,
-                self.air_avoidance_grid,
-                self.ground_to_air_grid,
-            ) = self.add_cost_to_multiple_grids(
-                position,
-                effect_values[PARASITIC_BOMB][COST],
-                effect_values[PARASITIC_BOMB][RANGE]
-                + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                [
-                    self.air_grid,
-                    self.air_vs_ground_grid,
-                    self.air_avoidance_grid,
-                    self.ground_to_air_grid,
-                ],
+            self._handle_parasitic_bomb(position, effect_values, effects_buffer)
+
+    def _handle_blinding_cloud(
+        self, effect, effect_values: Dict, effects_buffer: float
+    ) -> None:
+        """Handle blinding cloud effect."""
+        grids = [
+            self.climber_grid,
+            self.ground_grid,
+            self.ground_avoidance_grid,
+        ]
+        self.add_cost_to_multiple_grids(
+            Point2.center(effect.positions),
+            effect_values[BLINDING_CLOUD][COST],
+            effect_values[BLINDING_CLOUD][RANGE] + effects_buffer,
+            grids,
+        )
+
+    def _handle_kd8_charge(
+        self, effect, effect_values: Dict, effects_buffer: float
+    ) -> None:
+        """Handle KD8 charge effect."""
+        grids = [self.climber_grid, self.ground_grid]
+        self.add_cost_to_multiple_grids(
+            Point2.center(effect.positions),
+            effect_values[KD8_CHARGE][COST],
+            effect_values[KD8_CHARGE][RANGE] + effects_buffer,
+            grids,
+        )
+
+    def _handle_liberator_siege(
+        self, effect, effect_values: Dict, effects_buffer: float
+    ) -> None:
+        """Handle liberator siege effect."""
+        grids = [self.climber_grid, self.ground_grid]
+        self.add_cost_to_multiple_grids(
+            Point2.center(effect.positions),
+            effect_values[LIBERATOR_ZONE][COST],
+            effect_values[LIBERATOR_ZONE][RANGE] + effects_buffer,
+            grids,
+        )
+
+    def _handle_lurker_spines(
+        self, effect, effect_values: Dict, effects_buffer: float
+    ) -> None:
+        """Handle lurker spines effect."""
+        grids = [
+            self.climber_grid,
+            self.ground_grid,
+            self.ground_avoidance_grid,
+        ]
+        for pos in effect.positions:
+            self.add_cost_to_multiple_grids(
+                pos,
+                effect_values[LURKER_SPINE][COST],
+                effect_values[LURKER_SPINE][RANGE] + effects_buffer,
+                grids,
             )
+
+    def _handle_nuke(self, effect, effect_values: Dict, effects_buffer: float) -> None:
+        """Handle nuke effect."""
+        self._add_delayed_effect(
+            position=Point2.center(effect.positions),
+            effect_dict=self.storms_dict,
+        )
+
+    def _handle_storm(self, effect, effect_values: Dict, effects_buffer: float) -> None:
+        """Handle psi storm effect."""
+        grids = [
+            self.air_grid,
+            self.air_vs_ground_grid,
+            self.climber_grid,
+            self.ground_grid,
+            self.air_avoidance_grid,
+            self.ground_avoidance_grid,
+            self.priority_ground_avoidance_grid,
+        ]
+        self.add_cost_to_multiple_grids(
+            Point2.center(effect.positions),
+            effect_values[STORM][COST],
+            effect_values[STORM][RANGE] + effects_buffer,
+            grids,
+        )
+
+    def _handle_corrosive_bile(
+        self, effect, effect_values: Dict, effects_buffer: float
+    ) -> None:
+        """Handle corrosive bile effect."""
+        self._add_delayed_effect(
+            position=Point2.center(effect.positions),
+            effect_dict=self.biles_dict,
+        )
+
+    def _handle_forcefield(
+        self, effect, effect_values: Dict, effects_buffer: float
+    ) -> None:
+        """Handle forcefield effect."""
+        self.forcefield_positions.append(effect.positions.pop())
+
+    def _handle_parasitic_bomb(
+        self,
+        position: Point2,
+        effect_values: Dict,
+        effects_buffer: float,
+    ) -> None:
+        """Handle parasitic bomb effect."""
+        grids = [
+            self.air_grid,
+            self.air_vs_ground_grid,
+            self.air_avoidance_grid,
+            self.ground_to_air_grid,
+        ]
+        bomb_range = effect_values[PARASITIC_BOMB][RANGE] + effects_buffer
+        self.add_cost_to_multiple_grids(
+            position,
+            effect_values[PARASITIC_BOMB][COST],
+            bomb_range,
+            grids,
+        )
 
     def _add_structure_influence(self, structure: Unit) -> None:
         """Add structure influence to map.
@@ -504,84 +563,122 @@ class GridManager(Manager, IManagerMediator):
         structure :
             The structure to add the influence of.
         """
-        if structure.type_id == UnitID.PHOTONCANNON:
-            (
-                self.air_grid,
-                self.air_vs_ground_grid,
-                self.climber_grid,
-                self.ground_grid,
-                self.ground_to_air_grid,
-            ) = self.add_cost_to_multiple_grids(
-                structure.position,
-                22,
-                7 + self.config[PATHING][RANGE_BUFFER],
-                [
-                    self.air_grid,
-                    self.air_vs_ground_grid,
-                    self.climber_grid,
-                    self.ground_grid,
-                    self.ground_to_air_grid,
-                ],
-            )
-        elif structure.type_id == UnitID.MISSILETURRET:
-            s_range: int = 8 if self.ai.time > 540 else 7
-            (
-                self.air_grid,
-                self.air_vs_ground_grid,
-                self.ground_to_air_grid,
-            ) = self.add_cost_to_multiple_grids(
-                structure.position,
-                39,
-                s_range + self.config[PATHING][RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid, self.ground_to_air_grid],
-            )
-        elif structure.type_id == UnitID.SPORECRAWLER:
-            # 48 vs biological units, 24 otherwise
-            (
-                self.air_grid,
-                self.air_vs_ground_grid,
-                self.ground_to_air_grid,
-            ) = self.add_cost_to_multiple_grids(
-                structure.position,
-                39,
-                7 + self.config[PATHING][RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid, self.ground_to_air_grid],
-            )
-        elif structure.type_id == UnitID.BUNKER:
-            if self.ai.enemy_structures.filter(
-                lambda g: g.type_id in TOWNHALL_TYPES
-                and cy_distance_to_squared(g.position, structure.position) < 81.0  # 9.0
-            ):
-                return
-            # add range of marine + 1
-            (
-                self.air_grid,
-                self.air_vs_ground_grid,
-                self.climber_grid,
-                self.ground_grid,
-                self.ground_to_air_grid,
-            ) = self.add_cost_to_multiple_grids(
-                structure.position,
-                22,
-                6 + self.config[PATHING][RANGE_BUFFER],
-                [
-                    self.air_grid,
-                    self.air_vs_ground_grid,
-                    self.climber_grid,
-                    self.ground_grid,
-                    self.ground_to_air_grid,
-                ],
-            )
-        elif structure.type_id == UnitID.PLANETARYFORTRESS:
-            s_range: int = 7 if self.ai.time > 400 else 6
-            (self.climber_grid, self.ground_grid,) = self.add_cost_to_multiple_grids(
-                structure.position,
-                28,
-                s_range + self.config[PATHING][RANGE_BUFFER],
-                [self.climber_grid, self.ground_grid],
-            )
-        elif structure.type_id == UnitID.AUTOTURRET:
-            self._add_cost_to_all_grids(structure, WEIGHT_COSTS[UnitID.AUTOTURRET])
+        structure_handlers = {
+            UnitID.PHOTONCANNON: self._handle_photon_cannon,
+            UnitID.MISSILETURRET: self._handle_missile_turret,
+            UnitID.SPORECRAWLER: self._handle_spore_crawler,
+            UnitID.BUNKER: self._handle_bunker,
+            UnitID.PLANETARYFORTRESS: self._handle_planetary_fortress,
+            UnitID.AUTOTURRET: self._handle_auto_turret,
+        }
+
+        if structure.type_id in structure_handlers:
+            structure_handlers[structure.type_id](structure)
+            if self.tactical_ground_grid_enabled:
+                unit_data: dict = UNIT_DATA[structure.type_id]
+                if not unit_data["flying"]:
+                    self.tactical_ground_grid = self.map_data.add_cost(
+                        position=structure.position,
+                        radius=max(1.0, structure.radius) * 1.2,
+                        grid=self.tactical_ground_grid,
+                        weight=unit_data["army_value"],
+                    )
+
+    def _handle_photon_cannon(self, structure: Unit) -> None:
+        """Handle photon cannon influence."""
+        grids = [
+            self.air_grid,
+            self.air_vs_ground_grid,
+            self.climber_grid,
+            self.ground_grid,
+            self.ground_to_air_grid,
+        ]
+        self.add_cost_to_multiple_grids(
+            structure.position,
+            22,
+            7 + self.config[PATHING][RANGE_BUFFER],
+            grids,
+        )
+
+    def _handle_missile_turret(self, structure: Unit) -> None:
+        """Handle missile turret influence."""
+        s_range = 8 if self.ai.time > 540 else 7
+        grids = [
+            self.air_grid,
+            self.air_vs_ground_grid,
+            self.ground_to_air_grid,
+        ]
+        self.add_cost_to_multiple_grids(
+            structure.position,
+            39,
+            s_range + self.config[PATHING][RANGE_BUFFER],
+            grids,
+        )
+
+    def _handle_spore_crawler(self, structure: Unit) -> None:
+        """Handle spore crawler influence."""
+        grids = [
+            self.air_grid,
+            self.air_vs_ground_grid,
+            self.ground_to_air_grid,
+        ]
+        self.add_cost_to_multiple_grids(
+            structure.position,
+            39,
+            7 + self.config[PATHING][RANGE_BUFFER],
+            grids,
+        )
+
+    def _handle_bunker(self, structure: Unit) -> None:
+        """Handle bunker influence."""
+        if self.ai.enemy_structures.filter(
+            lambda g: g.type_id in TOWNHALL_TYPES
+            and cy_distance_to_squared(g.position, structure.position) < 81.0
+        ):
+            return
+
+        grids = [
+            self.air_grid,
+            self.air_vs_ground_grid,
+            self.climber_grid,
+            self.ground_grid,
+            self.ground_to_air_grid,
+        ]
+        self.add_cost_to_multiple_grids(
+            structure.position,
+            22,
+            6 + self.config[PATHING][RANGE_BUFFER],
+            grids,
+        )
+
+        self.tactical_ground_grid = self.map_data.add_cost(
+            position=structure.position,
+            radius=structure.radius,
+            grid=self.tactical_ground_grid,
+            weight=10.0,
+        )
+
+    def _handle_planetary_fortress(self, structure: Unit) -> None:
+        """Handle planetary fortress influence."""
+        s_range = 7 if self.ai.time > 400 else 6
+        grids = [self.climber_grid, self.ground_grid]
+        self.add_cost_to_multiple_grids(
+            structure.position,
+            28,
+            s_range + self.config[PATHING][RANGE_BUFFER],
+            grids,
+        )
+
+        self.tactical_ground_grid = self.map_data.add_cost(
+            position=structure.position,
+            radius=structure.radius,
+            grid=self.tactical_ground_grid,
+            weight=25.0,
+        )
+
+    def _handle_auto_turret(self, structure: Unit) -> None:
+        """Handle auto turret influence."""
+        self._add_cost_to_all_grids(structure, WEIGHT_COSTS[UnitID.AUTOTURRET])
 
     def _add_unit_influence(self, unit: Unit) -> None:
         """Add unit influence to maps.
@@ -591,99 +688,143 @@ class GridManager(Manager, IManagerMediator):
         unit :
             The unit to add the influence of.
         """
+        unit_handlers = {
+            UnitID.DISRUPTORPHASED: self._handle_disruptor,
+            UnitID.BANELING: self._handle_baneling,
+            UnitID.INFESTOR: self._handle_infestor,
+            UnitID.ORACLE: self._handle_oracle,
+        }
+
         if unit.type_id in WEIGHT_COSTS:
-            weight_values = WEIGHT_COSTS[unit.type_id]
-            self._add_cost_to_all_grids(unit, weight_values)
-            if not unit.is_flying:
-                self.ground_to_air_grid = self.map_data.add_cost(
-                    unit.position,
-                    weight_values[AIR_RANGE] + self.config[PATHING][RANGE_BUFFER],
-                    self.ground_to_air_grid,
-                    weight_values[AIR_COST],
-                )
-        elif unit.type_id == UnitID.DISRUPTORPHASED:
-            (
-                self.climber_grid,
-                self.ground_avoidance_grid,
-                self.ground_grid,
-                self.priority_ground_avoidance_grid,
-            ) = self.add_cost_to_multiple_grids(
-                pos=unit.position,
-                weight=1000,
-                unit_range=8 + self.config[PATHING][EFFECTS_RANGE_BUFFER],
-                grids=[
-                    self.climber_grid,
-                    self.ground_avoidance_grid,
-                    self.ground_grid,
-                    self.priority_ground_avoidance_grid,
-                ],
+            self._handle_weight_cost_unit(unit)
+        elif unit.type_id in unit_handlers:
+            unit_handlers[unit.type_id](unit)
+        else:
+            self._handle_generic_unit(unit)
+
+        unit_data: dict = UNIT_DATA[unit.type_id]
+        if not unit_data["flying"]:
+            self.tactical_ground_grid = self.map_data.add_cost(
+                position=unit.position,
+                radius=max(1.0, unit.radius) * 1.2,
+                grid=self.tactical_ground_grid,
+                weight=unit_data["army_value"],
             )
-        elif unit.type_id == UnitID.BANELING:
-            (
-                self.climber_grid,
-                self.ground_avoidance_grid,
-                self.ground_grid,
-                self.priority_ground_avoidance_grid,
-            ) = self.add_cost_to_multiple_grids(
-                pos=unit.position,
-                weight=WEIGHT_COSTS[UnitID.BANELING][GROUND_COST],
-                unit_range=WEIGHT_COSTS[UnitID.BANELING][GROUND_RANGE],
-                grids=[
-                    self.climber_grid,
-                    self.ground_avoidance_grid,
-                    self.ground_grid,
-                    self.priority_ground_avoidance_grid,
-                ],
-            )
-        # add the potential of a fungal growth
-        elif unit.type_id == UnitID.INFESTOR and unit.energy >= 75:
-            weight_values: dict = WEIGHT_COSTS[UnitID.INFESTOR]
-            self._add_cost_to_all_grids(unit, WEIGHT_COSTS[UnitID.INFESTOR])
+
+    def _handle_weight_cost_unit(self, unit: Unit) -> None:
+        """Handle units with predefined weight costs."""
+        weight_values = WEIGHT_COSTS[unit.type_id]
+        self._add_cost_to_all_grids(unit, weight_values)
+        if not unit.is_flying:
             self.ground_to_air_grid = self.map_data.add_cost(
                 unit.position,
                 weight_values[AIR_RANGE] + self.config[PATHING][RANGE_BUFFER],
                 self.ground_to_air_grid,
                 weight_values[AIR_COST],
             )
-        elif unit.type_id == UnitID.ORACLE and unit.energy >= 25:
-            self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
+
+    def _handle_disruptor(self, unit: Unit) -> None:
+        """Handle disruptor unit influence."""
+        grids = [
+            self.climber_grid,
+            self.ground_avoidance_grid,
+            self.ground_grid,
+            self.priority_ground_avoidance_grid,
+        ]
+        self.add_cost_to_multiple_grids(
+            pos=unit.position,
+            weight=1000,
+            unit_range=8 + self.config[PATHING][EFFECTS_RANGE_BUFFER],
+            grids=grids,
+        )
+
+    def _handle_baneling(self, unit: Unit) -> None:
+        """Handle baneling unit influence."""
+        grids = [
+            self.climber_grid,
+            self.ground_avoidance_grid,
+            self.ground_grid,
+            self.priority_ground_avoidance_grid,
+        ]
+        self.add_cost_to_multiple_grids(
+            pos=unit.position,
+            weight=WEIGHT_COSTS[UnitID.BANELING][GROUND_COST],
+            unit_range=WEIGHT_COSTS[UnitID.BANELING][GROUND_RANGE],
+            grids=grids,
+        )
+
+    def _handle_infestor(self, unit: Unit) -> None:
+        """Handle infestor unit influence."""
+        if unit.energy >= 75:  # Has enough energy for fungal growth
+            weight_values = WEIGHT_COSTS[UnitID.INFESTOR]
+            self._add_cost_to_all_grids(unit, weight_values)
+            self.ground_to_air_grid = self.map_data.add_cost(
                 unit.position,
-                self.config[PATHING][UNITS][ORACLE][GROUND_COST],
-                self.config[PATHING][UNITS][ORACLE][GROUND_RANGE]
-                + self.config[PATHING][RANGE_BUFFER],
-                [self.climber_grid, self.ground_grid],
-            )
-        # melee units
-        elif unit.ground_range < 2:
-            self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
-                unit.position,
-                unit.ground_dps,
-                self.config[PATHING][RANGE_BUFFER],
-                [self.climber_grid, self.ground_grid],
-            )
-        elif unit.can_attack_air:
-            self.air_grid, self.air_vs_ground_grid = self.add_cost_to_multiple_grids(
-                unit.position,
-                unit.air_dps,
-                unit.air_range + self.config[PATHING][RANGE_BUFFER],
-                [self.air_grid, self.air_vs_ground_grid],
-            )
-            if not unit.is_flying:
-                self.ground_to_air_grid = self.map_data.add_cost(
-                    unit.position,
-                    unit.air_range + self.config[PATHING][RANGE_BUFFER],
-                    self.ground_to_air_grid,
-                    unit.air_dps,
-                )
-        elif unit.can_attack_ground:
-            self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
-                unit.position,
-                unit.ground_dps,
-                unit.ground_range + self.config[PATHING][RANGE_BUFFER],
-                [self.climber_grid, self.ground_grid],
+                weight_values[AIR_RANGE] + self.config[PATHING][RANGE_BUFFER],
+                self.ground_to_air_grid,
+                weight_values[AIR_COST],
             )
 
-    def _add_cost_to_all_grids(self, unit: Unit, weight_values: Dict) -> None:
+    def _handle_oracle(self, unit: Unit) -> None:
+        """Handle oracle unit influence."""
+        if unit.energy >= 25:  # Has enough energy for attack
+            oracle_range = (
+                self.config[PATHING][UNITS][ORACLE][GROUND_RANGE]
+                + self.config[PATHING][RANGE_BUFFER]
+            )
+            grids = [self.climber_grid, self.ground_grid]
+            self.add_cost_to_multiple_grids(
+                unit.position,
+                self.config[PATHING][UNITS][ORACLE][GROUND_COST],
+                oracle_range,
+                grids,
+            )
+
+    def _handle_generic_unit(self, unit: Unit) -> None:
+        """Handle generic unit influence based on its capabilities."""
+        if unit.ground_range < 2:  # Melee units
+            self._handle_melee_unit(unit)
+        else:
+            if unit.can_attack_air:
+                self._handle_anti_air_unit(unit)
+            if unit.can_attack_ground:
+                self._handle_ground_attack_unit(unit)
+
+    def _handle_melee_unit(self, unit: Unit) -> None:
+        """Handle melee unit influence."""
+        self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
+            unit.position,
+            unit.ground_dps,
+            self.config[PATHING][RANGE_BUFFER],
+            [self.climber_grid, self.ground_grid],
+        )
+
+    def _handle_anti_air_unit(self, unit: Unit) -> None:
+        """Handle anti-air unit influence."""
+        self.air_grid, self.air_vs_ground_grid = self.add_cost_to_multiple_grids(
+            unit.position,
+            unit.air_dps,
+            unit.air_range + self.config[PATHING][RANGE_BUFFER],
+            [self.air_grid, self.air_vs_ground_grid],
+        )
+        if not unit.is_flying:
+            self.ground_to_air_grid = self.map_data.add_cost(
+                unit.position,
+                unit.air_range + self.config[PATHING][RANGE_BUFFER],
+                self.ground_to_air_grid,
+                unit.air_dps,
+            )
+
+    def _handle_ground_attack_unit(self, unit: Unit) -> None:
+        """Handle ground attack unit influence."""
+        self.climber_grid, self.ground_grid = self.add_cost_to_multiple_grids(
+            unit.position,
+            unit.ground_dps,
+            unit.ground_range + self.config[PATHING][RANGE_BUFFER],
+            [self.climber_grid, self.ground_grid],
+        )
+
+    def _add_cost_to_all_grids(self, unit: Unit, weight_values: dict) -> None:
         """Add cost to all grids.
 
         Parameters

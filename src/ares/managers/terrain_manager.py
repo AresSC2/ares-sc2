@@ -137,9 +137,7 @@ class TerrainManager(Manager, IManagerMediator):
                 self.ai.enemy_start_locations[0]
             )
 
-        self.map_data = self.manager_mediator.manager_request(
-            ManagerName.PATH_MANAGER, ManagerRequestType.GET_MAP_DATA
-        )
+        self.map_data = self.manager_mediator.get_map_data_object
         self.choke_points: Set[Point2] = set(
             [point for ch in self.map_data.map_chokes for point in ch.points]
         )

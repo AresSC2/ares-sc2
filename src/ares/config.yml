@@ -1,20 +1,16 @@
 UseData: False
-Debug: False
+Debug: True
 GameStep: 2
 DebugGameStep: 2
 
 DebugOptions:
-    # one of: Air, AirVsGround, Ground, GroundAvoidance, AirAvoidance, GroundToAir
-    ActiveGrid: GroundToAir
+    # one of: Air, AirVsGround, Ground, GroundAvoidance, AirAvoidance, GroundToAir, TacticalGround
+    ActiveGrid: Ground
     ChatDebug: True
     DebugSpawn: False
-    ShowPathingCost: False
+    ShowPathingCost: True
     ShowBuildingFormation: False
     ResourceDebug: False
-
-Chat:
-    Enabled: True
-    AiarenaTags: True
 
 Distances:
     FlyingEnemyNearBases: 20.
@@ -22,17 +18,17 @@ Distances:
     GroundEnemyLeavingBases: 24.
     FlyingEnemyLeavingBases: 22.
 
+# Turn ares features on/off for performance reasons
+Features:
+    # this grid is useful for disruptor balls and maybe some other uses
+    # off by default to save computation
+    TacticalGroundGrid: False
+
 Building:
     # how many seconds before giving up on a construction order?
     CancelOrder: 18
 
 Mining:
-    MineralBoost: True
-    # shouldn't ever need to turn this off, adds 3-4% income without any tricks
-    MineralStacking: True
-    # make sure VespeneBoost code is uncommented if setting to True
-    VespeneBoost: False
-    BoostBackToTownHall: True
     GeyserDistanceFactor: 1.05
     GeyserThreshold: 0.05
     MineralDistanceFactor: 1.25

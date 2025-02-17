@@ -33,6 +33,59 @@ class PathManager(Manager, IManagerMediator):
     All unit pathing should be done here
     This also exposes SC2MapAnalyzer api_reference through `self.map_data`
     """
+    map_data: MapData
+
+    def __init__(
+        self,
+        ai: "AresBot",
+        config: Dict,
+        mediator: ManagerMediator,
+    ) -> None:
+        """Set up the manager.
+
+        Parameters
+        ----------
+        ai :
+            Bot object that will be running the game
+        config :
+            Dictionary with the data from the configuration file
+        mediator :
+            ManagerMediator used for getting information from other managers.
+        """
+        super().__init__(ai, config, mediator)
+        self.debug: bool = self.config[DEBUG]
+
+        self.whole_map: List[List[int]] = [
+            [x, y]
+            for x in range(self.ai.game_info.map_size[0])
+            for y in range(self.ai.game_info.map_size[1])
+        ]
+        self.whole_map_tree: KDTree = KDTree(self.whole_map)
+        # vague attempt at not recalculating np.argwhere for danger tiles
+        self.calculated_danger_tiles: List[Dict[str, Union[np.ndarray, int]]] = []
+
+        self.manager_requests_dict = {
+            ManagerRequestType.FIND_LOW_PRIORITY_PATH: lambda kwargs: (
+                self.find_low_priority_path(**kwargs)
+            ),
+            ManagerRequestType.FIND_LOWEST_COST_POINTS: lambda kwargs: (
+                self.map_data.find_lowest_cost_points(**kwargs)
+            ),
+            ManagerRequestType.FIND_RAW_PATH: lambda kwargs: self.raw_pathfind(
+                **kwargs
+            ),
+            ManagerRequestType.IS_POSITION_SAFE: lambda kwargs: self.is_position_safe(
+                **kwargs
+            ),
+            ManagerRequestType.GET_CLOSEST_SAFE_SPOT: (
+                lambda kwargs: self.find_closest_safe_spot(**kwargs)
+            ),
+            ManagerRequestType.GET_WHOLE_MAP_ARRAY: lambda kwargs: self.whole_map,
+            ManagerRequestType.GET_WHOLE_MAP_TREE: lambda kwargs: self.whole_map_tree,
+            ManagerRequestType.PATH_NEXT_POINT: lambda kwargs: (
+                self.find_path_next_point(**kwargs)
+            ),
+        }
 
     def manager_request(
         self,
@@ -62,66 +115,8 @@ class PathManager(Manager, IManagerMediator):
         """
         return self.manager_requests_dict[request](kwargs)
 
-    def __init__(
-        self,
-        ai: "AresBot",
-        config: Dict,
-        mediator: ManagerMediator,
-    ) -> None:
-        """Set up the manager.
-
-        Parameters
-        ----------
-        ai :
-            Bot object that will be running the game
-        config :
-            Dictionary with the data from the configuration file
-        mediator :
-            ManagerMediator used for getting information from other managers.
-        """
-        super().__init__(ai, config, mediator)
-        self.debug: bool = self.config[DEBUG]
-        self.map_data: MapData = MapData(ai, arcade=self.ai.arcade_mode)
-
-        self.whole_map: List[List[int]] = [
-            [x, y]
-            for x in range(self.ai.game_info.map_size[0])
-            for y in range(self.ai.game_info.map_size[1])
-        ]
-        self.whole_map_tree: KDTree = KDTree(self.whole_map)
-        # vague attempt at not recalculating np.argwhere for danger tiles
-        self.calculated_danger_tiles: List[Dict[str, Union[np.ndarray, int]]] = []
-
-        self.manager_requests_dict = {
-            ManagerRequestType.GET_AIR_AVOIDANCE_GRID: lambda kwargs: (
-                self.mediator.manager_request(
-                    ManagerName.GRID_MANAGER,
-                    ManagerRequestType.GET_AIR_AVOIDANCE_GRID,
-                    **kwargs,
-                )
-            ),
-            ManagerRequestType.FIND_LOW_PRIORITY_PATH: lambda kwargs: (
-                self.find_low_priority_path(**kwargs)
-            ),
-            ManagerRequestType.FIND_LOWEST_COST_POINTS: lambda kwargs: (
-                self.map_data.find_lowest_cost_points(**kwargs)
-            ),
-            ManagerRequestType.FIND_RAW_PATH: lambda kwargs: self.raw_pathfind(
-                **kwargs
-            ),
-            ManagerRequestType.IS_POSITION_SAFE: lambda kwargs: self.is_position_safe(
-                **kwargs
-            ),
-            ManagerRequestType.GET_CLOSEST_SAFE_SPOT: (
-                lambda kwargs: self.find_closest_safe_spot(**kwargs)
-            ),
-            ManagerRequestType.GET_MAP_DATA: lambda kwargs: self.map_data,
-            ManagerRequestType.GET_WHOLE_MAP_ARRAY: lambda kwargs: self.whole_map,
-            ManagerRequestType.GET_WHOLE_MAP_TREE: lambda kwargs: self.whole_map_tree,
-            ManagerRequestType.PATH_NEXT_POINT: lambda kwargs: (
-                self.find_path_next_point(**kwargs)
-            ),
-        }
+    def initialise(self) -> None:
+        self.map_data = self.manager_mediator.get_map_data_object
 
     async def update(self, iteration: int) -> None:
         """Keep track of everything.
@@ -131,7 +126,8 @@ class PathManager(Manager, IManagerMediator):
         iteration :
             The game iteration.
         """
-        pass
+        if iteration % 4 == 0:
+            self.calculated_danger_tiles = []
 
     def find_closest_safe_spot(
         self, from_pos: Point2, grid: np.ndarray, radius: int = 11
@@ -152,6 +148,7 @@ class PathManager(Manager, IManagerMediator):
         Point2 :
             The closest location with the lowest cost.
         """
+
         all_safe: np.ndarray = self.map_data.lowest_cost_points_array(
             from_pos, radius, grid
         )

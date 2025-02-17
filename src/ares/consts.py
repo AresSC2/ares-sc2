@@ -1,10 +1,13 @@
 """Keep constants here for ease of use."""
+from __future__ import annotations
+
 from enum import Enum, auto
 from typing import List, Set
 
 from sc2.data import Race
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
+
 
 """Strings"""
 # general/config
@@ -36,6 +39,7 @@ DEBUG_GAME_STEP: str = "DebugGameStep"
 DEBUG_OPTIONS: str = "DebugOptions"
 EFFECTS: str = "Effects"
 EFFECTS_RANGE_BUFFER: str = "EffectsRangeBuffer"
+FEATURES: str = "Features"
 FLYING_ENEMY_LEAVING_BASES: str = "FlyingEnemyLeavingBases"
 FLYING_ENEMY_NEAR_BASES: str = "FlyingEnemyNearBases"
 GAME_STEP: str = "GameStep"
@@ -69,6 +73,8 @@ SHOW_BUILDING_FORMATION: str = "ShowBuildingFormation"
 SHOW_PATHING_COST: str = "ShowPathingCost"
 STORM: str = "Storm"
 STRATEGY_MANAGER: str = "StrategyManager"
+TACTICAL_GROUND: str = "TacticalGround"
+TACTICAL_GROUND_GRID: str = "TacticalGroundGrid"
 TOWNHALL_DISTANCE_FACTOR: str = "TownhallDistanceFactor"
 UNIT_CONTROL: str = "UnitControl"
 UNIT_SQUADS: str = "UnitSquads"
@@ -293,6 +299,7 @@ class ManagerRequestType(str, Enum):
     GET_GROUND_TO_AIR_GRID = "GET_GROUND_TO_AIR_GRID"
     GET_MAP_DATA = "GET_MAP_DATA"
     GET_PRIORITY_GROUND_AVOIDANCE_GRID = "GET_PRIORITY_GROUND_AVOIDANCE_GRID"
+    GET_TACTICAL_GROUND_GRID = "GET_TACTICAL_GROUND_GRID"
     GET_WHOLE_MAP_ARRAY = "GET_WHOLE_MAP_ARRAY"
     GET_WHOLE_MAP_TREE = "GET_WHOLE_MAP_TREE"
     IS_POSITION_SAFE = "IS_POSITION_SAFE"
