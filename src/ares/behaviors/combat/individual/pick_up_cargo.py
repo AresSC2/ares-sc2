@@ -27,7 +27,7 @@ class PickUpCargo(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import PickUpCargo
+    from ares.behaviors.combat.individual import PickUpCargo
 
     unit: Unit # medivac for example
     grid: np.ndarray = self.mediator.get_ground_grid

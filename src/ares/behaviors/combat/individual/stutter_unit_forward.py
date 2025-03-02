@@ -20,7 +20,7 @@ class StutterUnitForward(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import StutterUnitForward
+    from ares.behaviors.combat.individual import StutterUnitForward
 
     unit: Unit
     target: Unit

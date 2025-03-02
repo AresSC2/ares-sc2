@@ -842,6 +842,9 @@ class ManagerMediator(IManagerMediator):
     @property
     def get_air_avoidance_grid(self) -> np.ndarray:
         """Get the air avoidance pathing grid.
+        Any tile with a value greater than one will contain some
+        dangerous effects or spells that should always be avoided.
+        Such as storms, nukes, ravager biles etc...
 
         GridManager
 
@@ -864,6 +867,11 @@ class ManagerMediator(IManagerMediator):
     def get_air_grid(self) -> np.ndarray:
         """Get the air pathing grid.
 
+        Pathable tiles have a value of 1.0
+        Pathable tiles with enemy influence have a value > 1.0
+            The higher the value, the more influence there is.
+        Non-pathable tiles have a value of np.inf
+
         GridManager
 
         Example:
@@ -882,7 +890,16 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_air_vs_ground_grid(self) -> np.ndarray:
-        """Get the air vs ground pathing grid.
+        """Get the air vs ground pathing grid. (air grid)
+
+        grid is computed in a way that lowers the
+        cost of nonpathable terrain for ground units,
+        making air units naturally "drawn" to it.
+
+        Pathable tiles have a value of 1.0
+        Pathable tiles with enemy influence have a value > 1.0
+            The higher the value, the more influence there is.
+        Non-pathable tiles have a value of np.inf
 
         GridManager
 
@@ -927,6 +944,10 @@ class ManagerMediator(IManagerMediator):
     @property
     def get_climber_grid(self) -> np.ndarray:
         """Get the climber ground pathing grid for reapers and colossus.
+        Pathable tiles have a value of 1.0
+        Pathable tiles with enemy influence have a value > 1.0
+            The higher the value, the more influence there is.
+        Non-pathable tiles have a value of np.inf
 
         GridManager
 
@@ -971,6 +992,9 @@ class ManagerMediator(IManagerMediator):
     @property
     def get_ground_avoidance_grid(self) -> np.ndarray:
         """Get the ground avoidance pathing grid.
+        Any tile with a value greater than one will contain some
+        dangerous effects or spells that should always be avoided.
+        Such as storms, nukes, ravager biles etc...
 
         GridManager
 
@@ -985,6 +1009,10 @@ class ManagerMediator(IManagerMediator):
     @property
     def get_ground_grid(self) -> np.ndarray:
         """Get the ground pathing grid.
+        Pathable tiles have a value of 1.0
+        Pathable tiles with enemy influence have a value > 1.0
+            The higher the value, the more influence there is.
+        Non-pathable tiles have a value of np.inf
 
         GridManager
 
@@ -997,7 +1025,15 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_ground_to_air_grid(self) -> np.ndarray:
-        """Get the ground pathing grid.
+        """Get an air grid that contains influence for ground dangers
+        that can shoot air.
+        This can be useful for keeping air units safe that can't
+        attack ground units.
+
+        Pathable tiles have a value of 1.0
+        Pathable tiles with enemy influence have a value > 1.0
+            The higher the value, the more influence there is.
+        Non-pathable tiles have a value of np.inf
 
         GridManager
 

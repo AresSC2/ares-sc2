@@ -21,7 +21,7 @@ class DropCargo(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import DropCargo
+    from ares.behaviors.combat.individual import DropCargo
 
     unit: Unit
     target: Unit

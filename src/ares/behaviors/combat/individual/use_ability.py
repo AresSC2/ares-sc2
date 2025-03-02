@@ -20,7 +20,7 @@ class UseAbility(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import UseAbility
+    from ares.behaviors.combat.individual import UseAbility
     from sc2.ids.ability_id import AbilityId
 
     unit: Unit
