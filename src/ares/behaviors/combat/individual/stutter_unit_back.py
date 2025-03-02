@@ -22,7 +22,7 @@ class StutterUnitBack(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import StutterUnitBack
+    from ares.behaviors.combat.individual import StutterUnitBack
 
     unit: Unit
     target: Unit

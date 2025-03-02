@@ -19,12 +19,9 @@ if TYPE_CHECKING:
 class PathUnitToTarget(CombatIndividualBehavior):
     """Path a unit to its target destination.
 
-    TODO: Add attack enemy in range logic / parameter
-        Not added yet since that may be it's own Behavior
-
     Example:
     ```py
-    from ares.behaviors.combat import PathUnitToTarget
+    from ares.behaviors.combat.individual import PathUnitToTarget
 
     unit: Unit
     grid: np.ndarray = self.mediator.get_ground_grid

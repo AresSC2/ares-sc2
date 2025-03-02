@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_attack_ready, cy_in_attack_range, cy_pick_enemy_target
 from sc2.unit import Unit
@@ -23,11 +23,11 @@ class ShootTargetInRange(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import ShootTargetInRange
+    from ares.behaviors.combat.individual import ShootTargetInRange
 
     unit: Unit
-    target: Unit
-    self.register_behavior(ShootTargetInRange(unit, target))
+    targets: Units | list[Unit]
+    self.register_behavior(ShootTargetInRange(unit, targets))
     ```
 
     Attributes:
@@ -39,7 +39,7 @@ class ShootTargetInRange(CombatIndividualBehavior):
     """
 
     unit: Unit
-    targets: Union[list[Unit], Units]
+    targets: list[Unit] | Units
     extra_range: float = 0.0
 
     def execute(

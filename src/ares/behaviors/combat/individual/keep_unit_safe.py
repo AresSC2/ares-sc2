@@ -22,7 +22,7 @@ class KeepUnitSafe(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import KeepUnitSafe
+    from ares.behaviors.combat.individual import KeepUnitSafe
 
     unit: Unit
     grid: np.ndarray = self.mediator.get_ground_grid

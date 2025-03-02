@@ -23,7 +23,7 @@ class WorkerKiteBack(CombatIndividualBehavior):
 
     Example:
     ```py
-    from ares.behaviors.combat import WorkerKiteBack
+    from ares.behaviors.combat.individual import WorkerKiteBack
 
     unit: Unit
     target: Unit

@@ -7,9 +7,15 @@ from ares.behaviors.combat.individual.drop_cargo import DropCargo
 from ares.behaviors.combat.individual.ghost_snipe import GhostSnipe
 from ares.behaviors.combat.individual.keep_unit_safe import KeepUnitSafe
 from ares.behaviors.combat.individual.medivac_heal import MedivacHeal
+from ares.behaviors.combat.individual.move_to_safe_target import MoveToSafeTarget
 from ares.behaviors.combat.individual.path_unit_to_target import PathUnitToTarget
+from ares.behaviors.combat.individual.pick_up_and_drop_cargo import PickUpAndDropCargo
 from ares.behaviors.combat.individual.pick_up_cargo import PickUpCargo
 from ares.behaviors.combat.individual.raven_auto_turret import RavenAutoTurret
+from ares.behaviors.combat.individual.reaper_grenade import ReaperGrenade
+from ares.behaviors.combat.individual.shoot_and_move_to_target import (
+    ShootAndMoveToTarget,
+)
 from ares.behaviors.combat.individual.shoot_target_in_range import ShootTargetInRange
 from ares.behaviors.combat.individual.siege_tank_decision import SiegeTankDecision
 from ares.behaviors.combat.individual.stutter_unit_back import StutterUnitBack
