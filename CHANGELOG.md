@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v2.35.0 (2025-03-02)
+
+### Feature
+
+* **combat:** Add ShootAndMoveToTarget behavior for moving to a specific point and shooting enemies along the way ([`d4774c7`](https://github.com/AresSC2/ares-sc2/commit/d4774c7188ff757a76dbb1cfb7e1ad8facdcb7b5))
+* **combat:** Add behavior for reaper grenade execution ([`dba639c`](https://github.com/AresSC2/ares-sc2/commit/dba639c1f1ee98c0c095448f10638b6155d82955))
+* Add PickUpAndDropCargo behavior ([`34dc3e2`](https://github.com/AresSC2/ares-sc2/commit/34dc3e2cab87ca0622e54c7d5e6e6a544a2306ef))
+* Add MoveToSafeTarget behavior ([`17ae274`](https://github.com/AresSC2/ares-sc2/commit/17ae2743262f8b5ceb7dbf714cd97079b9c443a5))
+
+### Documentation
+
+* Improve/fix docstrings in behaviors ([`57fa273`](https://github.com/AresSC2/ares-sc2/commit/57fa27348c20bd8d9b3f565794ec0b56c544303b))
+* Add descriptions to pathing grid properties ([`6386c75`](https://github.com/AresSC2/ares-sc2/commit/6386c757848ca4847551ce5f2647ca4242f5c573))
+
 ## v2.34.0 (2025-02-17)
 
 ### Feature
