@@ -14,11 +14,11 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.behaviors.combat.individual import UseAOEAbility
 from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
 from ares.behaviors.combat.individual.place_predictive_aoe import PlacePredictiveAoE
+from ares.behaviors.combat.individual.use_aoe_ability import UseAOEAbility
 from ares.consts import ALL_WORKER_TYPES
 from ares.dicts.unit_data import UNIT_DATA
 from ares.managers.manager_mediator import ManagerMediator

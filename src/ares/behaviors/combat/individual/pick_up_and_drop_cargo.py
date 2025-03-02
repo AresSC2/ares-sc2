@@ -6,15 +6,11 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.behaviors.combat.individual import (
-    DropCargo,
-    KeepUnitSafe,
-    PathUnitToTarget,
-    PickUpCargo,
-)
+from ares.behaviors.combat.individual import DropCargo, KeepUnitSafe, PathUnitToTarget
 from ares.behaviors.combat.individual.combat_individual_behavior import (
     CombatIndividualBehavior,
 )
+from ares.behaviors.combat.individual.pick_up_cargo import PickUpCargo
 from ares.consts import UnitRole
 from ares.managers.manager_mediator import ManagerMediator
 
