@@ -1076,10 +1076,10 @@ class ManagerMediator(IManagerMediator):
         """Get the tactical ground grid.
 
         Normal pathable tiles with no units on them
-        have a value of 1000.0
+        have a value of 200.0
 
-        Tiles with more enemy have value > 1000
-        Tiles with more friendly have value < 1000
+        Tiles with more enemy have value > 200.0
+        Tiles with more friendly have value < 200.0
 
 
         GridManager

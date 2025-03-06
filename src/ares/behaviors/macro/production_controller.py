@@ -72,7 +72,7 @@ class ProductionController(MacroBehavior):
 
     army_composition_dict: dict[UnitID, dict[str, float, str, int]]
     base_location: Point2
-    add_production_at_bank: tuple[int, int] = (300, 300)
+    add_production_at_bank: tuple[int, int] = (400, 400)
     alpha: float = 0.9
     unit_pending_progress: float = 0.75
     ignore_below_proportion: float = 0.05

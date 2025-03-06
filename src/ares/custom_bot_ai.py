@@ -204,6 +204,10 @@ class CustomBotAI(BotAI):
         bool :
             Indicating tech is ready.
         """
+        # special case for SCV as they build from multiple building types
+        if unit_type == UnitID.SCV and self.townhalls.ready:
+            return True
+
         if unit_type not in UNIT_TECH_REQUIREMENT:
             logger.warning(f"{unit_type} not in UNIT_TECH_REQUIREMENT dictionary")
             return True
