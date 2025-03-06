@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v2.36.0 (2025-03-06)
+
+### Feature
+
+* **production_controller:** Update add_production_at_bank value to (400, 400) ([`c874208`](https://github.com/AresSC2/ares-sc2/commit/c87420802c6432e7355f4b091880b7e780b0bde3))
+* **macro:** Update add_production_at_bank value to (400, 400) ([`33483e0`](https://github.com/AresSC2/ares-sc2/commit/33483e0aac53ab5663fbe15b8efa44e2171e6ba2))
+* **macro:** Add behavior for upgrading Command Centers ([`7972bcd`](https://github.com/AresSC2/ares-sc2/commit/7972bcd95b658b6e93dcb1b9d2c5e00ce2c09225))
+
+### Fix
+
+* **bot_ai:** Add special case for SCV unit_type ([`9177202`](https://github.com/AresSC2/ares-sc2/commit/917720232c32094f565a5d0032a480aa2a883892))
+* **build_runner:** Ensure worker is selected before trying step ([`96808ed`](https://github.com/AresSC2/ares-sc2/commit/96808ed069bb7f00aa532d6784c22015c1b040b6))
+
 ## v2.35.0 (2025-03-02)
 
 ### Feature
