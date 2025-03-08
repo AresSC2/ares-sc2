@@ -1,11 +1,11 @@
 UseData: False
-Debug: True
+Debug: False
 GameStep: 2
 DebugGameStep: 2
 
 DebugOptions:
     # one of: Air, AirVsGround, Ground, GroundAvoidance, AirAvoidance, GroundToAir, TacticalGround
-    ActiveGrid: TacticalGround
+    ActiveGrid: Ground
     ChatDebug: True
     DebugSpawn: False
     ShowPathingCost: True
