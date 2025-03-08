@@ -1,11 +1,11 @@
 UseData: False
-Debug: False
+Debug: True
 GameStep: 2
 DebugGameStep: 2
 
 DebugOptions:
     # one of: Air, AirVsGround, Ground, GroundAvoidance, AirAvoidance, GroundToAir, TacticalGround
-    ActiveGrid: Ground
+    ActiveGrid: TacticalGround
     ChatDebug: True
     DebugSpawn: False
     ShowPathingCost: True
@@ -22,7 +22,7 @@ Distances:
 Features:
     # this grid is useful for disruptor balls and maybe some other uses
     # off by default to save computation
-    TacticalGroundGrid: False
+    TacticalGroundGrid: True
 
 Building:
     # how many seconds before giving up on a construction order?
