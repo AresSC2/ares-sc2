@@ -228,7 +228,9 @@ class GridManager(Manager, IManagerMediator):
         unit_data: dict = UNIT_DATA
         if self.tactical_ground_grid_enabled:
             # avoid looping over hundreds of tumors as zerg
-            units_collection: Units = self.ai.units if self.ai.race == Race.Zerg else self.ai.all_own_units
+            units_collection: Units = (
+                self.ai.units if self.ai.race == Race.Zerg else self.ai.all_own_units
+            )
             for unit in units_collection:
                 type_id: UnitID = unit.type_id
                 if type_id == UnitID.DISRUPTOR:
@@ -243,7 +245,7 @@ class GridManager(Manager, IManagerMediator):
                         position=unit.position,
                         radius=unit.radius + self.NOVA_RADIUS,
                         grid=self.tactical_ground_grid,
-                        weight=-influence
+                        weight=-influence,
                     )
 
         # update creep grid
