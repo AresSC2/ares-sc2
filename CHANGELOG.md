@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.37.0 (2025-03-08)
+
+### Feature
+
+* **grid_manager:** Adjust influence calculation for units and structures on tactical grid ([`1f77630`](https://github.com/AresSC2/ares-sc2/commit/1f77630519ecff4e714eec758a2cb6fddf34c4c8))
+
 ## v2.36.0 (2025-03-06)
 
 ### Feature
