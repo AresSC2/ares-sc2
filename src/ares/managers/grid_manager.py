@@ -11,10 +11,12 @@ from typing import TYPE_CHECKING, Any, Dict, List
 import numpy as np
 from cython_extensions import cy_distance_to_squared
 from map_analyzer import MapData
+from sc2.data import Race
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
+from sc2.units import Units
 
 from ares.consts import (
     ACTIVE_GRID,
@@ -78,6 +80,7 @@ class GridManager(Manager, IManagerMediator):
     FORCEFIELD: str = "FORCEFIELD"
     NUKE_DURATION: int = 320
     REACT_TO_NUKES_ON_FRAME: int = 250
+    NOVA_RADIUS: float = 1.5
 
     def manager_request(
         self,
@@ -224,14 +227,25 @@ class GridManager(Manager, IManagerMediator):
 
         unit_data: dict = UNIT_DATA
         if self.tactical_ground_grid_enabled:
-            for unit in self.ai.all_own_units:
-                data: dict = unit_data[unit.type_id]
+            # avoid looping over hundreds of tumors as zerg
+            units_collection: Units = (
+                self.ai.units if self.ai.race == Race.Zerg else self.ai.all_own_units
+            )
+            for unit in units_collection:
+                type_id: UnitID = unit.type_id
+                if type_id == UnitID.DISRUPTOR:
+                    continue
+                data: dict = unit_data[type_id]
                 if not data["flying"]:
+                    influence: float = data["army_value"]
+                    if unit.health <= 100.0:
+                        influence *= 1.5
+
                     self.tactical_ground_grid = self.map_data.add_cost(
                         position=unit.position,
-                        radius=max(1.0, unit.radius) * 1.2,
+                        radius=unit.radius + self.NOVA_RADIUS,
                         grid=self.tactical_ground_grid,
-                        weight=-data["army_value"],
+                        weight=-influence,
                     )
 
         # update creep grid
@@ -590,11 +604,14 @@ class GridManager(Manager, IManagerMediator):
             if self.tactical_ground_grid_enabled:
                 unit_data: dict = UNIT_DATA[structure.type_id]
                 if not unit_data["flying"]:
+                    influence: float = unit_data["army_value"]
+                    if structure.health <= 100.0:
+                        influence *= 1.5
                     self.tactical_ground_grid = self.map_data.add_cost(
                         position=structure.position,
-                        radius=max(1.0, structure.radius) * 1.2,
+                        radius=structure.radius + self.NOVA_RADIUS,
                         grid=self.tactical_ground_grid,
-                        weight=unit_data["army_value"],
+                        weight=influence,
                     )
 
     def _handle_photon_cannon(self, structure: Unit) -> None:
@@ -663,13 +680,13 @@ class GridManager(Manager, IManagerMediator):
             6 + self.config[PATHING][RANGE_BUFFER],
             grids,
         )
-
-        self.tactical_ground_grid = self.map_data.add_cost(
-            position=structure.position,
-            radius=structure.radius,
-            grid=self.tactical_ground_grid,
-            weight=10.0,
-        )
+        if self.tactical_ground_grid_enabled:
+            self.tactical_ground_grid = self.map_data.add_cost(
+                position=structure.position,
+                radius=structure.radius + self.NOVA_RADIUS,
+                grid=self.tactical_ground_grid,
+                weight=10.0 if structure.health > 100 else 15.0,
+            )
 
     def _handle_planetary_fortress(self, structure: Unit) -> None:
         """Handle planetary fortress influence."""
@@ -681,13 +698,13 @@ class GridManager(Manager, IManagerMediator):
             s_range + self.config[PATHING][RANGE_BUFFER],
             grids,
         )
-
-        self.tactical_ground_grid = self.map_data.add_cost(
-            position=structure.position,
-            radius=structure.radius,
-            grid=self.tactical_ground_grid,
-            weight=25.0,
-        )
+        if self.tactical_ground_grid_enabled:
+            self.tactical_ground_grid = self.map_data.add_cost(
+                position=structure.position,
+                radius=structure.radius + self.NOVA_RADIUS,
+                grid=self.tactical_ground_grid,
+                weight=25.0 if structure.health < 100 else 40.0,
+            )
 
     def _handle_auto_turret(self, structure: Unit) -> None:
         """Handle auto turret influence."""
@@ -715,14 +732,18 @@ class GridManager(Manager, IManagerMediator):
         else:
             self._handle_generic_unit(unit)
 
-        unit_data: dict = UNIT_DATA[unit.type_id]
-        if not unit_data["flying"]:
-            self.tactical_ground_grid = self.map_data.add_cost(
-                position=unit.position,
-                radius=max(1.0, unit.radius) * 1.2,
-                grid=self.tactical_ground_grid,
-                weight=unit_data["army_value"],
-            )
+        if self.tactical_ground_grid_enabled:
+            unit_data: dict = UNIT_DATA[unit.type_id]
+            if not unit_data["flying"]:
+                influence: float = unit_data["army_value"]
+                if unit.health <= 100.0:
+                    influence *= 1.5
+                self.tactical_ground_grid = self.map_data.add_cost(
+                    position=unit.position,
+                    radius=unit.radius + self.NOVA_RADIUS,
+                    grid=self.tactical_ground_grid,
+                    weight=influence,
+                )
 
     def _handle_weight_cost_unit(self, unit: Unit) -> None:
         """Handle units with predefined weight costs."""

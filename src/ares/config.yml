@@ -22,7 +22,7 @@ Distances:
 Features:
     # this grid is useful for disruptor balls and maybe some other uses
     # off by default to save computation
-    TacticalGroundGrid: False
+    TacticalGroundGrid: True
 
 Building:
     # how many seconds before giving up on a construction order?
