@@ -9,7 +9,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.behaviors.combat.individual import CombatIndividualBehavior
-from ares.consts import CHANGELING_TYPES, UnitTreeQueryType
+from ares.consts import ALL_STRUCTURES, CHANGELING_TYPES, UnitTreeQueryType
 from ares.dicts.unit_data import UNIT_DATA
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -132,7 +132,19 @@ class SiegeTankDecision(CombatIndividualBehavior):
 
             # just a general if nothing around then unsiege
             if (
-                len(enemy_ground) == 0
+                len(
+                    [
+                        e
+                        for e in enemy_ground
+                        if e.type_id not in ALL_STRUCTURES
+                        or (
+                            e.type_id in STATIC_DEFENCE
+                            and cy_distance_to_squared(e.position, self.unit.position)
+                            < 110.0
+                        )
+                    ]
+                )
+                == 0
                 and cy_distance_to_squared(unit_pos, self.target) > 200.0
             ):
                 self.unit(AbilityId.UNSIEGE_UNSIEGE)
@@ -163,13 +175,17 @@ class SiegeTankDecision(CombatIndividualBehavior):
             < 2
         )
 
-    def _own_units_between_tank_and_target(self, mediator: ManagerMediator):
+    def _own_units_between_tank_and_target(self, mediator: ManagerMediator) -> bool:
         tank_pos: Point2 = self.unit.position
         target: Point2 = self.target
 
         midway_point: Point2 = Point2(
             ((tank_pos.x + target.x) / 2, (tank_pos.y + target.y) / 2)
         )
+
+        # too far away for consideration
+        if cy_distance_to_squared(tank_pos, midway_point) > 100.0:
+            return False
 
         own_units_ahead: Units = mediator.get_units_in_range(
             start_points=[midway_point],
