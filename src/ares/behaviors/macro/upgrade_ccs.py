@@ -46,7 +46,7 @@ class UpgradeCCs(MacroBehavior):
         ccs: list[Unit] = [
             th
             for th in mediator.get_own_structures_dict[UnitID.COMMANDCENTER]
-            if th.is_ready and not th.is_transforming
+            if th.is_ready and th.is_idle
         ]
         # quick exit if no ccs ready
         if not ccs:
