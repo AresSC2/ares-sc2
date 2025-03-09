@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.37.1 (2025-03-09)
+
+### Fix
+
+* Correctly identify idle ccs to upgrade ([`8b1d7b6`](https://github.com/AresSC2/ares-sc2/commit/8b1d7b602b9bd26031f88b7d7e8a8fd5c78078ad))
+* Improve unsieging tank logic ([`0eb2b87`](https://github.com/AresSC2/ares-sc2/commit/0eb2b873b4f2d01be12a6e79ece985be78e6f124))
+
 ## v2.37.0 (2025-03-08)
 
 ### Feature
