@@ -68,8 +68,10 @@ class ReaperGrenade(CombatIndividualBehavior):
         targets: list[Unit] = [
             t
             for t in self.enemy_units
-            if t.is_visible and not UNIT_DATA[UnitID.REAPER]["flying"]
+            if t.is_visible and not UNIT_DATA[t.type_id]["flying"]
         ]
+        if not targets:
+            return False
 
         close_unit: Unit = cy_closest_to(unit_pos, targets)
 
