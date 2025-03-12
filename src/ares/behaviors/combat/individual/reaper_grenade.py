@@ -9,7 +9,6 @@ from cython_extensions import (
     cy_is_facing,
 )
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -68,8 +67,10 @@ class ReaperGrenade(CombatIndividualBehavior):
         targets: list[Unit] = [
             t
             for t in self.enemy_units
-            if t.is_visible and not UNIT_DATA[UnitID.REAPER]["flying"]
+            if t.is_visible and not UNIT_DATA[t.type_id]["flying"]
         ]
+        if not targets:
+            return False
 
         close_unit: Unit = cy_closest_to(unit_pos, targets)
 
