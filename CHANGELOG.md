@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.37.2 (2025-03-12)
+
+### Fix
+
+* Reaper grenade return False if no targets ([`0c6ed87`](https://github.com/AresSC2/ares-sc2/commit/0c6ed87968eea7ed10c7e29620e28a55ca2dfb0a))
+
 ## v2.37.1 (2025-03-09)
 
 ### Fix

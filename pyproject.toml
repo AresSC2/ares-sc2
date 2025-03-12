@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ares-sc2"
-version = "2.37.1"
+version = "2.37.2"
 description = ""
 authors = ["Tom Kerr <tomkerrdev@gmail.com>, Paul <paul@ares.com>"]
 readme = "README.md"
