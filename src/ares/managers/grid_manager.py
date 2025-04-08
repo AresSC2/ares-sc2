@@ -616,6 +616,9 @@ class GridManager(Manager, IManagerMediator):
 
     def _handle_photon_cannon(self, structure: Unit) -> None:
         """Handle photon cannon influence."""
+        if not structure.is_powered:
+            return
+
         grids = [
             self.air_grid,
             self.air_vs_ground_grid,
