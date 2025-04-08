@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.37.3 (2025-04-08)
+
+### Fix
+
+* **grid_manager:** Add check for powered structure in photon cannon handling. ([`03202a2`](https://github.com/AresSC2/ares-sc2/commit/03202a20de572299cabeb6d565013c67eb0d0938))
+
 ## v2.37.2 (2025-03-12)
 
 ### Fix
