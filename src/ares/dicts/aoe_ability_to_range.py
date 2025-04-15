@@ -24,7 +24,7 @@ AOE_ABILITY_SPELLS_INFO: dict[AbilityId, dict] = {
         "range": 10.0,
         "effect": BuffId.FUNGALGROWTH,
     },
-    AbilityId.KD8CHARGE_KD8CHARGE: {"radius": 2.0, "range": 5.0, "effect": None},
+    AbilityId.KD8CHARGE_KD8CHARGE: {"radius": 5.0, "range": 2.0, "effect": None},
     AbilityId.PARASITICBOMB_PARASITICBOMB: {
         "radius": 3.0,
         "range": 8.0,

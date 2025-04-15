@@ -71,7 +71,7 @@ class ShootAndMoveToTarget(CombatIndividualBehavior):
             grid=self.grid,
             target=self.target,
             success_at_distance=self.dist_to_target,
-        ):
+        ).execute(ai, config, mediator):
             return True
 
         return False
