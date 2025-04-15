@@ -122,7 +122,10 @@ class SiegeTankDecision(CombatIndividualBehavior):
                 return True
 
             # didn't actually issue an action, but nothing more needs to be done
-            if self.remain_sieged or self.stay_sieged_near_target:
+            if self.remain_sieged or (
+                self.stay_sieged_near_target
+                and cy_distance_to_squared(unit_pos, self.target) < 49.0
+            ):
                 return False
 
             # sometimes tanks get isolated a bit, which messes with close enemy calcs
