@@ -187,7 +187,9 @@ class TechUp(MacroBehavior):
             for s in tech_required:
                 if ai.structure_present_or_pending(s):
                     continue
-                if TechUp(s, base_location).execute(ai, ai.config, ai.mediator):
+                if ai.can_afford(s) and TechUp(s, base_location).execute(
+                    ai, ai.config, ai.mediator
+                ):
                     logger.info(
                         f"{ai.time_formatted} Adding {s} so that we can "
                         f"tech towards {desired_tech}"
@@ -196,16 +198,17 @@ class TechUp(MacroBehavior):
             # no point continuing
             return False
 
-        without_techlabs: list[Unit] = [
-            s
-            for s in _build_techlab_from_structures
-            if s.is_ready and s.is_idle and not s.has_add_on
-        ]
-        if without_techlabs:
-            without_techlabs[0].build(researched_from_id)
-            logger.info(
-                f"{ai.time_formatted} Adding {researched_from_id} so that we can "
-                f"tech towards {desired_tech}"
-            )
-            return True
+        if ai.can_afford(researched_from_id):
+            without_techlabs: list[Unit] = [
+                s
+                for s in _build_techlab_from_structures
+                if s.is_ready and s.is_idle and not s.has_add_on
+            ]
+            if without_techlabs:
+                without_techlabs[0].build(researched_from_id)
+                logger.info(
+                    f"{ai.time_formatted} Adding {researched_from_id} so that we can "
+                    f"tech towards {desired_tech}"
+                )
+                return True
         return False
