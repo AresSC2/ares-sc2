@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v2.38.0 (2025-04-15)
+
+### Feature
+
+* **tech_up:** Check affordability before executing tech-up logic. Add techlabs if required. ([`e355df3`](https://github.com/AresSC2/ares-sc2/commit/e355df38983c2cf19e245954d3f9eded8dc4e353))
+* **combat:** Refactor siege tank decision logic for staying sieged near target. ([`2c4a290`](https://github.com/AresSC2/ares-sc2/commit/2c4a2902ca4fd2888869d9db05db40f1883e05fa))
+* **behaviors:** Add memory check to shoot_target_in_range ([`4f270d3`](https://github.com/AresSC2/ares-sc2/commit/4f270d398f9e2be34a7819683d7cc2aa8d86c8b1))
+
+### Fix
+
+* **combat:** Add execute method for shooting and moving to target. ([`0ca57ef`](https://github.com/AresSC2/ares-sc2/commit/0ca57ef490ccc8415aeaf8d1163234be56ebfe61))
+* **aoe_ability_to_range:** Correct range and radius values for KD8CHARGE_KD8CHARGE. ([`b256e38`](https://github.com/AresSC2/ares-sc2/commit/b256e38091fcb59a2b7efbbc31dde831feea6c1d))
+
 ## v2.37.3 (2025-04-08)
 
 ### Fix
