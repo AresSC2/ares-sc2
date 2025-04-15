@@ -2,6 +2,7 @@ import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
+from cython_extensions import cy_distance_to
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -39,6 +40,7 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
     enemy_center_unit: Unit
     aoe_ability: AbilityId
     ability_delay: int
+    reaper_grenade_range: float = 5.0
 
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
@@ -46,7 +48,9 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
         if self.aoe_ability in self.unit.abilities:
             # try to fire the ability if we find a position
             if pos := self._calculate_target_position(ai):
-                if ai.is_visible(pos):
+                if ai.is_visible(pos) and (
+                    cy_distance_to(pos, self.unit.position) < self.reaper_grenade_range
+                ):
                     return self.unit(self.aoe_ability, pos)
         # no position found or the ability isn't ready
         return False
