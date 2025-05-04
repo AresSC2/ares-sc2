@@ -9,7 +9,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict, List
 
 import numpy as np
-from cython_extensions import cy_distance_to_squared
 from map_analyzer import MapData
 from sc2.data import Race
 from sc2.ids.effect_id import EffectId
@@ -54,7 +53,6 @@ from ares.consts import (
     STORM,
     TACTICAL_GROUND,
     TACTICAL_GROUND_GRID,
-    TOWNHALL_TYPES,
     UNITS,
     ManagerName,
     ManagerRequestType,
@@ -664,12 +662,6 @@ class GridManager(Manager, IManagerMediator):
 
     def _handle_bunker(self, structure: Unit) -> None:
         """Handle bunker influence."""
-        if self.ai.enemy_structures.filter(
-            lambda g: g.type_id in TOWNHALL_TYPES
-            and cy_distance_to_squared(g.position, structure.position) < 81.0
-        ):
-            return
-
         grids = [
             self.air_grid,
             self.air_vs_ground_grid,
@@ -693,7 +685,7 @@ class GridManager(Manager, IManagerMediator):
 
     def _handle_planetary_fortress(self, structure: Unit) -> None:
         """Handle planetary fortress influence."""
-        s_range = 7 if self.ai.time > 400 else 6
+        s_range = 7.5
         grids = [self.climber_grid, self.ground_grid]
         self.add_cost_to_multiple_grids(
             structure.position,
