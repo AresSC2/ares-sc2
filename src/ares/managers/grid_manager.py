@@ -664,12 +664,6 @@ class GridManager(Manager, IManagerMediator):
 
     def _handle_bunker(self, structure: Unit) -> None:
         """Handle bunker influence."""
-        if self.ai.enemy_structures.filter(
-            lambda g: g.type_id in TOWNHALL_TYPES
-            and cy_distance_to_squared(g.position, structure.position) < 81.0
-        ):
-            return
-
         grids = [
             self.air_grid,
             self.air_vs_ground_grid,
