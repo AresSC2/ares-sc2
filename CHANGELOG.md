@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.38.1 (2025-05-04)
+
+### Fix
+
+* **grid_manager:** Remove unnecessary bunker handling condition ([`9af00d6`](https://github.com/AresSC2/ares-sc2/commit/9af00d62e31a3bf3841ea57330b8edfe3ead7350))
+
 ## v2.38.0 (2025-04-15)
 
 ### Feature
