@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 from ares import AresBot
-from ares.consts import RESULT, STRATEGY_USED
+from ares.consts import RESULT, STRATEGY_USED, WINRATE_BASED
 from ares.managers.data_manager import DataManager
 
 pytest_plugins = ("pytest_asyncio",)
@@ -21,6 +21,7 @@ class TestDataManager:
 
     def test_choose_opening_low_data(self, bot: AresBot, event_loop):
         dm: DataManager = bot.manager_hub.data_manager
+        dm.build_selection_method = WINRATE_BASED
         dm.build_cycle = ["A", "B", "C"]
         dm.opponent_history = [
             {STRATEGY_USED: "A", RESULT: 0},
@@ -32,6 +33,7 @@ class TestDataManager:
 
     def test_choose_opening_all_losses(self, bot: AresBot, event_loop):
         dm: DataManager = bot.manager_hub.data_manager
+        dm.build_selection_method = WINRATE_BASED
         dm.build_cycle = ["A", "B", "C"]
         dm.opponent_history = [
             {STRATEGY_USED: "A", RESULT: 0},
@@ -49,6 +51,7 @@ class TestDataManager:
 
     def test_choose_opening_winrate(self, bot: AresBot, event_loop):
         dm: DataManager = bot.manager_hub.data_manager
+        dm.build_selection_method = WINRATE_BASED
         dm.build_cycle = ["A", "B", "C"]
         dm.opponent_history = [
             {STRATEGY_USED: "A", RESULT: 2},
@@ -65,7 +68,9 @@ class TestDataManager:
         assert dm.chosen_opening == "A"  # Only A has winrate > 0
 
     def test_choose_opening_tie(self, bot: AresBot, event_loop):
+
         dm: DataManager = bot.manager_hub.data_manager
+        dm.build_selection_method = WINRATE_BASED
         dm.build_cycle = ["A", "B", "C"]
         dm.opponent_history = [
             {STRATEGY_USED: "A", RESULT: 2},
@@ -85,6 +90,7 @@ class TestDataManager:
 
     def test_choose_opening_large_history(self, bot: AresBot, event_loop):
         dm: DataManager = bot.manager_hub.data_manager
+        dm.build_selection_method = WINRATE_BASED
         dm.build_cycle = ["A", "B", "C"]
 
         # Build "A": 25 games, last 10 are all losses (winrate 0.0 in last 10)
