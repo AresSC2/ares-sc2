@@ -16,8 +16,13 @@ Below is an example of a valid yml file. (`protoss_builds.yml`)
 # Save the game opening and result to disk?
 # Setting to `True` allows Ares to select a new opening after defeat
 UseData: True
-# How should we choose a build? Cycle is the only option for now
+# How should we choose a build?
+# Cycle simply switches on defeat
+# WinrateBased uses winrates to select a build
 BuildSelection: Cycle
+# if chosen by WinrateBased, how many games must be played
+# will use Cycle method while building data
+MinGamesWinrateBased: 3
 # For each Race / Opponent ID choose a build selection
 BuildChoices:
     # test_123 is active if Debug: True (set via a `config.yml` file)

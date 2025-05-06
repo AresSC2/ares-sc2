@@ -244,7 +244,10 @@ class BuildingManager(Manager, IManagerMediator):
             # TODO: This is a workaround for a strange bug where the client
             #   returns an error when issuing a build gas command occasionally
             #   this seems to fix it for now
-            if self.ai.race == Race.Protoss and structure_id in GAS_BUILDINGS:
+            if (
+                self.ai.race in {Race.Protoss, Race.Terran}
+                and structure_id in GAS_BUILDINGS
+            ):
                 if self.ai.can_afford(structure_id):
                     worker.build_gas(target)
                 continue
