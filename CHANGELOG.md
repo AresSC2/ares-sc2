@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.39.0 (2025-05-06)
+
+### Feature
+
+* **DataManager:** New winrate based build selection ([`73403d9`](https://github.com/AresSC2/ares-sc2/commit/73403d93058d8b8e761b2c41e5f0535ea5cbe367))
+
 ## v2.38.1 (2025-05-04)
 
 ### Fix
