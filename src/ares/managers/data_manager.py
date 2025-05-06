@@ -1,24 +1,29 @@
 """Handle data."""
 import json
 import os
+from collections import defaultdict, deque
 from os import path
 from typing import Dict, List, Optional, Union
 
+from loguru import logger
 from sc2.data import Result
 
 from ares.consts import (
     BUILD_CHOICES,
+    BUILD_SELECTION,
     CYCLE,
     DATA_DIR,
     DEBUG,
     DURATION,
     LOSS,
+    MIN_GAMES_WINRATE_BASED,
     RACE,
     RESULT,
     STRATEGY_USED,
     TEST_OPPONENT_ID,
     USE_DATA,
     WIN,
+    WINRATE_BASED,
     ManagerName,
     ManagerRequestType,
 )
@@ -86,13 +91,15 @@ class DataManager(Manager, IManagerMediator):
         self.chosen_opening: str = ""
         self.build_cycle: list = self._get_build_cycle()
         self.found_build: bool = False
-        self.opponent_history: List = []
+        self.opponent_history: list = []
 
         self.file_path: path = path.join(
             DATA_DIR, f"{self.ai.opponent_id}-{self.ai.race.name.lower()}.json"
         )
-
+        self.build_selection_method: str = CYCLE
         self.data_saved: bool = False
+        # how many games to build data for winrate based selection
+        self.min_games: int = 3
 
     def manager_request(
         self,
@@ -125,6 +132,13 @@ class DataManager(Manager, IManagerMediator):
         return self.manager_requests_dict[request](kwargs)
 
     def initialise(self) -> None:
+
+        if BUILD_SELECTION in self.config and self.config[USE_DATA]:
+            if self.config[BUILD_SELECTION] == WINRATE_BASED:
+                self.build_selection_method = WINRATE_BASED
+        if MIN_GAMES_WINRATE_BASED in self.config:
+            self.min_games = self.config[MIN_GAMES_WINRATE_BASED]
+
         if BUILD_CHOICES in self.config:
             if self.config[USE_DATA]:
                 self._get_opponent_data(self.ai.opponent_id)
@@ -147,11 +161,54 @@ class DataManager(Manager, IManagerMediator):
 
     def _choose_opening(self) -> None:
         """
-        TODO: Develop a more sophisticated system rather then cycling on defeat
+        Improved: Pick the build with the highest winrate over its last 10 games.
+        Fallback: Use previous cycling logic if insufficient data or all winrates are 0.
         """
+
+        if self.build_selection_method == WINRATE_BASED:
+            # Prepare data
+            build_games = defaultdict(deque)  # build -> deque of last 10 results
+            for entry in reversed(self.opponent_history):
+                build = entry.get(STRATEGY_USED)
+                result = entry.get(RESULT)
+                if build in self.build_cycle:
+                    dq = build_games[build]
+                    if len(dq) < 10:
+                        dq.appendleft(result)
+                    else:
+                        continue
+
+            # Compute winrates only for builds with at least MIN_GAMES
+            winrates = {}
+            for build in self.build_cycle:
+                games = build_games.get(build, [])
+                if len(games) >= self.min_games:
+                    wins = sum(1 for r in games if r == 2)
+                    winrates[build] = wins / len(games)
+                else:
+                    winrates[build] = -1  # Not enough data
+
+            # Select best build (prefer most recent in cycle)
+            best_build = None
+            best_winrate = -1
+            for build in reversed(self.build_cycle):
+                logger.info(f"{build}: {winrates[build]}")
+                if winrates[build] > best_winrate:
+                    best_winrate = winrates[build]
+                    best_build = build
+
+            # Use best build if there is enough data and winrate > 0
+            if best_build is not None and winrates[best_build] > 0:
+                self.chosen_opening = best_build
+                logger.info(f"Using {best_build} with a winrate of {best_winrate}")
+                return
+
+            logger.info("Not enough opening data, using cycle logic")
+
+        # default CYCLE method, also used if not enough data present
         last_build: str = self.opponent_history[-1][STRATEGY_USED]
         last_result: int = self.opponent_history[-1][RESULT]
-
+        self.found_build = False
         for i, build in enumerate(self.build_cycle):
             if last_build == build:
                 self.found_build = True
@@ -196,7 +253,7 @@ class DataManager(Manager, IManagerMediator):
                     RACE: str(self.ai.enemy_race),
                     DURATION: 0,
                     STRATEGY_USED: self.build_cycle[0],
-                    RESULT: 2,
+                    RESULT: 0,
                 }
             ]
 
