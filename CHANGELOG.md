@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.40.0 (2025-05-07)
+
+### Feature
+
+* **unit_memory_manager:** Add method to check if a unit is detected by an enemy. ([`59af615`](https://github.com/AresSC2/ares-sc2/commit/59af6157f4c11eee4515a519c2325ad26076364a))
+
 ## v2.39.0 (2025-05-06)
 
 ### Feature
