@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.40.1 (2025-05-07)
+
+### Fix
+
+* Set step_started flag to True when building gas from gas steal ([`102abb0`](https://github.com/AresSC2/ares-sc2/commit/102abb0bab3f9718596280e7f3b3c3217edad41f))
+
 ## v2.40.0 (2025-05-07)
 
 ### Feature
