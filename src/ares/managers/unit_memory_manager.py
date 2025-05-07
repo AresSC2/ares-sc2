@@ -5,6 +5,7 @@ from collections import deque
 from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, Tuple, Union
 
 import numpy as np
+from sc2.ids.buff_id import BuffId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -65,6 +66,9 @@ class UnitMemoryManager(Manager, IManagerMediator):
                 **kwargs
             ),
             ManagerRequestType.GET_OWN_TREE: lambda kwargs: self.own_tree,
+            ManagerRequestType.GET_IS_DETECTED: lambda kwargs: self.get_is_detected(
+                **kwargs
+            ),
         }
 
         # Dictionary of units that we remember the position of. Keyed by unit tag.
@@ -546,6 +550,26 @@ class UnitMemoryManager(Manager, IManagerMediator):
             if position.distance_to(pos) < enemy_detector_range[i]:
                 return True
         return False
+
+    def get_is_detected(self, unit: Unit) -> bool:
+        """Check if the given unit is in range of an enemy detector or has the
+        revelation buff.
+
+        Parameters
+        ----------
+        unit :
+            The unit to check.
+
+        Returns
+        -------
+        bool :
+            True if the unit is in range of an enemy detector or has the revelation
+            buff, False otherwise.
+
+        """
+        return self.get_position_in_enemy_detector_range(
+            unit.position
+        ) or unit.has_buff(BuffId.ORACLEREVELATION)
 
     def get_own_units_in_enemy_detector_range(self) -> set[int]:
         """Find the tags of friendly units in range of an enemy detector.

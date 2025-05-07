@@ -1966,6 +1966,20 @@ class ManagerMediator(IManagerMediator):
             ManagerName.UNIT_MEMORY_MANAGER, ManagerRequestType.GET_OWN_TREE
         )
 
+    def get_is_detected(self, **kwargs) -> bool:
+        """Get if the enemy currently is revealing a cloaked or burrowed unit.
+
+        UnitMemoryManager
+
+        Returns:
+            Boolean if unit is detected.
+        """
+        return self.manager_request(
+            ManagerName.UNIT_MEMORY_MANAGER,
+            ManagerRequestType.GET_IS_DETECTED,
+            **kwargs,
+        )
+
     """
     UnitRoleManager
     """

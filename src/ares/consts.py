@@ -372,6 +372,7 @@ class ManagerRequestType(str, Enum):
     GET_ENEMY_TREE = "GET_ENEMY_TREE"
     GET_OWN_TREE = "GET_OWN_TREE"
     GET_UNITS_IN_RANGE = "GET_UNITS_IN_RANGE"
+    GET_IS_DETECTED = "GET_IS_DETECTED"
 
     # UnitRoleManager
     ASSIGN_ROLE = "ASSIGN_ROLE"
