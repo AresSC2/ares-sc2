@@ -782,6 +782,7 @@ class BuildOrderRunner:
                         self.build_order[self.build_step].command
                     ):
                         worker.build_gas(geyser)
+                        self.current_step_started = True
                     else:
                         worker.move(geyser.position)
                 # worker doesn't exist for some reason
