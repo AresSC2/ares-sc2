@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.40.2 (2025-05-08)
+
+### Fix
+
+* **data_manager:** Update default enemy result value to 2 ([`926bb63`](https://github.com/AresSC2/ares-sc2/commit/926bb6381e279e8a8f023c5b2a8f9b95fe251706))
+
 ## v2.40.1 (2025-05-07)
 
 ### Fix
