@@ -253,7 +253,7 @@ class DataManager(Manager, IManagerMediator):
                     RACE: str(self.ai.enemy_race),
                     DURATION: 0,
                     STRATEGY_USED: self.build_cycle[0],
-                    RESULT: 0,
+                    RESULT: 2,
                 }
             ]
 
