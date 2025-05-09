@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.40.3 (2025-05-09)
+
+### Fix
+
+* **DataManager:** Ensure cycle till min_games for each build ([`cb406b0`](https://github.com/AresSC2/ares-sc2/commit/cb406b0cd143ad4279e759703a7359cab2931e69))
+
 ## v2.40.2 (2025-05-08)
 
 ### Fix
