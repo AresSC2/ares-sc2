@@ -159,53 +159,15 @@ class DataManager(Manager, IManagerMediator):
         """
         pass
 
-    def _choose_opening(self) -> None:
+    def _choose_opening_cycle(self):
         """
-        Improved: Pick the build with the highest winrate over its last 10 games.
-        Fallback: Use previous cycling logic if insufficient data or all winrates are 0.
+        Cycle fallback: choose the next build in the cycle after a defeat,
+        or repeat if win/unknown.
         """
-
-        if self.build_selection_method == WINRATE_BASED:
-            # Prepare data
-            build_games = defaultdict(deque)  # build -> deque of last 10 results
-            for entry in reversed(self.opponent_history):
-                build = entry.get(STRATEGY_USED)
-                result = entry.get(RESULT)
-                if build in self.build_cycle:
-                    dq = build_games[build]
-                    if len(dq) < 10:
-                        dq.appendleft(result)
-                    else:
-                        continue
-
-            # Compute winrates only for builds with at least MIN_GAMES
-            winrates = {}
-            for build in self.build_cycle:
-                games = build_games.get(build, [])
-                if len(games) >= self.min_games:
-                    wins = sum(1 for r in games if r == 2)
-                    winrates[build] = wins / len(games)
-                else:
-                    winrates[build] = -1  # Not enough data
-
-            # Select best build (prefer most recent in cycle)
-            best_build = None
-            best_winrate = -1
-            for build in reversed(self.build_cycle):
-                logger.info(f"{build}: {winrates[build]}")
-                if winrates[build] > best_winrate:
-                    best_winrate = winrates[build]
-                    best_build = build
-
-            # Use best build if there is enough data and winrate > 0
-            if best_build is not None and winrates[best_build] > 0:
-                self.chosen_opening = best_build
-                logger.info(f"Using {best_build} with a winrate of {best_winrate}")
-                return
-
-            logger.info("Not enough opening data, using cycle logic")
-
-        # default CYCLE method, also used if not enough data present
+        logger.info("Using cycle logic for build selection")
+        if not self.opponent_history:
+            self.chosen_opening = self.build_cycle[0]
+            return
         last_build: str = self.opponent_history[-1][STRATEGY_USED]
         last_result: int = self.opponent_history[-1][RESULT]
         self.found_build = False
@@ -219,9 +181,66 @@ class DataManager(Manager, IManagerMediator):
                 else:
                     self.chosen_opening = build
                 break
-        # incase build from last game wasn't found in build cycle
+        # in case build from last game wasn't found in build cycle
         if not self.found_build:
             self.chosen_opening = self.build_cycle[0]
+
+        logger.info(f"Chosen opening: {self.chosen_opening}")
+
+    def _choose_opening(self) -> None:
+        """
+        Use winrate-based selection only after all
+        builds have at least self.min_games games.
+        Fallback: Use cycle method until then.
+        """
+        # Count games per build
+        build_counts = {build: 0 for build in self.build_cycle}
+        for entry in self.opponent_history:
+            build = entry.get(STRATEGY_USED)
+            if build in build_counts:
+                build_counts[build] += 1
+
+        if not all(count >= self.min_games for count in build_counts.values()):
+            self._choose_opening_cycle()
+            return
+
+        # --- Winrate-based selection ---
+        build_games = defaultdict(deque)  # build -> deque of last 10 results
+        for entry in reversed(self.opponent_history):
+            build = entry.get(STRATEGY_USED)
+            result = entry.get(RESULT)
+            if build in self.build_cycle:
+                dq = build_games[build]
+                if len(dq) < 10:
+                    dq.appendleft(result)
+                else:
+                    continue
+
+        winrates = {}
+        for build in self.build_cycle:
+            games = build_games.get(build, [])
+            if len(games) >= self.min_games:
+                wins = sum(1 for r in games if r == 2)
+                winrates[build] = wins / len(games)
+            else:
+                winrates[build] = -1  # Not enough data
+
+        best_build = None
+        best_winrate = -1
+        for build in reversed(self.build_cycle):
+            logger.info(f"{build}: {winrates[build]}")
+            if winrates[build] > best_winrate:
+                best_winrate = winrates[build]
+                best_build = build
+
+        if best_build is not None and winrates[best_build] > 0:
+            self.chosen_opening = best_build
+            logger.info(f"Using {best_build} with a winrate of {best_winrate}")
+            return
+
+        # --- Fallback again if all winrates are 0 ---
+        logger.info("All builds have winrate 0, using cycle logic")
+        self._choose_opening_cycle()
 
     def _get_build_cycle(self) -> List[str]:
         if self.config[DEBUG]:
