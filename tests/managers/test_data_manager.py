@@ -130,3 +130,22 @@ class TestDataManager:
                 assert dm.chosen_opening == "B"
             else:
                 assert dm.chosen_opening == "C"
+
+    def test_winrate_logic_requires_min_games(self, bot: AresBot, event_loop):
+        dm: DataManager = bot.manager_hub.data_manager
+        dm.build_selection_method = WINRATE_BASED
+        dm.build_cycle = ["A", "B", "C"]
+        dm.min_games = 3
+        # Only build A has enough games, B and C do not
+        dm.opponent_history = [
+            {STRATEGY_USED: "A", RESULT: 2},
+            {STRATEGY_USED: "A", RESULT: 0},
+            {STRATEGY_USED: "A", RESULT: 2},
+            {STRATEGY_USED: "B", RESULT: 0},
+            {STRATEGY_USED: "C", RESULT: 0},
+        ]
+        # Should fallback to cycle logic, i.e., pick next after last used
+        dm._choose_opening()
+        # The fallback cycle logic should pick the next build after the last one played
+        # In this case, last played is C with a defeat, so next should be A
+        assert dm.chosen_opening == "A"
