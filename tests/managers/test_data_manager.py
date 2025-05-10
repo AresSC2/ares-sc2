@@ -73,19 +73,36 @@ class TestDataManager:
         dm.build_selection_method = WINRATE_BASED
         dm.build_cycle = ["A", "B", "C"]
         dm.opponent_history = [
-            {STRATEGY_USED: "A", RESULT: 2},
             {STRATEGY_USED: "A", RESULT: 0},
-            {STRATEGY_USED: "A", RESULT: 2},
-            {STRATEGY_USED: "B", RESULT: 2},
+            {STRATEGY_USED: "A", RESULT: 0},
+            {STRATEGY_USED: "A", RESULT: 0},
             {STRATEGY_USED: "B", RESULT: 0},
-            {STRATEGY_USED: "B", RESULT: 2},
+            {STRATEGY_USED: "B", RESULT: 0},
+            {STRATEGY_USED: "B", RESULT: 0},
             {STRATEGY_USED: "C", RESULT: 0},
             {STRATEGY_USED: "C", RESULT: 0},
             {STRATEGY_USED: "C", RESULT: 0},
         ]
         dm._choose_opening()
-        # Both A and B have winrate 2/3, but B is later in the cycle,
-        # so should be picked
+        # All builds have tied winrates
+        # last result was a loss for C, so should cycle to A
+        assert dm.chosen_opening == "A"
+
+        # add this loss to history
+        dm.opponent_history.append({STRATEGY_USED: "A", RESULT: 0})
+        # now should cycle to B
+        dm._choose_opening()
+        assert dm.chosen_opening == "B"
+
+        # same idea, just adding a few more to ensure it works
+        dm.opponent_history.append({STRATEGY_USED: "B", RESULT: 0})
+        dm._choose_opening()
+        assert dm.chosen_opening == "C"
+        dm.opponent_history.append({STRATEGY_USED: "C", RESULT: 0})
+        dm._choose_opening()
+        assert dm.chosen_opening == "A"
+        dm.opponent_history.append({STRATEGY_USED: "A", RESULT: 0})
+        dm._choose_opening()
         assert dm.chosen_opening == "B"
 
     def test_choose_opening_large_history(self, bot: AresBot, event_loop):
