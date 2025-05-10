@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.40.4 (2025-05-10)
+
+### Fix
+
+* **DataManager:** Handle tied winrates for builds ([`538ee7b`](https://github.com/AresSC2/ares-sc2/commit/538ee7ba2c92b12b7964511246f5c2c5befe6298))
+
 ## v2.40.3 (2025-05-09)
 
 ### Fix
