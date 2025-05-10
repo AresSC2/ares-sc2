@@ -189,9 +189,10 @@ class DataManager(Manager, IManagerMediator):
 
     def _choose_opening(self) -> None:
         """
-        Use winrate-based selection only after all
-        builds have at least self.min_games games.
+        Use winrate-based selection only after
+        all builds have at least self.min_games games.
         Fallback: Use cycle method until then.
+        If there is a winrate tie (including all 0.0), cycle through tied builds.
         """
         # Count games per build
         build_counts = {build: 0 for build in self.build_cycle}
@@ -200,6 +201,7 @@ class DataManager(Manager, IManagerMediator):
             if build in build_counts:
                 build_counts[build] += 1
 
+        # not enough data yet, use simple cycle logic for build selection
         if not all(count >= self.min_games for count in build_counts.values()):
             self._choose_opening_cycle()
             return
@@ -221,25 +223,48 @@ class DataManager(Manager, IManagerMediator):
             games = build_games.get(build, [])
             if len(games) >= self.min_games:
                 wins = sum(1 for r in games if r == 2)
-                winrates[build] = wins / len(games)
+                winrate: float = wins / len(games)
+                logger.info(f"Winrate for {build}: {winrate}")
+                winrates[build] = winrate
+
             else:
-                winrates[build] = -1  # Not enough data
+                # not enough data, shouldn't reach here
+                winrates[build] = -1
 
-        best_build = None
-        best_winrate = -1
-        for build in reversed(self.build_cycle):
-            logger.info(f"{build}: {winrates[build]}")
-            if winrates[build] > best_winrate:
-                best_winrate = winrates[build]
-                best_build = build
+        best_winrate = max([w for w in winrates.values() if w >= 0], default=-1)
+        tied_builds = [
+            b
+            for b in self.build_cycle
+            if winrates[b] == best_winrate and winrates[b] >= 0
+        ]
 
-        if best_build is not None and winrates[best_build] > 0:
-            self.chosen_opening = best_build
-            logger.info(f"Using {best_build} with a winrate of {best_winrate}")
+        if len(tied_builds) == 1:
+            self.chosen_opening = tied_builds[0]
+            logger.info(f"Using {tied_builds[0]} with a winrate of {best_winrate}")
             return
 
-        # --- Fallback again if all winrates are 0 ---
-        logger.info("All builds have winrate 0, using cycle logic")
+        if len(tied_builds) > 1:
+            # Cycle through tied builds (including all 0.0 winrate)
+            last_build = (
+                self.opponent_history[-1][STRATEGY_USED]
+                if self.opponent_history
+                else None
+            )
+            if last_build in tied_builds:
+                idx = tied_builds.index(last_build)
+                chosen = tied_builds[(idx + 1) % len(tied_builds)]
+            else:
+                chosen = tied_builds[0]
+            self.chosen_opening = chosen
+            logger.info(
+                f"Cycling through tied builds: {tied_builds} all "
+                f"with a winrate of {best_winrate}, chose {chosen}. "
+                f"Previous build: {last_build}"
+            )
+            return
+
+        # Fallback again if no valid winrate (should not occur)
+        logger.info("All builds have invalid winrate, using cycle logic")
         self._choose_opening_cycle()
 
     def _get_build_cycle(self) -> List[str]:
