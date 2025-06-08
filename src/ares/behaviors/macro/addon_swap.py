@@ -42,6 +42,7 @@ class AddonSwap(MacroBehavior):
 
     structure_needing_addon: Unit
     addon_required: UnitID
+    precise_addon_structure_id: UnitID | None = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert ai.race == Race.Terran, "Can only swap addons with Terran."
@@ -59,11 +60,19 @@ class AddonSwap(MacroBehavior):
         )
 
         # search for addon required
-        add_ons: list[Unit] = [
-            s
-            for s in ai.structures
-            if s.tag in search_for_tags and s.is_ready and s.is_idle
-        ]
+        if self.precise_addon_structure_id:
+            add_ons: list[Unit] = [
+                s
+                for s in ai.structures
+                if s.type_id == self.precise_addon_structure_id
+                and s.tag in search_for_tags
+            ]
+        else:
+            add_ons: list[Unit] = [
+                s
+                for s in ai.structures
+                if s.tag in search_for_tags and s.is_ready and s.is_idle
+            ]
         if len(add_ons) == 0:
             return False
 
