@@ -198,17 +198,23 @@ class TechUp(MacroBehavior):
             # no point continuing
             return False
 
-        if ai.can_afford(researched_from_id):
+        if ai.can_afford(researched_from_id) and (
+            not structures_dict[researched_from_id] or ignore_existing_techlabs
+        ):
             without_techlabs: list[Unit] = [
                 s
                 for s in _build_techlab_from_structures
                 if s.is_ready and s.is_idle and not s.has_add_on
             ]
-            if without_techlabs:
+            with_techlabs_idle: list[Unit] = [
+                s for s in _build_techlab_from_structures if s.is_idle and s.has_add_on
+            ]
+            if without_techlabs and not with_techlabs_idle:
                 without_techlabs[0].build(researched_from_id)
                 logger.info(
                     f"{ai.time_formatted} Adding {researched_from_id} so that we can "
-                    f"tech towards {desired_tech}"
+                    f"tech towards {desired_tech}. "
+                    f"Ignore existing techlabs: {ignore_existing_techlabs}"
                 )
                 return True
         return False
