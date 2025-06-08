@@ -2,6 +2,21 @@
 
 <!--next-version-placeholder-->
 
+## v2.41.0 (2025-06-08)
+
+### Feature
+
+* Limit production structure creation to a max threshold. ([`699f549`](https://github.com/AresSC2/ares-sc2/commit/699f54937b5a7fb752e60b9840de47c601a1a571))
+* **placement_manager:** Find placement closest to wall if wall taken ([`fd7524f`](https://github.com/AresSC2/ares-sc2/commit/fd7524fa657dbb4ba986b1ee688869f3c214b0d2))
+* **build_runner:** Prevent worker prod if orbital tech is almost ready ([`089cd0b`](https://github.com/AresSC2/ares-sc2/commit/089cd0b74c6bd63d8f2cb8f8640283c4d99f32cf))
+* Addon swap can target specific 3x3 ([`3979a7d`](https://github.com/AresSC2/ares-sc2/commit/3979a7d341f52bfcc2c0c54d3dd7debcdab6f687))
+
+### Fix
+
+* Prevent warp in if not safe ([`9190fa0`](https://github.com/AresSC2/ares-sc2/commit/9190fa0953767bd85fcf40a6138cc6a619ff7861))
+* Prevent techlab spam if not required ([`f73112f`](https://github.com/AresSC2/ares-sc2/commit/f73112fe70fdda2b5f3814b2dea384960867f3c3))
+* **placement_manager:** Adjust pylon placement to prevent pylon placement in min line ([`c5b3dfa`](https://github.com/AresSC2/ares-sc2/commit/c5b3dfa29df0e2dd34fc11df4164a092d339c7fe))
+
 ## v2.40.4 (2025-05-10)
 
 ### Fix
