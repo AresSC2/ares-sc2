@@ -461,21 +461,27 @@ class PlacementManager(Manager, IManagerMediator):
                     )
 
                 # At wall
-                elif wall and (
-                    available_wall := [
+                elif wall:
+                    if available_wall := [
                         a
                         for a in available
                         if self.placements_dict[building_at_base][building_size][a][
                             "is_wall"
                         ]
-                    ]
-                ):
-                    final_placement = min(
-                        available_wall,
-                        key=lambda k: cy_distance_to_squared(
-                            k, self.ai.main_base_ramp.bottom_center
-                        ),
-                    )
+                    ]:
+                        final_placement = min(
+                            available_wall,
+                            key=lambda k: cy_distance_to_squared(
+                                k, self.ai.main_base_ramp.bottom_center
+                            ),
+                        )
+                    else:
+                        final_placement = min(
+                            available,
+                            key=lambda k: cy_distance_to_squared(
+                                k, self.ai.main_base_ramp.bottom_center
+                            ),
+                        )
 
                 # Static Defence
                 elif static_defence and (
