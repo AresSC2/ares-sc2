@@ -124,7 +124,6 @@ class WarpInManager(Manager, IManagerMediator):
     async def do_warp_ins(self) -> None:
         if not self.requested_warp_ins:
             return
-
         power_sources: list[Unit] = (
             self.manager_mediator.get_own_structures_dict[UnitID.PYLON]
             + self.manager_mediator.get_own_army_dict[UnitID.WARPPRISMPHASING]
@@ -132,36 +131,41 @@ class WarpInManager(Manager, IManagerMediator):
         if not power_sources:
             logger.warning("Requesting warp in spot, but no power sources found")
             return
-
+        grid: np.ndarray = self.manager_mediator.get_ground_grid
         for build_from, unit_type, target in self.requested_warp_ins:
             size = (2, 2) if unit_type == UnitID.STALKER else (1, 1)
             power_sources = cy_sorted_by_distance_to(power_sources, target)
+            found_warp_in: bool = False
             for power_source in power_sources:
+                if found_warp_in:
+                    break
                 type_id: UnitID = power_source.type_id
                 if type_id == UnitID.PYLON:
                     half_psionic_range = 3
                 else:
                     half_psionic_range = ceil(self.PSIONIC_MATRIX_RANGE_PRISM / 2)
                 power_source_pos: Point2 = power_source.position
-
                 positions: list[Point2] = [
                     Point2((power_source_pos.x + x, power_source_pos.y + y))
                     for x in range(-half_psionic_range, half_psionic_range + 1)
                     for y in range(-half_psionic_range, half_psionic_range + 1)
                     if Point2((power_source_pos.x + x, power_source_pos.y + y))
                     not in self.warp_in_positions
+                    and self.manager_mediator.is_position_safe(
+                        grid=grid,
+                        position=Point2(
+                            (power_source_pos.x + x, power_source_pos.y + y)
+                        ),
+                    )
                 ]
-
                 in_range: list[Units] = self.manager_mediator.get_units_in_range(
                     start_points=positions,
                     distances=1.75,
                     query_tree=UnitTreeQueryType.AllOwn,
                 )
-
                 for i, pos in enumerate(positions):
                     if pos in self.warp_in_positions:
                         continue
-
                     if [
                         u
                         for u in in_range[i]
@@ -169,7 +173,6 @@ class WarpInManager(Manager, IManagerMediator):
                         and not u.is_flying
                     ]:
                         continue
-
                     if cy_can_place_structure(
                         (int(pos.x), int(pos.y)),
                         size,
@@ -189,10 +192,35 @@ class WarpInManager(Manager, IManagerMediator):
                             if unit_type == UnitID.STALKER
                             else AbilityId.WARPGATETRAIN_ZEALOT
                         )
-                        pos = await self.ai.find_placement(ability, pos)
+                        # Add position to warp_in_positions BEFORE finding placement
+                        # to prevent multiple warp-ins at the same spot
                         self.warp_in_positions.add(pos)
+
+                        # Get the actual placement position
+                        new_pos = await self.ai.find_placement(ability, pos)
+
+                        # If the position changed, verify it's still safe
+                        if new_pos != pos:
+                            if not self.manager_mediator.is_position_safe(
+                                grid=grid, position=new_pos
+                            ):
+                                # Position is not safe,
+                                # remove from warp_in_positions and skip
+                                self.warp_in_positions.remove(pos)
+                                continue
+                            # Update to the new position
+                            self.warp_in_positions.remove(pos)
+                            pos = new_pos
+                            self.warp_in_positions.add(pos)
+
+                        # Now warp in the unit
                         build_from.warp_in(unit_type, pos)
-                        self.warp_in_positions.add(pos)
+
+                        # Mark adjacent positions for Stalkers (larger units)
                         if unit_type == UnitID.STALKER:
                             for p in pos.neighbors8:
                                 self.warp_in_positions.add(p)
+
+                        # Successfully warped in a unit, move to the next request
+                        found_warp_in = True
+                        break

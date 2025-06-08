@@ -67,6 +67,8 @@ class ProductionController(MacroBehavior):
             Defaults to `0.05`.
         should_repower_structures: Search for unpowered structures and build a
             new pylon if needed. Defaults to `True`.
+        max_production_structures: Stop adding production at this number
+            Defaults to 12
 
     """
 
@@ -77,6 +79,7 @@ class ProductionController(MacroBehavior):
     unit_pending_progress: float = 0.75
     ignore_below_proportion: float = 0.05
     should_repower_structures: bool = True
+    max_production_structures: int = 12
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert (
@@ -144,6 +147,9 @@ class ProductionController(MacroBehavior):
             # we have a worker on route to build this production
             # leave alone for now
             if ai.not_started_but_in_building_tracker(trained_from):
+                continue
+
+            if len(existing_structures) >= self.max_production_structures:
                 continue
 
             # we can afford prod, work out how much prod to support
