@@ -87,7 +87,14 @@ class TechUp(MacroBehavior):
 
         # can we build this tech building right away?
         # 1.0 = Yes, < 1.0 = No
-        tech_progress: float = ai.tech_requirement_progress(researched_from_id)
+        try:
+            tech_progress: float = ai.tech_requirement_progress(researched_from_id)
+        except AttributeError as e:
+            logger.warning(
+                f"{ai.time_formatted} Error checking tech progress for "
+                f"{researched_from_id}: {e}"
+            )
+            return False
 
         # we have the tech ready to build this upgrade building right away :)
         if tech_progress == 1.0 and not ai.structure_present_or_pending(
@@ -131,7 +138,16 @@ class TechUp(MacroBehavior):
                     continue
 
                 # found something to build?
-                if ai.tech_requirement_progress(structure_type) == 1.0:
+                try:
+                    tech_ready = ai.tech_requirement_progress(structure_type) == 1.0
+                except AttributeError as e:
+                    logger.warning(
+                        f"{ai.time_formatted} Error checking tech progress "
+                        f"for {structure_type}: {e}"
+                    )
+                    continue
+
+                if tech_ready:
                     building: bool = BuildStructure(
                         self.base_location, structure_type
                     ).execute(ai, ai.config, ai.mediator)
