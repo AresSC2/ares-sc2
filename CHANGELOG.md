@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.41.1 (2025-06-09)
+
+### Fix
+
+* Handle AttributeError in tech_requirement_progress calls ([`294b8ef`](https://github.com/AresSC2/ares-sc2/commit/294b8efa34c34c9c18328aeb90660154d98f0c07))
+
 ## v2.41.0 (2025-06-08)
 
 ### Feature
