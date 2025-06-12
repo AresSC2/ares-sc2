@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.41.2 (2025-06-12)
+
+### Fix
+
+* Prevent crash in supply calculation by validating UNIT_DATA presence ([`f71a54c`](https://github.com/AresSC2/ares-sc2/commit/f71a54c702dff032732d6e9e80956243b528c45e))
+* Simplify pending supply unit calculation for non-Zerg races ([`c400050`](https://github.com/AresSC2/ares-sc2/commit/c400050fd0138ce19860f54d480a5036042f6eb9))
+
 ## v2.41.1 (2025-06-09)
 
 ### Fix
