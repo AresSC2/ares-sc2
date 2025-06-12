@@ -71,10 +71,7 @@ class AutoSupply(MacroBehavior):
         if ai.race == Race.Zerg:
             pending_supply_units = cy_unit_pending(ai, UnitID.OVERLORD)
         else:
-            pending_supply_units = (
-                int(ai.already_pending(RACE_SUPPLY[ai.race]))
-                + mediator.get_building_counter[RACE_SUPPLY[ai.race]]
-            )
+            pending_supply_units = ai.structure_pending(RACE_SUPPLY[ai.race])
 
         # zerg supply focus around townhalls
         if ai.race == Race.Zerg:
