@@ -106,8 +106,9 @@ class CustomBotAI(BotAI):
             [
                 UNIT_DATA[unit.type_id]["supply"]
                 for unit in units
-                # yes we did have a crash getting supply of a nuke!
-                if unit.type_id not in ALL_STRUCTURES and unit.type_id != UnitID.NUKE
+                if unit.type_id not in ALL_STRUCTURES
+                # Skip units not in UNIT_DATA
+                and unit.type_id in UNIT_DATA
             ]
         )
 
