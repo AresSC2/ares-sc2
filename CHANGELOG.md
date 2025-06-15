@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.42.0 (2025-06-15)
+
+### Feature
+
+* Add Mengsk units to unit data and constants ([`b4ffedc`](https://github.com/AresSC2/ares-sc2/commit/b4ffedcbc745e0d70f54d224dc2fd2d4e7981bd3))
+
 ## v2.41.2 (2025-06-12)
 
 ### Fix
