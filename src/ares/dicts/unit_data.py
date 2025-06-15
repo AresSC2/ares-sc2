@@ -9,6 +9,24 @@ from sc2.ids.unit_typeid import UnitTypeId as UnitID
 # with some edits where appropriate
 # Zerg building data includes Drone cost
 UNIT_DATA: Dict[UnitID, Dict] = {
+    # these first 2 entries are rich vespene buildings?
+    # on patch 5.0.14 AIE maps
+    UnitID.SIEGETANKMENGSKACGLUESCREENDUMMY: {
+        "minerals": 75,
+        "gas": 0,
+        "supply": 0,
+        "army_value": 0,
+        "radius": 1.5,
+        "flying": False,
+    },
+    UnitID.MEDIVACMENGSKACGLUESCREENDUMMY: {
+        "minerals": 75,
+        "gas": 0,
+        "supply": 0,
+        "army_value": 0,
+        "radius": 1.5,
+        "flying": False,
+    },
     UnitID.SCV: {
         "minerals": 50,
         "gas": 0,
