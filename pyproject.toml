@@ -15,7 +15,7 @@ burnysc2 = { git = "https://github.com/august-k/python-sc2", branch = "develop" 
 PyYAML = "^6.0.2"
 tqdm = "^4.64.1"
 scikit-learn = "^1.2.2"
-map-analyzer = { git = "https://github.com/raspersc2/SC2MapAnalysis" }
+map-analyzer = { git = "https://github.com/spudde123/SC2MapAnalysis", branch = "develop" }
 cython-extensions-sc2 = "^0.6.5"
 
 
