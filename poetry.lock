@@ -1757,9 +1757,9 @@ numpy = "^2.0.0"
 
 [package.source]
 type = "git"
-url = "https://github.com/raspersc2/SC2MapAnalysis"
-reference = "HEAD"
-resolved_reference = "6dec29742cfb68c6ad77b1d223be87fa2fa8913c"
+url = "https://github.com/spudde123/SC2MapAnalysis"
+reference = "develop"
+resolved_reference = "dada4724b96cb7586d4c00dfff1ace7b13bb4d12"
 
 [[package]]
 name = "markdown"
@@ -3974,4 +3974,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10, <3.13"
-content-hash = "2ffc763f5ed99c10d3075ff93b0a15a20aec18d477719ae1f71d30f0a515a467"
+content-hash = "d38b6b4844c2eaed0ad71f82bfe7e2209ff659ef62a7b50137664109bcdf626e"
