@@ -141,8 +141,14 @@ class ProductionController(MacroBehavior):
             ).execute(ai, config, mediator):
                 return True
 
-            if ai.tech_requirement_progress(trained_from) < 0.95:
-                continue
+            try:
+                if ai.tech_requirement_progress(trained_from) < 0.95:
+                    continue
+            except (AttributeError, TypeError):
+                logger.warning(
+                    f"Could not check tech requirement progress "
+                    f"for {trained_from}, assuming it's ready"
+                )
 
             # we have a worker on route to build this production
             # leave alone for now
