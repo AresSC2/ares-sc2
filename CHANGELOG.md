@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.42.1 (2025-06-27)
+
+### Fix
+
+* Handle exceptions in tech_requirement_progress calls gracefully ([`3ea35bc`](https://github.com/AresSC2/ares-sc2/commit/3ea35bcead1b48580a487f6d07d114a817155f50))
+
 ## v2.42.0 (2025-06-15)
 
 ### Feature
