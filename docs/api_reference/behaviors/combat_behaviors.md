@@ -43,6 +43,11 @@
         show_root_heading: false
         show_root_toc_entry: false 
 
+::: ares.behaviors.combat.individual.queen_spread_creep
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+
 ::: ares.behaviors.combat.individual.siege_tank_decision
     options:
         show_root_heading: false
@@ -79,6 +84,11 @@
         show_root_toc_entry: false 
 
 ::: ares.behaviors.combat.individual.use_transfuse
+    options:
+        show_root_heading: false
+        show_root_toc_entry: false 
+
+::: ares.behaviors.combat.individual.tumor_spread_creep
     options:
         show_root_heading: false
         show_root_toc_entry: false 

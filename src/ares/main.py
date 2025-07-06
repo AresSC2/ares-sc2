@@ -110,6 +110,7 @@ class AresBot(CustomBotAI):
         ] = []
         self._drop_unload_actions: list[tuple[int, int]] = []
         self._archon_morph_actions: list[list] = []
+        self._requested_zerg_placements: list[tuple] = []
         self.transfused_tags: set[int] = set()
 
         self.arcade_mode: bool = False
@@ -127,6 +128,11 @@ class AresBot(CustomBotAI):
 
     def request_archon_morph(self, templar: list[Unit]) -> None:
         self._archon_morph_actions.append(templar)
+
+    def request_zerg_placement(
+        self, base_location: Point2, structure_type: UnitID
+    ) -> None:
+        self._requested_zerg_placements.append((base_location, structure_type))
 
     # noinspection PyFinal
     def _prepare_units(self):  # pragma: no cover
@@ -388,6 +394,8 @@ class AresBot(CustomBotAI):
             )
         for archon_morph_action in self._archon_morph_actions:
             await self._do_archon_morph(archon_morph_action)
+        for requested_zerg_placement in self._requested_zerg_placements:
+            await self._do_zerg_build_placement(requested_zerg_placement)
         self.manager_hub.grid_manager.reset_grids(self.actual_iteration)
         await self.manager_hub.warp_in_manager.do_warp_ins()
         return await super(AresBot, self)._after_step()
@@ -811,6 +819,7 @@ class AresBot(CustomBotAI):
         self._drop_unload_actions = []
         self._same_order_actions = []
         self._archon_morph_actions = []
+        self._requested_zerg_placements = []
         self.transfused_tags = set()
 
     def _should_add_unit(self, unit: RawUnit) -> bool:
@@ -1046,3 +1055,24 @@ class AresBot(CustomBotAI):
             )
 
         return num_pending
+
+    async def _do_zerg_build_placement(
+        self, requested_zerg_placement: tuple[Point2, UnitID]
+    ) -> None:
+        base_location: Point2 = requested_zerg_placement[0]
+        unit_type: UnitID = requested_zerg_placement[1]
+
+        if pos := await self.find_placement(
+            unit_type,
+            base_location.towards(self.game_info.map_center, 8.0),
+            30,
+        ):
+            if worker := self.mediator.select_worker(
+                target_position=pos,
+                force_close=True,
+            ):
+                self.mediator.build_with_specific_worker(
+                    worker=worker,
+                    structure_type=unit_type,
+                    pos=pos,
+                )

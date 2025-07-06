@@ -11,6 +11,7 @@ from ares.consts import DEBUG
 from ares.managers.ability_tracker_manager import AbilityTrackerManager
 from ares.managers.building_manager import BuildingManager
 from ares.managers.combat_sim_manager import CombatSimManager
+from ares.managers.creep_manager import CreepManager
 from ares.managers.data_manager import DataManager
 from ares.managers.enemy_to_base_manager import EnemyToBaseManager
 from ares.managers.flying_structure_manager import FlyingStructureManager
@@ -172,6 +173,9 @@ class Hub:
         self.warp_in_manager: WarpInManager = WarpInManager(
             ai, config, self.manager_mediator
         )
+        self.creep_manager: CreepManager = CreepManager(
+            ai, config, self.manager_mediator
+        )
 
         # in order of priority
         self.managers: list["Manager"] = [
@@ -192,6 +196,7 @@ class Hub:
             self.combat_sim_manager,
             self.flying_structures_manager,
             self.squad_manager,
+            self.creep_manager,
         ]
 
         if additional_managers:

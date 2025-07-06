@@ -167,8 +167,7 @@ class GridManager(Manager, IManagerMediator):
         )
         self.climber_grid: np.ndarray = self.map_data.get_climber_grid()
         self.ground_grid: np.ndarray = self.map_data.get_pyastar_grid()
-        # tiles without creep are listed as unpathable
-        self.creep_ground_grid: np.ndarray = self.map_data.get_pyastar_grid()
+
         # this is like the air grid above,
         # but only add influence from enemy ground
         self.ground_to_air_grid: np.ndarray = self.air_grid.copy()
@@ -245,10 +244,6 @@ class GridManager(Manager, IManagerMediator):
                         grid=self.tactical_ground_grid,
                         weight=-influence,
                     )
-
-        # update creep grid
-        self.creep_ground_grid = self.ground_grid.copy()
-        self.creep_ground_grid[np.where(self.ai.state.creep.data_numpy.T != 1)] = np.inf
 
         if self.debug and self.config[DEBUG_OPTIONS][SHOW_PATHING_COST]:
             debug_cases: dict[str, Any] = {
