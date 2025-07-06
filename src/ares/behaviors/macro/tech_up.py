@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Union
 from loguru import logger
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
+from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
@@ -100,6 +101,14 @@ class TechUp(MacroBehavior):
         if tech_progress == 1.0 and not ai.structure_present_or_pending(
             researched_from_id
         ):
+            if researched_from_id in {UnitID.LAIR, UnitID.HIVE}:
+                upgrading: bool = self._upgrade_zerg_townhall(researched_from_id, ai)
+                if upgrading:
+                    logger.info(
+                        f"{ai.time_formatted} Adding {researched_from_id} to"
+                        f" tech towards {self.desired_tech}"
+                    )
+                return upgrading
             # need a gateway, but we have a warpgate already
             if (
                 researched_from_id == UnitID.GATEWAY
@@ -148,6 +157,17 @@ class TechUp(MacroBehavior):
                     continue
 
                 if tech_ready:
+                    if structure_type in {UnitID.LAIR, UnitID.HIVE}:
+                        upgrading: bool = self._upgrade_zerg_townhall(
+                            structure_type, ai
+                        )
+                        if upgrading:
+                            logger.info(
+                                f"{ai.time_formatted} Adding {structure_type} to"
+                                f" tech towards {self.desired_tech}"
+                            )
+                        return upgrading
+
                     building: bool = BuildStructure(
                         self.base_location, structure_type
                     ).execute(ai, ai.config, ai.mediator)
@@ -233,4 +253,47 @@ class TechUp(MacroBehavior):
                     f"Ignore existing techlabs: {ignore_existing_techlabs}"
                 )
                 return True
+        return False
+
+    def _upgrade_zerg_townhall(self, structure_type: UnitID, ai: "AresBot") -> bool:
+        structures_dict = ai.mediator.get_own_structures_dict
+        if (
+            not ai.can_afford(structure_type)
+            or ai.already_pending(structure_type)
+            or structures_dict[structure_type]
+        ):
+            return False
+
+        # lair
+        if (
+            structure_type == UnitID.LAIR
+            and not structures_dict[UnitID.HIVE]
+            and (
+                idle_townhalls := [
+                    th for th in ai.townhalls if th.is_idle and th.is_ready
+                ]
+            )
+        ):
+            # all townhalls will be a hatchery if got to here
+            th: Unit = idle_townhalls[0]
+            th(AbilityId.UPGRADETOLAIR_LAIR)
+            return True
+
+        # hive
+        if (
+            structure_type == UnitID.HIVE
+            and not structures_dict[UnitID.HIVE]
+            and (
+                idle_lair := [
+                    th
+                    for th in structures_dict[UnitID.LAIR]
+                    if th.is_idle and th.is_ready
+                ]
+            )
+        ):
+            # all townhalls will be a hatchery if got to here
+            th: Unit = idle_lair[0]
+            th(AbilityId.UPGRADETOHIVE_HIVE)
+            return True
+
         return False
