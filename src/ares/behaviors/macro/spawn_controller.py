@@ -63,7 +63,7 @@ class SpawnController(MacroBehavior):
 
     """
 
-    army_composition_dict: dict[UnitID, dict[str, float, str, int]]
+    army_composition_dict: dict[UnitID, dict[str, float | int]]
     freeflow_mode: bool = False
     ignore_proportions_below_unit_count: int = 0
     over_produce_on_low_tech: bool = True

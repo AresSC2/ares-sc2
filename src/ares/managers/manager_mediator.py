@@ -260,6 +260,245 @@ class ManagerMediator(IManagerMediator):
         )
 
     """
+    CreepManager
+    """
+
+    def find_nearby_creep_edge_position(self, **kwargs) -> Point2 | None:
+        """
+        Find the nearest position on the edge of the creep nearby a given point.
+
+        This function is used to determine a position that lies at the edge of the
+        creep, in proximity to a reference point within a game map scenario. The edge
+        of the creep refers to the boundary or border of an area covered by creep,
+        a terrain-modifying biome commonly associated with certain game mechanics.
+
+        Parameters
+        ----------
+        position : Point2
+            Where to search from
+        search_radius: float
+            How far to search for creep edge position.
+        closest_valid: bool
+            If True find the closest valid edge tile from `position`.
+            Else find the furthest
+            Default is True.
+        spread_dist: float
+            How much distance between existing tumors?
+            Default is 4.0
+
+        Returns
+        -------
+        Point2 | None
+            The coordinates of the nearest position at the edge of the creep.
+
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER,
+            ManagerRequestType.FIND_NEARBY_CREEP_EDGE_POSITION,
+            **kwargs,
+        )
+
+    def get_closest_creep_tile(self, **kwargs) -> None | Point2:
+        """Get closest creep tile to `pos`
+
+        WARNING: May return `None` if no creep tiles observed.
+
+        CreepManager
+
+        Example:
+        ```py
+        import numpy as np
+
+        closest_tile: Point2 = (
+            self.mediator.get_closest_creep_tile(pos=point)
+        )
+        ```
+
+        Parameters:
+            pos (Point2): The position to search for closest creep tile.
+
+        Returns:
+            Point2 representing the closest creep tile or None if no creep tiles.
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER,
+            ManagerRequestType.GET_CLOSEST_CREEP_TILE,
+            **kwargs,
+        )
+
+    @property
+    def get_creep_edges(self) -> tuple[np.ndarray, np.ndarray]:
+        """
+        Fetches the edges of the detected creep on the map.
+
+        CreepManager
+
+        The returned value represents
+        the creep edges in the form of NumPy arrays.
+
+        Returns:
+            tuple of numpy.ndarray
+                A tuple containing two NumPy arrays.
+                Reflecting the coordinates of the creep edges.
+
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER, ManagerRequestType.GET_CREEP_EDGES
+        )
+
+    @property
+    def get_creep_grid(self) -> np.ndarray:
+        """Get the creep grid.
+        Creep tiles have a value of 1.0
+        Non creep tiles have any other value.
+
+        CreepManager
+
+        Example:
+        ```py
+        import numpy as np
+
+        creep_grid: np.ndarray = (
+            self.mediator.get_creep_grid
+        )
+        ```
+
+        Returns:
+            The creep grid.
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER, ManagerRequestType.GET_CREEP_GRID
+        )
+
+    @property
+    def get_creep_tiles(self) -> np.ndarray:
+        """Get creep tiles.
+
+        CreepManager
+
+        Example:
+        ```py
+        import numpy as np
+
+        creep_tiles: np.ndarray = (
+            self.mediator.get_creep_tiles
+        )
+        ```
+
+        Returns:
+            Coordinates of all creep tiles on the map.
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER, ManagerRequestType.GET_CREEP_TILES
+        )
+
+    def get_next_tumor_on_path(self, **kwargs) -> Point2 | None:
+        """
+        Determines the next tumor position on the path, using vectorized operations
+        to find positions along the creep edge that maintain proper separation.
+
+        Parameters:
+            grid : np.ndarray
+                A 2D array to path on.
+            from_pos : Point2
+                The starting position from which the path is evaluated.
+            to_pos : Point2
+                The target position on the grid where the path leads.
+            max_distance : float, optional
+                The maximum allowable distance from the `from_pos` to the
+                next tumor position.
+                Default is 999.9.
+            min_distance: float, optional
+                The minimum allowable distance from the `from_pos` to the
+                next tumor position.
+                Default is 0.0.
+            min_separation: float, optional
+                The minimum distance required between the new
+                tumor and existing tumors/queen routes.
+                Default is 3.0.
+            find_alternative: bool, optional
+                Find an alternative position if the closest position is
+                too close to existing tumors
+                Switch to False if possible to avoid unnecessary checks.
+                Default is True.
+
+        Returns:
+            Point2 or None
+                Returns the next suitable tumor position on the grid if a valid
+                position is found within the specified conditions.
+                Returns None if no valid position exists.
+        """
+
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER,
+            ManagerRequestType.GET_NEXT_TUMOR_ON_PATH,
+            **kwargs,
+        )
+
+    def get_random_creep_position(self, **kwargs) -> Point2 | None:
+        """Find a random valid creep position within tumor range.
+
+        Parameters:
+            position : Point2
+                The position to search from.
+            max_attempts : int
+                Maximum attempts to find a valid position.
+
+        Returns:
+            Point2 | None
+                Random creep position.
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER,
+            ManagerRequestType.GET_RANDOM_CREEP_POSITION,
+            **kwargs,
+        )
+
+    def get_overlord_creep_spotter_positions(self, **kwargs) -> dict[int, Point2]:
+        """Find optimal positions for overlords to provide vision for creep spread.
+
+        This function finds the edge of creep and distributes
+        overlord positions evenly around it.
+
+        Parameters:
+            overlords : Units | list[Unit]
+                The overlords that will be positioned for creep vision
+
+        Returns:
+            dict[int: Point2]
+                Dictionary mapping overlord tag to position where it should move
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER,
+            ManagerRequestType.GET_OVERLORD_CREEP_SPOTTER_POSTIONS,
+            **kwargs,
+        )
+
+    def get_tumor_influence_lowest_cost_position(self, **kwargs) -> Point2 | None:
+        """
+        Determines the lowest cost position influenced by the tumor through a request
+        to the creep manager.
+
+        This method sends a request to the creep manager to retrieve the position
+        with the lowest cost under tumor influence. The operation is executed
+        via the manager_request function.
+
+        Parameters:
+            position : Point2
+                Tumor position.
+
+        Returns:
+            Point2:
+                Furthest placement with lowest cost under tumor influence.
+
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER,
+            ManagerRequestType.GET_TUMOR_INFLUENCE_LOWEST_COST_POSITION,
+            **kwargs,
+        )
+
+    """
     EnemyToBaseManager
     """
 
