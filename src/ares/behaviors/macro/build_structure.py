@@ -65,10 +65,6 @@ class BuildStructure(MacroBehavior):
     tech_progress_check: float = 0.85
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        assert (
-            ai.race != Race.Zerg
-        ), "BuildStructure Behavior not currently supported for Zerg."
-
         # already enough workers on route to build this
         if (
             ai.not_started_but_in_building_tracker(self.structure_id)
@@ -89,6 +85,10 @@ class BuildStructure(MacroBehavior):
             < self.tech_progress_check
         ):
             return False
+
+        if ai.race == Race.Zerg:
+            ai.request_zerg_placement(self.base_location, self.structure_id)
+            return True
 
         within_psionic_matrix: bool = (
             ai.race == Race.Protoss and self.structure_id != UnitID.PYLON
