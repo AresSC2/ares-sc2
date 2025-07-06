@@ -54,6 +54,7 @@ python-semantic-release = "^7.33.0"
 ipykernel = "^6.22.0"
 matplotlib = "^3.7.1"
 line-profiler = "^4.0.3"
+jupyter = "^1.1.1"
 
 [build-system]
 requires = ["poetry-core", "Cython", "numpy", "setuptools"]
