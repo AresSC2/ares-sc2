@@ -1,7 +1,7 @@
+import random
 from typing import Any
 
 import numpy as np
-import random
 from cython_extensions import cy_distance_to, cy_distance_to_squared
 from map_analyzer import MapData
 from sc2.ids.ability_id import AbilityId
@@ -337,17 +337,17 @@ class CreepManager(Manager, IManagerMediator):
     ) -> dict[int, Point2]:
         """Find optimal positions for overlords to provide vision for creep spread.
 
-         This function finds the edge of creep and distributes
-         overlord positions evenly around it.
+        This function finds the edge of creep and distributes
+        overlord positions evenly around it.
 
-         Parameters:
-             overlords : Units | list[Unit]
-                 The overlords that will be positioned for creep vision
+        Parameters:
+            overlords : Units | list[Unit]
+                The overlords that will be positioned for creep vision
 
-         Returns:
-             dict[int: Point2]
-                 Dictionary mapping overlord tag to position where it should move
-         """
+        Returns:
+            dict[int: Point2]
+                Dictionary mapping overlord tag to position where it should move
+        """
         if not overlords:
             return {}
 

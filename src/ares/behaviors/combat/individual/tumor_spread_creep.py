@@ -25,6 +25,7 @@ class TumorSpreadCreep(CombatIndividualBehavior):
         unit (Unit): The tumor unit executing the tumor creep spread.
         target (Point2): The target point for the tumor placement.
     """
+
     unit: Unit
     target: Point2
 
