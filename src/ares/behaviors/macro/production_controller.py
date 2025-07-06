@@ -39,9 +39,9 @@ class ProductionController(MacroBehavior):
     # Note: This does not try to build production facilities and
     # will ignore units that are impossible to currently spawn.
     army_composition: dict[UnitID: {float, bool}] = {
-        UnitID.MARINE: {"proportion": 0.6, "priority": 2},  # lowest priority
+        UnitID.MARINE: {"proportion": 0.6, "priority": 2}, # lowest priority
         UnitID.MEDIVAC: {"proportion": 0.25, "priority": 1},
-        UnitID.SIEGETANK: {"proportion": 0.15, "priority": 0},  # highest priority
+        UnitID.SIEGETANK: {"proportion": 0.15, "priority": 0}, # highest priority
     }
     # where `self` is an `AresBot` object
     self.register_behavior(ProductionController(
@@ -72,7 +72,7 @@ class ProductionController(MacroBehavior):
 
     """
 
-    army_composition_dict: dict[UnitID, dict[str, float, str, int]]
+    army_composition_dict: dict[UnitID, dict[str, float | int]]
     base_location: Point2
     add_production_at_bank: tuple[int, int] = (400, 400)
     alpha: float = 0.9
@@ -141,14 +141,8 @@ class ProductionController(MacroBehavior):
             ).execute(ai, config, mediator):
                 return True
 
-            try:
-                if ai.tech_requirement_progress(trained_from) < 0.95:
-                    continue
-            except (AttributeError, TypeError):
-                logger.warning(
-                    f"Could not check tech requirement progress "
-                    f"for {trained_from}, assuming it's ready"
-                )
+            if ai.tech_requirement_progress(trained_from) < 0.95:
+                continue
 
             # we have a worker on route to build this production
             # leave alone for now
