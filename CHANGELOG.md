@@ -2,6 +2,24 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.0 (2025-07-06)
+
+### Feature
+
+* Tumor spread creep behavior ([`eea8403`](https://github.com/AresSC2/ares-sc2/commit/eea84034b4a266d8600461de94977445cbbb2cf6))
+* Queen spread creep behavior ([`efa4571`](https://github.com/AresSC2/ares-sc2/commit/efa45719a14ae5fd71a49de6ecfca43da8cbdfbf))
+* Tech up works with lair and hive ([`d1ca06b`](https://github.com/AresSC2/ares-sc2/commit/d1ca06bf1fc5c0be09bdaaf73748b1c01600a7c8))
+* New creep manager with creep spread methods ([`4503bfc`](https://github.com/AresSC2/ares-sc2/commit/4503bfccb8b5b0f807e6432ac3a39e8576b29eae))
+* Allow BuildStructure to work for Zerg ([`ac0eab1`](https://github.com/AresSC2/ares-sc2/commit/ac0eab10192ca2b7846fbb61d08cb74ddf7ea232))
+
+### Fix
+
+* Handle tech requirement error gracefully ([`d97960c`](https://github.com/AresSC2/ares-sc2/commit/d97960c794586cd222c7f92a0f05b18fcaec44b5))
+
+### Documentation
+
+* Add new behaviors to autodocs ([`f327da7`](https://github.com/AresSC2/ares-sc2/commit/f327da79decfc59e109c20c0e2089ee4cb0b3152))
+
 ## v2.42.1 (2025-06-27)
 
 ### Fix
