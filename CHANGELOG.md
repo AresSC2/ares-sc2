@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.1 (2025-07-11)
+
+### Fix
+
+* Adjust tech requirement logging and placement manager validation ([`032ee56`](https://github.com/AresSC2/ares-sc2/commit/032ee5681748546fe28c0deb7737b76a779f46d4))
+* Handle AttributeError in tech requirement check for unit production ([`9779a57`](https://github.com/AresSC2/ares-sc2/commit/9779a579aedd409ca07c0b2b0b59dea3898616e8))
+
 ## v2.43.0 (2025-07-06)
 
 ### Feature
