@@ -147,7 +147,8 @@ class ProductionController(MacroBehavior):
             except AttributeError as e:
                 # Handle the case where unit has no creation_ability defined
                 logger.warning(
-                    f"{ai.time_formatted}: Tech requirement check failed for {trained_from}: {e}"
+                    f"{ai.time_formatted}: Tech requirement check failed for "
+                    f"{trained_from}: {e}"
                 )
                 continue
 

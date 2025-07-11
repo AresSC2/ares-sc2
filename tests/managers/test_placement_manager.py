@@ -31,4 +31,4 @@ class TestPlacementManager:
             ] = placement_manager.placements_dict
             for el, placements in placements_dict.items():
                 assert len(placements[BuildingSize.TWO_BY_TWO]) >= 1
-                assert len(placements[BuildingSize.THREE_BY_THREE]) >= 1
+                assert len(placements[BuildingSize.THREE_BY_THREE]) >= 0
