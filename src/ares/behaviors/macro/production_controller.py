@@ -141,7 +141,14 @@ class ProductionController(MacroBehavior):
             ).execute(ai, config, mediator):
                 return True
 
-            if ai.tech_requirement_progress(trained_from) < 0.95:
+            try:
+                if ai.tech_requirement_progress(trained_from) < 0.95:
+                    continue
+            except AttributeError as e:
+                # Handle the case where unit has no creation_ability defined
+                logger.warning(
+                    f"{ai.time_formatted}: Tech requirement check failed for {trained_from}: {e}"
+                )
                 continue
 
             # we have a worker on route to build this production
