@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.2 (2025-07-12)
+
+### Fix
+
+* Handle missing pylon placements and log appropriate warnings ([`083e2ed`](https://github.com/AresSC2/ares-sc2/commit/083e2ed809c8f91698163d6fa852d85b0b46de44))
+
 ## v2.43.1 (2025-07-11)
 
 ### Fix
