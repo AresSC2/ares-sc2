@@ -227,6 +227,7 @@ class PlacementManager(Manager, IManagerMediator):
         self._extract_user_placements()
         self.race_to_building_solver_method[self.ai.race]()
         finish: float = time.time()
+
         logger.info(f"Solved placement formation in {(finish - start)*1000} ms")
 
     def can_place_structure(
@@ -1108,7 +1109,10 @@ class PlacementManager(Manager, IManagerMediator):
             BuildingSize.THREE_BY_THREE
         ]
 
-        best_pylon_pos: Point2 = el
+        if not prod_pylons or not three_by_threes:
+            return
+
+        best_pylon_pos: Point2 = prod_pylons[0]
         most_three_by_threes: int = 0
 
         for pylon_position in prod_pylons:
@@ -1120,9 +1124,15 @@ class PlacementManager(Manager, IManagerMediator):
                 most_three_by_threes = num_three_by_threes
                 best_pylon_pos = pylon_position
 
-        self.placements_dict[el][BuildingSize.TWO_BY_TWO][best_pylon_pos][
-            "optimal_pylon"
-        ] = True
+        try:
+            self.placements_dict[el][BuildingSize.TWO_BY_TWO][best_pylon_pos][
+                "optimal_pylon"
+            ] = True
+        except KeyError:
+            logger.warning(
+                f"Could not set optimal pylon for base {el}, "
+                f"position {best_pylon_pos} not found"
+            )
 
     def _solve_zerg_building_formation(self):
         # TODO: Implement zerg placements
