@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.3 (2025-07-13)
+
+### Fix
+
+* Avoid crash when target is missing in building tracker ([`10eae66`](https://github.com/AresSC2/ares-sc2/commit/10eae6620811a8d1e4376acedf4e113b07d9de70))
+
 ## v2.43.2 (2025-07-12)
 
 ### Fix
