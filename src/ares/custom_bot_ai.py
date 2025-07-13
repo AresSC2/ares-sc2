@@ -132,12 +132,11 @@ class CustomBotAI(BotAI):
             if structure_id != structure_type:
                 continue
 
-            target: Point2 = building_tracker[tag][TARGET]
-
-            if not self.structures.filter(
-                lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
-            ):
-                num_in_tracker += 1
+            if target := building_tracker[tag][TARGET]:
+                if not self.structures.filter(
+                    lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
+                ):
+                    num_in_tracker += 1
 
         return num_in_tracker
 
