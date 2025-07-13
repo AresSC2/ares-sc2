@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.4 (2025-07-13)
+
+### Fix
+
+* Simplify warp-in logic ([`f26c494`](https://github.com/AresSC2/ares-sc2/commit/f26c494e0a57d044179f337e60cd6f558622bcad))
+
 ## v2.43.3 (2025-07-13)
 
 ### Fix
