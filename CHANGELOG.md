@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.5 (2025-07-14)
+
+### Fix
+
+* Add missing building placements for current maps ([`cc9f693`](https://github.com/AresSC2/ares-sc2/commit/cc9f693f00f0187f13cd54a70dda229ff1b13490))
+
 ## v2.43.4 (2025-07-13)
 
 ### Fix
