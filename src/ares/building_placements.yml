@@ -1,4 +1,5 @@
 Protoss:
+    # patch 5.0.13
     AbyssalReef:
         VsZergNatWall:
             AvailableVsRaces: ["Zerg", "Random"]
@@ -89,3 +90,51 @@ Protoss:
                 ThreeByThrees: [ [ 139.5, 46.5 ], [ 139.5, 50.5 ], [ 139.5, 53.5 ] ]
                 StaticDefences: [ [ 144., 48. ] ]
                 GateKeeper: [ [ 138.64, 48.49 ] ]
+
+    # 2025 patch 5.0.14
+    Persephone:
+        VsZergNatWall:
+            AvailableVsRaces: [ "Zerg", "Random" ]
+            UpperSpawn:
+                FirstPylon: [ [ 71., 143. ] ]
+                Pylons: [ [ 69., 144. ] ]
+                ThreeByThrees: [ [ 70.5, 138.5 ], [ 74.5, 139.5 ], [ 75.5, 142.5 ] ]
+                StaticDefences: [ [ 69., 141. ] ]
+                GateKeeper: [ [ 72.64, 138.66 ] ]
+            LowerSpawn:
+                FirstPylon: [ [ 70., 37. ] ]
+                Pylons: [ [ 68., 37. ] ]
+                ThreeByThrees: [ [ 68.5, 41.5 ], [ 72.5, 39.5 ], [ 75.5, 37.5 ] ]
+                StaticDefences: [ [ 68., 39. ] ]
+                GateKeeper: [ [ 70.54, 40.69 ] ]
+    Pylon:
+        VsZergNatWall:
+            AvailableVsRaces: [ "Zerg", "Random" ]
+            UpperSpawn:
+                FirstPylon: [ [ 105., 168. ] ]
+                Pylons: [ [ 104., 170. ] ]
+                ThreeByThrees: [ [ 104.5, 163.5 ], [ 108.5, 166.5 ], [ 109.5, 169.5 ] ]
+                StaticDefences: [ [ 103., 168. ] ]
+                GateKeeper: [ [ 106.62, 164.95 ] ]
+            LowerSpawn:
+                FirstPylon: [ [ 143., 80. ] ]
+                Pylons: [ [ 145., 80. ] ]
+                ThreeByThrees: [ [ 143.5, 84.5 ], [ 139.5, 82.5 ], [ 138.5, 79.5 ] ]
+                StaticDefences: [ [ 143., 82. ] ]
+                GateKeeper: [ [ 141.15, 84.08 ] ]
+    Torches:
+        VsZergNatWall:
+            AvailableVsRaces: [ "Zerg", "Random" ]
+            UpperSpawn:
+                FirstPylon: [ [ 91., 154. ] ]
+                Pylons: [ [ 93., 154. ] ]
+                ThreeByThrees: [ [ 50.5, 109.5 ], [ 50.5, 105.5 ], [ 50.5, 102.5 ] ]
+                StaticDefences: [ [ 92., 152. ] ]
+                GateKeeper: [ [ 89.46, 149.71 ] ]
+            LowerSpawn:
+                FirstPylon: [ [ 91., 55. ] ]
+                Pylons: [ [ 91., 53. ] ]
+                ThreeByThrees: [ [ 92.5, 59.5 ], [ 88.5, 57.5 ], [ 86.5, 54.5 ] ]
+                StaticDefences: [ [ 89., 55. ] ]
+                GateKeeper: [ [ 90.29, 58.63 ] ]
+
