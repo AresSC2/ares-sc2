@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.6 (2025-07-15)
+
+### Fix
+
+* `ol_spot_near_enemy_natural` mediator request works ([`e4a894c`](https://github.com/AresSC2/ares-sc2/commit/e4a894c32f0c306679b5734651689db215a9a67a))
+
 ## v2.43.5 (2025-07-14)
 
 ### Fix
