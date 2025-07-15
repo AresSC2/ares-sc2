@@ -486,15 +486,7 @@ class BuildOrderParser:
             case BuildOrderTargetOptions.ENEMY_NAT:
                 return self.ai.mediator.get_enemy_nat
             case BuildOrderTargetOptions.ENEMY_NAT_HG_SPOT:
-                return self.ai.mediator.get_closest_overlord_spot(
-                    from_pos=Point2(
-                        cy_towards(
-                            self.ai.mediator.get_enemy_nat,
-                            self.ai.game_info.map_center,
-                            10.0,
-                        )
-                    )
-                )
+                return self.ai.mediator.get_ol_spot_near_enemy_nat
             case BuildOrderTargetOptions.ENEMY_NAT_VISION:
                 return Point2(
                     cy_towards(
