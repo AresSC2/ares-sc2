@@ -1,10 +1,11 @@
 """Calculations involving terrain.
 
 """
+from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
-from cython_extensions import cy_flood_fill_grid
+from cython_extensions import cy_flood_fill_grid, cy_towards
 from map_analyzer import MapData
 from map_analyzer.constructs import ChokeArea, VisionBlockerArea
 from sc2.game_info import Ramp
@@ -101,6 +102,9 @@ class TerrainManager(Manager, IManagerMediator):
                 self.is_free_expansion
             ),
             ManagerRequestType.GET_MAP_CHOKE_POINTS: lambda kwargs: self.choke_points,
+            ManagerRequestType.GET_OL_SPOT_NEAR_ENEMY_NATURAL: lambda kwargs: (
+                self.ol_spot_near_enemy_natural
+            ),
             ManagerRequestType.GET_OL_SPOTS: lambda kwargs: self.ol_spots,
             ManagerRequestType.GET_OWN_EXPANSIONS: lambda kwargs: self.own_expansions,
             ManagerRequestType.GET_OWN_NAT: lambda kwargs: self.own_nat,
@@ -189,7 +193,7 @@ class TerrainManager(Manager, IManagerMediator):
 
         self._clear_positions_blocked_by_burrowed_enemy()
 
-    @property_cache_once_per_frame
+    @cached_property
     def defensive_third(self) -> Point2:
         """Get the third furthest from enemy.
 
@@ -219,7 +223,7 @@ class TerrainManager(Manager, IManagerMediator):
             else fourth_loc
         )
 
-    @property_cache_once_per_frame
+    @cached_property
     def enemy_nat(self) -> Point2:
         """Calculate the enemy natural base.
 
@@ -231,7 +235,7 @@ class TerrainManager(Manager, IManagerMediator):
         """
         return self.enemy_expansions[0][0]
 
-    @property_cache_once_per_frame
+    @cached_property
     def enemy_third(self) -> Point2:
         """Calculate the enemy third base.
 
@@ -257,7 +261,7 @@ class TerrainManager(Manager, IManagerMediator):
             return self.enemy_expansions[2][0]
         return self.enemy_expansions[1][0]
 
-    @property_cache_once_per_frame
+    @cached_property
     def enemy_fourth(self) -> Point2:
         """Calculate the enemy fourth base.
 
@@ -272,7 +276,7 @@ class TerrainManager(Manager, IManagerMediator):
         else:
             return self.enemy_expansions[1][0]
 
-    @property_cache_once_per_frame
+    @cached_property
     def enemy_main_base_ramp(self) -> Ramp:
         """Identify which ramp is the enemies main.
 
@@ -302,7 +306,7 @@ class TerrainManager(Manager, IManagerMediator):
                 return True
         return False
 
-    @property_cache_once_per_frame
+    @cached_property
     def ol_spots(self) -> List[Point2]:
         """High ground Overlord hiding spots.
 
@@ -314,7 +318,7 @@ class TerrainManager(Manager, IManagerMediator):
         """
         return [Point2(tuple_spot) for tuple_spot in self.map_data.overlord_spots]
 
-    @property_cache_once_per_frame
+    @cached_property
     def ol_spot_near_enemy_natural(self) -> Point2:
         """Find an overlord spot near enemy natural for first overlord.
 
@@ -324,9 +328,17 @@ class TerrainManager(Manager, IManagerMediator):
             Overlord spot near the enemy natural.
 
         """
-        return self.get_closest_overlord_spot(self.enemy_nat)
+        return self.get_closest_overlord_spot(
+            from_pos=Point2(
+                cy_towards(
+                    self.ai.mediator.get_enemy_nat,
+                    self.ai.game_info.map_center,
+                    10.0,
+                )
+            )
+        )
 
-    @property_cache_once_per_frame
+    @cached_property
     def own_nat(self) -> Point2:
         """Calculate our natural expansion.
 
@@ -338,7 +350,7 @@ class TerrainManager(Manager, IManagerMediator):
         """
         return self.own_expansions[0][0]
 
-    @property_cache_once_per_frame
+    @cached_property
     def own_third(self) -> Point2:
         """Calculate our third base.
 
@@ -350,7 +362,7 @@ class TerrainManager(Manager, IManagerMediator):
         """
         return self.own_expansions[1][0]
 
-    @property_cache_once_per_frame
+    @cached_property
     def own_fourth(self) -> Point2:
         """Calculate our fourth base.
 
