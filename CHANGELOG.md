@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.7 (2025-07-16)
+
+### Fix
+
+* Valid natural wall placements in pvz on torches ([`ad5d5cf`](https://github.com/AresSC2/ares-sc2/commit/ad5d5cf17f77c2e779227c944d587083384a9083))
+
 ## v2.43.6 (2025-07-15)
 
 ### Fix
