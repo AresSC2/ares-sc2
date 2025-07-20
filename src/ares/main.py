@@ -37,6 +37,7 @@ from ares.consts import (
     ID,
     IGNORE_DESTRUCTABLES,
     RACE_SUPPLY,
+    REACTOR_TRAIN_ABILITIES,
     SHADE_COMMENCED,
     SHADE_DURATION,
     SHADE_OWNER,
@@ -45,7 +46,7 @@ from ares.consts import (
     USE_DATA,
     WORKER_TYPES,
     UnitRole,
-    UnitTreeQueryType, REACTOR_TRAIN_ABILITIES,
+    UnitTreeQueryType,
 )
 from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.cost_dict import COST_DICT
@@ -968,6 +969,7 @@ class AresBot(CustomBotAI):
         build_structures: list[Unit] = [self.unit_tag_dict[u] for u in build_from_tags]
         # sort build structures with reactors first
         if self.race == Race.Terran:
+
             def structure_priority(structure):
                 if structure.add_on_tag in self.reactor_tags:
                     return -1
