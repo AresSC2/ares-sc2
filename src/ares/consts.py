@@ -5,6 +5,7 @@ from enum import Enum, auto
 from typing import List, Set
 
 from sc2.data import Race
+from sc2.ids.ability_id import AbilityId
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
@@ -498,6 +499,15 @@ class UnitTreeQueryType(str, Enum):
 
 
 """Sets"""
+REACTOR_TRAIN_ABILITIES: list[AbilityId] = [
+    AbilityId.BARRACKSTRAIN_MARINE,
+    AbilityId.BARRACKSTRAIN_REAPER,
+    AbilityId.FACTORYTRAIN_HELLION,
+    AbilityId.FACTORYTRAIN_WIDOWMINE,
+    AbilityId.STARPORTTRAIN_MEDIVAC,
+    AbilityId.STARPORTTRAIN_VIKINGFIGHTER,
+]
+
 ADD_ONS: dict[UnitID, UnitID] = {
     UnitID.BARRACKSREACTOR: UnitID.BARRACKS,
     UnitID.FACTORYREACTOR: UnitID.FACTORY,
