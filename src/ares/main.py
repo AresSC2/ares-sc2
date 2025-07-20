@@ -45,7 +45,7 @@ from ares.consts import (
     USE_DATA,
     WORKER_TYPES,
     UnitRole,
-    UnitTreeQueryType,
+    UnitTreeQueryType, REACTOR_TRAIN_ABILITIES,
 )
 from ares.custom_bot_ai import CustomBotAI
 from ares.dicts.cost_dict import COST_DICT
@@ -968,11 +968,28 @@ class AresBot(CustomBotAI):
         build_structures: list[Unit] = [self.unit_tag_dict[u] for u in build_from_tags]
         # sort build structures with reactors first
         if self.race == Race.Terran:
-            build_structures = sorted(
-                build_structures,
-                key=lambda structure: -1 * (structure.add_on_tag in self.reactor_tags)
-                + 1 * (structure.add_on_tag in self.techlab_tags),
-            )
+            def structure_priority(structure):
+                if structure.add_on_tag in self.reactor_tags:
+                    return -1
+                elif structure.add_on_tag in self.techlab_tags:
+                    return 1
+                return 0
+
+            def is_reactor_ready(structure):
+                return any(
+                    ability in structure.abilities
+                    for ability in REACTOR_TRAIN_ABILITIES
+                )
+
+            # Sort by add-on type
+            build_structures.sort(key=structure_priority)
+
+            # Filter out reactors that aren't ready
+            build_structures = [
+                bs
+                for bs in build_structures
+                if bs.add_on_tag not in self.reactor_tags or is_reactor_ready(bs)
+            ]
         # limit build structures to number of larva left
         if self.race == Race.Zerg and using_larva:
             build_structures = build_structures[: self.num_larva_left]
