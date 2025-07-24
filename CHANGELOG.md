@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.8 (2025-07-20)
+
+### Fix
+
+* Ensure reactored structures are ready to build ([`c31ff2c`](https://github.com/AresSC2/ares-sc2/commit/c31ff2cf14840a0222b6733558b475c784a996c2))
+
 ## v2.43.7 (2025-07-16)
 
 ### Fix
