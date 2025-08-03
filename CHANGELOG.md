@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.9 (2025-08-03)
+
+### Fix
+
+* Refactor realtime frame skip to work as intended ([`832159f`](https://github.com/AresSC2/ares-sc2/commit/832159f24adc0896c77147b386764bbfbcdeaf32))
+* Add PyInstaller support and resolve config path issues ([`f683029`](https://github.com/AresSC2/ares-sc2/commit/f68302913c4a0eed4d709298211c2e0d5dfcd7c0))
+
 ## v2.43.8 (2025-07-20)
 
 ### Fix
