@@ -85,7 +85,7 @@ class AresBot(CustomBotAI):
             path.join(getcwd(), path.dirname(__file__))
         )
         # If running from exe we need path to exe file
-        if getattr(sys, 'frozen', False):
+        if getattr(sys, "frozen", False):
             # Running as PyInstaller exe
             # sys.executable = "C:/Users/name/Desktop/mybot.exe"
             # path.dirname() gives "C:/Users/name/Desktop"
