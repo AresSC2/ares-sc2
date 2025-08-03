@@ -1,3 +1,4 @@
+import sys
 from collections import defaultdict
 from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
@@ -83,7 +84,17 @@ class AresBot(CustomBotAI):
         __ares_config_location__: str = path.realpath(
             path.join(getcwd(), path.dirname(__file__))
         )
-        self.__user_config_location__: str = path.abspath(".")
+        # If running from exe we need path to exe file
+        if getattr(sys, "frozen", False):
+            # Running as PyInstaller exe
+            # sys.executable = "C:/Users/name/Desktop/mybot.exe"
+            # path.dirname() gives "C:/Users/name/Desktop"
+            self.__user_config_location__ = path.dirname(sys.executable)
+        # Running from source code
+        else:
+            # path.abspath(".") gives current directory
+            self.__user_config_location__ = path.abspath(".")
+
         config_parser: ConfigParser = ConfigParser(
             __ares_config_location__, self.__user_config_location__, CONFIG_FILE
         )
@@ -91,9 +102,9 @@ class AresBot(CustomBotAI):
         self.config = config_parser.parse()
 
         self.game_step_override: Optional[int] = game_step_override
-        self.unit_tag_dict: Dict[int, Unit] = {}
+        self.unit_tag_dict: dict[int, Unit] = {}
         self.chat_debug = None
-        self.forcefield_to_bile_dict: Dict[Point2, int] = {}
+        self.forcefield_to_bile_dict: dict[Point2, int] = {}
         self.last_game_loop: int = -1
 
         # track adept shades as we only add them towards shade completion (160 frames)
@@ -134,6 +145,22 @@ class AresBot(CustomBotAI):
         self, base_location: Point2, structure_type: UnitID
     ) -> None:
         self._requested_zerg_placements.append((base_location, structure_type))
+
+    async def _prepare_step(self, state, proto_game_info) -> None:
+        """
+        If playing in realtime, we set the game step to 1 (in on_start) and then
+        manually skip frames. This gives Ares a time limit of 4 frames (45ms per frame)
+        to finish an iteration. Playing every 4th frame seems to be the generally
+        accepted solution to prevent weird things going on. And from Ares' point of
+        view, they have a better chance of running smoothly on older PC's.
+        """
+        self.state = state
+        loop: int = state.game_loop
+        if self.realtime and self.last_game_loop + 4 > loop and loop != 0:
+            return
+
+        self.last_game_loop = loop
+        return await super()._prepare_step(state, proto_game_info)
 
     # noinspection PyFinal
     def _prepare_units(self):  # pragma: no cover
@@ -351,19 +378,6 @@ class AresBot(CustomBotAI):
         None
 
         """
-
-        """
-        If playing in realtime, we set the game step to 1 (in on_start) and then
-        manually skip frames. This gives Ares a time limit of 4 frames (45ms per frame)
-        to finish an iteration. Playing every 4th frame seems to be the generally
-        accepted solution to prevent weird things going on. And from Ares' point of
-        view, they have a better chance of running smoothly on older PC's.
-        """
-        if self.realtime and self.last_game_loop + 4 > self.state.game_loop:
-            return
-
-        self.last_game_loop = self.state.game_loop
-
         await self.manager_hub.update_managers(self.actual_iteration)
         if not self.build_order_runner.build_completed:
             await self.build_order_runner.run_build()

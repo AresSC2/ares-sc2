@@ -1,3 +1,4 @@
+import sys
 from dataclasses import dataclass
 from os import path
 
@@ -53,6 +54,16 @@ class ConfigParser:
 
         # there is a user config and internal config, sort out the differences
         return self._merge_config_files(internal_config, user_config)
+
+    def get_resource_path(self, relative_path: str) -> str:
+        """Get absolute path to resource, works for dev and for PyInstaller"""
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = path.abspath(".")
+
+        return path.join(base_path, relative_path)
 
     def _merge_config_files(self, internal_config: dict, user_config: dict) -> dict:
         """
