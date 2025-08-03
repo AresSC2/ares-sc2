@@ -83,7 +83,17 @@ class AresBot(CustomBotAI):
         __ares_config_location__: str = path.realpath(
             path.join(getcwd(), path.dirname(__file__))
         )
-        self.__user_config_location__: str = path.abspath(".")
+        # If running from exe we need path to exe file
+        if getattr(sys, 'frozen', False):
+            # Running as PyInstaller exe
+            # sys.executable = "C:/Users/name/Desktop/mybot.exe"
+            # path.dirname() gives "C:/Users/name/Desktop"
+            self.__user_config_location__ = path.dirname(sys.executable)
+        # Running from source code
+        else:
+            # path.abspath(".") gives current directory
+            self.__user_config_location__ = path.abspath(".")
+
         config_parser: ConfigParser = ConfigParser(
             __ares_config_location__, self.__user_config_location__, CONFIG_FILE
         )
@@ -91,9 +101,9 @@ class AresBot(CustomBotAI):
         self.config = config_parser.parse()
 
         self.game_step_override: Optional[int] = game_step_override
-        self.unit_tag_dict: Dict[int, Unit] = {}
+        self.unit_tag_dict: dict[int, Unit] = {}
         self.chat_debug = None
-        self.forcefield_to_bile_dict: Dict[Point2, int] = {}
+        self.forcefield_to_bile_dict: dict[Point2, int] = {}
         self.last_game_loop: int = -1
 
         # track adept shades as we only add them towards shade completion (160 frames)
