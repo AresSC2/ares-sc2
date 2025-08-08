@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.43.10 (2025-08-08)
+
+### Fix
+
+* Improve flawed burrow check in unit memory manager ([`afa0c89`](https://github.com/AresSC2/ares-sc2/commit/afa0c89552c2bb8288605534285bd3eda8a5d341))
+
 ## v2.43.9 (2025-08-03)
 
 ### Fix
