@@ -5,6 +5,7 @@ from collections import deque
 from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, Tuple, Union
 
 import numpy as np
+from cython_extensions import cy_distance_to
 from sc2.ids.buff_id import BuffId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -167,7 +168,6 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         """
         memory_tags_to_remove: List[int] = []
-        detectors: Optional[Units] = None
         removed_unit_tags: set[int] = self.manager_mediator.manager_request(
             ManagerName.UNIT_CACHE_MANAGER, ManagerRequestType.GET_REMOVED_UNITS
         ).tags
@@ -193,7 +193,6 @@ class UnitMemoryManager(Manager, IManagerMediator):
                 if not self.ai.is_visible(point):
                     visible = False
                     break
-
             expired: bool = self.check_expiration(snap)
             if expired:
                 self.clear_unit_cache(memory_tags_to_remove, unit_tag)
@@ -202,10 +201,8 @@ class UnitMemoryManager(Manager, IManagerMediator):
                 if (
                     snap.type_id in BURROWED_ALIAS or snap.is_burrowed
                 ) and unit_tag not in self._tags_destroyed:
-                    if detectors is None:
-                        detectors = self.ai.all_own_units(detectors)
 
-                    if detectors.closer_than(11, snap.position):
+                    if self.get_is_detected(snap, by_enemy=False):
                         self.clear_unit_cache(memory_tags_to_remove, unit_tag)
                     else:
                         # change snapshot for burrowed units
@@ -551,14 +548,15 @@ class UnitMemoryManager(Manager, IManagerMediator):
                 return True
         return False
 
-    def get_is_detected(self, unit: Unit) -> bool:
+    def get_is_detected(self, unit: Unit | Point2, by_enemy: bool = True) -> bool:
         """Check if the given unit is in range of an enemy detector or has the
         revelation buff.
 
         Parameters
         ----------
         unit :
-            The unit to check.
+            The unit or position to check.
+        by_enemy: bool = True
 
         Returns
         -------
@@ -567,9 +565,34 @@ class UnitMemoryManager(Manager, IManagerMediator):
             buff, False otherwise.
 
         """
-        return self.get_position_in_enemy_detector_range(
-            unit.position
-        ) or unit.has_buff(BuffId.ORACLEREVELATION)
+        is_unit: bool = isinstance(unit, Unit)
+        # quick check and return
+        if is_unit and unit.has_buff(BuffId.ORACLEREVELATION):
+            return True
+        pos: Point2
+        if isinstance(unit, Unit):
+            pos = unit.position
+        else:
+            pos = unit
+        if by_enemy:
+            return self.get_position_in_enemy_detector_range(pos)
+        else:
+            for effect in self.ai.state.effects:
+                if effect.id in DETECTOR_RANGES:
+                    if (
+                        cy_distance_to(pos, effect.positions[0])
+                        < DETECTOR_RANGES[effect.id]
+                    ):
+                        return True
+
+            for unit in self.ai.all_own_units:
+                if unit.type_id in DETECTOR_RANGES:
+                    if (
+                        cy_distance_to(pos, unit.position)
+                        < DETECTOR_RANGES[unit.type_id]
+                    ):
+                        return True
+            return False
 
     def get_own_units_in_enemy_detector_range(self) -> set[int]:
         """Find the tags of friendly units in range of an enemy detector.
