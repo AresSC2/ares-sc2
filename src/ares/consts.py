@@ -441,6 +441,8 @@ class UnitRole(str, Enum):
     BANE_FODDER = "BANE_FODDER"  # units assigned to attack enemy banes
     BUILDING = "BUILDING"  # workers that have been assigned to create a building
     DEFENDING = "DEFENDING"  # units in a combat zone near one of our bases
+    DROPPERLORD_CREEP = "DROPPERLORD_CREEP"  # drops queen to lay creep
+    DROPPERLORD_OFFENSIVE = "DROPPERLORD_OFFENSIVE"  # offenive dropperlord
     DROP_SHIP = "DROP_SHIP"  # medivacs / prism/ dropperlord
     DROP_UNITS_ATTACKING = (
         "DROP_UNITS_ATTACKING"  # units dropped off, that now need to attack
@@ -472,11 +474,13 @@ class UnitRole(str, Enum):
     UNDER_REPAIR = "UNDER_REPAIR"  # units currently under repair
     # queen / creep based roles
     OVERLORD_CREEP_SPOTTER = "OVERLORD_CREEP_SPOTTER"
+    QUEEN_OFFENSIVE_DROPPERLORD = "QUEEN_OFFENSIVE_DROPPERLORD"
     QUEEN_CREEP = "QUEEN_CREEP"
     QUEEN_CREEP_DROPPERLORD = "QUEEN_CREEP_DROPPERLORD"
     QUEEN_DEFENCE = "QUEEN_DEFENCE"
     QUEEN_INJECT = "QUEEN_INJECT"
     QUEEN_NYDUS = "QUEEN_NYDUS"
+    QUEEN_OFFENSIVE = "QUEEN_OFFENSIVE"
     # control groups, use for anything not specified
     CONTROL_GROUP_ONE = "CONTROL_GROUP_ONE"
     CONTROL_GROUP_TWO = "CONTROL_GROUP_TWO"
@@ -647,7 +651,7 @@ CREEP_TUMOR_TYPES: Set[UnitID] = {
     UnitID.CREEPTUMORBURROWED,
 }
 
-DETECTORS: Set[UnitID] = {
+DETECTORS: Set[UnitID | EffectId] = {
     UnitID.OBSERVER,
     UnitID.OBSERVERSIEGEMODE,
     UnitID.PHOTONCANNON,

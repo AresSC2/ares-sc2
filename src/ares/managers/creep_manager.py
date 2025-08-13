@@ -167,7 +167,11 @@ class CreepManager(Manager, IManagerMediator):
             total_pathable_tiles = np.sum(pathable_mask)
 
             # Calculate coverage percentage
-            self._creep_coverage = (pathable_with_creep / total_pathable_tiles) * 100 if total_pathable_tiles > 0 else 0.0
+            self._creep_coverage = (
+                (pathable_with_creep / total_pathable_tiles) * 100
+                if total_pathable_tiles > 0
+                else 0.0
+            )
 
     def _get_closest_creep_tile(self, pos: Point2) -> Point2 | None:
         """Find the closest creep tile to the given position.
