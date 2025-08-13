@@ -327,6 +327,21 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
+    def get_creep_coverage(self) -> float:
+        """
+        How much of the map is covered by creep?
+
+        CreepManager
+
+        Returns:
+            A float between 0.0 and 100.0 indicating the coverage of the map.
+
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER, ManagerRequestType.GET_CREEP_COVERAGE
+        )
+
+    @property
     def get_creep_edges(self) -> tuple[np.ndarray, np.ndarray]:
         """
         Fetches the edges of the detected creep on the map.
@@ -586,6 +601,23 @@ class ManagerMediator(IManagerMediator):
     """
     IntelManager
     """
+
+    @property
+    def get_did_enemy_rush(self) -> bool:
+        """
+        Determines whether the enemy executed a rush strategy based
+        on the intel manager's evaluation.
+
+        WARNING: Super opinionated!
+
+        Returns
+        -------
+        bool
+            True if the enemy performed a rush strategy, otherwise False.
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_DID_ENEMY_RUSH
+        )
 
     @property
     def get_enemy_expanded(self) -> bool:

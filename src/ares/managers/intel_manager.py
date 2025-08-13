@@ -46,6 +46,9 @@ class IntelManager(Manager, IManagerMediator):
         super().__init__(ai, config, mediator)
 
         self.manager_requests_dict = {
+            ManagerRequestType.GET_DID_ENEMY_RUSH: lambda kwargs: (
+                self.get_did_enemy_rush
+            ),
             ManagerRequestType.GET_ENEMY_EXPANDED: lambda kwargs: (
                 self.get_enemy_expanded
             ),
@@ -99,6 +102,8 @@ class IntelManager(Manager, IManagerMediator):
         self.get_enemy_went_marine_rush: bool = False
         self.enemy_went_reaper: bool = False
         self.enemy_worker_rushed: bool = False
+
+        self._enemy_rushed: bool = False
 
     def manager_request(
         self,
@@ -300,6 +305,55 @@ class IntelManager(Manager, IManagerMediator):
             if self.ai.time < 240.0 and num_ravagers > 0:
                 return True
         return False
+
+    @property_cache_once_per_frame
+    def get_did_enemy_rush(self) -> bool:
+        """
+        Evaluates if the enemy executed an early rush strategy based on
+        specific in-game conditions.
+
+        Returns
+        -------
+        bool
+            True if the conditions indicate an enemy rush, otherwise False.
+        """
+        if self._enemy_rushed:
+            return True
+        rush: bool = (
+            self.manager_mediator.get_enemy_ling_rushed
+            or self.manager_mediator.get_enemy_worker_rushed
+            or (
+                self.manager_mediator.get_enemy_marauder_rush
+                and not self.manager_mediator.get_enemy_expanded
+            )
+            or self.manager_mediator.get_is_proxy_zealot
+            or self.manager_mediator.get_enemy_ravager_rush
+            or (
+                self.manager_mediator.get_enemy_went_marine_rush
+                and not self.ai.get_enemy_proxies(
+                    15.0, self.manager_mediator.get_own_nat
+                )
+            )
+            or self.manager_mediator.get_enemy_four_gate
+            or self.manager_mediator.get_enemy_roach_rushed
+            or self.manager_mediator.get_enemy_worker_rushed
+            or (
+                self.ai.time < 240.0
+                and len(self.manager_mediator.get_enemy_army_dict[UnitID.ROACH]) >= 3
+            )
+            or (
+                self.ai.time < 105.0
+                and len(self.manager_mediator.get_enemy_army_dict[UnitID.ZERGLING]) >= 1
+            )
+            # 2+ rax way too fast
+            or (
+                self.ai.time < 120.0
+                and len(self.ai.enemy_structures(UnitID.BARRACKS)) >= 2
+            )
+        )
+        if rush:
+            self._enemy_rushed = True
+        return rush
 
     @property
     def is_proxy_zealot(self) -> bool:

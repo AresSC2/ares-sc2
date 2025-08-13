@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from cython_extensions import cy_distance_to_squared
 from sc2.ids.ability_id import AbilityId
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -42,16 +43,33 @@ class QueenSpreadCreep(CombatIndividualBehavior):
             return KeepUnitSafe(self.unit, grid).execute(ai, config, mediator)
 
         # queen already spreading creep, leave alone
-        if spreading:
+        if (
+            spreading
+            and ai.state.creep[self.unit.order_target.rounded] == 1
+            and not [
+                u
+                for u in mediator.get_own_structures_dict[UnitID.CREEPTUMORQUEEN]
+                if cy_distance_to_squared(self.unit.order_target, u.position) < 3.0
+            ]
+        ):
             return True
-        can_spread: bool = AbilityId.BUILD_CREEPTUMOR_QUEEN in self.unit.abilities
-        if can_spread or (self.pre_move_queen_to_tumor and self.unit.is_idle):
-            if tumor_placement := mediator.get_next_tumor_on_path(
-                grid=grid,
-                from_pos=self.start,
-                to_pos=self.target,
-                find_alternative=can_spread,
-            ):
+
+        if tumor_placement := mediator.get_next_tumor_on_path(
+            grid=grid,
+            from_pos=self.start,
+            to_pos=self.target,
+            find_alternative=True,
+        ):
+            can_spread: bool = (
+                AbilityId.BUILD_CREEPTUMOR_QUEEN in self.unit.abilities
+                and (
+                    cy_distance_to_squared(self.unit.position, tumor_placement) < 9.0
+                    or not self.pre_move_queen_to_tumor
+                )
+            )
+
+            if can_spread or (self.pre_move_queen_to_tumor and self.unit.is_idle):
+
                 if can_spread:
                     self.unit(AbilityId.BUILD_CREEPTUMOR_QUEEN, tumor_placement)
                     return True

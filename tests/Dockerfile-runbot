@@ -6,19 +6,15 @@ WORKDIR /root/
 
 RUN dpkg --add-architecture i386
 
-# Update system
-RUN apt-get update && apt-get upgrade --assume-yes --quiet=2
-RUN apt-get install --assume-yes --no-install-recommends --no-show-upgraded \
+# Configure apt and install packages
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update -y && \
+    apt-get install -y apt-utils && \
+    apt-get upgrade -y --quiet=2 && \
+    apt-get install -y --no-install-recommends \
     wget \
-    unzip
-
-# Download and uncompress StarCraftII from https://github.com/Blizzard/s2client-proto#linux-packages and remove zip file
-RUN wget -q 'http://blzdistsc2-a.akamaihd.net/Linux/SC2.4.10.zip' \
-    && unzip -P iagreetotheeula SC2.4.10.zip \
-    && rm SC2.4.10.zip
-
-# Install common software via APT
-RUN apt-get install --assume-yes --no-install-recommends --no-show-upgraded \
+    unzip \
     git  \
     make \
     gcc \
@@ -28,13 +24,16 @@ RUN apt-get install --assume-yes --no-install-recommends --no-show-upgraded \
     lsof \
     apt-transport-https \
     libgtk2.0-dev \
-    software-properties-common \
     dirmngr \
     gpg-agent \
-    g++
+    g++ && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# Update APT cache
-RUN apt-get update
+# Download and uncompress StarCraftII from https://github.com/Blizzard/s2client-proto#linux-packages
+RUN wget -q 'http://blzdistsc2-a.akamaihd.net/Linux/SC2.4.10.zip' \
+    && unzip -P iagreetotheeula SC2.4.10.zip \
+    && rm SC2.4.10.zip
 
 # Upgrade pip and install pip-install requirements
 RUN python3 -m pip install --upgrade pip pipenv
@@ -52,6 +51,5 @@ WORKDIR /root/ares-sc2
 RUN mv tests/maps/* ~/StarCraftII/maps
 
 RUN poetry install
-
 
 ENTRYPOINT [ "/bin/bash" ]
