@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.44.0 (2025-08-13)
+
+### Feature
+
+* Improve queen spreading creep behavior ([`8053451`](https://github.com/AresSC2/ares-sc2/commit/8053451ced4e77f79195f2c8d73bce366cd2c4a7))
+* Add opinionated did enemy rush method with mediator access ([`d507be4`](https://github.com/AresSC2/ares-sc2/commit/d507be4bd31b574da57cd7dd5523ffb5d918a6ea))
+* Add creep coverage with mediator access ([`0730c01`](https://github.com/AresSC2/ares-sc2/commit/0730c0191fa12cdc9b89107331f0242af17543e0))
+
 ## v2.43.10 (2025-08-08)
 
 ### Fix
