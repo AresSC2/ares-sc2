@@ -603,6 +603,23 @@ class ManagerMediator(IManagerMediator):
     """
 
     @property
+    def get_did_enemy_rush(self) -> bool:
+        """
+        Determines whether the enemy executed a rush strategy based
+        on the intel manager's evaluation.
+
+        WARNING: Super opinionated!
+
+        Returns
+        -------
+        bool
+            True if the enemy performed a rush strategy, otherwise False.
+        """
+        return self.manager_request(
+            ManagerName.INTEL_MANAGER, ManagerRequestType.GET_DID_ENEMY_RUSH
+        )
+
+    @property
     def get_enemy_expanded(self) -> bool:
         """Has the enemy expanded?
 
