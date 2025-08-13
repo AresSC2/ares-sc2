@@ -24,7 +24,6 @@ RUN apt-get clean && \
     lsof \
     apt-transport-https \
     libgtk2.0-dev \
-    software-properties-common \
     dirmngr \
     gpg-agent \
     g++ && \
