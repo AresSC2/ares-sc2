@@ -327,6 +327,21 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
+    def get_creep_coverage(self) -> float:
+        """
+        How much of the map is covered by creep?
+
+        CreepManager
+
+        Returns:
+            A float between 0.0 and 100.0 indicating the coverage of the map.
+
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER, ManagerRequestType.GET_CREEP_COVERAGE
+        )
+
+    @property
     def get_creep_edges(self) -> tuple[np.ndarray, np.ndarray]:
         """
         Fetches the edges of the detected creep on the map.

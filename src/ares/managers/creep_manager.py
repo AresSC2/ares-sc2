@@ -24,6 +24,7 @@ class CreepManager(Manager, IManagerMediator):
 
     def __init__(self, ai, config: dict, mediator: ManagerMediator) -> None:
         super().__init__(ai, config, mediator)
+        self._creep_coverage: float = 0.0
         self._overlord_spotter_dict: dict[int:Point2] = dict()
         self._setup_overlord_spotter_dict: bool = False
         self.manager_requests_dict = {
@@ -33,6 +34,7 @@ class CreepManager(Manager, IManagerMediator):
             ManagerRequestType.GET_CLOSEST_CREEP_TILE: (
                 lambda kwargs: self._get_closest_creep_tile(**kwargs)
             ),
+            ManagerRequestType.GET_CREEP_COVERAGE: lambda kwargs: self._creep_coverage,
             ManagerRequestType.GET_CREEP_EDGES: lambda kwargs: self.get_creep_edges,
             ManagerRequestType.GET_CREEP_GRID: lambda kwargs: self.get_creep_grid,
             ManagerRequestType.GET_CREEP_TILES: lambda kwargs: self.get_creep_tiles,
@@ -151,7 +153,21 @@ class CreepManager(Manager, IManagerMediator):
         return tumor_influence_grid
 
     async def update(self, iteration: int) -> None:
-        pass
+        # once every 5 seconds, calculate creep coverage
+        if self.ai.state.game_loop % 112 == 0:
+            # Get the creep and pathing grids
+            creep_grid = self.get_creep_grid.T
+            pathing_grid = self.manager_mediator.get_ground_grid
+
+            # Create a mask of pathable terrain (where pathing_grid is not np.inf)
+            pathable_mask = ~np.isinf(pathing_grid)
+
+            # Count pathable tiles with creep and total pathable tiles
+            pathable_with_creep = np.sum((creep_grid == 1) & pathable_mask)
+            total_pathable_tiles = np.sum(pathable_mask)
+
+            # Calculate coverage percentage
+            self._creep_coverage = (pathable_with_creep / total_pathable_tiles) * 100 if total_pathable_tiles > 0 else 0.0
 
     def _get_closest_creep_tile(self, pos: Point2) -> Point2 | None:
         """Find the closest creep tile to the given position.
