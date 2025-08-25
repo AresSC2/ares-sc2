@@ -60,6 +60,9 @@ class UnitMemoryManager(Manager, IManagerMediator):
         super(UnitMemoryManager, self).__init__(ai, config, mediator)
         self.manager_requests_dict = {
             ManagerRequestType.GET_ALL_ENEMY: lambda kwargs: self.all_enemies,
+            ManagerRequestType.GET_ANY_ENEMY_IN_RANGE: (
+                lambda kwargs: self.any_enemies_in_range(**kwargs)
+            ),
             ManagerRequestType.GET_ENEMY_GROUND: lambda kwargs: self.enemy_ground,
             ManagerRequestType.GET_ENEMY_FLIERS: lambda kwargs: self.enemy_fliers,
             ManagerRequestType.GET_ENEMY_TREE: lambda kwargs: self.enemy_tree,
@@ -501,13 +504,13 @@ class UnitMemoryManager(Manager, IManagerMediator):
             raise ValueError(f"Unsupported query type: {requested_query_type}")
 
     def any_enemies_in_range(
-        self, pos: Union[List[Point2], List[List[float]]], radius: float
+        self, positions: Union[List[Point2], List[List[float]]], radius: float
     ) -> List[bool]:
         """Check if any enemies are in range of a list of points.
 
         Parameters
         ----------
-        pos :
+        positions :
             Positions to check if there are enemy units in range of.
         radius :
             How far away from each point to check for enemy units.
@@ -519,7 +522,11 @@ class UnitMemoryManager(Manager, IManagerMediator):
             units are present within radius.
 
         """
-        enemies_in_range = self.enemy_tree.query_ball_point(pos, radius)
+        # this happens if no enemy have been found yet
+        if not self.enemy_tree:
+            return [False for _ in positions]
+
+        enemies_in_range = self.enemy_tree.query_ball_point(positions, radius)
 
         return [np.any(result) for result in enemies_in_range]
 

@@ -82,9 +82,6 @@ class ProductionController(MacroBehavior):
     max_production_structures: int = 12
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        assert (
-            ai.race != Race.Zerg
-        ), "ProductionController behavior is for Protoss and Terran only"
         if ai.race == Race.Protoss and self.should_repower_structures:
             if RestorePower().execute(ai, config, mediator):
                 return True
