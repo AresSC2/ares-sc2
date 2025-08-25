@@ -56,14 +56,14 @@ class PathManager(Manager, IManagerMediator):
         super().__init__(ai, config, mediator)
         self.debug: bool = self.config[DEBUG]
 
-        self.whole_map: List[List[int]] = [
+        self.whole_map: list[list[int]] = [
             [x, y]
             for x in range(self.ai.game_info.map_size[0])
             for y in range(self.ai.game_info.map_size[1])
         ]
         self.whole_map_tree: KDTree = KDTree(self.whole_map)
         # vague attempt at not recalculating np.argwhere for danger tiles
-        self.calculated_danger_tiles: List[Dict[str, Union[np.ndarray, int]]] = []
+        self.calculated_danger_tiles: list[dict[str, Union[np.ndarray, int]]] = []
 
         self.manager_requests_dict = {
             ManagerRequestType.FIND_LOW_PRIORITY_PATH: lambda kwargs: (
@@ -83,6 +83,9 @@ class PathManager(Manager, IManagerMediator):
             ),
             ManagerRequestType.GET_WHOLE_MAP_ARRAY: lambda kwargs: self.whole_map,
             ManagerRequestType.GET_WHOLE_MAP_TREE: lambda kwargs: self.whole_map_tree,
+            ManagerRequestType.NYDUS_PATH_NEXT_POINT: lambda kwargs: (
+                self.find_nydus_path_next_point(**kwargs)
+            ),
             ManagerRequestType.PATH_NEXT_POINT: lambda kwargs: (
                 self.find_path_next_point(**kwargs)
             ),
@@ -315,6 +318,34 @@ class PathManager(Manager, IManagerMediator):
             return target
         else:
             return path[0]
+
+    def find_nydus_path_next_point(
+        self,
+        start: Point2,
+        target: Point2,
+        grid: np.ndarray,
+        large: bool = False,
+        sensitivity: int = 5,
+        smoothing: bool = False,
+    ) -> tuple[Point2 | None, Point2 | None, list[int] | None]:
+        """Use Nydus pathfinding."""
+        next_point, exit_towards = None, None
+        result = self.map_data.pathfind_with_nyduses(
+            start, target, grid, large, smoothing, sensitivity
+        )
+        if result:
+            paths, nydus_tags = result
+        else:
+            return next_point, exit_towards, None
+
+        if paths:
+            if not paths[0] or len(paths[0][0]) == 0:
+                next_point = target
+            else:
+                next_point = paths[0][0]
+                if len(paths) == 2:
+                    exit_towards = paths[1][1]
+        return next_point, exit_towards, nydus_tags
 
     def raw_pathfind(
         self, start: Point2, target: Point2, grid: np.ndarray, sensitivity: int
