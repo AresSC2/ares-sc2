@@ -430,7 +430,7 @@ class CreepManager(Manager, IManagerMediator):
             # keep the overlord where it is if close
             if (
                 not closest_overlord.is_moving
-                and cy_distance_to_squared(closest_overlord.position, position) < 25.0
+                and cy_distance_to_squared(closest_overlord.position, position) < 81.0
             ):
                 final_position = closest_overlord.position
 

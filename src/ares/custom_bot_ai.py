@@ -317,7 +317,7 @@ class CustomBotAI(BotAI):
         )
 
     async def unload_by_tag(
-        self, container: Unit, unit_tag: int
+        self, container: Unit, unit_tag: int, exit_towards: Point2 | None = None
     ) -> None:  # pragma: no cover
         """Unload a unit from a container based on its tag. Thanks, Sasha!"""
         index: int = 0
@@ -333,7 +333,21 @@ class CustomBotAI(BotAI):
                 logger.warning(f"Can't find passenger {unit_tag}")
                 return
 
-        await self.unload_container(container, index)
+        await self.unload_container(container.tag, index)
+
+        if exit_towards and container.type_id in {
+            UnitID.NYDUSCANAL,
+            UnitID.NYDUSNETWORK,
+        }:
+            # by the time this is called, CustomBotAI will have manager_hub
+            # noinspection PyUnresolvedReferences
+            container(
+                AbilityId.RALLY_BUILDING,
+                exit_towards,
+            )
+            # by the time this is called, CustomBotAI will have manager_hub
+            # noinspection PyUnresolvedReferences
+            self.mediator.remove_from_nydus_travellers(unit_tag=unit_tag)
 
     async def unload_container(
         self, container_tag: int, index: int = 0

@@ -356,6 +356,13 @@ class BuildOrderRunner:
                 self.current_step_started = True
                 self.ai.research(command)
 
+            elif command == AbilityId.CANCEL_BUILDINPROGRESS:
+                if unfinished_gas := [
+                    g for g in self.ai.gas_buildings if g.build_progress < 1.0
+                ]:
+                    unfinished_gas[0](AbilityId.CANCEL_BUILDINPROGRESS)
+                    self.current_step_started = True
+
             elif command == AbilityId.EFFECT_CHRONOBOOST:
                 if chrono_target := self.get_structure(step.target):
                     if available_nexuses := [
@@ -514,7 +521,21 @@ class BuildOrderRunner:
                 return cy_closest_to(self.ai.start_location, any_other_geysers)
 
         elif structure_type == self.ai.base_townhall_type:
-            return await self.ai.get_next_expansion()
+            if (
+                self.ai.race == Race.Zerg
+                and len(self.ai.townhalls) == 2
+                and not [
+                    th
+                    for th in self.ai.townhalls
+                    if cy_distance_to_squared(
+                        th.position, self.mediator.get_defensive_third
+                    )
+                    < 144.0
+                ]
+            ):
+                return self.mediator.get_defensive_third
+            else:
+                return await self.ai.get_next_expansion()
         elif self.ai.race != Race.Zerg:
             within_psionic_matrix: bool = (
                 self.ai.race == Race.Protoss

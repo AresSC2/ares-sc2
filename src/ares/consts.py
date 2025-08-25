@@ -125,6 +125,11 @@ BANNED_PHRASES: List[str] = [
 ]  #: UnitTypeIds with these words in them have Cost issues
 SHADE_DURATION: int = 160  #: how long a Shade lasts in frames
 
+# nydus
+ENTRY: str = "entry"
+EXIT: str = "exit"
+EXIT_TOWARDS: str = "exit_towards"  # use this point to set rally
+UNIT_TYPE: str = "unit_type"
 
 # pathing manager
 AIR_VS_GROUND_DEFAULT: int = 10
@@ -172,6 +177,7 @@ class BuildingSize(str, Enum):
 
 class BuildOrderOptions(str, Enum):
     ADDONSWAP = "ADDONSWAP"
+    CANCEL_GAS = "CANCEL_GAS"
     CHRONO = "CHRONO"
     CORE = "CORE"
     GAS = "GAS"
@@ -301,6 +307,17 @@ class ManagerRequestType(str, Enum):
     GET_ENEMY_WORKER_RUSHED = "GET_ENEMY_WORKER_RUSHED"
     GET_IS_PROXY_ZEALOT = "GET_IS_PROXY_ZEALOT"
 
+    # NydusManager
+    FIND_NYDUS_AT_LOCATION = "FIND_NYDUS_AT_LOCATION"
+    GET_BANNED_NYDUS_TRAVELLERS = "GET_BANNED_NYDUS_TRAVELLERS"
+    GET_ENEMY_MAIN_NYDUS_POINTS = "GET_ENEMY_MAIN_NYDUS_POINTS"
+    GET_PRIMARY_NYDUS_ENEMY_MAIN = "GET_PRIMARY_ENEMY_NYDUS_MAIN"
+    GET_PRIMARY_NYDUS_OWN_MAIN = "GET_PRIMARY_ENEMY_OWN_MAIN"
+    ADD_TO_NYDUS_TRAVELLERS = "ADD_TO_NYDUS_TRAVELLERS"
+    CLEAR_NYDUS_TRAVELLERS = "CLEAR_NYDUS_TRAVELLERS"
+    GET_NYDUS_TRAVELLERS = "GET_NYDUS_TRAVELLERS"
+    REMOVE_FROM_NYDUS_TRAVELLERS = "REMOVE_FROM_NYDUS_TRAVELLERS"
+
     # PathManager
     FIND_LOW_PRIORITY_PATH = "FIND_LOW_PRIORITY_PATH"
     FIND_LOWEST_COST_POINTS = "FIND_LOWEST_COST_POINTS"
@@ -323,6 +340,7 @@ class ManagerRequestType(str, Enum):
     IS_POSITION_SAFE = "IS_POSITION_SAFE"
     NEIGHBOURING_TILES_ARE_INPATHABLE = "NEIGHBOURING_TILES_ARE_INPATHABLE"
     PATH_NEXT_POINT = "PATH_NEXT_POINT"
+    NYDUS_PATH_NEXT_POINT = "NYDUS_PATH_NEXT_POINT"
 
     # PlacementManager
     CAN_PLACE_STRUCTURE = "CAN_PLACE_STRUCTURE"
@@ -386,6 +404,7 @@ class ManagerRequestType(str, Enum):
 
     # UnitMemoryManager
     GET_ALL_ENEMY = "GET_ALL_ENEMY"
+    GET_ANY_ENEMY_IN_RANGE = "GET_ANY_ENEMY_IN_RANGE"
     GET_ENEMY_GROUND = "GET_ENEMY_GROUND"
     GET_ENEMY_FLIERS = "GET_ENEMY_FLIERS"
     GET_ENEMY_TREE = "GET_ENEMY_TREE"
@@ -416,6 +435,7 @@ class ManagerName(str, Enum):
     FLYING_STRUCTURE_MANAGER = "FlyingStructureManager"
     GRID_MANAGER = "GridManager"
     INTEL_MANAGER = "IntelManager"
+    NYDUS_MANAGER = "NydusManager"
     PATH_MANAGER = "PathManager"
     PLACEMENT_MANAGER = "PlacementManager"
     RESOURCE_MANAGER = "ResourceManager"
@@ -464,6 +484,7 @@ class UnitRole(str, Enum):
     IDLE = "IDLE"  # not doing anything
     MAP_CONTROL = "MAP_CONTROL"  # units controlling the map (lings/hellions?)
     MORPHING = "MORPHING"  # units currently morphing
+    NYDUS_SPOTTER = "NYDUS_SPOTTER"
     OFFENSIVE_REPAIR = "OFFENSIVE_REPAIR"  # with the main force
     OVERLORD_HUNTER = "OVERLORD_HUNTER"  # units looking for overlords
     PERSISTENT_BUILDER = "PERSISTENT_BUILDER"  # does not get reassigned automatically
@@ -759,6 +780,17 @@ TOWNHALL_TYPES: Set[UnitID] = {
     UnitID.ORBITALCOMMAND,
     UnitID.ORBITALCOMMANDFLYING,
     UnitID.PLANETARYFORTRESS,
+    UnitID.NEXUS,
+}
+
+TOWNHALL_TYPES_NO_PF: Set[UnitID] = {
+    UnitID.HATCHERY,
+    UnitID.LAIR,
+    UnitID.HIVE,
+    UnitID.COMMANDCENTER,
+    UnitID.COMMANDCENTERFLYING,
+    UnitID.ORBITALCOMMAND,
+    UnitID.ORBITALCOMMANDFLYING,
     UnitID.NEXUS,
 }
 

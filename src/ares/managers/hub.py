@@ -18,6 +18,7 @@ from ares.managers.flying_structure_manager import FlyingStructureManager
 from ares.managers.grid_manager import GridManager
 from ares.managers.intel_manager import IntelManager
 from ares.managers.manager_mediator import ManagerMediator
+from ares.managers.nydus_manager import NydusManager
 from ares.managers.path_manager import PathManager
 from ares.managers.placement_manager import PlacementManager
 from ares.managers.resource_manager import ResourceManager
@@ -176,6 +177,9 @@ class Hub:
         self.creep_manager: CreepManager = CreepManager(
             ai, config, self.manager_mediator
         )
+        self.nydus_manager: NydusManager = NydusManager(
+            ai, config, self.manager_mediator
+        )
 
         # in order of priority
         self.managers: list["Manager"] = [
@@ -197,6 +201,7 @@ class Hub:
             self.flying_structures_manager,
             self.squad_manager,
             self.creep_manager,
+            self.nydus_manager,
         ]
 
         if additional_managers:
@@ -239,6 +244,7 @@ class Hub:
         self.resource_manager.on_unit_destroyed(unit_tag)
         self.placement_manager.on_building_destroyed(unit_tag)
         # self.building_manager.remove_unit(unit_tag)
+        self.nydus_manager.remove_destroyed_nydus(unit_tag)
 
     def on_game_end(self, result: Union[Result, str]) -> None:
         """Store data from the completed game.

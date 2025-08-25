@@ -901,6 +901,166 @@ class ManagerMediator(IManagerMediator):
         )
 
     """
+    NydusManager
+    """
+
+    def add_to_nydus_travellers(self, **kwargs) -> None:
+        """Add a unit to the nydus travellers.
+
+        NydusManager
+
+        Parameters:
+            unit: Unit
+                The unit to be added to the nydus travellers.
+            entry_nydus_tag: int
+                The tag of the nydus we are entering.
+            exit_nydus_tag: int
+                The tag of the nydus we are exiting.
+            exit_towards: Point2
+                The direction out of the exit nydus.
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER,
+            ManagerRequestType.ADD_TO_NYDUS_TRAVELLERS,
+            **kwargs,
+        )
+
+    def clear_nydus_travellers(self, **kwargs) -> None:
+        """Clear the nydus travellers dictionary.
+
+        NydusManager
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER,
+            ManagerRequestType.CLEAR_NYDUS_TRAVELLERS,
+            **kwargs,
+        )
+
+    def find_nydus_at_location(self, **kwargs) -> Point2 | None:
+        """Given a location, find a potential nydus canal placement.
+        Tries to avoid enemy visibility.
+        Prioritizes locations that are already visible.
+        Passing in a base location is recommended. But any position should work.
+
+        WARNING: This only gives an idea where to place a nydus canal.
+            You still need to calculate a valid building placement, which might
+            mean the actual valid canal location is slightly different.
+
+        WARNING: This calculates placements out of vision if needed, so you
+            may need to send a scout before the canal can be placed.
+
+        Find a Nydus position with pathing cost less than max_cost in a region
+        containing the given point, at least min_distance from an enemy base and
+        no more than max_distance from the target point.
+
+        NydusManager
+
+        Parameters:
+            base_location: Point2
+            min_base_distance: float
+            max_nydus_distance: float
+            max_cost: int
+
+        Returns:
+            May return a location to be used for a nydus canal.
+            Could return None.
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER,
+            ManagerRequestType.FIND_NYDUS_AT_LOCATION,
+            **kwargs,
+        )
+
+    @property
+    def get_banned_nydus_travellers(self, **kwargs) -> dict[int, float]:
+        """Get the nydus travellers dictionary.
+
+        NydusManager
+
+        Returns:
+            Dictionary where key is unit tag, and value is info
+            about the nydus travellers.
+
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER,
+            ManagerRequestType.GET_BANNED_NYDUS_TRAVELLERS,
+            **kwargs,
+        )
+
+    @property
+    def get_nydus_travellers_dict(self, **kwargs) -> None:
+        """Get the nydus travellers dictionary.
+
+        NydusManager
+
+        Returns:
+            Dictionary where key is unit tag, and value is info
+            about the nydus travellers.
+
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER, ManagerRequestType.GET_NYDUS_TRAVELLERS, **kwargs
+        )
+
+    def remove_from_nydus_travellers(self, **kwargs) -> None:
+        """Remove a unit from the nydus travellers dictionary.
+
+        NydusManager
+
+        Parameters:
+            unit_tag: int
+                The unit tag to be removed from the nydus travellers.
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER,
+            ManagerRequestType.REMOVE_FROM_NYDUS_TRAVELLERS,
+            **kwargs,
+        )
+
+    @property
+    def get_enemy_main_nydus_points(self) -> Point2:
+        """Get the optimal position for a nydus in enemy main,
+        considering distance from base and ramp.
+
+        NydusManager
+
+        Returns:
+            Potential nydus position.
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER, ManagerRequestType.GET_ENEMY_MAIN_NYDUS_POINTS
+        )
+
+    @property
+    def get_primary_nydus_enemy_main(self) -> Point2:
+        """Get the optimal position for a nydus in enemy main,
+        considering distance from base and ramp.
+
+        Nydus Manager
+
+        Returns:
+            Potential nydus position.
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER, ManagerRequestType.GET_PRIMARY_NYDUS_ENEMY_MAIN
+        )
+
+    @property
+    def get_primary_nydus_own_main(self) -> Point2:
+        """Get the optimal position for a nydus in own main.
+        Could be useful scouting position.
+
+        Nydus Manager
+
+        Returns:
+            Potential nydus position.
+        """
+        return self.manager_request(
+            ManagerName.NYDUS_MANAGER, ManagerRequestType.GET_PRIMARY_NYDUS_OWN_MAIN
+        )
+
+    """
     ResourceManager
     """
 
@@ -1089,6 +1249,41 @@ class ManagerMediator(IManagerMediator):
         """
         return self.manager_request(
             ManagerName.PATH_MANAGER, ManagerRequestType.PATH_NEXT_POINT, **kwargs
+        )
+
+    def find_nydus_path_next_point(
+        self, **kwargs
+    ) -> tuple[Point2 | None, Point2 | None, list[int] | None]:
+        """Find the next point in a path including via nyduses.
+
+        Parameters:
+            start (Point2): Start point of the path.
+            target (Point2): Desired end point of the path.
+            grid (np.ndarray): The grid that should be used for pathing.
+            sensitivity (int, optional): Amount of points that should be
+                skipped in the full path between tiles that are returned.
+                Default value is 5.
+            smoothing (bool, optional): Optional path smoothing where nodes are
+                removed if it's possible to jump ahead some tiles in
+                a straight line with a lower cost.
+                Default value is False.
+            sense_danger (bool, optional): Check to see if there are any
+                dangerous tiles near the starting point. If this is True and
+                there are no dangerous tiles near the starting point,
+                the pathing query is skipped and the target is returned.
+                Default value is True.
+            danger_distance (float, optional): How far away from the
+                start to look for danger.
+                Default value is 20.
+            danger_threshold (float, optional): Minimum value for a tile
+                to be considered dangerous.
+                Default value is 5.
+
+        Returns:
+            Tuple of (next_point, nydus_next_point, nydus_points)
+        """
+        return self.manager_request(
+            ManagerName.PATH_MANAGER, ManagerRequestType.NYDUS_PATH_NEXT_POINT, **kwargs
         )
 
     def find_raw_path(self, **kwargs) -> list[Point2]:
@@ -2081,7 +2276,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_structures_dict(self) -> DefaultDict[UnitID, Units]:
+    def get_own_structures_dict(self) -> DefaultDict[UnitID, list[Unit]]:
         """Get the dictionary of own structure types to the units themselves.
 
         UnitCacheManager
@@ -2153,6 +2348,25 @@ class ManagerMediator(IManagerMediator):
         """
         return self.manager_request(
             ManagerName.UNIT_MEMORY_MANAGER, ManagerRequestType.GET_ALL_ENEMY
+        )
+
+    def get_any_enemies_in_range(self, **kwargs) -> Units:
+        """Check various positions for any enemy units in range.
+
+        UnitMemoryManager
+
+        Parameters:
+            positions: Point2
+            radius: float
+
+        Returns:
+            list of bool for each position
+            True would mean something is there
+        """
+        return self.manager_request(
+            ManagerName.UNIT_MEMORY_MANAGER,
+            ManagerRequestType.GET_ANY_ENEMY_IN_RANGE,
+            **kwargs,
         )
 
     @property
