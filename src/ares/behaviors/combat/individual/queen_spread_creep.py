@@ -20,6 +20,14 @@ class QueenSpreadCreep(CombatIndividualBehavior):
     """Attempt to spread creep along a path, from
     `start` to `target`.
 
+    Example:
+    ```py
+    from ares.behaviors.combat.individual import QueenSpreadCreep
+
+    target: Point2 = self.ai.enemy_start_locations[0]
+    self.register_behavior(QueenSpreadCreep(queen, queen.position, target))
+    ```
+
     Attributes:
         unit: Unit
         start: Where we are starting creep from.

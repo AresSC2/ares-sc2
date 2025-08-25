@@ -17,9 +17,23 @@ class TumorSpreadCreep(CombatIndividualBehavior):
     """Coordinate tumor spread behavior for creep expansion.
 
     Strategy:
+
     1. Try to spread directly to creep edge if within range
+
     2. If no edges in range, spread in direction furthest from existing tumors
+
     3. If all else fails, spread to random position within range
+
+    Example:
+    ```py
+    from ares.behaviors.combat.individual import TumorSpreadCreep
+
+    tumors: Units = self.mediator.get_own_structures_dict[UnitID.CREEPTUMORBURROWED]
+    for tumor in tumors:
+        self.register_behavior(
+            TumorSpreadCreep(tumor, self.enemy_start_locations[0])
+        )
+    ```
 
     Attributes:
         unit (Unit): The tumor unit executing the tumor creep spread.
