@@ -19,7 +19,12 @@ if TYPE_CHECKING:
     from ares import AresBot
 
 from ares.build_runner.build_order_step import BuildOrderStep
-from ares.consts import ALL_STRUCTURES, BuildOrderOptions, BuildOrderTargetOptions
+from ares.consts import (
+    ALL_STRUCTURES,
+    TOWNHALL_TYPES,
+    BuildOrderOptions,
+    BuildOrderTargetOptions,
+)
 
 
 @dataclass
@@ -75,8 +80,15 @@ class BuildOrderParser:
             A dictionary of `BuildOrderStep` objects representing the recognized
             build order commands.
         """
-        min_minerals_for_expand: int = 185 if self.ai.race == Race.Zerg else 285
+        min_minerals_for_expand: int = 135 if self.ai.race == Race.Zerg else 285
         return {
+            BuildOrderOptions.CANCEL_GAS: lambda: BuildOrderStep(
+                command=AbilityId.CANCEL_BUILDINPROGRESS,
+                start_condition=lambda: lambda: any(
+                    [g for g in self.ai.gas_buildings if g.build_progress < 1.0]
+                ),
+                end_condition=lambda: True,
+            ),
             BuildOrderOptions.CHRONO: lambda: BuildOrderStep(
                 command=AbilityId.EFFECT_CHRONOBOOST,
                 start_condition=lambda: lambda: any(
@@ -157,9 +169,10 @@ class BuildOrderParser:
             A new build step to put in a build order.
         """
         cost: Cost = self.ai.calculate_cost(structure_id)
+        _mineral: int = 105 if structure_id in TOWNHALL_TYPES else 75
         return lambda: BuildOrderStep(
             command=structure_id,
-            start_condition=lambda: self.ai.minerals >= cost.minerals - 75
+            start_condition=lambda: self.ai.minerals >= cost.minerals - _mineral
             and self.ai.vespene >= cost.vespene - 25,
             # set via on_structure_started hook
             end_condition=lambda: False,
