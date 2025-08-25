@@ -2,6 +2,24 @@
 
 <!--next-version-placeholder-->
 
+## v2.45.0 (2025-08-25)
+
+### Feature
+
+* Implement NydusPathUnitToTarget behavior ([`20b20ca`](https://github.com/AresSC2/ares-sc2/commit/20b20ca86cf20912545e436a119ac3948769b9ba))
+* Add Nydus pathfinding support to PathManager ([`fcd0018`](https://github.com/AresSC2/ares-sc2/commit/fcd00183128b1bc5ea05384bfff1fadfddfda20b))
+* Integrate nydus management functionalities ([`9df8dfd`](https://github.com/AresSC2/ares-sc2/commit/9df8dfd456fb23c07396d1adf46bd27b529eb405))
+* Add cancel gas build order option ([`03d0925`](https://github.com/AresSC2/ares-sc2/commit/03d09256af6e1a3c2a885acfb207da8450511b57))
+
+### Fix
+
+* Prevent nydus manager in arcade mode ([`64eebc8`](https://github.com/AresSC2/ares-sc2/commit/64eebc8a06c7e28062d023424f79fccd29289ca0))
+* Adjust overlord distance threshold in creep manager ([`c535722`](https://github.com/AresSC2/ares-sc2/commit/c535722e588e5301c582b56dc4a4ed37126a5c7c))
+
+### Documentation
+
+* Add missing auto docs behaviors ([`e71cb2c`](https://github.com/AresSC2/ares-sc2/commit/e71cb2c0c253ba2aa21d69f497f5a031fcd1ce01))
+
 ## v2.44.0 (2025-08-13)
 
 ### Feature
