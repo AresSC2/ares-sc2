@@ -35,12 +35,12 @@ class UpgradeCCs(MacroBehavior):
             we can't afford it yet, this behavior will return True
             This is useful in a MacroPlan as it will prevent other
             spending actions occurring.
-            Default is True
+            Default is False
 
     """
 
     to: UnitID
-    prioritize: bool = True
+    prioritize: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         ccs: list[Unit] = [
@@ -63,14 +63,14 @@ class UpgradeCCs(MacroBehavior):
         if not can_afford and self.prioritize:
             return True
 
-        abilitiy: AbilityId = (
+        ability: AbilityId = (
             AbilityId.UPGRADETOPLANETARYFORTRESS_PLANETARYFORTRESS
             if self.to == UnitID.PLANETARYFORTRESS
             else AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND
         )
-        # we know there are ccs and we can afford the upgrade
+        # we know there are ccs, and we can afford the upgrade
         for cc in ccs:
-            cc(abilitiy)
+            cc(ability)
             return True
 
         return False

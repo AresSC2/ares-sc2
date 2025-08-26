@@ -20,7 +20,6 @@ class MacroPlan(Behavior):
     from ares.behaviors.macro import MacroPlan
     from ares.behaviors.macro import (
         AutoSupply,
-        Mining
         SpawnController
     )
 

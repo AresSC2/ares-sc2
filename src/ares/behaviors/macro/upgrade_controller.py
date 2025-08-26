@@ -47,12 +47,19 @@ class UpgradeController(MacroBehavior):
     Attributes:
         upgrade_list: List of desired upgrades.
         base_location: Location to build upgrade buildings.
+        auto_tech_up_enabled: bool
+        prioritize: If True and there is an Upgrade ready to go, but
+            we can't afford it yet, this behavior will return True.
+            This is useful in a MacroPlan as it will prevent other
+            spending actions occurring.
+            Default is False
 
     """
 
     upgrade_list: list[UpgradeId]
     base_location: Point2
     auto_tech_up_enabled: bool = True
+    prioritize: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         for upgrade in self.upgrade_list:
@@ -87,20 +94,29 @@ class UpgradeController(MacroBehavior):
                     and s.is_idle
                     and (not ai.race == Race.Protoss or s.is_powered)
                 ]
-                if idle and ai.can_afford(upgrade):
+                if idle:
                     building: Unit = idle[0]
                     research_info: dict = RESEARCH_INFO[researched_from_id][upgrade]
                     ability: AbilityId = research_info["ability"]
                     if ability in building.abilities:
-                        building.research(upgrade)
-                        logger.info(f"{ai.time_formatted}: Researching {upgrade}")
-                        return True
+                        if ai.can_afford(upgrade):
+                            building.research(upgrade)
+                            logger.info(f"{ai.time_formatted}: Researching {upgrade}")
+                            return True
+                        # can't afford it yet, but we want to prioritize
+                        # the upgrade, so return True
+                        elif self.prioritize:
+                            logger.info(f"Prioritizing upgrade {upgrade}")
+                            return True
                     # there is a structure to upgrade from, but:
                     # we can't do the upgrade, might need something like:
                     # hive for 3/3? twilight council for 2/2?
                     elif required_building := research_info.get(
                         "required_building", None
                     ):
+                        if not self.auto_tech_up_enabled:
+                            return False
+
                         return TechUp(
                             desired_tech=required_building,
                             base_location=self.base_location,

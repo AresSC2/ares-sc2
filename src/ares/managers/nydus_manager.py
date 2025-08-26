@@ -151,7 +151,7 @@ class NydusManager(Manager, IManagerMediator):
     def initialise(self) -> None:
         """Supply the manager with information
         that requires the game to have launched."""
-        if self.ai.race != Race.Zerg or self.ai.arcade_mode:
+        if self.ai.arcade_mode:
             return
 
         if enemy_main_region := self.manager_mediator.get_map_data_object.in_region_p(
