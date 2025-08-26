@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from math import isclose
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_sorted_by_distance_to
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
@@ -58,7 +58,7 @@ class SpawnController(MacroBehavior):
         maximum: The maximum number of a unit type that can be produced
             in a single step. Defaults to `20`.
         spawn_target: A location to prioritize spawning units near.
-        Defaults to `None`.
+            Defaults to `None`.
 
 
     """
@@ -69,7 +69,7 @@ class SpawnController(MacroBehavior):
     over_produce_on_low_tech: bool = True
     ignored_build_from_tags: set[int] = field(default_factory=set)
     maximum: int = 20
-    spawn_target: Optional[Point2] = None
+    spawn_target: Point2 | None = None
 
     # key: Unit that should get a build order, value: what UnitID to build
     __build_dict: dict[Unit, UnitID] = field(default_factory=dict)

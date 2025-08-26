@@ -36,12 +36,18 @@ class ExpansionController(MacroBehavior):
         check_location_is_safe: Check if we don't knowingly expand at a dangerous
             location. Defaults to True.
         max_pending: Maximum pending townhalls at any time. Defaults to 1.
+        prioritize: If True and there is a CC waiting to upgrade, but
+            we can't afford it yet, this behavior will return True
+            This is useful in a MacroPlan as it will prevent other
+            spending actions occurring.
+            Default is False
     """
 
     to_count: int
     can_afford_check: bool = True
     check_location_is_safe: bool = True
     max_pending: int = 1
+    prioritize: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         # already have enough / or enough pending
@@ -50,7 +56,11 @@ class ExpansionController(MacroBehavior):
             + ai.structure_pending(ai.base_townhall_type)
             >= self.to_count
             or ai.structure_pending(ai.base_townhall_type) >= self.max_pending
-            or (self.can_afford_check and not ai.can_afford(ai.base_townhall_type))
+            or (
+                self.can_afford_check
+                and not self.prioritize
+                and not ai.can_afford(ai.base_townhall_type)
+            )
         ):
             return False
 
