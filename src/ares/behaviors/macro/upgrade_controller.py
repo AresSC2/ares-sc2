@@ -106,7 +106,6 @@ class UpgradeController(MacroBehavior):
                         # can't afford it yet, but we want to prioritize
                         # the upgrade, so return True
                         elif self.prioritize:
-                            logger.info(f"Prioritizing upgrade {upgrade}")
                             return True
                     # there is a structure to upgrade from, but:
                     # we can't do the upgrade, might need something like:
