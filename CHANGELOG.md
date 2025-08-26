@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.46.0 (2025-08-26)
+
+### Feature
+
+* Add prioritize logic across macro behaviors ([`6a85cac`](https://github.com/AresSC2/ares-sc2/commit/6a85cacbda132a501774b16d864deb9334d884bc))
+* Add auto tech-up toggle to upgrade controller ([`4d4b350`](https://github.com/AresSC2/ares-sc2/commit/4d4b3503669dbe25add589f3d713464080001d53))
+
 ## v2.45.0 (2025-08-25)
 
 ### Feature
