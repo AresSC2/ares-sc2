@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.46.1 (2025-08-26)
+
+### Fix
+
+* Remove redundant log statement in upgrade_controller ([`57f77a2`](https://github.com/AresSC2/ares-sc2/commit/57f77a28bccfa60ac877ec6d9b4817f363047ee5))
+
 ## v2.46.0 (2025-08-26)
 
 ### Feature
