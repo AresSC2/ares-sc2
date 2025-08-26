@@ -52,6 +52,7 @@ class UpgradeController(MacroBehavior):
 
     upgrade_list: list[UpgradeId]
     base_location: Point2
+    auto_tech_up_enabled: bool = True
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         for upgrade in self.upgrade_list:
@@ -64,7 +65,11 @@ class UpgradeController(MacroBehavior):
             ]
 
             # there is nowhere to research this from, tech up to it
+            # but only if auto_tech_up_enabled is True
             if not researched_from:
+                if not self.auto_tech_up_enabled:
+                    return False
+
                 teching: bool = TechUp(
                     desired_tech=upgrade, base_location=self.base_location
                 ).execute(ai, config, mediator)
