@@ -23,7 +23,7 @@ d = dirname(dirname(abspath(__file__)))
 sys.path.append(f"{d}\\")
 sys.path.append(f"{d}\\src")
 
-from ares import AresBot
+from ares import ALL_STRUCTURES, AresBot
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 
@@ -81,11 +81,12 @@ class ExporterBot(AresBot):
         await self.client.debug_control_enemy()
         await self.client.debug_god()
 
-        # Create units for self
+        # # Create units for self
         await self.client.debug_create_unit(
             [
                 [valid_unit, 1, self.start_location, 1]
                 for valid_unit in UNIT_TECH_REQUIREMENT.keys()
+                if valid_unit not in ALL_STRUCTURES
             ]
         )
         # Create units for enemy
@@ -93,6 +94,7 @@ class ExporterBot(AresBot):
             [
                 [valid_unit, 1, self.enemy_start_locations[0], 2]
                 for valid_unit in UNIT_TECH_REQUIREMENT.keys()
+                if valid_unit not in ALL_STRUCTURES
             ]
         )
 
@@ -100,12 +102,10 @@ class ExporterBot(AresBot):
 def main():
 
     maps_ = [
-        "Equilibrium513AIE",
-        "Gresvan513AIE",
-        "GoldenAura513AIE",
-        "HardLead513AIE",
-        "Oceanborn513AIE",
-        "SiteDelta513AIE",
+        "IncorporealAIE_v4",
+        "PersephoneAIE_v4",
+        "PylonAIE_v4",
+        "TorchesAIE_v4",
     ]
 
     for map_ in maps_:
