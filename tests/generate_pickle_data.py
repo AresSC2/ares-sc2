@@ -23,7 +23,7 @@ d = dirname(dirname(abspath(__file__)))
 sys.path.append(f"{d}\\")
 sys.path.append(f"{d}\\src")
 
-from ares import AresBot, ALL_STRUCTURES
+from ares import ALL_STRUCTURES, AresBot
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 
