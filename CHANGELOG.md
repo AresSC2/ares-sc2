@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.46.4 (2025-08-28)
+
+### Fix
+
+* Handle iterable positions in distance calculation ([`ec589cf`](https://github.com/AresSC2/ares-sc2/commit/ec589cf999bb0d0bf5864cabc692fa3b0e567091))
+
 ## v2.46.3 (2025-08-28)
 
 ### Fix
