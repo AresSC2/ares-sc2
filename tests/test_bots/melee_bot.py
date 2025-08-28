@@ -125,14 +125,18 @@ class DummyBot(AresBot):
 if __name__ == "__main__":
     random_map = random.choice(
         [
-            "ThunderbirdAIE",
+            "IncorporealAIE_v4",
+            "PersephoneAIE_v4",
+            "PylonAIE_v4",
+            "TorchesAIE_v4",
         ]
     )
     run_game(
         maps.get(random_map),
         [
-            Bot(Race.Terran, DummyBot(), "DummyBot"),
-            Computer(Race.Protoss, Difficulty.CheatInsane),
+            # Human(Race.Zerg),
+            Bot(Race.Random, DummyBot(), "DummyBot"),
+            Computer(Race.Random, Difficulty.CheatInsane),
         ],
         realtime=False,
         random_seed=2564,

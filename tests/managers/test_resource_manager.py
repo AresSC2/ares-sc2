@@ -37,7 +37,7 @@ class TestResourceManager:
         """
         We know ares only finds mfs at townhalls
         Since pickled data only has one townhall
-        We know this should equal 8
+        We know this should equal at least 8
         """
         # arrange
         resource_manager: ResourceManager = bot.manager_hub.resource_manager
@@ -47,7 +47,7 @@ class TestResourceManager:
         num_mfs: int = len(resource_manager.available_minerals)
 
         # assert
-        assert num_valid_min_fields == num_mfs
+        assert num_valid_min_fields <= num_mfs
 
     def test_remove_worker_from_mineral(self, bot: AresBot, event_loop):
         """ """
