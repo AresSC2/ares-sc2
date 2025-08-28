@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.46.2 (2025-08-28)
+
+### Fix
+
+* Adjust placement logic to refine 3x3 grid avoidance and stride values ([`19a2f35`](https://github.com/AresSC2/ares-sc2/commit/19a2f35a77f20e97a0d47654b214c4d14d52b4f5))
+
 ## v2.46.1 (2025-08-26)
 
 ### Fix
