@@ -587,7 +587,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
             for effect in self.ai.state.effects:
                 if effect.id in DETECTOR_RANGES:
                     if (
-                        cy_distance_to(pos, effect.positions[0])
+                        cy_distance_to(pos, list(effect.positions)[0])
                         < DETECTOR_RANGES[effect.id]
                     ):
                         return True
