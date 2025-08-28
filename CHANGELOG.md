@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.46.3 (2025-08-28)
+
+### Fix
+
+* Add missing liberator training ability to reactor const ([`ef48fd0`](https://github.com/AresSC2/ares-sc2/commit/ef48fd024355b2c86f528821c794de3a85e5f8c2))
+
 ## v2.46.2 (2025-08-28)
 
 ### Fix
