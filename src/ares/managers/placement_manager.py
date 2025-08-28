@@ -943,12 +943,12 @@ class PlacementManager(Manager, IManagerMediator):
                 and cy_distance_to_squared(
                     point2_pos, self.ai.main_base_ramp.top_center
                 )
-                > 49.0
+                > 36.0
             ):
                 self._add_placement_position(
                     building_size, el, point2_pos, production_pylon=production_pylon
                 )
-                # move back to top left corner of 3x3, so we can add to avoid grid
+                # move back to top left corner, so we can add to avoid grid
                 avoid_x = int(x - (building_width / 2))
                 avoid_y = int(y - (building_height / 2))
                 self.points_to_avoid_grid[
@@ -978,10 +978,10 @@ class PlacementManager(Manager, IManagerMediator):
             if BuildingSize.THREE_BY_THREE not in self.placements_dict[el]:
                 self.placements_dict[el][BuildingSize.THREE_BY_THREE] = {}
 
-            # avoid building 3x3 within 9 distance of el
-            start_x: int = int(el.x - 4.5)
-            start_y: int = int(el.y - 4.5)
-            self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
+            # avoid building 3x3 too close to el
+            start_x: int = int(el.x - 3.0)
+            start_y: int = int(el.y - 3.0)
+            self.points_to_avoid_grid[start_y : start_y + 6, start_x : start_x + 6] = 1
             max_dist: int = 16
 
             # calculate the wall positions first
@@ -990,7 +990,7 @@ class PlacementManager(Manager, IManagerMediator):
                 self._calculate_terran_main_ramp_placements(el)
 
             x_stride: int = (
-                7
+                6
                 if el == self.ai.start_location
                 or el == self.ai.enemy_start_locations[0]
                 else 5
@@ -1007,12 +1007,10 @@ class PlacementManager(Manager, IManagerMediator):
                 reduce_x_stride=True,
             )
 
-            # now avoid within 7.5 distance of base location
-            start_x = int(el.x - 7.5)
-            start_y = int(el.y - 7.5)
-            self.points_to_avoid_grid[
-                start_y : start_y + 15, start_x : start_x + 15
-            ] = 1
+            start_x: int = int(el.x - 6.5)
+            start_y: int = int(el.y - 6.5)
+            self.points_to_avoid_grid[start_y : start_y + 13, start_x : start_x + 9] = 1
+            max_dist: int = 16
 
             self._find_placements_for_base_location(
                 el=el,
