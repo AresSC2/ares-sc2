@@ -2356,7 +2356,7 @@ class ManagerMediator(IManagerMediator):
         UnitMemoryManager
 
         Parameters:
-            positions: Point2
+            positions: list[Point2]
             radius: float
 
         Returns:
