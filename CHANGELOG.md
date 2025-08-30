@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.47.0 (2025-08-30)
+
+### Feature
+
+* Nydus path unit behavior has safety check on exit option ([`9a38d4b`](https://github.com/AresSC2/ares-sc2/commit/9a38d4bdf1738fe810f80837238ba8de15b3616f))
+
+### Fix
+
+* Skip positions too close to enemy start location in creep manager ([`19d2928`](https://github.com/AresSC2/ares-sc2/commit/19d2928ee7ac10e0d52b74de1325639547e9c906))
+
 ## v2.46.4 (2025-08-28)
 
 ### Fix
