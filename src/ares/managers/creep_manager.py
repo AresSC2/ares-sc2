@@ -402,7 +402,10 @@ class CreepManager(Manager, IManagerMediator):
         min_separation = 18.0  # Minimum distance between overlord positions
 
         for edge_point in edge_points:
-            if cy_distance_to_squared(edge_point, self.ai.enemy_start_locations[0]) < 2500:
+            if (
+                cy_distance_to_squared(edge_point, self.ai.enemy_start_locations[0])
+                < 2500
+            ):
                 continue
             # Check if this point is far enough from already selected positions
             if not any(
