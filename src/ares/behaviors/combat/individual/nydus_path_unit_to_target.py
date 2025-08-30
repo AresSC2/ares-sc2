@@ -38,6 +38,8 @@ class NydusPathUnitToTarget(CombatIndividualBehavior):
         large: Path large units. Defaults to False.
         sensitivity: Path precision. Defaults to 5.
         smoothing: Whether to smooth out the path. Defaults to False.
+        exit_nydus_max_influence: Maximum enemy influence of nydus exit
+            If above this value unit will not path through nydus. Defaults to 10.0.
     """
 
     unit: Unit
@@ -47,6 +49,7 @@ class NydusPathUnitToTarget(CombatIndividualBehavior):
     large: bool = (False,)
     sensitivity: int = 5
     smoothing: bool = False
+    exit_nydus_max_influence: float = 10.0
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         distance_to_target: float = cy_distance_to(self.unit.position, self.target)
@@ -61,7 +64,15 @@ class NydusPathUnitToTarget(CombatIndividualBehavior):
             sensitivity=self.sensitivity,
             smoothing=self.smoothing,
         )
-        if nydus_tags and self.unit.tag not in mediator.get_banned_nydus_travellers:
+        if (
+            nydus_tags
+            and mediator.is_position_safe(
+                grid=self.grid,
+                position=exit_towards,
+                weight_safety_limit=self.exit_nydus_max_influence,
+            )
+            and self.unit.tag not in mediator.get_banned_nydus_travellers
+        ):
             mediator.add_to_nydus_travellers(
                 unit=self.unit,
                 entry_nydus_tag=nydus_tags[0],
