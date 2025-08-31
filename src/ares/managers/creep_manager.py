@@ -12,7 +12,12 @@ from sc2.units import Units
 from scipy.ndimage import convolve
 
 from ares.cache import property_cache_once_per_frame
-from ares.consts import CREEP_TUMOR_TYPES, ManagerName, ManagerRequestType
+from ares.consts import (
+    CREEP_TUMOR_TYPES,
+    TOWNHALL_TYPES,
+    ManagerName,
+    ManagerRequestType,
+)
 from ares.managers.manager import Manager
 from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 
@@ -260,11 +265,28 @@ class CreepManager(Manager, IManagerMediator):
                         max_distance > distance > min_distance
                         and self._valid_creep_placement(creep_pos, visible_check=False)
                     ):
+                        too_close = False
+                        # Check if far enough from enemy townhalls
+                        if not all(
+                            cy_distance_to(creep_pos, townhall.position) >= 15.0
+                            for townhall in self.ai.enemy_structures(TOWNHALL_TYPES)
+                        ):
+                            too_close = True
+
+                        own_ths: list[
+                            Unit
+                        ] = self.manager_mediator.get_own_structures_dict[
+                            UnitTypeId.HATCHERY
+                        ]
+                        # can act a bit weird near pending hatchery, avoid it
+                        if not all(
+                            cy_distance_to(creep_pos, townhall.position) >= 3.5
+                            for townhall in own_ths
+                        ):
+                            too_close = True
                         if not find_alternative:
                             return creep_pos
 
-                        # Check if position is far enough from existing tumors
-                        too_close = False
                         for pos in self.existing_tumor_positions_or_order_targets:
                             if cy_distance_to(pos, creep_pos) < min_separation:
                                 too_close = True
@@ -291,6 +313,7 @@ class CreepManager(Manager, IManagerMediator):
         search_radius: float = 15.0,
         closest_valid: bool = True,
         spread_dist: float = 3.0,
+        townhall_avoid_dist: float = 15.0,
     ) -> Point2 | None:
         """Find the closest creep edge position near a given position using convolution.
 
@@ -303,7 +326,10 @@ class CreepManager(Manager, IManagerMediator):
         closest_valid: bool, optional
             Find the closest valid creep edge position?
             Default is True.
-
+        spread_dist : float, optional
+            Minimum distance from existing tumors, by default 3.0
+        townhall_avoid_dist : float, optional
+            Minimum distance from enemy townhalls, by default 15.0
 
         Returns
         -------
@@ -331,11 +357,13 @@ class CreepManager(Manager, IManagerMediator):
                 continue
 
             # Check if far enough from all existing tumors
-            if all(
+            if not all(
                 cy_distance_to(edge_pos, tumor_pos) >= spread_dist
                 for tumor_pos in self.existing_tumor_positions_or_order_targets
             ):
-                valid_edges.append((i, edge_pos))
+                continue
+
+            valid_edges.append((i, edge_pos))
 
         if not valid_edges:
             return None
@@ -534,7 +562,6 @@ class CreepManager(Manager, IManagerMediator):
             and self.manager_mediator.is_position_safe(
                 grid=self.manager_mediator.get_ground_grid, position=position
             )
-            and self.ai.in_placement_grid(position)
         )
 
     def _get_random_creep_position(
