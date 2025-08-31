@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared
+from cython_extensions.geometry import cy_towards
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -82,7 +83,12 @@ class QueenSpreadCreep(CombatIndividualBehavior):
                     self.unit(AbilityId.BUILD_CREEPTUMOR_QUEEN, tumor_placement)
                     return True
                 elif cy_distance_to_squared(self.unit.position, tumor_placement) > 9.0:
-                    self.unit.move(tumor_placement)
+                    # move queen slightly back from calculated tumor placement
+                    # prevents her going off creep
+                    move_to: Point2 = Point2(
+                        cy_towards(tumor_placement, self.unit.position, 1.0)
+                    )
+                    self.unit.move(move_to)
                     return True
 
         return False
