@@ -104,6 +104,7 @@ A few extra options are also supported:
 ```python
 class BuildOrderOptions(str, Enum):
     ADDONSWAP = "ADDONSWAP"
+    CANCEL_GAS = "CANCEL_GAS"
     CHRONO = "CHRONO"
     CORE = "CORE"
     GAS = "GAS"
@@ -136,6 +137,47 @@ class BuildOrderTargetOptions(str, Enum):
     SIXTH = "SIXTH"
     SPAWN = "SPAWN"
     THIRD = "THIRD"
+```
+
+### AddOnSwap
+AddOnSwap is a special command that allows you to swap out structures so you can steal another structure's addon.
+The last two words of the command should contain two UnitTypeID's. The first is the structure that
+requires an addon, and the second is the target addon structure.
+
+Examples:
+
+Classic case of the factory swapping with the barracks that has a reactor so we can mass hellions:
+```yml
+- 22 addonswap factory barracksreactor
+```
+
+Starport steals the factory techlab so we can make banshees and research cloak:
+```yml
+- 22 addonswap starport factorytechlab
+```
+
+<b>WARNING</b>: Please ensure you have both the structure and the addon in your build order leading
+up to this build order step.
+
+Full example build order with an addonswap:
+```yml
+    OneOneOneReaperHellion:
+        ConstantWorkerProductionTill: 30
+        OpeningBuildOrder:
+            - 14 supply @ ramp
+            - 16 barracks @ ramp
+            - 16 gas
+            - 0 orbital
+            - 0 reaper
+            - 19 expand
+            - 20 marine
+            - 21 factory @ ramp
+            - 21 gas
+            - 21 barracksreactor
+            - 21 supply *2
+            - 21 orbital
+            - 21 starport
+            - 21 addonswap factory barracksreactor
 ```
 
 ### AutoSupply (optional)
