@@ -14,6 +14,7 @@ from sc2.game_data import Cost
 from sc2.game_state import EffectData
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
@@ -681,6 +682,13 @@ class AresBot(CustomBotAI):
             self.all_own_units_slim.append(unit_obj)
 
         if unit_type in ALL_STRUCTURES:
+            tag: int = unit_obj.tag
+            if tag in self._used_tumors:
+                return units_to_avoid_list
+            if unit_type == UnitTypeId.CREEPTUMORBURROWED:
+                if not unit_obj.is_idle and isinstance(unit_obj.order_target, Point2):
+                    self._used_tumors.add(tag)
+                    return units_to_avoid_list
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_structure(unit_obj)
             self.structures.append(unit_obj)
