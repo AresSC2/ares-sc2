@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared
-from cython_extensions.geometry import cy_towards
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -31,8 +30,6 @@ class QueenSpreadCreep(CombatIndividualBehavior):
 
     Attributes:
         unit: Unit
-        start: Where we are starting creep from.
-        target: Where we are spreading to.
         cancel_if_close_enemy: if on route to spread creep,
             and queen in danger.
         pre_move_queen_to_tumor: move queen to tumor placement even
@@ -40,8 +37,6 @@ class QueenSpreadCreep(CombatIndividualBehavior):
     """
 
     unit: Unit
-    start: Point2
-    target: Point2
     cancel_if_close_enemy: bool = True
     pre_move_queen_to_tumor: bool = True
 
@@ -52,43 +47,45 @@ class QueenSpreadCreep(CombatIndividualBehavior):
             return KeepUnitSafe(self.unit, grid).execute(ai, config, mediator)
 
         # queen already spreading creep, leave alone
-        if (
-            spreading
-            and ai.state.creep[self.unit.order_target.rounded] == 1
-            and not [
-                u
-                for u in mediator.get_own_structures_dict[UnitID.CREEPTUMORQUEEN]
-                if cy_distance_to_squared(self.unit.order_target, u.position) < 3.0
-            ]
-        ):
+        if spreading and not [
+            u
+            for u in mediator.get_own_structures_dict[UnitID.CREEPTUMORQUEEN]
+            if cy_distance_to_squared(self.unit.order_target, u.position) < 3.0
+        ]:
             return True
 
-        if tumor_placement := mediator.get_next_tumor_on_path(
+        ability_available: bool = (
+            AbilityId.BUILD_CREEPTUMOR_QUEEN in self.unit.abilities
+        )
+        edge_position: Point2 = mediator.find_nearby_creep_edge_position(
+            position=self.unit.position, search_radius=200.0
+        )
+        if not ability_available:
+            if (
+                edge_position
+                and self.pre_move_queen_to_tumor
+                and cy_distance_to_squared(self.unit.position, edge_position) > 9.0
+            ):
+                self.unit.move(edge_position)
+                return True
+            return False
+
+        creep_spot: Point2 | None = None
+        if edge_position and mediator.get_creep_coverage > 20.0:
+            creep_spot = edge_position
+        elif tumor_placement := mediator.get_next_tumor_on_path(
             grid=grid,
-            from_pos=self.start,
-            to_pos=self.target,
+            from_pos=self.unit.position,
+            to_pos=ai.game_info.map_center,
             find_alternative=True,
         ):
-            can_spread: bool = (
-                AbilityId.BUILD_CREEPTUMOR_QUEEN in self.unit.abilities
-                and (
-                    cy_distance_to_squared(self.unit.position, tumor_placement) < 9.0
-                    or not self.pre_move_queen_to_tumor
-                )
-            )
+            creep_spot = tumor_placement
 
-            if can_spread or (self.pre_move_queen_to_tumor and self.unit.is_idle):
-
-                if can_spread:
-                    self.unit(AbilityId.BUILD_CREEPTUMOR_QUEEN, tumor_placement)
-                    return True
-                elif cy_distance_to_squared(self.unit.position, tumor_placement) > 9.0:
-                    # move queen slightly back from calculated tumor placement
-                    # prevents her going off creep
-                    move_to: Point2 = Point2(
-                        cy_towards(tumor_placement, self.unit.position, 1.0)
-                    )
-                    self.unit.move(move_to)
-                    return True
+        if creep_spot:
+            if cy_distance_to_squared(self.unit.position, creep_spot) > 25.0:
+                self.unit.move(creep_spot)
+            else:
+                self.unit(AbilityId.BUILD_CREEPTUMOR_QUEEN, creep_spot)
+            return True
 
         return False

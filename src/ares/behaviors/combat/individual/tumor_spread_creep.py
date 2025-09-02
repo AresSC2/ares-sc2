@@ -50,21 +50,14 @@ class TumorSpreadCreep(CombatIndividualBehavior):
         # Strategy 1: Try to spread to nearby creep edges
         if chosen_pos := mediator.find_nearby_creep_edge_position(
             position=self.unit.position,
-            search_radius=9.5,
+            search_radius=10.2,
             closest_valid=False,
-            spread_dist=2.0,
+            spread_dist=1.0,
         ):
             self.unit(AbilityId.BUILD_CREEPTUMOR, chosen_pos)
             return True
 
-        # Strategy 2: Spread in direction furthest from existing tumors
-        if position := mediator.get_tumor_influence_lowest_cost_position(
-            position=self.unit.position
-        ):
-            self.unit(AbilityId.BUILD_CREEPTUMOR, position)
-            return True
-
-        # Strategy 3: Random placement as fallback
+        # Strategy 2: Random placement as fallback
         if random_pos := mediator.get_random_creep_position(
             position=self.unit.position
         ):
