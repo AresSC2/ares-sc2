@@ -1009,7 +1009,9 @@ class PlacementManager(Manager, IManagerMediator):
 
             start_x: int = int(el.x - 6.5)
             start_y: int = int(el.y - 6.5)
-            self.points_to_avoid_grid[start_y : start_y + 13, start_x : start_x + 9] = 1
+            self.points_to_avoid_grid[
+                start_y : start_y + 13, start_x : start_x + 13
+            ] = 1
             max_dist: int = 16
 
             self._find_placements_for_base_location(
@@ -1272,7 +1274,6 @@ class PlacementManager(Manager, IManagerMediator):
         """
 
         for location in self.placements_dict:
-
             three_by_three = self.placements_dict[location][BuildingSize.THREE_BY_THREE]
             two_by_two = self.placements_dict[location][BuildingSize.TWO_BY_TWO]
             z = self.ai.get_terrain_height(location)
