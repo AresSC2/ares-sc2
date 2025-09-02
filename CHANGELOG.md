@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.47.1 (2025-08-31)
+
+### Fix
+
+* Refine creep placement to avoid proximity to townhalls and improve tumor spacing ([`2bddc7e`](https://github.com/AresSC2/ares-sc2/commit/2bddc7eba058f3d9b9c23f0c1dbf7c1b479b7175))
+* Adjust queen movement to avoid going off creep when spreading tumors ([`f476412`](https://github.com/AresSC2/ares-sc2/commit/f476412e4d83fac1803c731c6bf41695742f4515))
+
 ## v2.47.0 (2025-08-30)
 
 ### Feature
