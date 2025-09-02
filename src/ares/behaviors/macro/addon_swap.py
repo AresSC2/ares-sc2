@@ -11,9 +11,15 @@ if TYPE_CHECKING:
 from cython_extensions import cy_sorted_by_distance_to
 
 from ares.behaviors.macro.macro_behavior import MacroBehavior
+from ares.consts import ADD_ONS, ALL_STRUCTURES
 from ares.managers.manager_mediator import ManagerMediator
 
 ADDON_TYPES: set[UnitID] = {UnitID.TECHLAB, UnitID.REACTOR}
+REACTOR_TYPES: set[UnitID] = {
+    UnitID.BARRACKSREACTOR,
+    UnitID.FACTORYREACTOR,
+    UnitID.STARPORTREACTOR,
+}
 
 
 @dataclass
@@ -40,18 +46,43 @@ class AddonSwap(MacroBehavior):
         addon_required: Type of addon required.
     """
 
-    structure_needing_addon: Unit
+    structure_needing_addon: Unit | UnitID
     addon_required: UnitID
     precise_addon_structure_id: UnitID | None = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert ai.race == Race.Terran, "Can only swap addons with Terran."
-        assert (
-            self.addon_required in ADDON_TYPES
-        ), f"`self.addon_required` should be one of {ADDON_TYPES}"
-        assert (
-            self.structure_needing_addon.build_progress == 1
-        ), "Structure requiring addon is not completed, and therefore can't fly"
+        # check if user provided a precise addon into addon_required
+        if self.addon_required not in ADDON_TYPES:
+            assert (
+                self.addon_required in ADD_ONS
+            ), f"Invalid addon type: {self.addon_required}"
+            self.precise_addon_structure_id = self.addon_required
+            if self.addon_required in REACTOR_TYPES:
+                self.addon_required = UnitID.REACTOR
+            else:
+                self.addon_required = UnitID.TECHLAB
+        else:
+            assert (
+                self.addon_required in ADDON_TYPES
+            ), f"`self.addon_required` should be one of {ADDON_TYPES}"
+
+        if isinstance(self.structure_needing_addon, UnitID):
+            assert (
+                self.structure_needing_addon in ALL_STRUCTURES
+            ), f"structure_needing_addon should be one of {ALL_STRUCTURES}"
+            structures: list[Unit] = [
+                s
+                for s in mediator.get_own_structures_dict[self.structure_needing_addon]
+                if s.is_ready and not s.has_add_on
+            ]
+            if len(structures) == 0:
+                return False
+
+            self.structure_needing_addon = structures[0]
+
+        if self.structure_needing_addon.build_progress < 1.0:
+            return False
 
         search_for_tags: set[int] = (
             ai.reactor_tags

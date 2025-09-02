@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-from typing import Callable, Union
+from typing import Callable
 
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
+from sc2.position import Point2
 
 from ares.consts import BuildOrderOptions
 
@@ -25,9 +26,9 @@ class BuildOrderStep:
 
     """
 
-    command: Union[AbilityId, UnitID, UpgradeId, BuildOrderOptions]
+    command: AbilityId | UnitID | UpgradeId | BuildOrderOptions
     start_condition: Callable
     end_condition: Callable
     command_started: bool = False
     start_at_supply: int = 0
-    target: str = ""
+    target: str | list[Point2] | list[UnitID] = ""

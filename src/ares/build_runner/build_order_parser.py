@@ -155,6 +155,69 @@ class BuildOrderParser:
             ),
         }
 
+    def _generate_addon_build_step(self, commands) -> Callable:
+        """
+        Generates a callable build step for executing an
+        "addonswap" command in the build runner.
+
+        The "addonswap" command allows structures to exchange addon components.
+        This function validates the provided command arguments to ensure they
+        represent valid structure types
+        before creating a lambda build step for execution.
+
+        Args:
+            commands (list[str]): List of command parameters.
+                The first two parameters are positional, while the last two
+                specify the structures involved in the addon swap.
+
+        Raises:
+            Exception: If the length of the `commands` list is not exactly 4.
+            ValueError: If any structure names provided in the `commands`
+                are invalid.
+
+        Returns:
+            Callable: A callable object that represents the constructed build step.
+        """
+        # ['21', 'addonswap', 'factory', 'barracksreactor']
+        if len(commands) != 4:
+            raise Exception(
+                f"Invalid addonswap command in build runner, "
+                f"expected 4 arguments, got {len(commands)} \n "
+                f"Example: `21 addonswap factory barracksreactor`"
+            )
+        extra_commands: list[str] = commands[2:]
+        add_on_structures: list[UnitID] = []
+
+        invalid: list[str] = []
+        for cmd in extra_commands:
+            name = cmd.upper()
+            unit_type: UnitID = UnitID.__members__.get(name)
+            if unit_type is None or unit_type not in ALL_STRUCTURES:
+                invalid.append(cmd)
+            else:
+                add_on_structures.append(unit_type)
+
+        if invalid:
+            raise ValueError(
+                f"Invalid addonswap command(s): expected structure "
+                f"types, got: {', '.join(invalid)}"
+            )
+
+        main_structure: UnitID = add_on_structures[0]
+        add_on_structure: UnitID = add_on_structures[1]
+        structures_dict = self.ai.mediator.get_own_structures_dict
+        return lambda: BuildOrderStep(
+            command=AbilityId.LIFT,
+            start_condition=lambda: len(
+                [s for s in structures_dict[main_structure] if s.is_ready]
+            )
+            > 0
+            and len([s for s in structures_dict[add_on_structure] if s.is_ready]) > 0,
+            # set via on_structure_started hook
+            end_condition=lambda: True,
+            target=add_on_structures,
+        )
+
     def _generate_structure_build_step(self, structure_id: UnitID) -> Callable:
         """Generic method to add any structure to a build order.
 
@@ -297,7 +360,10 @@ class BuildOrderParser:
                     command
                 ), f"Unrecognized build order command, got: {command}"
                 step: BuildOrderStep
-                if command == BuildOrderOptions.CORE:
+
+                if command == BuildOrderOptions.ADDONSWAP:
+                    step = self._generate_addon_build_step(commands)()
+                elif command == BuildOrderOptions.CORE:
                     step = self._generate_structure_build_step(UnitID.CYBERNETICSCORE)()
                 elif command == BuildOrderOptions.GATE:
                     step = self._generate_structure_build_step(UnitID.GATEWAY)()
@@ -316,7 +382,7 @@ class BuildOrderParser:
         # incase user passes `stalker x3` or something
         duplicates: int = 1
         # check extra command arguments like ``expand @ natural``
-        if len(commands) >= 2:
+        if len(commands) >= 2 and command != BuildOrderOptions.ADDONSWAP:
             extra_commands: list[str] = commands[2:]
             for command in extra_commands:
                 target = command.upper()

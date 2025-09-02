@@ -12,7 +12,7 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.behaviors.macro import AutoSupply, SpawnController
+from ares.behaviors.macro import AddonSwap, AutoSupply, SpawnController
 from ares.build_runner.build_order_step import BuildOrderStep
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -288,8 +288,16 @@ class BuildOrderRunner:
             and not self.current_step_started
             and self.ai.supply_used >= start_at_supply
         ):
-            command: UnitID = step.command
-            if command in ADD_ONS:
+            command: AbilityId | UnitID | UpgradeId | BuildOrderOptions = step.command
+            # add on swap
+            if command == AbilityId.LIFT:
+                print(step.target)
+                if AddonSwap(
+                    structure_needing_addon=step.target[0],
+                    addon_required=step.target[1],
+                ).execute(self.ai, self.config, self.mediator):
+                    self.current_step_started = True
+            elif command in ADD_ONS:
                 self.current_step_started = True
             elif command in ALL_STRUCTURES:
                 # let the gas steal preventer handle this step
