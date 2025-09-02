@@ -274,7 +274,7 @@ class NydusManager(Manager, IManagerMediator):
         region: Region = self.manager_mediator.get_map_data_object.in_region_p(
             base_location
         )
-        if not region:
+        if not region or not region.bases:
             return None
 
         grid: np.ndarray = self.manager_mediator.get_ground_grid
