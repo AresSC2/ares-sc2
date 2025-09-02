@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v2.47.2 (2025-09-02)
+
+### Performance
+
+* Only calculate creep edges every 16 loops ([`144a70e`](https://github.com/AresSC2/ares-sc2/commit/144a70eaab43342495a62cacfe038466c22e45dc))
+* Disable tumor influence spread logic ([`e013191`](https://github.com/AresSC2/ares-sc2/commit/e0131919ccbf43c1edbdb79d17d9157c353c1705))
+* Prevent spent tumors going in structures collection ([`1495dcc`](https://github.com/AresSC2/ares-sc2/commit/1495dcce9fca64c7b8b9603bce7bfb80fa2db570))
+
 ## v2.47.1 (2025-08-31)
 
 ### Fix
