@@ -2,6 +2,20 @@
 
 <!--next-version-placeholder-->
 
+## v2.48.0 (2025-09-02)
+
+### Feature
+
+* Add support for "addonswap" build step in build runner ([`7e6c90c`](https://github.com/AresSC2/ares-sc2/commit/7e6c90c20cc2a5db6e96d85541f4557c2b4ab1b4))
+
+### Fix
+
+* Expand avoidance grid so depots avoid mineral line ([`1b6166c`](https://github.com/AresSC2/ares-sc2/commit/1b6166c959211f9a073f8d7498a7f2caa8d8a5b2))
+
+### Documentation
+
+* Add example usage and explanation for "addonswap" build step in build runner ([`82ead62`](https://github.com/AresSC2/ares-sc2/commit/82ead62c8c2bdbeaddca1c8fc8cf4d816fb7b25c))
+
 ## v2.47.2 (2025-09-02)
 
 ### Performance
