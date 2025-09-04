@@ -285,6 +285,12 @@ class ManagerMediator(IManagerMediator):
         spread_dist: float
             How much distance between existing tumors?
             Default is 4.0
+        unit_tag : int | None, optional
+            Unit tag to check if queen ability is available, by default None
+        cache_result : bool, optional
+            Should we cache the result to save computation?
+            unit_tag should be set if this is True
+            by default False
 
         Returns
         -------

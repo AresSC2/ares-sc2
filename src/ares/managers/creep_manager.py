@@ -33,6 +33,8 @@ class CreepManager(Manager, IManagerMediator):
         self._creep_coverage: float = 0.0
         self._overlord_spotter_dict: dict[int:Point2] = dict()
         self._setup_overlord_spotter_dict: bool = False
+        # Cache for queen edge positions when ability not available
+        self._queen_edge_position_cache: dict[int, dict] = {}
 
         self.manager_requests_dict = {
             ManagerRequestType.FIND_NEARBY_CREEP_EDGE_POSITION: (
@@ -91,7 +93,7 @@ class CreepManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def get_creep_edges(self) -> tuple[np.ndarray, np.ndarray]:
-        if self.ai.last_game_loop % 16 == 0 or self._creep_edges is None:
+        if self.ai.last_game_loop % 16 == 0 or not hasattr(self, "_creep_edges"):
             creep_grid = self.get_creep_grid
             edges = convolve(creep_grid, self.EDGE_FILTER, mode="constant")
 
@@ -186,6 +188,21 @@ class CreepManager(Manager, IManagerMediator):
                 if total_pathable_tiles > 0
                 else 0.0
             )
+
+        # Clean up expired cache entries (every frame)
+        self._cleanup_expired_cache()
+
+    def _cleanup_expired_cache(self) -> None:
+        """Remove cache entries older than 64 frames."""
+        current_frame = self.ai.state.game_loop
+        expired_tags = []
+
+        for tag, cache_data in self._queen_edge_position_cache.items():
+            if current_frame - cache_data["frame"] >= 64:
+                expired_tags.append(tag)
+
+        for tag in expired_tags:
+            del self._queen_edge_position_cache[tag]
 
     def _get_closest_creep_tile(self, pos: Point2) -> Point2 | None:
         """Find the closest creep tile to the given position.
@@ -328,6 +345,8 @@ class CreepManager(Manager, IManagerMediator):
         closest_valid: bool = True,
         spread_dist: float = 3.0,
         townhall_avoid_dist: float = 15.0,
+        unit_tag: int | None = None,
+        cache_result: bool = False,
     ) -> Point2 | None:
         """Find the closest creep edge position near a given position using convolution.
 
@@ -344,12 +363,33 @@ class CreepManager(Manager, IManagerMediator):
             Minimum distance from existing tumors, by default 3.0
         townhall_avoid_dist : float, optional
             Minimum distance from enemy townhalls, by default 15.0
+        unit_tag : int | None, optional
+            Unit tag to check if queen ability is available, by default None
+        cache_result : bool, optional
+            Should we cache the result to save computation?
+            unit_tag should be set if this is True
+            by default False
+
 
         Returns
         -------
         Point2 | None
             The closest edge position, or None if no edges found
         """
+        # Handle caching for queens when ability not available
+        if unit_tag is not None and cache_result:
+            if unit_tag in self._queen_edge_position_cache:
+                cache_data = self._queen_edge_position_cache[unit_tag]
+                return cache_data["position"]
+
+        # Clear cache for this unit if ability becomes available
+        if (
+            unit_tag is not None
+            and not cache_result
+            and unit_tag in self._queen_edge_position_cache
+        ):
+            del self._queen_edge_position_cache[unit_tag]
+
         edge_y, edge_x = self.get_creep_edges
 
         if len(edge_x) == 0:
@@ -391,6 +431,13 @@ class CreepManager(Manager, IManagerMediator):
             idx, pos = max(
                 valid_edges, key=lambda pos: cy_distance_to_squared(position, pos[1])
             )
+
+        # Cache the result for queens when ability not available
+        if unit_tag is not None and cache_result and pos is not None:
+            self._queen_edge_position_cache[unit_tag] = {
+                "position": pos,
+                "frame": self.ai.state.game_loop,
+            }
 
         return pos
 
