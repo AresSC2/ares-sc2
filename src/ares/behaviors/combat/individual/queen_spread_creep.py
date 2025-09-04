@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared
+from cython_extensions.general_utils import cy_has_creep
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -57,8 +58,12 @@ class QueenSpreadCreep(CombatIndividualBehavior):
         ability_available: bool = (
             AbilityId.BUILD_CREEPTUMOR_QUEEN in self.unit.abilities
         )
+
         edge_position: Point2 = mediator.find_nearby_creep_edge_position(
-            position=self.unit.position, search_radius=200.0
+            position=self.unit.position,
+            search_radius=200.0,
+            unit_tag=self.unit.tag,
+            cache_result=not ability_available,
         )
         if not ability_available:
             if (
@@ -71,12 +76,17 @@ class QueenSpreadCreep(CombatIndividualBehavior):
             return False
 
         creep_spot: Point2 | None = None
+        target: Point2 = (
+            ai.game_info.map_center
+            if not cy_has_creep(mediator.get_creep_grid, self.unit.position)
+            else mediator.get_enemy_nat
+        )
         if edge_position and mediator.get_creep_coverage > 20.0:
             creep_spot = edge_position
         elif tumor_placement := mediator.get_next_tumor_on_path(
             grid=grid,
             from_pos=self.unit.position,
-            to_pos=ai.game_info.map_center,
+            to_pos=target,
             find_alternative=True,
         ):
             creep_spot = tumor_placement
