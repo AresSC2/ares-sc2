@@ -3,6 +3,7 @@ from typing import Any
 
 import numpy as np
 from cython_extensions import cy_distance_to, cy_distance_to_squared
+from cython_extensions.general_utils import cy_has_creep, cy_in_pathing_grid_ma
 from map_analyzer import MapData
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId
@@ -280,9 +281,10 @@ class CreepManager(Manager, IManagerMediator):
         if path := self.manager_mediator.find_raw_path(
             start=from_pos, target=to_pos, grid=grid, sensitivity=12
         ):
+            grid: np.ndarray = self.manager_mediator.get_ground_grid
             min_separation_squared = min_separation**2
             for point in path:
-                if not self.ai.has_creep(point) and (
+                if not cy_has_creep(self.get_creep_grid, point) and (
                     creep_pos := self._get_closest_creep_tile(pos=point)
                 ):
                     distance: float = cy_distance_to(from_pos, creep_pos)
@@ -290,7 +292,9 @@ class CreepManager(Manager, IManagerMediator):
                     # Check if position is within desired distance range
                     if (
                         max_distance > distance > min_distance
-                        and self._valid_creep_placement(creep_pos, visible_check=False)
+                        and self._valid_creep_placement(
+                            creep_pos, grid=grid, visible_check=False
+                        )
                     ):
                         too_close = False
                         # Check if far enough from enemy townhalls
@@ -404,10 +408,11 @@ class CreepManager(Manager, IManagerMediator):
             return None
 
         valid_edges = []
+        grid: np.ndarray = self.manager_mediator.get_ground_grid
 
         for i, (x, y) in enumerate(zip(edge_x[within_radius], edge_y[within_radius])):
             edge_pos = Point2((float(x), float(y)))
-            if not self._valid_creep_placement(edge_pos):
+            if not self._valid_creep_placement(edge_pos, grid):
                 continue
 
             # Check if far enough from all existing tumors
@@ -572,6 +577,7 @@ class CreepManager(Manager, IManagerMediator):
             lowest_points,
             key=lambda spot: cy_distance_to_squared(spot, position),
         )
+        grid: np.ndarray = self.manager_mediator.get_ground_grid
 
         # Test candidates starting from furthest (lowest cost areas)
         for candidate in reversed(candidates):
@@ -582,7 +588,7 @@ class CreepManager(Manager, IManagerMediator):
                 continue
 
             # Additional validation for creep placement
-            if self._valid_creep_placement(candidate_pos):
+            if self._valid_creep_placement(candidate_pos, grid):
                 return candidate_pos
 
         return None
@@ -597,7 +603,7 @@ class CreepManager(Manager, IManagerMediator):
         return blocks_expansion
 
     def _valid_creep_placement(
-        self, position: Point2, visible_check: bool = False
+        self, position: Point2, grid: np.ndarray, visible_check: bool = False
     ) -> bool:
         origin_x: int = int(round(position.x))
         origin_y: int = int(round(position.y))
@@ -617,12 +623,10 @@ class CreepManager(Manager, IManagerMediator):
 
         return (
             visible
-            and self.ai.has_creep(position)
+            and cy_has_creep(self.get_creep_grid, position)
             and not self._position_blocks_expansion(position)
-            and self.manager_mediator.is_position_safe(
-                grid=self.manager_mediator.get_ground_grid, position=position
-            )
-            and self.ai.in_pathing_grid(position)
+            and self.manager_mediator.is_position_safe(grid=grid, position=position)
+            and cy_in_pathing_grid_ma(grid, position)
         )
 
     def _get_random_creep_position(
@@ -640,7 +644,7 @@ class CreepManager(Manager, IManagerMediator):
             Point2 | None
                 Random creep position.
         """
-
+        grid: np.ndarray = self.manager_mediator.get_ground_grid
         for _ in range(max_attempts):
             # Generate random angle and distance
             angle = random.uniform(0, 2 * np.pi)
@@ -664,7 +668,7 @@ class CreepManager(Manager, IManagerMediator):
             ):
                 continue
 
-            if self._valid_creep_placement(candidate_pos):
+            if self._valid_creep_placement(candidate_pos, grid=grid):
                 return candidate_pos
 
         return None

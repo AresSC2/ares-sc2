@@ -393,4 +393,4 @@ class PathManager(Manager, IManagerMediator):
         bool :
             True if the position is considered safe, False otherwise.
         """
-        return cy_point_below_value(grid, position.rounded, weight_safety_limit)
+        return cy_point_below_value(grid, position, weight_safety_limit)
