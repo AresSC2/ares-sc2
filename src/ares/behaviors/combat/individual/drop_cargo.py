@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from cython_extensions.general_utils import cy_in_pathing_grid_ma
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -40,7 +41,9 @@ class DropCargo(CombatIndividualBehavior):
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         # TODO: Expand logic as needed, initial working version.
         # no action executed
-        if self.unit.cargo_used == 0 or not ai.in_pathing_grid(self.unit.position):
+        if self.unit.cargo_used == 0 or not cy_in_pathing_grid_ma(
+            mediator.get_ground_grid, self.unit.position
+        ):
             return False
 
         ai.do_unload_container(self.unit.tag)

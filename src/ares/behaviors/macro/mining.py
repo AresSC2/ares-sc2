@@ -156,15 +156,13 @@ class Mining(MacroBehavior):
                 if race != Race.Protoss
                 else worker.shield_health_percentage
             )
+            worker_safe: bool = pos_safe(grid=grid, position=worker_position)
             # keeping worker safe is first priority
             if self.keep_safe and (
                 # lib zone / nukes etc
                 not pos_safe(grid=avoidance_grid, position=worker_position)
                 # retreat based on self.flee_at_health_perc value
-                or (
-                    perc_health <= health_perc
-                    and not pos_safe(grid=grid, position=worker_position)
-                )
+                or (perc_health <= health_perc and not worker_safe)
                 or not pos_safe(
                     grid=grid,
                     position=worker_position,
@@ -173,8 +171,10 @@ class Mining(MacroBehavior):
             ):
                 self._keep_worker_safe(mediator, grid, worker)
 
-            elif main_enemy_ground_threats and self._worker_attacking_enemy(
-                ai, dist_to_resource, worker
+            elif (
+                not worker_safe
+                and main_enemy_ground_threats
+                and self._worker_attacking_enemy(ai, dist_to_resource, worker)
             ):
                 pass
 

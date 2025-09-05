@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Union
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared, cy_sorted_by_distance_to
+from cython_extensions.general_utils import cy_in_pathing_grid_ma
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -74,7 +75,7 @@ class StutterGroupBack(CombatGroupBehavior):
                     from_pos=self.group_position, grid=self.grid
                 )
 
-            if ai.in_pathing_grid(safe_spot):
+            if cy_in_pathing_grid_ma(self.grid, safe_spot):
                 group_move_to: Point2 = mediator.find_path_next_point(
                     start=self.group_position,
                     target=safe_spot,
@@ -112,7 +113,7 @@ class StutterGroupBack(CombatGroupBehavior):
                 )
             )
 
-            if ai.in_pathing_grid(retreat_position):
+            if cy_in_pathing_grid_ma(self.grid, retreat_position):
                 distance_from_target: float = cy_distance_to_squared(
                     self.target.position, retreat_position
                 )
