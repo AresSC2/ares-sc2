@@ -2,6 +2,15 @@
 
 <!--next-version-placeholder-->
 
+## v2.48.1 (2025-09-05)
+
+### Performance
+
+* Optimize queen creep spread with target adjustments and caching ([`1910e63`](https://github.com/AresSC2/ares-sc2/commit/1910e63d5f1c3ca44878dfba98a56e180decd258))
+* Use new cython functions ([`7112d61`](https://github.com/AresSC2/ares-sc2/commit/7112d61e314fb4415990f375f30f6aaf3131a9cc))
+* Add caching for queen edge positions and cache cleanup logic ([`edd1b70`](https://github.com/AresSC2/ares-sc2/commit/edd1b702d9203f55cbe48598cc38e75c98bfa452))
+* Worker doesn't compute self defence logic if safe ([`e76c52a`](https://github.com/AresSC2/ares-sc2/commit/e76c52a71c911098446fc448f0ffeac9453cd1ec))
+
 ## v2.48.0 (2025-09-02)
 
 ### Feature
