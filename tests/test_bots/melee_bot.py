@@ -26,7 +26,7 @@ from sc2.player import Bot, Computer
 
 from ares import AresBot
 from ares.behaviors.combat import CombatManeuver
-from ares.behaviors.combat.individual import AMove, PathUnitToTarget
+from ares.behaviors.combat.individual import AMove, PathUnitToTarget, QueenSpreadCreep
 from ares.behaviors.macro import (
     AutoSupply,
     BuildWorkers,
@@ -84,7 +84,11 @@ class DummyBot(AresBot):
         macro_plan.add(SpawnController(self.army_comp))
         self.register_behavior(macro_plan)
 
-        army: list[Unit] = [u for u in self.units if u.type_id != self.worker_type]
+        army: list[Unit] = [
+            u
+            for u in self.units
+            if u.type_id != self.worker_type and u.type_id != UnitTypeId.QUEEN
+        ]
         grid: np.ndarray = self.mediator.get_ground_grid
         target: Point2 = self.enemy_start_locations[0]
         if self.enemy_structures:
@@ -100,6 +104,11 @@ class DummyBot(AresBot):
             maneuver.add(AMove(unit=unit, target=target))
             self.register_behavior(maneuver)
 
+        for unit in self.units(UnitTypeId.QUEEN):
+            maneuver: CombatManeuver = CombatManeuver()
+            maneuver.add(QueenSpreadCreep(unit=unit))
+            self.register_behavior(maneuver)
+
     async def on_start(self) -> None:
         await super(DummyBot, self).on_start()
 
@@ -109,16 +118,16 @@ class DummyBot(AresBot):
             Race.Zerg: [UnitTypeId.ROACH, UnitTypeId.HYDRALISK, UnitTypeId.MUTALISK],
         }
 
-        await self.client.debug_create_unit(
-            [[self.worker_type, 30, self.start_location, 1]]
-        )
-
-        await self.client.debug_create_unit(
-            [
-                [unit_type, 8, self.start_location, 1]
-                for unit_type in desired_army[self.race]
-            ]
-        )
+        # await self.client.debug_create_unit(
+        #     [[self.worker_type, 30, self.start_location, 1]]
+        # )
+        #
+        # await self.client.debug_create_unit(
+        #     [
+        #         [unit_type, 8, self.start_location, 1]
+        #         for unit_type in desired_army[self.race]
+        #     ]
+        # )
 
 
 # Start game
@@ -135,7 +144,7 @@ if __name__ == "__main__":
         maps.get(random_map),
         [
             # Human(Race.Zerg),
-            Bot(Race.Random, DummyBot(), "DummyBot"),
+            Bot(Race.Zerg, DummyBot(), "DummyBot"),
             Computer(Race.Random, Difficulty.CheatInsane),
         ],
         realtime=False,

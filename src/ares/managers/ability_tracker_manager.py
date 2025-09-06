@@ -113,7 +113,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         """
         pass
 
-    def catch_unit(self, unit: Unit) -> None:
+    def catch_unit(self, unit: Unit, unit_type: UnitID, tag: int) -> None:
         """Make sure units are included in the tracking.
 
         Notes
@@ -130,13 +130,13 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         ----------
         unit :
             The Unit in question.
+        unit_type :
+        tag :
 
         Returns
         -------
 
         """
-        tag: int = unit.tag
-        unit_type: UnitID = unit.type_id
         current_frame: int = self.ai.state.game_loop
         if tag not in self.unit_to_ability_dict:
             if unit_type == UnitID.WIDOWMINE:

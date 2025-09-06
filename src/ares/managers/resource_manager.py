@@ -159,7 +159,8 @@ class ResourceManager(Manager, IManagerMediator):
                     self.ai.mineral_field.filter(
                         lambda mf: mf.is_visible
                         and not mf.is_snapshot
-                        and mf.distance_to(townhall) < 10
+                        and cy_distance_to_squared(mf.position, townhall.position)
+                        < 100.0
                         and len(self.mineral_patch_to_list_of_workers.get(mf.tag, []))
                         < 2
                     ),
