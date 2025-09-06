@@ -350,7 +350,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         # add fresh units
         self.enemy_army.extend(self.enemy_army_units_to_add)
 
-    def store_own_unit(self, unit: Unit) -> None:
+    def store_own_unit(self, unit: Unit, type_id: UnitID) -> None:
         """Store friendly unit.
 
         Called from _prepare_units.
@@ -359,14 +359,14 @@ class UnitCacheManager(Manager, IManagerMediator):
         ----------
         unit :
             Unit to store.
+        type_id :
 
         Returns
         -------
 
         """
-        type_id: UnitID = unit.type_id
         self.own_army_dict[type_id].append(unit)
-        if unit.type_id not in UNITS_TO_IGNORE:
+        if type_id not in UNITS_TO_IGNORE:
             self.own_army.append(unit)
 
     def store_own_structure(self, unit: Unit) -> None:

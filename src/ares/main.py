@@ -44,7 +44,6 @@ from ares.consts import (
     SHADE_DURATION,
     SHADE_OWNER,
     TECHLAB_TYPES,
-    UNITS_TO_AVOID_TYPES,
     USE_DATA,
     WORKER_TYPES,
     UnitRole,
@@ -70,6 +69,23 @@ class AresBot(CustomBotAI):
     build_order_runner: BuildOrderRunner  # execute exact build order from config
     cost_dict: Dict[UnitID, Cost]  #: UnitTypeId to cost for faster lookup later
     manager_hub: Hub  #: Hub in charge of handling the Managers
+    NYDUSES: set[UnitID] = {UnitID.NYDUSCANAL, UnitID.NYDUSNETWORK}
+    UNIT_TYPES_NOT_IN_SLIM: set[UnitID] = {
+        UnitID.EGG,
+        UnitID.LARVA,
+        UnitID.CHANGELINGMARINE,
+        UnitID.CHANGELINGMARINESHIELD,
+        UnitID.CHANGELINGZEALOT,
+        UnitID.CHANGELINGZERGLING,
+        UnitID.CHANGELINGZERGLINGWINGS,
+        UnitID.CREEPTUMOR,
+        UnitID.CREEPTUMORQUEEN,
+        UnitID.DRONE,
+        UnitID.DRONEBURROWED,
+        UnitID.SCV,
+        UnitID.PROBE,
+        UnitID.MULE,
+    }
 
     def __init__(self, game_step_override: Optional[int] = None):  # pragma: no cover
         """Load config and set up necessary attributes.
@@ -175,7 +191,6 @@ class AresBot(CustomBotAI):
         update_managers: bool = hasattr(self, "manager_hub")
         self._reset_variables()
         # there's going to be a lot of appending, so form Units at the end
-        units_to_avoid_list: List[Unit] = []
         batteries_list: List[Unit] = []
         cannons_list: List[Unit] = []
         enemy_vs_ground_static_defense_list = []
@@ -189,6 +204,7 @@ class AresBot(CustomBotAI):
             alliance: int = unit.alliance
 
             unit_type: int = unit.unit_type
+
             # Convert these units to effects:
             # reaper grenade, parasitic bomb dummy, forcefield
             if unit_type in FakeEffectID:
@@ -212,28 +228,27 @@ class AresBot(CustomBotAI):
                 distance_calculation_index=index,
                 base_build=self.base_build,
             )
+            tag: int = unit_obj.tag
 
             if unit_obj.type_id in ALL_GAS:
                 self.all_gas_buildings.append(unit_obj)
 
-            index += 1
-            self.all_units.append(unit_obj)
-            self.unit_tag_dict[unit_obj.tag] = unit_obj
+            if tag not in self._used_tumors:
+                index += 1
+                self.all_units.append(unit_obj)
+                self.unit_tag_dict[tag] = unit_obj
+
             if unit.display_type == IS_PLACEHOLDER:
                 self.placeholders.append(unit_obj)
                 continue
 
             # Alliance.Neutral.value = 3
             if alliance == 3:
-                units_to_avoid_list = self._add_neutral_unit(
-                    unit_obj, unit_type, units_to_avoid_list
-                )
+                self._add_neutral_unit(unit_obj, unit_type)
 
             # Alliance.Self.value = 1
             elif alliance == 1:
-                units_to_avoid_list = self._add_own_unit(
-                    unit_obj, units_to_avoid_list, update_managers
-                )
+                self._add_own_unit(unit_obj, update_managers, UnitID(unit_type), tag)
 
             # Alliance.Enemy.value = 4
             elif alliance == 4:
@@ -249,9 +264,9 @@ class AresBot(CustomBotAI):
                     enemy_vs_ground_static_defense_list,
                     unit_obj,
                     update_managers,
+                    UnitID(unit_type),
                 )
 
-        self.units_to_avoid = Units(units_to_avoid_list, self)
         self.batteries = Units(batteries_list, self)
         self.cannons = Units(cannons_list, self)
         self.enemy_vs_ground_static_defense = Units(
@@ -563,6 +578,7 @@ class AresBot(CustomBotAI):
         enemy_vs_ground_static_defense_list: List[Unit],
         unit_obj: Unit,
         update_managers: bool,
+        unit_id: UnitID,
     ) -> Tuple[List, List, List]:
         """Add a given enemy unit to the appropriate objects
 
@@ -586,7 +602,6 @@ class AresBot(CustomBotAI):
         """
 
         self.all_enemy_units.append(unit_obj)
-        unit_id = unit_obj.type_id
         if unit_id in DETECTOR_RANGES:
             self.enemy_detectors.append(unit_obj)
         if unit_id in ALL_STRUCTURES:
@@ -613,9 +628,7 @@ class AresBot(CustomBotAI):
 
         return batteries_list, cannons_list, enemy_vs_ground_static_defense_list
 
-    def _add_neutral_unit(
-        self, unit_obj: Unit, unit_type: int, units_to_avoid_list: List[Unit]
-    ) -> List[Unit]:
+    def _add_neutral_unit(self, unit_obj: Unit, unit_type: int):
         """Add a given neutral unit to the appropriate objects
 
         Parameters
@@ -624,13 +637,6 @@ class AresBot(CustomBotAI):
             The Unit in question
         unit_type :
             Integer corresponding to a value in the UnitTypeId enum
-        units_to_avoid_list :
-            List of units that block positions for buildings
-
-        Returns
-        -------
-        List[Unit]
-            List of units that block positions for buildings
         """
         # XELNAGATOWER = 149
         if unit_type == 149:
@@ -647,83 +653,67 @@ class AresBot(CustomBotAI):
         else:
             if unit_type not in IGNORE_DESTRUCTABLES:
                 self.destructables.append(unit_obj)
-                units_to_avoid_list.append(unit_obj)
-
-        return units_to_avoid_list
 
     def _add_own_unit(
-        self, unit_obj: Unit, units_to_avoid_list: List[Unit], update_managers: bool
-    ) -> List[Unit]:
+        self, unit_obj: Unit, update_managers: bool, unit_id: UnitID, tag: int
+    ):
         """Add a given friendly unit to the appropriate objects
 
         Parameters
         ----------
         unit_obj :
             The Unit in question
-        units_to_avoid_list :
-            List of units that block positions for buildings
         update_managers :
             Whether the Managers have been prepared
-
-        Returns
-        -------
-        List[Unit]
-            List of units that block positions for buildings
         """
-        unit_type: UnitID = unit_obj.type_id
+        if tag in self._used_tumors:
+            return
         if update_managers:
-            self.manager_hub.unit_role_manager.catch_unit(unit_obj)
-            self.manager_hub.ability_tracker_manager.catch_unit(unit_obj)
+            self.manager_hub.unit_role_manager.catch_unit(unit_obj, unit_id, tag)
+            self.manager_hub.ability_tracker_manager.catch_unit(unit_obj, unit_id, tag)
 
         self.all_own_units.append(unit_obj)
-        if unit_type in UNITS_TO_AVOID_TYPES:
-            units_to_avoid_list.append(unit_obj)
-        else:
+        if unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
             self.all_own_units_slim.append(unit_obj)
 
-        if unit_type in ALL_STRUCTURES:
-            tag: int = unit_obj.tag
-            if tag in self._used_tumors:
-                return units_to_avoid_list
-            if unit_type == UnitTypeId.CREEPTUMORBURROWED:
+        if unit_id in ALL_STRUCTURES:
+            if unit_id == UnitTypeId.CREEPTUMORBURROWED:
                 if not unit_obj.is_idle and isinstance(unit_obj.order_target, Point2):
                     self._used_tumors.add(tag)
-                    return units_to_avoid_list
+                    return
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_structure(unit_obj)
             self.structures.append(unit_obj)
-            if unit_type in ADD_ONS:
-                if unit_type in TECHLAB_TYPES:
-                    self.techlab_tags.add(unit_obj.tag)
+            if unit_id in ADD_ONS:
+                if unit_id in TECHLAB_TYPES:
+                    self.techlab_tags.add(tag)
                 else:
-                    self.reactor_tags.add(unit_obj.tag)
-            elif unit_type in race_townhalls[self.race]:
+                    self.reactor_tags.add(tag)
+            elif unit_id in race_townhalls[self.race]:
                 self.townhalls.append(unit_obj)
                 if unit_obj.is_ready:
                     self.ready_townhalls.append(unit_obj)
             elif unit_obj.vespene_contents > 0 and (
-                unit_type in ALL_GAS or unit_obj.vespene_contents
+                unit_id in ALL_GAS or unit_obj.vespene_contents
             ):
                 # TODO: remove "or unit_obj.vespene_contents" when a Linux client newer
                 # than version 4.10.0 is released
                 self.gas_buildings.append(unit_obj)
-            elif unit_type in {UnitID.NYDUSCANAL, UnitID.NYDUSNETWORK}:
+            elif unit_id in self.NYDUSES:
                 self.nyduses.append(unit_obj)
         else:
             if update_managers:
-                self.manager_hub.unit_cache_manager.store_own_unit(unit_obj)
+                self.manager_hub.unit_cache_manager.store_own_unit(unit_obj, unit_id)
 
             self.units.append(unit_obj)
-            if unit_type in self.WORKER_TYPES:
+            if unit_id in self.WORKER_TYPES:
                 self.workers.append(unit_obj)
-            elif unit_type == UnitID.LARVA:
+            elif unit_id == UnitID.LARVA:
                 self.larva.append(unit_obj)
-            elif unit_type == UnitID.EGG:
+            elif unit_id == UnitID.EGG:
                 self.eggs.append(unit_obj)
             if BuffId.PARASITICBOMB in unit_obj.buffs:
                 self.enemy_parasitic_bomb_positions.append(unit_obj.position)
-
-        return units_to_avoid_list
 
     def _clear_adept_shades(self) -> None:
         """Remove Adept shades if they've completed or otherwise vanished

@@ -146,23 +146,25 @@ class UnitRoleManager(Manager, IManagerMediator):
             assigned_tags_list += self.unit_role_dict[role]
         self.all_assigned_tags = set(assigned_tags_list)
 
-    def catch_unit(self, unit: Unit) -> None:
+    def catch_unit(self, unit: Unit, type_id: UnitID, tag: int) -> None:
         """Check if unit is unassigned and give it a role if necessary.
 
         Parameters
         ----------
         unit :
             Unit that needs a role.
+        type_id :
+        tag :
 
         Returns
         -------
 
         """
-        if unit.type_id in UNIT_TYPES_WITH_NO_ROLE:
+        if type_id in UNIT_TYPES_WITH_NO_ROLE:
             return
-        if unit.tag not in self.all_assigned_tags:
-            if unit.type_id == self.ai.worker_type:
-                self.assign_role(unit.tag, UnitRole.GATHERING)
+        if tag not in self.all_assigned_tags:
+            if type_id == self.ai.worker_type:
+                self.assign_role(tag, UnitRole.GATHERING)
 
     def assign_role(
         self, tag: int, role: UnitRole, remove_from_squad: bool = True
