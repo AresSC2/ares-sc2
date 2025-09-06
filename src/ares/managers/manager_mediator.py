@@ -456,6 +456,22 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
+    def get_position_blocks_expansion(self, **kwargs) -> bool:
+        """See if a position blocks an expansion.
+
+        Parameters:
+            position : Point2
+                The position to check.
+
+        Returns:
+            Position blocks expansion.
+        """
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER,
+            ManagerRequestType.GET_RANDOM_CREEP_POSITION,
+            **kwargs,
+        )
+
     def get_random_creep_position(self, **kwargs) -> Point2 | None:
         """Find a random valid creep position within tumor range.
 

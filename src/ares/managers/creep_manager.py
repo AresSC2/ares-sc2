@@ -54,6 +54,9 @@ class CreepManager(Manager, IManagerMediator):
             ManagerRequestType.GET_OVERLORD_CREEP_SPOTTER_POSTIONS: (
                 lambda kwargs: self._get_overlord_creep_spotter_positions(**kwargs)
             ),
+            ManagerRequestType.GET_POSITION_BLOCKS_EXPO: (
+                lambda kwargs: self._position_blocks_expansion(**kwargs)
+            ),
             ManagerRequestType.GET_RANDOM_CREEP_POSITION: (
                 lambda kwargs: self._get_random_creep_position(**kwargs)
             ),
@@ -595,12 +598,10 @@ class CreepManager(Manager, IManagerMediator):
 
     def _position_blocks_expansion(self, position: Point2) -> bool:
         """Will the creep tumor block expansion"""
-        blocks_expansion: bool = False
         for expansion in self.ai.expansion_locations_list:
             if cy_distance_to_squared(position, expansion) < 25.0:
-                blocks_expansion = True
-                break
-        return blocks_expansion
+                return True
+        return False
 
     def _valid_creep_placement(
         self, position: Point2, grid: np.ndarray, visible_check: bool = False
