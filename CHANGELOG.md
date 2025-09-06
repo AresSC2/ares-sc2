@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.49.0 (2025-09-06)
+
+### Feature
+
+* Position blocks expansion mediator request ([`c393075`](https://github.com/AresSC2/ares-sc2/commit/c393075b6bd710d95ef1e01480aca27581ce65a5))
+
+### Performance
+
+* Pass type_id and tag to methods for efficiency improvements ([`20cc017`](https://github.com/AresSC2/ares-sc2/commit/20cc017f4beedcd2282e26aef54adf34219beb0b))
+
 ## v2.48.1 (2025-09-05)
 
 ### Performance
