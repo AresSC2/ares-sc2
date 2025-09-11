@@ -266,6 +266,12 @@ class Mining(MacroBehavior):
             worker.return_resource()
             self.locked_action_tags[worker_tag] = ai.time
         else:
+            # leave worker alone
+            if len(worker.orders) > 0:
+                current_order = worker.orders[0]
+                if current_order.ability.id == AbilityId.HARVEST_RETURN:
+                    return
+
             # work out when we need to issue command to mine resource
             if worker.is_idle or (
                 cy_distance_to_squared(worker.position, resource.position) > 81.0
