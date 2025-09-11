@@ -677,6 +677,8 @@ class AresBot(CustomBotAI):
             self.all_own_units_slim.append(unit_obj)
 
         if unit_id in ALL_STRUCTURES:
+            if unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
+                self.own_structures_slim.append(unit_obj)
             if unit_id == UnitTypeId.CREEPTUMORBURROWED:
                 if not unit_obj.is_idle and isinstance(unit_obj.order_target, Point2):
                     self._used_tumors.add(tag)
@@ -702,6 +704,8 @@ class AresBot(CustomBotAI):
             elif unit_id in self.NYDUSES:
                 self.nyduses.append(unit_obj)
         else:
+            if unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
+                self.own_units_slim.append(unit_obj)
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_unit(unit_obj, unit_id)
 
