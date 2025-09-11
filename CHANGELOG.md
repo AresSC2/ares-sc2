@@ -2,6 +2,24 @@
 
 <!--next-version-placeholder-->
 
+## v2.50.0 (2025-09-11)
+
+### Feature
+
+* Refine worker gas building logic with distance check ([`f70ec8d`](https://github.com/AresSC2/ares-sc2/commit/f70ec8d49bb922f935f72b00779e14f955f98ac8))
+
+### Fix
+
+* Ensure worker kiting behavior returns valid state ([`cd2db7c`](https://github.com/AresSC2/ares-sc2/commit/cd2db7c297fceaa7da2a46162b6dab2ef4f7897d))
+* Adjust building avoidance grid size to prevent pylon in min line ([`1a70c15`](https://github.com/AresSC2/ares-sc2/commit/1a70c15943b38201f8c7bab6bcccde42196b887f))
+* Allow workers to return rich vespene ([`c43f68e`](https://github.com/AresSC2/ares-sc2/commit/c43f68e104d7bc5a35aa0885ed5be58c9ad08fb0))
+* Adjust townhall build progress threshold for gas building logic ([`5501a02`](https://github.com/AresSC2/ares-sc2/commit/5501a02e00087b914d547b4a9f82e387cb24fb3c))
+* Reorder worker selection after position availability check ([`176f96f`](https://github.com/AresSC2/ares-sc2/commit/176f96f19114344b395f1799a3649bade1661539))
+
+### Performance
+
+* Optimize movement logic with cython distance check to reduce command issuance ([`779e15a`](https://github.com/AresSC2/ares-sc2/commit/779e15a0c3b5a95f030c150d1cb407cab066f3eb))
+
 ## v2.49.0 (2025-09-06)
 
 ### Feature
