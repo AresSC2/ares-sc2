@@ -70,7 +70,7 @@ class GasBuildingController(MacroBehavior):
                 th
                 for th in ai.townhalls
                 if cy_distance_to_squared(u.position, th.position) < 144.0
-                and th.build_progress > 0.9
+                and th.build_progress > 0.7
             ]
         ]:
             if not self.closest_to:

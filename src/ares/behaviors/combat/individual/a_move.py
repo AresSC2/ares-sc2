@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Union
 
+from cython_extensions import cy_distance_to
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -27,12 +28,21 @@ class AMove(CombatIndividualBehavior):
     Attributes:
         unit: The unit to stay safe.
         target: Where the unit is going.
+        success_at_distance: Distance at which we don't need to issue
+            a new move command because it's near the target.
 
     """
 
     unit: Unit
     target: Union[Point2, Unit]
+    success_at_distance: float = 7.0
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+        if (
+            self.success_at_distance > 0
+            and cy_distance_to(self.unit.position, self.target.position)
+            < self.success_at_distance
+        ):
+            return False
         self.unit.attack(self.target)
         return True
