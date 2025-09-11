@@ -79,12 +79,7 @@ class AresBot(CustomBotAI):
         UnitID.CHANGELINGZERGLING,
         UnitID.CHANGELINGZERGLINGWINGS,
         UnitID.CREEPTUMOR,
-        UnitID.CREEPTUMORQUEEN,
-        UnitID.DRONE,
-        UnitID.DRONEBURROWED,
-        UnitID.SCV,
-        UnitID.PROBE,
-        UnitID.MULE,
+        UnitID.CREEPTUMORQUEEN
     }
 
     def __init__(self, game_step_override: Optional[int] = None):  # pragma: no cover
