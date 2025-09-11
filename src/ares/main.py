@@ -811,6 +811,8 @@ class AresBot(CustomBotAI):
         self.all_own_units: Units = Units([], self)
         # don't include tumors
         self.all_own_units_slim: Units = Units([], self)
+        self.own_units_slim: Units = Units([], self)
+        self.own_structures_slim: Units = Units([], self)
         self.enemy_units: Units = Units([], self)
         self.enemy_structures: Units = Units([], self)
         self.enemy_workers: Units = Units([], self)
