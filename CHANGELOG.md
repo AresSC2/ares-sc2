@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.50.1 (2025-09-11)
+
+### Fix
+
+* Empty lists each frame ([`9d126f5`](https://github.com/AresSC2/ares-sc2/commit/9d126f51bb159e4c7f858770a3fce115771ccaa5))
+
 ## v2.50.0 (2025-09-11)
 
 ### Feature
