@@ -51,3 +51,4 @@ class WorkerKiteBack(CombatIndividualBehavior):
             return AttackTarget(unit=unit, target=target).execute(ai, config, mediator)
         elif mfs := ai.mineral_field:
             unit.gather(cy_closest_to(position=ai.start_location, units=mfs))
+            return True
