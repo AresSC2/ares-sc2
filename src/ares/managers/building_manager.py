@@ -247,6 +247,7 @@ class BuildingManager(Manager, IManagerMediator):
             if (
                 self.ai.race in {Race.Protoss, Race.Terran}
                 and structure_id in GAS_BUILDINGS
+                and cy_distance_to_squared(worker.position, target.position) < 25.0
             ):
                 if self.ai.can_afford(structure_id):
                     worker.build_gas(target)
