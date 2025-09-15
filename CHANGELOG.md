@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.50.2 (2025-09-15)
+
+### Fix
+
+* Correct chosen opening logic in data_manager to handle win conditions properly ([`d1280ac`](https://github.com/AresSC2/ares-sc2/commit/d1280ac487668a2201fef23296fc1912826b9d7d))
+
 ## v2.50.1 (2025-09-11)
 
 ### Fix
