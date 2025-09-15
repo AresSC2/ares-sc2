@@ -174,12 +174,13 @@ class DataManager(Manager, IManagerMediator):
         for i, build in enumerate(self.build_cycle):
             if last_build == build:
                 self.found_build = True
-                # Defeat
-                if last_result == 0:
+                # Win
+                if last_result == 2:
+                    self.chosen_opening = build
+                # Any other result
+                else:
                     index: int = 0 if len(self.build_cycle) <= i + 1 else i + 1
                     self.chosen_opening = self.build_cycle[index]
-                else:
-                    self.chosen_opening = build
                 break
         # in case build from last game wasn't found in build cycle
         if not self.found_build:
