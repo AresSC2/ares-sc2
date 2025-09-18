@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.50.3 (2025-09-18)
+
+### Fix
+
+* Warpins actually respect spawn target ([`514bea2`](https://github.com/AresSC2/ares-sc2/commit/514bea2efbaef313cb92035168690b12b4a60661))
+* Warpgate ability ([`a485708`](https://github.com/AresSC2/ares-sc2/commit/a485708e8e7c051aa60f819298f8e7696d1ea919))
+
 ## v2.50.2 (2025-09-15)
 
 ### Fix
