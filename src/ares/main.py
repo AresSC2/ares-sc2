@@ -668,11 +668,13 @@ class AresBot(CustomBotAI):
             self.manager_hub.ability_tracker_manager.catch_unit(unit_obj, unit_id, tag)
 
         self.all_own_units.append(unit_obj)
-        if unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
-            self.all_own_units_slim.append(unit_obj)
+        # if unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
+        #     self.all_own_units_slim.append(unit_obj)
 
         if unit_id in ALL_STRUCTURES:
-            if unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
+            if unit_id == UnitID.WARPGATE:
+                self.own_units_slim.append(unit_obj)
+            elif unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
                 self.own_structures_slim.append(unit_obj)
             if unit_id == UnitTypeId.CREEPTUMORBURROWED:
                 if not unit_obj.is_idle and isinstance(unit_obj.order_target, Point2):
