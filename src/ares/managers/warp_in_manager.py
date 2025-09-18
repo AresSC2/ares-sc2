@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Coroutine, DefaultDict, Optional, Union
 
+from cython_extensions.geometry import cy_distance_to_squared
 from loguru import logger
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
@@ -124,7 +125,11 @@ class WarpInManager(Manager, IManagerMediator):
             return
 
         for build_from, unit_type, target in self.requested_warp_ins:
-            for power_source in power_sources:
+
+            sorted_power_sources = sorted(
+                power_sources, key=lambda x: cy_distance_to_squared(x.position, target)
+            )
+            for power_source in sorted_power_sources:
                 if AbilityId.WARPGATETRAIN_STALKER in build_from.abilities:
                     placement = await self.ai.find_placement(
                         AbilityId.WARPGATETRAIN_STALKER,
