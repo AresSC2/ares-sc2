@@ -93,77 +93,77 @@ Protoss:
 
     # 2025 patch 5.0.14
     Incorporeal:
-    VsZergNatWall:
-      AvailableVsRaces: ["Zerg", "Random"]
-      UpperSpawn:
-        FirstPylon: [[ 62.0, 134.0 ]]
-        Pylons: [[ 62.0, 131.0 ]]
-        ThreeByThrees: [ [ 62.5, 128.5 ], [ 59.5, 129.5 ], [ 66.5, 129.5 ]]
-        StaticDefences: [[ 66.0, 132.0 ]]
-        GateKeeper: [[ 64.5, 128.5 ]]
-      LowerSpawn:
-        FirstPylon: [[ 94.0, 31.0 ]]
-        Pylons: [[ 94.0, 34.0 ]]
-        ThreeByThrees: [[ 89.5, 34.5 ], [ 93.5, 36.5 ], [ 96.5, 34.5 ]]
-        StaticDefences: [[ 90.0, 32.0 ]]
-        GateKeeper: [[ 91.5, 36.5 ]]
+        VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
+            UpperSpawn:
+                FirstPylon: [[ 62.0, 134.0 ]]
+                Pylons: [[ 62.0, 131.0 ]]
+                ThreeByThrees: [ [ 62.5, 128.5 ], [ 59.5, 129.5 ], [ 66.5, 129.5 ]]
+                StaticDefences: [[ 66.0, 132.0 ]]
+                GateKeeper: [[ 64.5, 128.5 ]]
+            LowerSpawn:
+                FirstPylon: [[ 94.0, 31.0 ]]
+                Pylons: [[ 94.0, 34.0 ]]
+                ThreeByThrees: [[ 89.5, 34.5 ], [ 93.5, 36.5 ], [ 96.5, 34.5 ]]
+                StaticDefences: [[ 90.0, 32.0 ]]
+                GateKeeper: [[ 91.5, 36.5 ]]
     Persephone:
-      VsZergNatWall:
-        AvailableVsRaces: ["Zerg", "Random"]
-        UpperSpawn:
-          FirstPylon: [[ 69.0, 144.0 ]]
-          Pylons: [[ 71.0, 145.0 ]]
-        ThreeByThrees: [ [ 71.5, 138.5 ], [ 73.5, 142.5 ], [ 74.5, 145.5 ]]
-        StaticDefences: [[ 68.0, 140.0 ]]
-        GateKeeper: [[ 72.5, 140.5 ]]
-      LowerSpawn:
-        FirstPylon: [[ 69.0, 36.0 ]]
-        Pylons: [[ 71.0, 39.0 ]]
-        ThreeByThrees: [[ 74.5, 35.5 ], [ 72.5, 39.5 ], [ 69.5, 41.5 ]]
-        StaticDefences: [[ 68.0, 38.0 ]]
-        GateKeeper: [[ 73.5, 37.5 ]]
+        VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
+            UpperSpawn:
+                FirstPylon: [[ 69.0, 144.0 ]]
+                Pylons: [[ 71.0, 145.0 ]]
+                ThreeByThrees: [ [ 71.5, 138.5 ], [ 73.5, 142.5 ], [ 74.5, 145.5 ]]
+                StaticDefences: [[ 68.0, 140.0 ]]
+                GateKeeper: [[ 72.5, 140.5 ]]
+            LowerSpawn:
+                FirstPylon: [[ 69.0, 36.0 ]]
+                Pylons: [[ 71.0, 39.0 ]]
+                ThreeByThrees: [[ 74.5, 35.5 ], [ 72.5, 39.5 ], [ 69.5, 41.5 ]]
+                StaticDefences: [[ 68.0, 38.0 ]]
+                GateKeeper: [[ 73.5, 37.5 ]]
     Pylon:
-      VsZergNatWall:
-        AvailableVsRaces: ["Zerg", "Random"]
-        UpperSpawn:
-          FirstPylon: [[ 104.0, 169.0 ]]
-          Pylons: [[ 105.0, 166.0 ]]
-        ThreeByThrees: [ [ 104.5, 163.5 ], [ 107.5, 164.5 ], [ 109.5, 168.5 ]]
-        StaticDefences: [[ 107.0, 171.0 ]]
-        GateKeeper: [[ 108.5, 166.5 ]]
-      LowerSpawn:
-        FirstPylon: [[ 143.0, 78.0 ]]
-        Pylons: [[ 141.0, 80.0 ]]
-        ThreeByThrees: [[ 144.5, 83.5 ], [ 140.5, 82.5 ], [ 138.5, 79.5 ]]
-        StaticDefences: [[ 143.0, 80.0 ]]
-        GateKeeper: [[ 142.5, 83.5 ]]
+        VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
+            UpperSpawn:
+                FirstPylon: [[ 104.0, 169.0 ]]
+                Pylons: [[ 105.0, 166.0 ]]
+                ThreeByThrees: [ [ 104.5, 163.5 ], [ 107.5, 164.5 ], [ 109.5, 168.5 ]]
+                StaticDefences: [[ 107.0, 171.0 ]]
+                GateKeeper: [[ 108.5, 166.5 ]]
+            LowerSpawn:
+                FirstPylon: [[ 143.0, 78.0 ]]
+                Pylons: [[ 141.0, 80.0 ]]
+                ThreeByThrees: [[ 144.5, 83.5 ], [ 140.5, 82.5 ], [ 138.5, 79.5 ]]
+                StaticDefences: [[ 143.0, 80.0 ]]
+                GateKeeper: [[ 142.5, 83.5 ]]
     Torches:
-      VsZergNatWall:
-        AvailableVsRaces: ["Zerg", "Random"]
-        UpperSpawn:
-          FirstPylon: [[ 92.0, 154.0 ]]
-          Pylons: [[ 90.0, 154.0 ]]
-        ThreeByThrees: [ [ 91.5, 148.5 ], [ 90.5, 151.5 ], [ 86.5, 153.5 ]]
-        StaticDefences: [[ 93.0, 152.0 ]]
-        GateKeeper: [[ 88.5, 152.5 ]]
-      LowerSpawn:
-        FirstPylon: [[ 92.0, 54.0 ]]
-        Pylons: [[ 90.0, 53.0 ]]
-        ThreeByThrees: [[ 91.5, 59.5 ], [ 89.5, 55.5 ], [ 86.5, 55.5 ]]
-        StaticDefences: [[ 94.0, 59.0 ]]
-        GateKeeper: [[ 90.5, 57.5 ]]
+        VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
+            UpperSpawn:
+                FirstPylon: [[ 92.0, 154.0 ]]
+                Pylons: [[ 90.0, 154.0 ]]
+                ThreeByThrees: [ [ 91.5, 148.5 ], [ 90.5, 151.5 ], [ 86.5, 153.5 ]]
+                StaticDefences: [[ 93.0, 152.0 ]]
+                GateKeeper: [[ 88.5, 152.5 ]]
+            LowerSpawn:
+                FirstPylon: [[ 92.0, 54.0 ]]
+                Pylons: [[ 90.0, 53.0 ]]
+                ThreeByThrees: [[ 91.5, 59.5 ], [ 89.5, 55.5 ], [ 86.5, 55.5 ]]
+                StaticDefences: [[ 94.0, 59.0 ]]
+                GateKeeper: [[ 90.5, 57.5 ]]
     LeyLines:
-      VsZergNatWall:
-        AvailableVsRaces: ["Zerg", "Random"]
-        UpperSpawn:
-          FirstPylon: [[ 153.0, 105.0 ]]
-          Pylons: [[ 151.0, 103.0 ]]
-        ThreeByThrees: [ [ 147.5, 107.5 ], [ 148.5, 103.5 ], [ 149.5, 100.5 ]]
-        StaticDefences: [[ 152.0, 107.0 ]]
-        GateKeeper: [[ 147.5, 105.5 ]]
-      LowerSpawn:
-        FirstPylon: [[ 45.0, 69.0 ]]
-        Pylons: [[ 47.0, 70.0 ]]
-        ThreeByThrees: [[ 50.5, 66.5 ], [ 49.5, 70.5 ], [ 48.5, 73.5 ]]
-        StaticDefences: [[ 48.0, 66.0 ]]
-        GateKeeper: [[ 50.5, 68.5 ]]
+        VsZergNatWall:
+            AvailableVsRaces: ["Zerg", "Random"]
+            UpperSpawn:
+                FirstPylon: [[ 153.0, 105.0 ]]
+                Pylons: [[ 151.0, 103.0 ]]
+                ThreeByThrees: [ [ 147.5, 107.5 ], [ 148.5, 103.5 ], [ 149.5, 100.5 ]]
+                StaticDefences: [[ 152.0, 107.0 ]]
+                GateKeeper: [[ 147.5, 105.5 ]]
+            LowerSpawn:
+                FirstPylon: [[ 45.0, 69.0 ]]
+                Pylons: [[ 47.0, 70.0 ]]
+                ThreeByThrees: [[ 50.5, 66.5 ], [ 49.5, 70.5 ], [ 48.5, 73.5 ]]
+                StaticDefences: [[ 48.0, 66.0 ]]
+                GateKeeper: [[ 50.5, 68.5 ]]
