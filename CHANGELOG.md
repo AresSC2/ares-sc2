@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.50.4 (2025-09-21)
+
+### Fix
+
+* Correct indentation in building_placements configuration ([`227efa6`](https://github.com/AresSC2/ares-sc2/commit/227efa68e39a65917b095b3f68575bf885e201c3))
+
 ## v2.50.3 (2025-09-18)
 
 ### Fix
