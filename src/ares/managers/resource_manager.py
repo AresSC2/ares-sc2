@@ -149,26 +149,23 @@ class ResourceManager(Manager, IManagerMediator):
         townhalls: Units = self.ai.townhalls.filter(
             lambda th: th.build_progress > progress
         )
-        if not townhalls:
+        if not townhalls or not self.ai.mineral_field:
             return available_minerals
 
         for townhall in townhalls:
-            if self.ai.mineral_field:
-                # we want workers on closest mineral patch first
-                minerals_sorted: list[Unit] = cy_sorted_by_distance_to(
-                    self.ai.mineral_field.filter(
-                        lambda mf: mf.is_visible
-                        and not mf.is_snapshot
-                        and cy_distance_to_squared(mf.position, townhall.position)
-                        < 100.0
-                        and len(self.mineral_patch_to_list_of_workers.get(mf.tag, []))
-                        < 2
-                    ),
-                    townhall.position,
-                )
+            # we want workers on closest mineral patch first
+            minerals_sorted: list[Unit] = cy_sorted_by_distance_to(
+                self.ai.mineral_field.filter(
+                    lambda mf: mf.is_visible
+                    and not mf.is_snapshot
+                    and cy_distance_to_squared(mf.position, townhall.position) < 100.0
+                    and len(self.mineral_patch_to_list_of_workers.get(mf.tag, [])) < 2
+                ),
+                townhall.position,
+            )
 
-                if minerals_sorted:
-                    available_minerals.extend(minerals_sorted)
+            if minerals_sorted:
+                available_minerals.extend(minerals_sorted)
 
         return available_minerals
 
@@ -183,7 +180,7 @@ class ResourceManager(Manager, IManagerMediator):
         Units :
             Safe mineral patches.
         """
-        units_near_patches: Dict[int, Units] = self.manager_mediator.get_units_in_range(
+        units_near_patches: dict[int, Units] = self.manager_mediator.get_units_in_range(
             start_points=self.available_minerals,
             distance=12,
             query_tree=UnitTreeQueryType.AllEnemy,
@@ -656,13 +653,13 @@ class ResourceManager(Manager, IManagerMediator):
         sorted_minerals: list[Unit] = cy_sorted_by_distance_to(
             minerals, self.ai.start_location
         )
-        assigned_workers: Set[int] = set()
-        for i, mineral in enumerate(sorted_minerals):
+        assigned_workers: set[int] = set()
+        for i, mineral in enumerate(reversed(sorted_minerals)):
             leftover_workers: list[Unit] = cy_sorted_by_distance_to(
                 workers.tags_not_in(assigned_workers), mineral.position
             )
             # closest 4 patches assign 2 drones, then one on each
-            take: int = 2 if i <= 3 else 1
+            take: int = 1 if i <= 3 else 2
             new_workers: list[Unit] = leftover_workers[:take]
             for w in new_workers:
                 self._assign_worker_to_patch(mineral, w)
@@ -865,7 +862,7 @@ class ResourceManager(Manager, IManagerMediator):
     @staticmethod
     def _get_intersections(
         x0: float, y0: float, r0: float, x1: float, y1: float, r1: float
-    ) -> List[Point2]:
+    ) -> list[Point2]:
         """Get intersection of two circles.
 
         Thanks to sharpy:
@@ -927,6 +924,10 @@ class ResourceManager(Manager, IManagerMediator):
         results at frame 6720.
         Best: 3975 (how?)
         3875 - 3895 seems typical for most bots
+
+        3940
+        3920
+        3935
 
         Returns
         -------
