@@ -101,14 +101,15 @@ class SpeedMining(CombatIndividualBehavior):
         elif not worker.is_returning and len_orders < 2:
             min_distance: float = 0.5625 if self.target.is_mineral_field else 0.01
             max_distance: float = 4.0 if self.target.is_mineral_field else 0.25
-            if (
-                min_distance
-                < cy_distance_to_squared(self.worker_position, self.resource_target_pos)
-                < max_distance
-                or worker.is_idle
-            ):
+            dist: float = cy_distance_to_squared(
+                self.worker_position, self.resource_target_pos
+            )
+            if min_distance < dist < max_distance or worker.is_idle:
                 worker.move(self.resource_target_pos)
                 worker(AbilityId.SMART, self.target, True)
+                return True
+            elif dist > 4.0 and worker.is_gathering:
+                worker.move(self.resource_target_pos)
                 return True
 
         # on rare occasion above conditions don't hit and worker goes idle

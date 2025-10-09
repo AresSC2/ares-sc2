@@ -388,11 +388,6 @@ class PlacementManager(Manager, IManagerMediator):
                         break
 
             if len(available) == 0:
-                if self.ai.time > 60.0:
-                    logger.info(
-                        f"{self.ai.time_formatted}: No available {building_size}"
-                        f" found anywhere on map, giving up."
-                    )
                 return
 
             # we have some available positions, calculate the final placement
