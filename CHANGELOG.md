@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.51.0 (2025-10-09)
+
+### Feature
+
+* Prevent returning speedminers going behind mineral patch ([`9a52684`](https://github.com/AresSC2/ares-sc2/commit/9a526841242edcb4f9f143615b39664d0131c584))
+* Improve initial worker split ([`1a97063`](https://github.com/AresSC2/ares-sc2/commit/1a9706310cdb7793899076295016b44b38f50b63))
+
 ## v2.50.4 (2025-09-21)
 
 ### Fix
