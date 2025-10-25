@@ -974,9 +974,9 @@ class PlacementManager(Manager, IManagerMediator):
                 self.placements_dict[el][BuildingSize.THREE_BY_THREE] = {}
 
             # avoid building 3x3 too close to el
-            start_x: int = int(el.x - 3.0)
-            start_y: int = int(el.y - 3.0)
-            self.points_to_avoid_grid[start_y : start_y + 6, start_x : start_x + 6] = 1
+            start_x: int = int(el.x - 4.0)
+            start_y: int = int(el.y - 4.0)
+            self.points_to_avoid_grid[start_y : start_y + 8, start_x : start_x + 8] = 1
             max_dist: int = 16
 
             # calculate the wall positions first
