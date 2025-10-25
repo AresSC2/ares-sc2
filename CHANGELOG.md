@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.51.1 (2025-10-25)
+
+### Fix
+
+* Expand 3x3 building avoidance radius to prevent mineral line ([`5e31f48`](https://github.com/AresSC2/ares-sc2/commit/5e31f4821f66776fc2664262c18a4e8958f0fc34))
+
 ## v2.51.0 (2025-10-09)
 
 ### Feature
