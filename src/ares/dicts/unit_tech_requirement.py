@@ -28,7 +28,7 @@ UNIT_TECH_REQUIREMENT: dict[UnitID, list[UnitID]] = dict(
             UnitID.ROBOTICSBAY,
         ],
         UnitID.CORRUPTOR: [UnitID.SPIRE],
-        UnitID.CYCLONE: [UnitID.BARRACKS, UnitID.FACTORY],
+        UnitID.CYCLONE: [UnitID.BARRACKS, UnitID.FACTORY, UnitID.FACTORYTECHLAB],
         UnitID.DARKTEMPLAR: [
             UnitID.GATEWAY,
             UnitID.CYBERNETICSCORE,
