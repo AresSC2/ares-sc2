@@ -134,7 +134,7 @@ class ProductionController(MacroBehavior):
             if TechUp(
                 unit_type_id,
                 base_location=self.base_location,
-                ignore_existing_techlabs=current_proportion < target_proportion,
+                ignore_existing_techlabs=current_proportion <= target_proportion,
             ).execute(ai, config, mediator):
                 return True
 
@@ -160,8 +160,8 @@ class ProductionController(MacroBehavior):
             # we can afford prod, work out how much prod to support
             # based on income
             if (
-                ai.minerals > self.add_production_at_bank[0]
-                and ai.vespene > self.add_production_at_bank[1]
+                ai.minerals >= self.add_production_at_bank[0]
+                and ai.vespene >= self.add_production_at_bank[1]
             ):
                 if self._building_production_due_to_bank(
                     ai,
@@ -240,11 +240,14 @@ class ProductionController(MacroBehavior):
             * self.alpha
             * target_proportion
         )
-        simul_afford_ves: int = int(
-            (collection_rate_vespene / (cost_of_unit.vespene + 1))
-            * self.alpha
-            * target_proportion
-        )
+        if cost_of_unit.vespene == 0:
+            simul_afford_ves: int = simul_afford_min
+        else:
+            simul_afford_ves: int = int(
+                (collection_rate_vespene / (cost_of_unit.vespene + 1))
+                * self.alpha
+                * target_proportion
+            )
         num_existing: int = len([s for s in existing_structures if s.is_ready])
         num_production: int = num_existing + ai.structure_pending(trained_from)
 
