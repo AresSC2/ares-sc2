@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.51.2 (2025-11-19)
+
+### Fix
+
+* Add missing FactoryTechLab requirement for Cyclone ([`877b6e9`](https://github.com/AresSC2/ares-sc2/commit/877b6e939f2cb45ad9fadf85e5d1c04f3f09a5a6))
+* Adjust production logic and resource checks for accurate behavior ([`399640a`](https://github.com/AresSC2/ares-sc2/commit/399640a1e523107a29eaf83fd5192251243858d5))
+
 ## v2.51.1 (2025-10-25)
 
 ### Fix
