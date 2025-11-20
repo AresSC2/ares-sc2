@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.51.3 (2025-11-20)
+
+### Fix
+
+* Revise restore_power to use specific worker selection logic and building process ([`9bfd4cb`](https://github.com/AresSC2/ares-sc2/commit/9bfd4cb6895daf23aca0992eb80e3380b4bc9c7c))
+* Add skip_creep_check logic for specific structure types ([`1a13fd2`](https://github.com/AresSC2/ares-sc2/commit/1a13fd26f19fc46cb613196f8e0a615d8b7c2f35))
+
 ## v2.51.2 (2025-11-19)
 
 ### Fix
