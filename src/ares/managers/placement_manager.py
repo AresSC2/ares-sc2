@@ -82,6 +82,7 @@ class PlacementManager(Manager, IManagerMediator):
         BuildingSize.THREE_BY_THREE: 1.5,
         BuildingSize.TWO_BY_TWO: 1.0,
     }
+    SKIP_CREEP_CHECK_IDS: set[UnitID] = {UnitID.HATCHERY, UnitID.NYDUSCANAL}
     UNBUILDABLES: set[UnitID] = {
         UnitID.UNBUILDABLEPLATESDESTRUCTIBLE,
         UnitID.UNBUILDABLEBRICKSDESTRUCTIBLE,
@@ -269,6 +270,7 @@ class PlacementManager(Manager, IManagerMediator):
         origin_y: int = int(position[1] - offset)
 
         size: tuple[int, int] = self.BUILDING_SIZE_ENUM_TO_TUPLE[size]
+        skip_creep_check: bool = structure_type in self.SKIP_CREEP_CHECK_IDS
         return cy_can_place_structure(
             (origin_x, origin_y),
             size,
@@ -277,6 +279,7 @@ class PlacementManager(Manager, IManagerMediator):
             self.manager_mediator.get_ground_grid.astype(np.uint8).T,
             avoid_creep=self.ai.race != Race.Zerg,
             include_addon=include_addon,
+            skip_creep_check=skip_creep_check,
         )
 
     def request_building_placement(
