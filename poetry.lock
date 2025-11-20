@@ -1055,25 +1055,25 @@ tests = ["pytest", "pytest-cov", "pytest-xdist"]
 
 [[package]]
 name = "cython-extensions-sc2"
-version = "0.9.0"
+version = "0.10.0"
 description = ""
 optional = false
 python-versions = "<3.14,>=3.11"
 groups = ["main"]
 files = [
-    {file = "cython_extensions_sc2-0.9.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:99427924fdeeda58b0248c2a801e03ab633d08d903d531f0e387a52eb3b7b461"},
-    {file = "cython_extensions_sc2-0.9.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:992dfb8915a7c49b65f3d02b0bab200d5840c207a602176a2ebb06474e833534"},
-    {file = "cython_extensions_sc2-0.9.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:f94c0ba38dedbb29b3130182bfe4daa8f3acefdcf74380febfa7a0792ee1b1b4"},
-    {file = "cython_extensions_sc2-0.9.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:6b95e6c307e950cc066b5b494a381c315de3d2bfd22f23c03727ec4a4803c2ec"},
-    {file = "cython_extensions_sc2-0.9.0-cp311-cp311-win_amd64.whl", hash = "sha256:2b826ab2ae1d701b5a6b6f5de00c625acdde34ac42b0ca6073fa217cecaf3307"},
-    {file = "cython_extensions_sc2-0.9.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:bfb5559a77563a8149ae037022bc2c9eadd30fa0fd07da039bf9e1f831fe9838"},
-    {file = "cython_extensions_sc2-0.9.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:2a6cee3f6da8424972f0711467fb15de18e19154c3f32793a13938749befdc54"},
-    {file = "cython_extensions_sc2-0.9.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:a5c491bd5e6a512689a62b1016c5dab4e7b771e1c55ffc32785cdebcc50415bb"},
-    {file = "cython_extensions_sc2-0.9.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:d4a6240797744a3ec2be2a2d2a669a0e4767113519531548b93f40138f85762b"},
-    {file = "cython_extensions_sc2-0.9.0-cp312-cp312-win_amd64.whl", hash = "sha256:92ce39482e176e0ad05ccd0e291274586501ce8dd4fa9c61e34d46c8a65ca4bf"},
-    {file = "cython_extensions_sc2-0.9.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:4c2f1f56b4d783da84583000166fb07d7c1830ae9dee6801fbb41bfa8051aec7"},
-    {file = "cython_extensions_sc2-0.9.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:def99c40b5f51415f6d090ed780efefbbe6b0a5e68996b76de33e59ddfab4ab1"},
-    {file = "cython_extensions_sc2-0.9.0-cp313-cp313-win_amd64.whl", hash = "sha256:b9d4d484d334df619aefea7cd2056d4d16e1eee99bf061464652903454940efe"},
+    {file = "cython_extensions_sc2-0.10.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:800b3576c8efd713ca0659c2864225f206c7a3079cc00b68de0e8c8cbe3c2fe7"},
+    {file = "cython_extensions_sc2-0.10.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:b29e8c39aa3b3d108e52a10356647302ee09b7446511884db907ef84078647af"},
+    {file = "cython_extensions_sc2-0.10.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:d8fd32815075b93fb580caeafaaaeb18edfd9561e31a9610a30c7481fc3b447a"},
+    {file = "cython_extensions_sc2-0.10.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:93fe20c54372a21073cea584168adfd5ac3ddcc667cd392274ef9e8d45d184bb"},
+    {file = "cython_extensions_sc2-0.10.0-cp311-cp311-win_amd64.whl", hash = "sha256:9c2d5eea363f573e1c414ef245cca58d1ce3956dc4ec3e85cc5b37e2a97fa667"},
+    {file = "cython_extensions_sc2-0.10.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:a0b10b07902b7566ae29df47e3d30708c8c80676f095f69a85bac2ec7491f2c4"},
+    {file = "cython_extensions_sc2-0.10.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:bb08ecb97763c78559cacadc20bd4ba0b1da8ac9689fbb0bf968358abd0881c6"},
+    {file = "cython_extensions_sc2-0.10.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:587ba681426d94c0ee466d71d26175a85eefd468b0188a08449b8fef2308f54c"},
+    {file = "cython_extensions_sc2-0.10.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:5fabc937c17e05ece8ca50220f70006b12c1220d83146760d7f58caac9f7dcc3"},
+    {file = "cython_extensions_sc2-0.10.0-cp312-cp312-win_amd64.whl", hash = "sha256:5d2f3829bb05e3fa24e508f6508e5a63f776e50e99c42a31723f19d095ec9010"},
+    {file = "cython_extensions_sc2-0.10.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:498304cd48350813c75b92a8ccdb4632c9cb999706a10623fe5bad43e9c48a3b"},
+    {file = "cython_extensions_sc2-0.10.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:8c949d09f6d40cc0af3f66c0b453cdc2446394b66eb2f2c7797f71a169482685"},
+    {file = "cython_extensions_sc2-0.10.0-cp313-cp313-win_amd64.whl", hash = "sha256:1c163a2434d210779d5312f34b19b3a1038c38d405b47f96e4b680a6cd33a896"},
 ]
 
 [package.dependencies]
@@ -2164,14 +2164,14 @@ test = ["jupyter-server (>=2.0.0)", "pytest (>=7.0)", "pytest-jupyter[server] (>
 
 [[package]]
 name = "jupyterlab"
-version = "4.4.10"
+version = "4.5.0"
 description = "JupyterLab computational environment"
 optional = false
 python-versions = ">=3.9"
 groups = ["main", "notebook"]
 files = [
-    {file = "jupyterlab-4.4.10-py3-none-any.whl", hash = "sha256:65939ab4c8dcd0c42185c2d0d1a9d60b254dc8c46fc4fdb286b63c51e9358e07"},
-    {file = "jupyterlab-4.4.10.tar.gz", hash = "sha256:521c017508af4e1d6d9d8a9d90f47a11c61197ad63b2178342489de42540a615"},
+    {file = "jupyterlab-4.5.0-py3-none-any.whl", hash = "sha256:88e157c75c1afff64c7dc4b801ec471450b922a4eae4305211ddd40da8201c8a"},
+    {file = "jupyterlab-4.5.0.tar.gz", hash = "sha256:aec33d6d8f1225b495ee2cf20f0514f45e6df8e360bdd7ac9bace0b7ac5177ea"},
 ]
 
 [package.dependencies]
@@ -2182,7 +2182,7 @@ jinja2 = ">=3.0.3"
 jupyter-core = "*"
 jupyter-lsp = ">=2.0.0"
 jupyter-server = ">=2.4.0,<3"
-jupyterlab-server = ">=2.27.1,<3"
+jupyterlab-server = ">=2.28.0,<3"
 notebook-shim = ">=0.2"
 packaging = "*"
 setuptools = ">=41.1.0"
@@ -2190,9 +2190,9 @@ tornado = ">=6.2.0"
 traitlets = "*"
 
 [package.extras]
-dev = ["build", "bump2version", "coverage", "hatch", "pre-commit", "pytest-cov", "ruff (==0.11.4)"]
+dev = ["build", "bump2version", "coverage", "hatch", "pre-commit", "pytest-cov", "ruff (==0.11.12)"]
 docs = ["jsx-lexer", "myst-parser", "pydata-sphinx-theme (>=0.13.0)", "pytest", "pytest-check-links", "pytest-jupyter", "sphinx (>=1.8,<8.2.0)", "sphinx-copybutton"]
-docs-screenshots = ["altair (==5.5.0)", "ipython (==8.16.1)", "ipywidgets (==8.1.5)", "jupyterlab-geojson (==3.4.0)", "jupyterlab-language-pack-zh-cn (==4.3.post1)", "matplotlib (==3.10.0)", "nbconvert (>=7.0.0)", "pandas (==2.2.3)", "scipy (==1.15.1)", "vega-datasets (==0.9.0)"]
+docs-screenshots = ["altair (==6.0.0)", "ipython (==8.16.1)", "ipywidgets (==8.1.5)", "jupyterlab-geojson (==3.4.0)", "jupyterlab-language-pack-zh-cn (==4.3.post1)", "matplotlib (==3.10.0)", "nbconvert (>=7.0.0)", "pandas (==2.2.3)", "scipy (==1.15.1)"]
 test = ["coverage", "pytest (>=7.0)", "pytest-check-links (>=0.7)", "pytest-console-scripts", "pytest-cov", "pytest-jupyter (>=0.5.3)", "pytest-timeout", "pytest-tornasync", "requests", "requests-cache", "virtualenv"]
 upgrade-extension = ["copier (>=9,<10)", "jinja2-time (<0.3)", "pydantic (<3.0)", "pyyaml-include (<3.0)", "tomli-w (<2.0)"]
 
@@ -3284,27 +3284,27 @@ files = [
 
 [[package]]
 name = "notebook"
-version = "7.4.7"
+version = "7.5.0"
 description = "Jupyter Notebook - A web-based notebook environment for interactive computing"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["notebook"]
 files = [
-    {file = "notebook-7.4.7-py3-none-any.whl", hash = "sha256:362b7c95527f7dd3c4c84d410b782872fd9c734fb2524c11dd92758527b6eda6"},
-    {file = "notebook-7.4.7.tar.gz", hash = "sha256:3f0a04027dfcee8a876de48fba13ab77ec8c12f72f848a222ed7f5081b9e342a"},
+    {file = "notebook-7.5.0-py3-none-any.whl", hash = "sha256:3300262d52905ca271bd50b22617681d95f08a8360d099e097726e6d2efb5811"},
+    {file = "notebook-7.5.0.tar.gz", hash = "sha256:3b27eaf9913033c28dde92d02139414c608992e1df4b969c843219acf2ff95e4"},
 ]
 
 [package.dependencies]
 jupyter-server = ">=2.4.0,<3"
-jupyterlab = ">=4.4.9,<4.5"
-jupyterlab-server = ">=2.27.1,<3"
+jupyterlab = ">=4.5.0rc0,<4.6"
+jupyterlab-server = ">=2.28.0,<3"
 notebook-shim = ">=0.2,<0.3"
 tornado = ">=6.2.0"
 
 [package.extras]
 dev = ["hatch", "pre-commit"]
 docs = ["myst-parser", "nbsphinx", "pydata-sphinx-theme", "sphinx (>=1.3.6)", "sphinxcontrib-github-alt", "sphinxcontrib-spelling"]
-test = ["importlib-resources (>=5.0)", "ipykernel", "jupyter-server[test] (>=2.4.0,<3)", "jupyterlab-server[test] (>=2.27.1,<3)", "nbval", "pytest (>=7.0)", "pytest-console-scripts", "pytest-timeout", "pytest-tornasync", "requests"]
+test = ["importlib-resources (>=5.0)", "ipykernel", "jupyter-server[test] (>=2.4.0,<3)", "jupyterlab-server[test] (>=2.28.0,<3)", "nbval", "pytest (>=7.0)", "pytest-console-scripts", "pytest-timeout", "pytest-tornasync", "requests"]
 
 [[package]]
 name = "notebook-shim"
@@ -5451,4 +5451,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11, <3.13"
-content-hash = "b89bfe45a65659135147c101b384cfda1b5fe204884f184f78313113877b3884"
+content-hash = "572445893ac92f829399697a81d3ddb0324b56b62edf565a4256b1f85723976e"
