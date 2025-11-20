@@ -15,7 +15,6 @@ from cython_extensions import (
     cy_pylon_matrix_covers,
 )
 
-from ares.behaviors.macro.build_structure import BuildStructure
 from ares.behaviors.macro.macro_behavior import MacroBehavior
 from ares.consts import ID, REQUIRE_POWER_STRUCTURE_TYPES, TARGET, BuildingSize
 from ares.managers.manager_mediator import ManagerMediator
@@ -111,7 +110,7 @@ class RestorePower(MacroBehavior):
 
         for base_loc, placements_info in placements_dict.items():
             two_by_twos = placements_info[size]
-            if available := [
+            available: list[Point2] = [
                 placement
                 for placement in two_by_twos
                 if two_by_twos[placement]["available"]
@@ -127,9 +126,17 @@ class RestorePower(MacroBehavior):
                     avoid_creep=True,
                     include_addon=False,
                 )
-            ]:
-                return BuildStructure(
-                    base_loc, UnitID.PYLON, closest_to=available[0], wall=True
-                ).execute(ai, config, mediator)
+            ]
+            if len(available) > 0:
+                if worker := mediator.select_worker(
+                    target_position=available[0],
+                    force_close=True,
+                ):
+                    mediator.build_with_specific_worker(
+                        worker=worker,
+                        structure_type=UnitID.PYLON,
+                        pos=available[0],
+                    )
+                    return True
 
         return False
