@@ -1730,6 +1730,26 @@ class ManagerMediator(IManagerMediator):
             ManagerName.PLACEMENT_MANAGER, ManagerRequestType.GET_PVZ_NAT_GATEKEEPER_POS
         )
 
+    def make_placement_available(self, **kwargs) -> None:
+        """Make a placement available again.
+
+        PlacementManager
+
+        Parameters
+        ----------
+        size :
+            The building size.
+        base_location :
+            Expansion location this placement is near.
+        building_pos :
+            Unique building placement.
+        tag : optional
+            Tag of existing structure.
+        """
+        return self.manager_request(
+            ManagerName.PLACEMENT_MANAGER, ManagerRequestType.GET_PVZ_NAT_GATEKEEPER_POS
+        )
+
     def request_building_placement(self, **kwargs) -> Optional[Point2]:
         """Request a building placement from the precalculated building formation.
 

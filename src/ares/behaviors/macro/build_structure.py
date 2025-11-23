@@ -18,7 +18,7 @@ from ares.managers.manager_mediator import ManagerMediator
 
 @dataclass
 class BuildStructure(MacroBehavior):
-    """Handy behavior for Terran and Protoss.
+    """Handy convenience building structure behavior.
     Especially combined with `Mining` and ares built in placement solver.
     Finds an ideal mining worker, and an available precalculated placement.
     Then removes worker from mining records and provides a new role.
@@ -28,8 +28,13 @@ class BuildStructure(MacroBehavior):
     ```py
     from ares.behaviors.macro import BuildStructure
 
+    # finds available barracks location near spawn base location
+    # assigns a scv and builds a barracks
     self.register_behavior(
-        BuildStructure(self.start_location, UnitTypeId.BARRACKS)
+        BuildStructure(
+            base_location=self.start_location,
+            structure_id=UnitTypeId.BARRACKS
+        )
     )
     ```
 

@@ -121,6 +121,9 @@ class PlacementManager(Manager, IManagerMediator):
             ManagerRequestType.REQUEST_BUILDING_PLACEMENT: lambda kwargs: (
                 self.request_building_placement(**kwargs)
             ),
+            ManagerRequestType.MAKE_PLACEMENT_AVAILABLE: lambda kwargs: (
+                self._make_placement_available(**kwargs)
+            ),
         }
 
         # main dict where all data is organised
