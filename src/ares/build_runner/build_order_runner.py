@@ -32,6 +32,7 @@ from ares.consts import (
     OPENING_BUILD_ORDER,
     TARGET,
     WORKER_TYPES,
+    BuildingSize,
     BuildOrderOptions,
     BuildOrderTargetOptions,
     UnitRole,
@@ -327,12 +328,13 @@ class BuildOrderRunner:
                 if next_building_position := await self.get_position(
                     step.command, step.target
                 ):
-                    if worker := self.mediator.select_worker(
+                    worker: Unit | None = self.mediator.select_worker(
                         target_position=self.current_build_position,
                         force_close=True,
                         select_persistent_builder=command != UnitID.REFINERY,
                         only_select_persistent_builder=persistent_worker_available,
-                    ):
+                    )
+                    if worker:
                         self.current_build_position = next_building_position
 
                         if self.mediator.build_with_specific_worker(
@@ -343,6 +345,12 @@ class BuildOrderRunner:
                             in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
                         ):
                             self.current_step_started = True
+                    else:
+                        self.mediator.make_placement_available(
+                            size=BuildingSize.THREE_BY_THREE,
+                            base_location=self.ai.start_location,
+                            building_pos=next_building_position,
+                        )
 
             elif isinstance(command, UnitID) and command not in ALL_STRUCTURES:
                 army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
@@ -570,9 +578,10 @@ class BuildOrderRunner:
                 base_location=base_location,
                 structure_type=structure_type,
                 wall=at_wall,
-                first_pylon=self.ai.time < 60.0,
+                first_pylon=self.ai.time < 60.0 and self.ai.race == Race.Protoss,
                 within_psionic_matrix=within_psionic_matrix,
                 pylon_build_progress=0.5,
+                reserve_placement=False,
             ):
                 return pos
         else:
