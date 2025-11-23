@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v2.52.0 (2025-11-23)
+
+### Feature
+
+* Add `make_placement_unavailable` mediator request ([`9fd4d4a`](https://github.com/AresSC2/ares-sc2/commit/9fd4d4af90e476e51d1c57165d8b9e5f827692ae))
+
+### Fix
+
+* Build runner makes placement available again  if no worker selected ([`bc60184`](https://github.com/AresSC2/ares-sc2/commit/bc6018430f9873726555539e6be4a25a01c0c274))
+
 ## v2.51.3 (2025-11-20)
 
 ### Fix
