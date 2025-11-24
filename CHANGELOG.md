@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.52.1 (2025-11-24)
+
+### Fix
+
+* Use dynamic building size for placement availability logic ([`22284dd`](https://github.com/AresSC2/ares-sc2/commit/22284ddc3cb26ce0b1606825bf5999dda9c49e5c))
+
 ## v2.52.0 (2025-11-23)
 
 ### Feature
