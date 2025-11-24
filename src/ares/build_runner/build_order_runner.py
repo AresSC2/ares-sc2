@@ -345,9 +345,10 @@ class BuildOrderRunner:
                             in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
                         ):
                             self.current_step_started = True
-                    else:
+                    elif command in STRUCTURE_TO_BUILDING_SIZE:
+                        size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[command]
                         self.mediator.make_placement_available(
-                            size=BuildingSize.THREE_BY_THREE,
+                            size=size,
                             base_location=self.ai.start_location,
                             building_pos=next_building_position,
                         )
