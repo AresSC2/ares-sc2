@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.53.0 (2025-12-09)
+
+### Feature
+
+* Add `closest_to` parameter for `AutoSupply` ([`d560eab`](https://github.com/AresSC2/ares-sc2/commit/d560eab8ed318091bd8fc69b787d164ce060d8bf))
+
 ## v2.52.1 (2025-11-24)
 
 ### Fix
