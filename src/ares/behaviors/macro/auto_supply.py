@@ -32,11 +32,14 @@ class AutoSupply(MacroBehavior):
         base_location: The base location where supply should be built.
         return_true_if_supply_required: If supply can't be afforded but is
             required, return true. Useful for creating a `MacroPlan`.
+        closest_to: Find available supply placement closest to this location.
+            Only applicable to Terran or Protoss.
 
     """
 
     base_location: Point2
     return_true_if_supply_required: bool = True
+    closest_to: Point2 | None = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if self._num_supply_required(ai, mediator) > 0:
@@ -47,9 +50,9 @@ class AutoSupply(MacroBehavior):
                     ai.num_larva_left -= 1
                     return True
             else:
-                BuildStructure(self.base_location, supply_type).execute(
-                    ai, config, mediator
-                )
+                BuildStructure(
+                    self.base_location, supply_type, closest_to=self.closest_to
+                ).execute(ai, config, mediator)
             return self.return_true_if_supply_required
 
         return False

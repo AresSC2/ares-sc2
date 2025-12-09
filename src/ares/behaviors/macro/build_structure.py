@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from cython_extensions.geometry import cy_distance_to_squared
 from sc2.data import Race
@@ -64,7 +64,7 @@ class BuildStructure(MacroBehavior):
     first_pylon: bool = False
     static_defence: bool = False
     wall: bool = False
-    closest_to: Optional[Point2] = None
+    closest_to: Point2 | None = None
     to_count: int = 0
     to_count_per_base: int = 0
     tech_progress_check: float = 0.85
