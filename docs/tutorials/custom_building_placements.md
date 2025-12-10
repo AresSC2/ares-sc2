@@ -7,18 +7,34 @@ behavior, and direct interactions with the building tracker via the `ManagerMedi
 Additionally, the system ensures that standard placements within a base location adapt 
 to account for user-defined custom positions.
 
-At present, custom placements are supported exclusively for Protoss vs. Zerg natural wall setups. 
+At present, custom placements are supported exclusively for Protoss vs. Zerg and 
+Protoss vs. Terran natural wall setups. 
 Support for additional scenarios will be introduced in future updates.
 
 ## Defining custom placements
 Create a file in the root of your bot folder names `building_placements.yml`, you should enter placements
-into this file like below.
+into this file like below. All entries are optional, and if not specified, ares-sc2 will use default values 
+in its own ile or search for calculated alternatives.
 
 ```yml
 Protoss:
     AbyssalReef:
         VsZergNatWall:
             AvailableVsRaces: ["Zerg", "Random"]
+            UpperSpawn:
+                FirstPylon: [[64., 105.]]
+                Pylons: [[63., 112.]]
+                ThreeByThrees: [[68.5, 109.5], [66.5, 106.5], [60.5, 106.5]]
+                StaticDefences: [[64., 110.]]
+                GateKeeper: [[62.25, 105.86]]
+            LowerSpawn:
+                FirstPylon: [[136., 39.]]
+                Pylons: [[137., 32.]]
+                ThreeByThrees: [[131.5, 34.5], [133.5, 37.5], [139.5, 37.5]]
+                StaticDefences: [[136., 36.]]
+                GateKeeper: [[137.25, 38.6]]
+        VsTerranNatWall:
+            AvailableVsRaces: ["Terran"]
             UpperSpawn:
                 FirstPylon: [[64., 105.]]
                 Pylons: [[63., 112.]]
@@ -112,7 +128,7 @@ Protoss:
 
 The values shown above are the default settings in ares, so there's no need to 
 create your own file if you're satisfied with them. However, you can customize 
-these settings by creating your own building_placements.yml file and specifying 
+these settings by creating your own `building_placements.yml` file and specifying 
 only the elements you wish to change. ares-sc2 will automatically prioritize 
 your custom placements and fill in any missing elements with the default values.
 
@@ -131,8 +147,10 @@ When creating your building placements file, ensure the keys are spelled correct
 above. Internally `ares-sc2` checks an `Enum` similar to this when parsing the file:
 ```python
 class BuildingPlacementOptions(str, Enum):
+    AVAILABLE_VS_RACES = "AvailableVsRaces"
     LOWER_SPAWN = "LowerSpawn"
     UPPER_SPAWN = "UpperSpawn"
+    VS_TERRAN_NAT_WALL = "VsTerranNatWall"
     VS_ZERG_NAT_WALL = "VsZergNatWall"
     FIRST_PYLON = "FirstPylon"
     PYLONS = "Pylons"

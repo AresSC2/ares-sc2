@@ -50,6 +50,11 @@ from ares.managers.manager_mediator import IManagerMediator, ManagerMediator
 if TYPE_CHECKING:
     from ares import AresBot
 
+CUSTOM_PLACEMENT_OPTIONS: set[BuildingPlacementOptions] = {
+    BuildingPlacementOptions.VS_TERRAN_NAT_WALL,
+    BuildingPlacementOptions.VS_ZERG_NAT_WALL,
+}
+
 
 class PlacementManager(Manager, IManagerMediator):
     """Handle the placements of buildings.
@@ -567,7 +572,7 @@ class PlacementManager(Manager, IManagerMediator):
                 self.ai.game_info.map_name
             ):
                 for building_type in placements:
-                    if building_type == BuildingPlacementOptions.VS_ZERG_NAT_WALL:
+                    if building_type in CUSTOM_PLACEMENT_OPTIONS:
                         if (
                             BuildingPlacementOptions.AVAILABLE_VS_RACES
                             in placements[building_type]
