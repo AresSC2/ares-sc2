@@ -16,7 +16,7 @@ PyYAML = "^6.0.2"
 tqdm = "^4.64.1"
 scikit-learn = "^1.2.2"
 map-analyzer = { git = "https://github.com/spudde123/SC2MapAnalysis", branch = "develop" }
-cython-extensions-sc2 = "^0.11.0"
+cython-extensions-sc2 = "^0.13.1"
 
 
 [tool.poetry.group.docs]
