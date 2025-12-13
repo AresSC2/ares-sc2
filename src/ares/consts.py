@@ -161,6 +161,8 @@ class BuildingPlacementOptions(str, Enum):
     AVAILABLE_VS_RACES = "AvailableVsRaces"
     LOWER_SPAWN = "LowerSpawn"
     UPPER_SPAWN = "UpperSpawn"
+    VS_TERRAN_NAT_WALL = "VsTerranNatWall"
+    VS_TERRAN_REAPER_WALL = "VsTerranReaperWall"
     VS_ZERG_NAT_WALL = "VsZergNatWall"
     FIRST_PYLON = "FirstPylon"
     PYLONS = "Pylons"

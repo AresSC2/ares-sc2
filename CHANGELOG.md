@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.54.0 (2025-12-10)
+
+### Feature
+
+* Add support for custom Protoss vs. Terran natural wall placements ([`deb3f4c`](https://github.com/AresSC2/ares-sc2/commit/deb3f4cec0a3fc097de13326638f31d05f1c98d4))
+
 ## v2.53.0 (2025-12-09)
 
 ### Feature
