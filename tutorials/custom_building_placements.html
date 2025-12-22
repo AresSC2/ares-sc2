@@ -1,0 +1,1743 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="custom_behaviors.html">
+      
+      
+        <link rel="next" href="gotchas.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Custom Building Placements - Ares SC2</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#defining-custom-placements" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="Ares SC2" class="md-header__button md-logo" aria-label="Ares SC2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ares SC2
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Custom Building Placements
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AresSC2/ares-sc2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ares-sc2
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="Ares SC2" class="md-nav__button md-logo" aria-label="Ares SC2" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Ares SC2
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AresSC2/ares-sc2" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    ares-sc2
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Start here
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="assigning_unit_roles.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assigning Unit Roles
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="build_runner.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Build Runner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="chat_debug.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chat Debug
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="combat_maneuver_example.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Combat Maneuver Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="config_file.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Config File
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="custom_behaviors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Creating Custom Behaviors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Building Placements
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="custom_building_placements.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Building Placements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#defining-custom-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining custom placements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Defining custom placements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#providing-impossible-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Providing impossible placements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WARNING!
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieve-gate-keeper-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieve gate keeper placements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-custom-placements-with-ares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using custom placements with ares
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using custom placements with ares">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-the-buildrunner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Via the BuildRunner
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buildstructure-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BuildStructure behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-the-managermediator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Via the ManagerMediator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="gotchas.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gotchas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="influence_and_pathing.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Influence and Pathing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="managing_production.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Managing Production
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="migrating.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating from python-sc2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="unit_squads_group_behaviors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Unit Squads and Group Behaviors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api_reference/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../api_reference/behaviors/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Behaviors
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Behaviors
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/behaviors/combat_behaviors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Individual Combat Behaviors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/behaviors/group_combat_behaviors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Group Combat Behaviors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/behaviors/macro_behaviors.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Macro Behaviors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api_reference/manager_mediator.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Manager mediator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../contributing/index.html" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Contributing
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#defining-custom-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Defining custom placements
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Defining custom placements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#providing-impossible-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Providing impossible placements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#warning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WARNING!
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieve-gate-keeper-placements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieve gate keeper placements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-custom-placements-with-ares" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using custom placements with ares
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Using custom placements with ares">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#via-the-buildrunner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Via the BuildRunner
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buildstructure-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BuildStructure behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#via-the-managermediator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Via the ManagerMediator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+  <h1>Custom Building Placements</h1>
+
+<p>Although <code>ares-sc2</code> automatically calculates building formations for all base locations, 
+there are situations where precise placement is critical, and custom-building layouts 
+are preferred. To address this, <code>ares-sc2</code> allows users to specify custom-building positions, 
+which are seamlessly integrated into its placement calculations. These custom placements 
+are fully compatible with core <code>ares-sc2</code> features, such as the Build Runner, <code>BuildStructure</code>
+behavior, and direct interactions with the building tracker via the <code>ManagerMediator</code>. 
+Additionally, the system ensures that standard placements within a base location adapt 
+to account for user-defined custom positions.</p>
+<p>This is a feature only available for Terran and Protoss authors.</p>
+<blockquote>
+<p><strong><em>Tip:</em></strong> When working with custom placements, it is recommended to use the <code>Debug</code> flag 
+in your <code>config.yml</code> file as well as enabling <code>ShowBuildingFormation</code> in <code>DebugOptions</code> like so:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a># other config file content ...
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Debug: True
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>DebugOptions:
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    ShowBuildingFormation: True
+</code></pre></div></p>
+</blockquote>
+<p>This will help you visualize the placement of your structures on the map. White cuboids represent
+custom placements, while any other colour represents placements calculated by <code>ares-sc2</code>.</p>
+<h2 id="defining-custom-placements">Defining custom placements<a class="headerlink" href="#defining-custom-placements" title="Permanent link">&para;</a></h2>
+<p>Create a file in the root of your bot folder named <code>&lt;bot_race&gt;_building_placements.yml</code>, you should enter placements
+into this file like below. All entries are optional, and if not specified, ares-sc2 will use default values 
+in its own file or search for calculated alternatives.</p>
+<p>Here is an example of a <code>protoss_building_placements.yml</code> file defining natural wall placements for Protoss vs Zerg.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Persephone:
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  UpperSpawn:
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    VsZerg:
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>      FirstPylon:
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>        # natural wall
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        - [ [ 69.0, 144.0 ] ]
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>      PylonsWall:
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>        # natural wall
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        - [ [ 71.0, 145.0 ] ]
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>      ThreeByThreesWall:
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        # natural wall
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>        - [ [ 71.5, 138.5 ], [ 73.5, 142.5 ], [ 74.5, 145.5 ] ]
+<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>      StaticDefencesWall:
+<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        # natural wall
+<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>        - [ [ 68.0, 140.0 ] ]
+<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>      GateKeeper:
+<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        # natural wall
+<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>        - [ [ 72.5, 140.5 ] ]
+<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>  LowerSpawn:
+<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    VsZerg:
+<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>      FirstPylon:
+<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>        # natural wall
+<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>        - [ [ 69.0, 36.0 ] ]
+<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>      PylonsWall:
+<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>        # natural wall
+<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        - [ [ 71.0, 39.0 ] ]
+<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>      ThreeByThreesWall:
+<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>        # natural wall
+<a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>        - [ [ 74.5, 35.5 ], [ 72.5, 39.5 ], [ 69.5, 41.5 ] ]
+<a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>      StaticDefencesWall:
+<a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>        # natural wall
+<a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>        - [ [ 68.0, 38.0 ] ]
+<a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>      GateKeeper:
+<a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>        # natural wall
+<a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>        - [ [ 73.5, 37.5 ] ]
+</code></pre></div>
+<blockquote>
+<p><strong><em>Tip:</em></strong> If you don't want to define placements for all races individually, you can use the <code>VsAll</code> key.</p>
+<p><strong><em>Tip:</em></strong> 2x2 placements should be placed at rounded coordinates eg <code>[ [ 71.0, 138.0 ] ]</code>
+And 3x3 placements should be placed at coordinates ending with <code>0.5</code> eg <code>[ [ 74.5, 135.5 ], [ 72.5, 139.5 ] ]</code></p>
+</blockquote>
+<p>Note there is no need to specify the base location placements belong to, <code>ares-sc2</code> will automatically 
+calculate them based on the position passed in.</p>
+<p>Now let's look at an example of a <code>terran_building_placements.yml</code> file where we highlight different 
+ways of defining placements. Ignore the actual dummy positions shown here, they are just for illustration purposes.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">Pylon</span><span class="p">:</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">UpperSpawn</span><span class="p">:</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="c1"># VsAll means placements apply to all races</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">VsAll</span><span class="p">:</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="c1"># we can define placements all in line like this</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">      </span><span class="nt">BunkersWall</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">147.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">78.5</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">      </span><span class="nt">MissileTurrets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">172.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">88.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">      </span><span class="nt">Production</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">170.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">165.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">160.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">      </span><span class="nt">UpgradeStructures</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">170.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">89.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">165.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">89.5</span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="w">      </span><span class="nt">SensorTowers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">169.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">90.0</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">165.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">89.5</span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">      </span><span class="c1"># or make a list of lists if you want </span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">      </span><span class="c1"># to organize placements using comments</span>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">        </span><span class="c1"># main base</span>
+<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">169.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">82.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">170.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">54.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">171.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">86.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="w">        </span><span class="c1"># natural</span>
+<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">138.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">76.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">      </span><span class="nt">SupplyDepotsWall</span><span class="p">:</span>
+<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">166.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">90.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">166.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">    </span><span class="c1"># race specific placements can be defined separately</span>
+<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">    </span><span class="c1"># these take priority over the VsAll placements</span>
+<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">    </span><span class="nt">VsZerg</span><span class="p">:</span>
+<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">      </span><span class="nt">Production</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">166.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">163.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">160.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span>
+<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">        </span><span class="c1"># main base</span>
+<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">170.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">171.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">        </span><span class="c1"># natural</span>
+<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">138.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">76.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">      </span><span class="nt">SupplyDepotsWall</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">166.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">90.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">166.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">    </span><span class="nt">VsProtoss</span><span class="p">:</span>
+<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">105.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">170.0</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="w">    </span><span class="nt">VsTerran</span><span class="p">:</span>
+<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">105.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">170.0</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">    </span><span class="nt">VsRandom</span><span class="p">:</span>
+<a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">105.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">170.0</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="w">  </span><span class="nt">LowerSpawn</span><span class="p">:</span>
+<a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="w">    </span><span class="nt">VsAll</span><span class="p">:</span>
+<a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="w">      </span><span class="nt">BunkersWall</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">147.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">78.5</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a><span class="w">      </span><span class="nt">MissileTurrets</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">172.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">88.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="w">      </span><span class="nt">Production</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">170.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">165.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">160.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">      </span><span class="nt">UpgradeStructures</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">170.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">89.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">165.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">89.5</span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="w">      </span><span class="nt">SensorTowers</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">169.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">90.0</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">165.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">89.5</span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span>
+<a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="w">        </span><span class="c1"># main base</span>
+<a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">169.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">82.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">170.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">54.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">171.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">86.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="w">        </span><span class="c1"># natural</span>
+<a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">138.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">76.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a><span class="w">      </span><span class="nt">SupplyDepotsWall</span><span class="p">:</span>
+<a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">166.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">90.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">166.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="w">    </span><span class="nt">VsZerg</span><span class="p">:</span>
+<a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="w">      </span><span class="nt">Production</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">166.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">163.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">160.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.5</span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span>
+<a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="w">        </span><span class="c1"># main base</span>
+<a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">170.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">171.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="w">        </span><span class="c1"># natural</span>
+<a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">138.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">76.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a><span class="w">      </span><span class="nt">SupplyDepotsWall</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[[</span><span class="w"> </span><span class="nv">166.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">90.0</span><span class="w"> </span><span class="p p-Indicator">],</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">166.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">92.0</span><span class="w"> </span><span class="p p-Indicator">]]</span>
+<a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a><span class="w">    </span><span class="nt">VsProtoss</span><span class="p">:</span>
+<a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">105.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">170.0</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a><span class="w">    </span><span class="nt">VsTerran</span><span class="p">:</span>
+<a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">105.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">170.0</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span>
+<a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a><span class="w">    </span><span class="nt">VsRandom</span><span class="p">:</span>
+<a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="w">      </span><span class="nt">SupplyDepots</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">105.0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">170.0</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"> </span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<p>If you want to define placements in a compact manner, define the list inline like so:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>SupplyDepots: [ [ 105.0, 170.0 ] ]
+</code></pre></div></p>
+<p>Though it might be useful to organise placements with comments, so you could also define it like this:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>SupplyDepots:
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a># main base
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>- [[ 170.0, 92.0 ], [ 171.0, 92.0 ]]
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a># natural
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>- [[ 138.0, 76.0 ]]
+</code></pre></div></p>
+<p><code>ares-sc2</code> does contain some default natural wall placements for Protoss vs Zerg for 
+some maps. You can view the internal file inside the <code>ares-sc2/src/ares/</code> directory.</p>
+<p>However, you can override any of 
+these settings by creating your own <code>&lt;bot_race&gt;_building_placements.yml</code> file and specifying 
+only the elements you wish to change. <code>ares-sc2</code> will automatically prioritize 
+your custom placements and fill in any missing elements with the default values.</p>
+<p>This is an example content of a <code>protoss_building_placements.yml</code>
+file where the first pylon position on Persephone is tweaked.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Persephone:
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    UpperSpawn:
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>        FirstPylon: [ [ 68.0, 143.0 ] ]
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    LowerSpawn:
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>        FirstPylon: [ [ 68.0, 36.0 ] ]
+</code></pre></div></p>
+<p>When creating your building placements file, ensure the keys are spelled correctly and match the example
+above. Internally <code>ares-sc2</code> checks an <code>Enum</code> similar to this when parsing the file:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">BuildingPlacementOptions</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">BUNKERS</span> <span class="o">=</span> <span class="s2">&quot;Bunkers&quot;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">BUNKERS_WALL</span> <span class="o">=</span> <span class="s2">&quot;BunkersWall&quot;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">FIRST_PYLON</span> <span class="o">=</span> <span class="s2">&quot;FirstPylon&quot;</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">GATE_KEEPER</span> <span class="o">=</span> <span class="s2">&quot;GateKeeper&quot;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">LOWER_SPAWN</span> <span class="o">=</span> <span class="s2">&quot;LowerSpawn&quot;</span>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">MISSILE_TURRETS</span> <span class="o">=</span> <span class="s2">&quot;MissileTurrets&quot;</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">PRODUCTION</span> <span class="o">=</span> <span class="s2">&quot;Production&quot;</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">PRODUCTION_WALL</span> <span class="o">=</span> <span class="s2">&quot;ProductionWall&quot;</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">PYLONS</span> <span class="o">=</span> <span class="s2">&quot;Pylons&quot;</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="n">PYLONS_WALL</span> <span class="o">=</span> <span class="s2">&quot;PylonsWall&quot;</span>
+<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="n">SENSOR_TOWERS</span> <span class="o">=</span> <span class="s2">&quot;SensorTowers&quot;</span>
+<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="n">STATIC_DEFENCES</span> <span class="o">=</span> <span class="s2">&quot;StaticDefences&quot;</span>
+<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="n">STATIC_DEFENCES_WALL</span> <span class="o">=</span> <span class="s2">&quot;StaticDefencesWall&quot;</span>
+<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>    <span class="n">SUPPLY_DEPOTS</span> <span class="o">=</span> <span class="s2">&quot;SupplyDepots&quot;</span>
+<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    <span class="n">SUPPLY_DEPOTS_WALL</span> <span class="o">=</span> <span class="s2">&quot;SupplyDepotsWall&quot;</span>
+<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>    <span class="n">THREE_BY_THREES</span> <span class="o">=</span> <span class="s2">&quot;ThreeByThrees&quot;</span>
+<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>    <span class="n">THREE_BY_THREES_WALL</span> <span class="o">=</span> <span class="s2">&quot;ThreeByThreesWall&quot;</span>
+<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>    <span class="n">UPPER_SPAWN</span> <span class="o">=</span> <span class="s2">&quot;UpperSpawn&quot;</span>
+<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    <span class="n">UPGRADE_STRUCTURES</span> <span class="o">=</span> <span class="s2">&quot;UpgradeStructures&quot;</span>
+<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="n">UPGRADE_STRUCTURES_WALL</span> <span class="o">=</span> <span class="s2">&quot;UpgradeStructuresWall&quot;</span>
+<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>    <span class="n">VS_ALL</span> <span class="o">=</span> <span class="s2">&quot;VsAll&quot;</span>
+<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>    <span class="n">VS_PROTOSS</span> <span class="o">=</span> <span class="s2">&quot;VsProtoss&quot;</span>
+<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>    <span class="n">VS_RANDOM</span> <span class="o">=</span> <span class="s2">&quot;VsRandom&quot;</span>
+<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>    <span class="n">VS_TERRAN</span> <span class="o">=</span> <span class="s2">&quot;VsTerran&quot;</span>
+<a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>    <span class="n">VS_ZERG</span> <span class="o">=</span> <span class="s2">&quot;VsZerg&quot;</span>
+</code></pre></div></p>
+<h3 id="providing-impossible-placements">Providing impossible placements<a class="headerlink" href="#providing-impossible-placements" title="Permanent link">&para;</a></h3>
+<p><code>ares-sc2</code> validates your placements before adding them internally. If an invalid placement is detected, 
+an error message will be logged, but your bot will continue running as normal. If your placements 
+aren’t working as expected, be sure to check the logs for more details.</p>
+<h3 id="warning">WARNING!<a class="headerlink" href="#warning" title="Permanent link">&para;</a></h3>
+<p>Ensure care is taken when defining placements, try to leave room for addons and prevent
+blocking in units.</p>
+<h2 id="retrieve-gate-keeper-placements">Retrieve gate keeper placements<a class="headerlink" href="#retrieve-gate-keeper-placements" title="Permanent link">&para;</a></h2>
+<p>In Protoss vs Zerg this is the gap in the natural wall that is usually blocked by a 
+gateway unit. Keep in mind this could be <code>None</code> if no position is provided for the
+current map.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">nat_gatekeeper_position</span><span class="p">:</span> <span class="n">Point2</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_nat_gatekeeper_position</span>
+</code></pre></div>
+<p>The system is flexible enough to handle multiple gatekeepers though. You can retrieve the 
+internal dictionary <code>ares</code> uses:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># key is expansion location, value is list of gatekeepers</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">gatekeeper_positions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Point2</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Point2</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_gatekeeper_positions</span>
+</code></pre></div></p>
+<h2 id="using-custom-placements-with-ares">Using custom placements with ares<a class="headerlink" href="#using-custom-placements-with-ares" title="Permanent link">&para;</a></h2>
+<p>There are several ways these placements can be utilized.</p>
+<h3 id="via-the-buildrunner">Via the BuildRunner<a class="headerlink" href="#via-the-buildrunner" title="Permanent link">&para;</a></h3>
+<p>See <a href="build_runner.html">build Runner tutorial</a> if you're unfamiliar.</p>
+<p>Below is an example of a valid build order that places structures at the natural wall or the reaper wall. 
+To specify that a structure should use your custom natural wall placements or reaper wall placements, simply 
+add <code>@ nat_wall</code> or <code>@ reaper_wall</code> when declaring a build step. If the map has no custom placements or 
+all available positions are already taken, the build runner will automatically find a 
+suitable alternative nearby.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>UseData: True
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a># How should we choose a build? Cycle is the only option for now
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>BuildSelection: Cycle
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a># For each Race / Opponent ID choose a build selection
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>BuildChoices:
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    # test_123 is active if Debug: True (set via a `config.yml` file)
+<a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    test_123:
+<a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>        BotName: Test
+<a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>        Cycle:
+<a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>            - DummyBuild
+<a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+<a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    Protoss:
+<a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>        BotName: ProtossRace
+<a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>        Cycle:
+<a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>            - DummyBuild
+<a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>
+<a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>    Random:
+<a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>        BotName: RandomRace
+<a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>        Cycle:
+<a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>            - DummyBuild
+<a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>
+<a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>    Terran:
+<a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>        BotName: TerranRace
+<a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>        Cycle:
+<a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>            - DummyBuild
+<a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>
+<a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a>    Zerg:
+<a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>        BotName: ZergRace
+<a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>        Cycle:
+<a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>            - DummyBuild
+<a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a>
+<a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>
+<a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a>Builds:
+<a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a>    DummyBuild:
+<a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a>        ConstantWorkerProductionTill: 44
+<a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>        AutoSupplyAtSupply: 23
+<a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>        OpeningBuildOrder:
+<a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a>            - 14 pylon @ nat_wall
+<a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a>            - 15 gate @ nat_wall
+<a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a>            - 16 gate @ nat_wall
+<a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>            - 16 core @ nat_wall
+<a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a>            - 16 pylon @ nat_wall
+<a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>            - 16 shieldbattery @ nat_wall
+<a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>            # build the reaper wall
+<a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>            - 16 pylon @ reaper_wall
+<a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>            - 16 gate @ reaper_wall
+<a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a>            - 16 gate @ reaper_wall
+</code></pre></div>
+<h3 id="buildstructure-behavior"><code>BuildStructure</code> behavior<a class="headerlink" href="#buildstructure-behavior" title="Permanent link">&para;</a></h3>
+<p>You can build wall structures within your own bot logic via the 
+<a href="../api_reference/behaviors/macro_behaviors.html#ares.behaviors.macro.build_structure.BuildStructure"><code>BuildStructure</code> behavior</a>.
+If wall placements are not available this will look for a closely alternative. Remember here
+you need to pass in the correct expansion location to pick up the custom placements for that base.
+Some examples:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sc2.ids.unit_typeid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitTypeId</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1"># attempt to build two gateway and cybernetics core at the natural wall</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="bp">self</span><span class="o">.</span><span class="n">register_behavior</span><span class="p">(</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">BuildStructure</span><span class="p">(</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>        <span class="n">base_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_own_nat</span><span class="p">,</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>        <span class="n">structure_id</span><span class="o">=</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">GATEWAY</span><span class="p">,</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>        <span class="n">wall</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>        <span class="n">to_count_per_base</span><span class="o">=</span><span class="mi">2</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="p">)</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="p">)</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="bp">self</span><span class="o">.</span><span class="n">register_behavior</span><span class="p">(</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="n">BuildStructure</span><span class="p">(</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>        <span class="n">base_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_own_nat</span><span class="p">,</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>        <span class="n">structure_id</span><span class="o">=</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">CYBERNETICSCORE</span><span class="p">,</span>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>        <span class="n">wall</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>        <span class="n">to_count_per_base</span><span class="o">=</span><span class="mi">1</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>    <span class="p">)</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="p">)</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="c1"># terran wants to use depot placements they specify in their own file</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="c1"># They should use `supply_depot=True`</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a><span class="bp">self</span><span class="o">.</span><span class="n">register_behavior</span><span class="p">(</span>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>    <span class="n">BuildStructure</span><span class="p">(</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>        <span class="n">base_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start_location</span><span class="p">,</span>
+<a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>        <span class="n">structure_id</span><span class="o">=</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">SUPPLYDEPOT</span><span class="p">,</span>
+<a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>        <span class="n">supply_depot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>    <span class="p">)</span>
+<a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a><span class="p">)</span>
+<a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>
+<a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a><span class="c1"># terran wants to build 3 missile turrets at the third</span>
+<a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a><span class="c1"># using the placements they specify in their own file</span>
+<a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a><span class="bp">self</span><span class="o">.</span><span class="n">register_behavior</span><span class="p">(</span>
+<a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a>    <span class="n">BuildStructure</span><span class="p">(</span>
+<a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a>        <span class="n">base_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_defensive_third</span><span class="p">,</span>
+<a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a>        <span class="n">structure_id</span><span class="o">=</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">MISSILETURRET</span><span class="p">,</span>
+<a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a>        <span class="n">missile_turret</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a>        <span class="n">to_count_per_base</span><span class="o">=</span><span class="mi">3</span>
+<a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a>    <span class="p">)</span>
+<a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a><span class="p">)</span>
+</code></pre></div>
+<h3 id="via-the-managermediator">Via the <code>ManagerMediator</code><a class="headerlink" href="#via-the-managermediator" title="Permanent link">&para;</a></h3>
+<p>For more customized control you can interact with the wall placements via the <code>mediator</code>. See
+some examples below.</p>
+<p>Get the first pylon placement without reserving placement in the building tracker:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sc2.ids.unit_typeid</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnitTypeId</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">if</span> <span class="n">placement</span> <span class="o">:=</span> <span class="n">mediator</span><span class="o">.</span><span class="n">request_building_placement</span><span class="p">(</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>        <span class="n">base_location</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_own_nat</span><span class="p">,</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>        <span class="n">structure_type</span><span class="o">=</span><span class="n">UnitTypeId</span><span class="o">.</span><span class="n">PYLON</span><span class="p">,</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>        <span class="n">first_pylon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">first_pylon</span><span class="p">,</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>        <span class="n">reserve_placement</span><span class="o">=</span><span class="kc">False</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="p">):</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="k">pass</span>
+</code></pre></div>
+<p>Work directly with the raw data, example here gets the natural wall placements.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ares.consts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BuildingSize</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sc2.position</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point2</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">placements_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Point2</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BuildingSize</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_placements_dict</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">natural_placements</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BuildingSize</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">placements_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_own_nat</span><span class="p">]</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">two_by_twos_at_wall</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Point2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>            <span class="n">placement</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>            <span class="k">for</span> <span class="n">placement</span> <span class="ow">in</span> <span class="n">natural_placements</span><span class="p">[</span><span class="n">BuildingSize</span><span class="o">.</span><span class="n">TWO_BY_TWO</span><span class="p">]</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>            <span class="k">if</span> <span class="n">natural_placements</span><span class="p">[</span><span class="n">BuildingSize</span><span class="o">.</span><span class="n">TWO_BY_TWO</span><span class="p">][</span><span class="n">placement</span><span class="p">][</span><span class="s2">&quot;is_wall&quot;</span><span class="p">]</span>
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>        <span class="p">]</span>
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="n">three_by_threes_at_wall</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Point2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>            <span class="n">placement</span>
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>            <span class="k">for</span> <span class="n">placement</span> <span class="ow">in</span> <span class="n">natural_placements</span><span class="p">[</span><span class="n">BuildingSize</span><span class="o">.</span><span class="n">TWO_BY_TWO</span><span class="p">]</span>
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>            <span class="k">if</span> <span class="n">natural_placements</span><span class="p">[</span><span class="n">BuildingSize</span><span class="o">.</span><span class="n">THREE_BY_THREE</span><span class="p">][</span><span class="n">placement</span><span class="p">][</span><span class="s2">&quot;is_wall&quot;</span><span class="p">]</span>
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>        <span class="p">]</span>
+</code></pre></div>
+<p>Get all production placements in the main base:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ares.consts</span><span class="w"> </span><span class="kn">import</span> <span class="n">BuildingSize</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sc2.position</span><span class="w"> </span><span class="kn">import</span> <span class="n">Point2</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">placements_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">Point2</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BuildingSize</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mediator</span><span class="o">.</span><span class="n">get_placements_dict</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">main_base_placements</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="n">BuildingSize</span><span class="p">,</span> <span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">placements_dict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_location</span><span class="p">]</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="n">production_placements</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Point2</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>            <span class="n">placement</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>            <span class="k">for</span> <span class="n">placement</span> <span class="ow">in</span> <span class="n">main_base_placements</span><span class="p">[</span><span class="n">BuildingSize</span><span class="o">.</span><span class="n">THREE_BY_THREE</span><span class="p">]</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>            <span class="k">if</span> <span class="n">natural_placements</span><span class="p">[</span><span class="n">BuildingSize</span><span class="o">.</span><span class="n">THREE_BY_THREE</span><span class="p">][</span><span class="n">placement</span><span class="p">][</span><span class="s2">&quot;production&quot;</span><span class="p">]</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>        <span class="p">]</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["search.suggest", "search.highlight", "content.tabs.link", "content.code.annotate", "navigation.indexes"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
