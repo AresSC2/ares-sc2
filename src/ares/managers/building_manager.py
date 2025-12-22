@@ -32,8 +32,10 @@ from ares.consts import (
     BUILDING_PURPOSE,
     CREEP_TUMOR_TYPES,
     DEBUG,
+    DEBUG_OPTIONS,
     GAS_BUILDINGS,
     ID,
+    SHOW_BUILDING_FORMATION,
     STRUCTURE_ORDER_COMPLETE,
     TARGET,
     TIME_ORDER_COMMENCED,
@@ -189,7 +191,11 @@ class BuildingManager(Manager, IManagerMediator):
         building_spots: set[Point2] = set()
 
         for worker_tag in self.building_tracker:
-            if self.config[DEBUG] and self.building_tracker[worker_tag][TARGET]:
+            if (
+                self.config[DEBUG]
+                and not self.config[DEBUG_OPTIONS][SHOW_BUILDING_FORMATION]
+                and self.building_tracker[worker_tag][TARGET]
+            ):
                 self.ai.draw_text_on_world(
                     Point2(self.building_tracker[worker_tag][TARGET].position),
                     "BUILDING TARGET",

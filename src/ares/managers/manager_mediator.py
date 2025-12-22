@@ -1715,6 +1715,26 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
+    def get_gatekeeper_positions(self, **kwargs) -> dict:
+        """Get the gatekeeper positions dict.
+
+
+        PlacementManager
+
+        Parameters:
+            expansion_location (Point2): Expansion location to check
+            for gatekeeper position.
+
+        Returns:
+            dict: The expansion location and gatekeeper positions.
+        """
+        return self.manager_request(
+            ManagerName.PLACEMENT_MANAGER,
+            ManagerRequestType.GET_GATEKEEPER_POSITIONS,
+            **kwargs,
+        )
+
+    @property
     def get_pvz_nat_gatekeeping_pos(self, **kwargs) -> Union[Point2, None]:
         """Get the gatekeeper position in a PvZ natural wall if available.
 
