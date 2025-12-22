@@ -55,6 +55,20 @@ class BuildStructure(MacroBehavior):
             Defaults to 0, turning this check off.
         tech_progress_check: Check if tech is ready before trying to build.
             Defaults to 0.85; setting it to 0.0 turns this check off.
+        supply_depot: Choose a predefined supply depot location.
+            Defaults to False.
+        missile_turret: Choose a predefined missile turret location.
+            Defaults to False.
+        sensor_tower: Choose a predefined sensor tower location.
+            Defaults to False.
+        upgrade_structure: Choose a predefined upgrade structurer location.
+            Defaults to False.
+        production: Choose a predefined production location.
+            Defaults to False.
+        bunker: Choose a predefined bunker location.
+            Defaults to False.
+        reaper_wall: Choose a predefined reaper wall location.
+            Defaults to False.
 
     """
 
@@ -68,6 +82,13 @@ class BuildStructure(MacroBehavior):
     to_count: int = 0
     to_count_per_base: int = 0
     tech_progress_check: float = 0.85
+    supply_depot: bool = False
+    missile_turret: bool = False
+    sensor_tower: bool = False
+    upgrade_structure: bool = False
+    production: bool = False
+    bunker: bool = False
+    reaper_wall: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         # already enough workers on route to build this
@@ -107,6 +128,13 @@ class BuildStructure(MacroBehavior):
             wall=self.wall,
             within_psionic_matrix=within_psionic_matrix,
             closest_to=self.closest_to,
+            supply_depot=self.supply_depot,
+            missile_turret=self.missile_turret,
+            sensor_tower=self.sensor_tower,
+            upgrade_structure=self.upgrade_structure,
+            production=self.production,
+            bunker=self.bunker,
+            reaper_wall=self.reaper_wall,
         ):
             if worker := mediator.select_worker(
                 target_position=placement,

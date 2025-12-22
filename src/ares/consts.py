@@ -158,17 +158,34 @@ UPGRADES: Set[str] = {"UPGRADES"}
 
 
 class BuildingPlacementOptions(str, Enum):
-    AVAILABLE_VS_RACES = "AvailableVsRaces"
-    LOWER_SPAWN = "LowerSpawn"
-    UPPER_SPAWN = "UpperSpawn"
-    VS_TERRAN_NAT_WALL = "VsTerranNatWall"
-    VS_TERRAN_REAPER_WALL = "VsTerranReaperWall"
-    VS_ZERG_NAT_WALL = "VsZergNatWall"
+    BUNKERS = "Bunkers"
+    BUNKERS_WALL = "BunkersWall"
     FIRST_PYLON = "FirstPylon"
-    PYLONS = "Pylons"
-    THREE_BY_THREES = "ThreeByThrees"
-    STATIC_DEFENCES = "StaticDefences"
     GATE_KEEPER = "GateKeeper"
+    LOWER_SPAWN = "LowerSpawn"
+    MISSILE_TURRETS = "MissileTurrets"
+    PRODUCTION = "Production"
+    PRODUCTION_WALL = "ProductionWall"
+    PYLONS = "Pylons"
+    PYLONS_REAPER_WALL = "PylonsReaperWall"
+    PYLONS_WALL = "PylonsWall"
+    SENSOR_TOWERS = "SensorTowers"
+    STATIC_DEFENCES = "StaticDefences"
+    STATIC_DEFENCES_REAPER_WALL = "StaticDefencesReaperWall"
+    STATIC_DEFENCES_WALL = "StaticDefencesWall"
+    SUPPLY_DEPOTS = "SupplyDepots"
+    SUPPLY_DEPOTS_WALL = "SupplyDepotsWall"
+    THREE_BY_THREES = "ThreeByThrees"
+    THREE_BY_THREES_WALL = "ThreeByThreesWall"
+    THREE_BY_THREES_REAPER_WALL = "ThreeByThreesReaperWall"
+    UPPER_SPAWN = "UpperSpawn"
+    UPGRADE_STRUCTURES = "UpgradeStructures"
+    UPGRADE_STRUCTURES_WALL = "UpgradeStructuresWall"
+    VS_ALL = "VsAll"
+    VS_PROTOSS = "VsProtoss"
+    VS_RANDOM = "VsRandom"
+    VS_TERRAN = "VsTerran"
+    VS_ZERG = "VsZerg"
 
 
 class BuildingSize(str, Enum):
@@ -210,9 +227,14 @@ class BuildOrderTargetOptions(str, Enum):
     NAT = "NAT"
     NAT_WALL = "NAT_WALL"
     RAMP = "RAMP"
+    REAPER_WALL = "REAPER_WALL"
     SIXTH = "SIXTH"
     SPAWN = "SPAWN"
     THIRD = "THIRD"
+    SUPPLY = "SUPPLY"
+    PRODUCTION = "PRODUCTION"
+    UPGRADE = "UPGRADE"
+    BUNKER = "BUNKER"
 
     @classmethod
     def contains_key(cls, name):
@@ -346,6 +368,7 @@ class ManagerRequestType(str, Enum):
     NYDUS_PATH_NEXT_POINT = "NYDUS_PATH_NEXT_POINT"
 
     # PlacementManager
+    GET_GATEKEEPER_POSITIONS = "GET_GATEKEEPER_POSITIONS"
     CAN_PLACE_STRUCTURE = "CAN_PLACE_STRUCTURE"
     GET_PLACEMENTS_DICT = "GET_PLACEMENTS_DICT"
     GET_PVZ_NAT_GATEKEEPER_POS = "GET_PVZ_NAT_GATEKEEPER_POS"

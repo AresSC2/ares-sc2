@@ -1,0 +1,816 @@
+# 2025 patch 5.0.14
+Incorporeal:
+  UpperSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 62.0, 134.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 62.0, 131.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 62.5, 128.5 ], [ 59.5, 129.5 ], [ 66.5, 129.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 66.0, 132.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 64.5, 128.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 62.0, 134.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 62.0, 131.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 62.5, 128.5 ], [ 59.5, 129.5 ], [ 66.5, 129.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 66.0, 132.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 64.5, 128.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 62.0, 134.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 62.0, 131.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 62.5, 128.5 ], [ 59.5, 129.5 ], [ 66.5, 129.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 66.0, 132.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 64.5, 128.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 37.0, 144.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [ [ 36.5, 140.5 ], [ 38.5, 149.5 ]]
+      StaticDefencesReaperWall:
+        # reaper wall
+        - [[ 39.0, 144.0 ]]
+  LowerSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 94.0, 31.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 94.0, 34.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 89.5, 34.5 ], [ 93.5, 36.5 ], [ 96.5, 34.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 90.0, 32.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 91.5, 36.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 94.0, 31.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 94.0, 34.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 89.5, 34.5 ], [ 93.5, 36.5 ], [ 96.5, 34.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 90.0, 32.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 91.5, 36.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 94.0, 31.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 94.0, 34.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 89.5, 34.5 ], [ 93.5, 36.5 ], [ 96.5, 34.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 90.0, 32.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 91.5, 36.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 119.0, 20.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [[ 119.5, 23.5 ], [ 117.5, 14.5 ]]
+      StaticDefencesReaperWall:
+        # reaper wall
+        - [[ 117.0, 20.0 ]]
+
+Persephone:
+  UpperSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 69.0, 144.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 145.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 71.5, 138.5 ], [ 73.5, 142.5 ], [ 74.5, 145.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 68.0, 140.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 72.5, 140.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 69.0, 144.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 145.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 71.5, 138.5 ], [ 73.5, 142.5 ], [ 74.5, 145.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 68.0, 140.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 72.5, 140.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 69.0, 144.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 145.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 71.5, 138.5 ], [ 73.5, 142.5 ], [ 74.5, 145.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 68.0, 140.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 72.5, 140.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 48.0, 125.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [ [ 49.5, 127.5 ], [ 44.5, 127.5 ] ]
+  LowerSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 69.0, 36.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 39.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 74.5, 35.5 ], [ 72.5, 39.5 ], [ 69.5, 41.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 68.0, 38.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 73.5, 37.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 69.0, 36.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 39.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 74.5, 35.5 ], [ 72.5, 39.5 ], [ 69.5, 41.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 68.0, 38.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 73.5, 37.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 69.0, 36.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 39.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 74.5, 35.5 ], [ 72.5, 39.5 ], [ 69.5, 41.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 68.0, 38.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 73.5, 37.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 48.0, 55.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [ [ 49.5, 52.5 ], [ 44.5, 52.5 ] ]
+
+Pylon:
+  UpperSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 104.0, 169.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 105.0, 166.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 104.5, 163.5 ], [ 107.5, 164.5 ], [ 109.5, 168.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 107.0, 171.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 108.5, 166.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 104.0, 169.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 105.0, 166.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 104.5, 163.5 ], [ 107.5, 164.5 ], [ 109.5, 168.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 107.0, 171.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 108.5, 166.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 104.0, 169.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 105.0, 166.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 104.5, 163.5 ], [ 107.5, 164.5 ], [ 109.5, 168.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 107.0, 171.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 108.5, 166.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 77.0, 176.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [ [ 76.5, 172.5 ], [ 78.5, 181.5 ] ]
+  LowerSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 143.0, 78.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 141.0, 80.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 144.5, 83.5 ], [ 140.5, 82.5 ], [ 138.5, 79.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 143.0, 80.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 142.5, 83.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 143.0, 78.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 141.0, 80.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 144.5, 83.5 ], [ 140.5, 82.5 ], [ 138.5, 79.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 143.0, 80.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 142.5, 83.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 143.0, 78.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 141.0, 80.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 144.5, 83.5 ], [ 140.5, 82.5 ], [ 138.5, 79.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 143.0, 80.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 142.5, 83.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 171.0, 72.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [[ 171.5, 75.5 ], [ 169.5, 66.5 ]]
+
+Torches:
+  UpperSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 92.0, 154.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 90.0, 154.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 91.5, 148.5 ], [ 90.5, 151.5 ], [ 86.5, 153.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 93.0, 152.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 88.5, 152.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 92.0, 154.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 90.0, 154.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 91.5, 148.5 ], [ 90.5, 151.5 ], [ 86.5, 153.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 93.0, 152.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 88.5, 152.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 92.0, 154.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 90.0, 154.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 91.5, 148.5 ], [ 90.5, 151.5 ], [ 86.5, 153.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 93.0, 152.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 88.5, 152.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 121.0, 164.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [ [ 120.5, 160.5 ], [ 120.5, 169.5 ] ]
+      StaticDefencesReaperWall:
+        # reaper wall
+        - [[ 119.0, 164.0 ]]
+  LowerSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 92.0, 54.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 90.0, 53.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 91.5, 59.5 ], [ 89.5, 55.5 ], [ 86.5, 55.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 94.0, 59.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 90.5, 57.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 92.0, 54.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 90.0, 53.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 91.5, 59.5 ], [ 89.5, 55.5 ], [ 86.5, 55.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 94.0, 59.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 90.5, 57.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 92.0, 54.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 90.0, 53.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 91.5, 59.5 ], [ 89.5, 55.5 ], [ 86.5, 55.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 94.0, 59.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 90.5, 57.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 121.0, 44.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [[ 120.5, 47.5 ], [ 120.5, 38.5 ]]
+      StaticDefencesReaperWall:
+        # reaper wall
+        - [[ 119.0, 44.0 ]]
+
+LeyLines:
+  UpperSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 153.0, 105.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 151.0, 103.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 147.5, 107.5 ], [ 148.5, 103.5 ], [ 149.5, 100.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 152.0, 107.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 147.5, 105.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 153.0, 105.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 151.0, 103.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 147.5, 107.5 ], [ 148.5, 103.5 ], [ 149.5, 100.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 152.0, 107.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 147.5, 105.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 153.0, 105.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 151.0, 103.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 147.5, 107.5 ], [ 148.5, 103.5 ], [ 149.5, 100.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 152.0, 107.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 147.5, 105.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 140.0, 127.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [ [ 142.5, 126.5 ], [ 144.5, 123.5 ] ]
+  LowerSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 45.0, 69.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 47.0, 70.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 50.5, 66.5 ], [ 49.5, 70.5 ], [ 48.5, 73.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 48.0, 66.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 50.5, 68.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 45.0, 69.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 47.0, 70.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 50.5, 66.5 ], [ 49.5, 70.5 ], [ 48.5, 73.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 48.0, 66.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 50.5, 68.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 45.0, 69.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 47.0, 70.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 50.5, 66.5 ], [ 49.5, 70.5 ], [ 48.5, 73.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 48.0, 66.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 50.5, 68.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 58.0, 47.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [[ 55.5, 47.5 ], [ 53.5, 50.5 ]]
+
+Ultralove:
+  UpperSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 110.0, 138.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 113.0, 135.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 111.5, 132.5 ], [ 110.5, 135.5 ], [ 106.5, 137.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 113.0, 137.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 108.5, 136.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 110.0, 138.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 113.0, 135.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 111.5, 132.5 ], [ 110.5, 135.5 ], [ 106.5, 137.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 113.0, 137.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 108.5, 136.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 110.0, 138.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 113.0, 135.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 111.5, 132.5 ], [ 110.5, 135.5 ], [ 106.5, 137.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 113.0, 137.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 108.5, 136.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 127.0, 124.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [ [ 129.5, 123.5 ], [ 131.5, 120.5 ] ]
+  LowerSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 73.0, 46.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 48.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 72.5, 51.5 ], [ 73.5, 48.5 ], [ 77.5, 46.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 71.0, 46.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 75.5, 47.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 73.0, 46.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 48.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 72.5, 51.5 ], [ 73.5, 48.5 ], [ 77.5, 46.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 71.0, 46.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 75.5, 47.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 73.0, 46.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 71.0, 48.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 72.5, 51.5 ], [ 73.5, 48.5 ], [ 77.5, 46.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 71.0, 46.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 75.5, 47.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 57.0, 60.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [[ 54.5, 60.5 ], [ 52.5, 63.5 ]]
+
+Magannatha:
+  UpperSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 32.0, 114.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 33.0, 116.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 37.5, 113.5 ], [ 36.5, 110.5 ], [ 32.5, 108.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 32.0, 112.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 34.5, 109.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 32.0, 114.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 33.0, 116.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 37.5, 113.5 ], [ 36.5, 110.5 ], [ 32.5, 108.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 32.0, 112.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 34.5, 109.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 32.0, 114.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 33.0, 116.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 37.5, 113.5 ], [ 36.5, 110.5 ], [ 32.5, 108.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 32.0, 112.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 34.5, 109.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 48.0, 132.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [ [ 50.5, 132.5 ], [ 47.5, 129.5 ] ]
+      StaticDefencesReaperWall:
+        # reaper wall
+        - [[ 44.0, 132.0 ]]
+  LowerSpawn:
+    VsZerg:
+      FirstPylon:
+        # natural wall
+        - [ [ 114.0, 32.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 116.0, 33.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 113.5, 37.5 ], [ 110.5, 36.5 ], [ 108.5, 32.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 112.0, 32.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 109.5, 34.5 ] ]
+    VsRandom:
+      FirstPylon:
+        # natural wall
+        - [ [ 114.0, 32.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 116.0, 33.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 113.5, 37.5 ], [ 110.5, 36.5 ], [ 108.5, 32.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 112.0, 32.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 109.5, 34.5 ] ]
+    VsProtoss:
+      FirstPylon:
+        # natural wall
+        - [ [ 114.0, 32.0 ] ]
+      PylonsWall:
+        # natural wall
+        - [ [ 116.0, 33.0 ] ]
+      ThreeByThreesWall:
+        # natural wall
+        - [ [ 113.5, 37.5 ], [ 110.5, 36.5 ], [ 108.5, 32.5 ] ]
+      StaticDefencesWall:
+        # natural wall
+        - [ [ 112.0, 32.0 ] ]
+      GateKeeper:
+        # natural wall
+        - [ [ 109.5, 34.5 ] ]
+    VsTerran:
+      PylonsReaperWall:
+        # reaper wall
+        - [[ 132.0, 48.0 ]]
+      ThreeByThreesReaperWall:
+        # reaper wall
+        - [[ 132.5, 50.5 ], [ 129.5, 47.5 ]]
+      StaticDefencesReaperWall:
+        # reaper wall
+        - [[ 132.0, 44.0 ]]

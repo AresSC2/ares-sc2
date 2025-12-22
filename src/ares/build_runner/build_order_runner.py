@@ -292,7 +292,6 @@ class BuildOrderRunner:
             command: AbilityId | UnitID | UpgradeId | BuildOrderOptions = step.command
             # add on swap
             if command == AbilityId.LIFT:
-                print(step.target)
                 if AddonSwap(
                     structure_needing_addon=step.target[0],
                     addon_required=step.target[1],
@@ -563,6 +562,7 @@ class BuildOrderRunner:
                 BuildOrderTargetOptions.RAMP,
                 BuildOrderTargetOptions.NAT_WALL,
             }
+            at_reaper_wall: bool = target in {BuildOrderTargetOptions.REAPER_WALL}
             close_enemy_to_ramp: list[Unit] = [
                 e
                 for e in self.ai.enemy_units
@@ -583,6 +583,7 @@ class BuildOrderRunner:
                 within_psionic_matrix=within_psionic_matrix,
                 pylon_build_progress=0.5,
                 reserve_placement=False,
+                reaper_wall=at_reaper_wall,
             ):
                 return pos
         else:
@@ -690,6 +691,8 @@ class BuildOrderRunner:
                 return self.mediator.get_own_nat
             case BuildOrderTargetOptions.NAT_WALL:
                 return self.mediator.get_own_nat
+            case BuildOrderTargetOptions.REAPER_WALL:
+                return self.ai.start_location
             case BuildOrderTargetOptions.RAMP:
                 return self.ai.main_base_ramp.top_center
             case BuildOrderTargetOptions.SIXTH:
