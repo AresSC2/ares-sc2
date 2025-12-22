@@ -1481,9 +1481,9 @@ class PlacementManager(Manager, IManagerMediator):
         start_x: int = int(nat_location.x - 4.5)
         start_y: int = int(nat_location.y - 4.5)
         self.points_to_avoid_grid[start_y : start_y + 9, start_x : start_x + 9] = 1
-        if not self.placements_dict[nat_location]:
+        if nat_location not in self.placements_dict:
             self.placements_dict[nat_location] = {}
-        if not self.placements_dict[nat_location][BuildingSize.THREE_BY_THREE]:
+        if BuildingSize.THREE_BY_THREE not in self.placements_dict[nat_location]:
             self.placements_dict[nat_location][BuildingSize.THREE_BY_THREE] = {}
         # check if user already passed custom bunker placements
         else:
