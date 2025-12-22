@@ -2,6 +2,26 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.0 (2025-12-22)
+
+### Feature
+
+* Build runner supports reaper wall option ([`e88188a`](https://github.com/AresSC2/ares-sc2/commit/e88188a82a4eceac13552ef93a613c6211212505))
+* Refactor custom placements to support terran / increased flexibility ([`799c454`](https://github.com/AresSC2/ares-sc2/commit/799c454420de55acc1d472c73283c32cf48e0311))
+
+### Fix
+
+* Correct key-check logic for placement dictionary initialization ([`092af5e`](https://github.com/AresSC2/ares-sc2/commit/092af5e0f41758fe51dd501cb778f241b5cb0178))
+* Default empty dict if ares has no internal placement config ([`95f49d9`](https://github.com/AresSC2/ares-sc2/commit/95f49d979d8e8f0dfa80a865f6e6c400b5581a78))
+
+### Breaking
+
+* refactor custom placements to support terran / increased flexibility ([`799c454`](https://github.com/AresSC2/ares-sc2/commit/799c454420de55acc1d472c73283c32cf48e0311))
+
+### Documentation
+
+* Update custom building placements tutorial for Terran and Protoss ([`212d92c`](https://github.com/AresSC2/ares-sc2/commit/212d92ceadf9ba5f98337efca8b3ea9f6621914f))
+
 ## v2.54.0 (2025-12-10)
 
 ### Feature
