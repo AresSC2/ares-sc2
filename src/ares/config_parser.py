@@ -43,7 +43,7 @@ class ConfigParser:
             with open(internal_config_path, "r") as config_file:
                 internal_config: dict = yaml.safe_load(config_file)
         else:
-            raise Exception("Internal Ares config.yml file is missing")
+            internal_config: dict = dict()
 
         if path.isfile(user_config_path):
             with open(user_config_path, "r") as config_file:
