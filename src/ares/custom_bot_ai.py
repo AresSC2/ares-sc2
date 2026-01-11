@@ -18,7 +18,7 @@ from sc2.position import Point2, Point3
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.consts import ALL_STRUCTURES, ID, TARGET
+from ares.consts import ALL_STRUCTURES, ID, TARGET, WORKER_TYPES
 from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 from ares.managers.manager_mediator import ManagerMediator
@@ -204,8 +204,10 @@ class CustomBotAI(BotAI):
         bool :
             Indicating tech is ready.
         """
-        # special case for SCV as they build from multiple building types
-        if unit_type == UnitID.SCV and self.townhalls.ready:
+        # special cases
+        if (
+            unit_type in WORKER_TYPES and self.townhalls.ready
+        ) or unit_type == UnitID.OVERLORD:
             return True
 
         if unit_type not in UNIT_TECH_REQUIREMENT:
