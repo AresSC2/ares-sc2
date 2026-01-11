@@ -80,7 +80,7 @@ class BuildOrderParser:
             A dictionary of `BuildOrderStep` objects representing the recognized
             build order commands.
         """
-        min_minerals_for_expand: int = 135 if self.ai.race == Race.Zerg else 285
+        min_minerals_for_expand: int = 130 if self.ai.race == Race.Zerg else 285
         return {
             BuildOrderOptions.CANCEL_GAS: lambda: BuildOrderStep(
                 command=AbilityId.CANCEL_BUILDINPROGRESS,
@@ -98,7 +98,9 @@ class BuildOrderParser:
             ),
             BuildOrderOptions.EXPAND: lambda: BuildOrderStep(
                 command=self.ai.base_townhall_type,
-                start_condition=lambda: self.ai.minerals >= min_minerals_for_expand,
+                start_condition=lambda: self.ai.minerals
+                >= min_minerals_for_expand
+                - (300 if len(self.ai.townhalls) >= 2 else 0),
                 end_condition=lambda: self.ai.structures.filter(
                     lambda s: 0.00001 <= s.build_progress < 0.05
                     and s.type_id == self.ai.base_townhall_type
@@ -233,13 +235,30 @@ class BuildOrderParser:
         """
         cost: Cost = self.ai.calculate_cost(structure_id)
         _mineral: int = 105 if structure_id in TOWNHALL_TYPES else 75
-        return lambda: BuildOrderStep(
-            command=structure_id,
-            start_condition=lambda: self.ai.minerals >= cost.minerals - _mineral
-            and self.ai.vespene >= cost.vespene - 25,
-            # set via on_structure_started hook
-            end_condition=lambda: False,
-        )
+        if structure_id in {UnitID.LAIR, UnitID.HIVE}:
+            upgrade_from: UnitID = (
+                UnitID.LAIR if structure_id == UnitID.HIVE else UnitID.HATCHERY
+            )
+            return lambda: BuildOrderStep(
+                command=AbilityId.UPGRADETOLAIR_LAIR
+                if structure_id == UnitID.LAIR
+                else AbilityId.UPGRADETOHIVE_HIVE,
+                start_condition=lambda: self.ai.townhalls.filter(
+                    lambda th: th.is_ready and th.is_idle and th.type_id == upgrade_from
+                )
+                and self.ai.minerals >= cost.minerals
+                and self.ai.vespene >= cost.vespene,
+                # set via on_structure_started hook
+                end_condition=lambda: True,
+            )
+        else:
+            return lambda: BuildOrderStep(
+                command=structure_id,
+                start_condition=lambda: self.ai.minerals >= cost.minerals - _mineral
+                and self.ai.vespene >= cost.vespene - 25,
+                # set via on_structure_started hook
+                end_condition=lambda: False,
+            )
 
     def _generate_unit_build_step(self, unit_id: UnitID) -> Callable:
         """Generic method to add any unit to a build order.
