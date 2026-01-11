@@ -294,8 +294,8 @@ class PlacementManager(Manager, IManagerMediator):
 
         size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[structure_type]
         offset: float = self.BUILDING_SIZE_ENUM_TO_RADIUS[size]
-        origin_x: int = int(position[0] - offset)
-        origin_y: int = int(position[1] - offset)
+        origin_x: int = round(position[0] - offset)
+        origin_y: int = round(position[1] - offset)
 
         size: tuple[int, int] = self.BUILDING_SIZE_ENUM_TO_TUPLE[size]
         skip_creep_check: bool = structure_type in self.SKIP_CREEP_CHECK_IDS
