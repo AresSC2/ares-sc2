@@ -158,6 +158,11 @@ class SpawnController(MacroBehavior):
                     build_structures, self.spawn_target
                 )
 
+            if unit_type_id == UnitID.QUEEN:
+                build_structures.sort(
+                    key=lambda x: 0 if x.type_id == UnitID.HATCHERY else 1
+                )
+
             # can't afford unit?
             # then we might want to break out loop till we can afford
             if not self._can_afford(ai, unit_type_id):
