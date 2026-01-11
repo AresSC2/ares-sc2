@@ -97,6 +97,7 @@ class CreepManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def get_creep_edges(self) -> tuple[np.ndarray, np.ndarray]:
+
         if self.ai.last_game_loop % 16 == 0 or not hasattr(self, "_creep_edges"):
             creep_grid = self.get_creep_grid
             edges = convolve(creep_grid, self.EDGE_FILTER, mode="constant")
@@ -120,7 +121,32 @@ class CreepManager(Manager, IManagerMediator):
             # Combine edge detection with pathable mask
             valid_edges = (edges > 1) & valid_pathable_mask
 
-            edge_y, edge_x = np.where(valid_edges)
+            # Filter out edges too close to own townhalls (within 2.5 distance)
+            own_townhalls = self.manager_mediator.get_own_structures_dict[
+                UnitTypeId.HATCHERY
+            ]
+            if own_townhalls:
+                # Create coordinates arrays for vectorized distance calculation
+                edge_coords_y, edge_coords_x = np.where(valid_edges)
+                townhall_distance_mask = np.ones(len(edge_coords_y), dtype=bool)
+
+                for townhall in own_townhalls:
+                    # Calculate squared distances to this townhall
+                    distances_squared = (edge_coords_x - townhall.position.x) ** 2 + (
+                        edge_coords_y - townhall.position.y
+                    ) ** 2
+                    # Mark edges within 2.5 distance as invalid
+                    townhall_distance_mask &= distances_squared >= 6.25  # 2.5^2
+
+                # Apply the townhall distance filter
+                valid_edge_indices = np.where(townhall_distance_mask)[0]
+                edge_y, edge_x = (
+                    edge_coords_y[valid_edge_indices],
+                    edge_coords_x[valid_edge_indices],
+                )
+            else:
+                edge_y, edge_x = np.where(valid_edges)
+
             self._creep_edges = edge_y, edge_x
 
         return self._creep_edges

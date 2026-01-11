@@ -57,6 +57,12 @@ class TechUp(MacroBehavior):
             self.desired_tech, (UpgradeId, UnitID)
         ), f"Wrong type provided for `desired_tech`, got {type(self.desired_tech)}"
 
+        if (
+            self.desired_tech in {UnitID.HIVE, UnitID.LAIR}
+            and mediator.get_own_structures_dict[self.desired_tech]
+        ):
+            return False
+
         # figure out where we research this unit / upgrade from
         researched_from_id: UnitID
         tech_required: list[UnitID]

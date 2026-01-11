@@ -4,7 +4,7 @@ from os import getcwd, path
 from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import yaml
-from cython_extensions import cy_unit_pending
+from cython_extensions import cy_towards, cy_unit_pending
 from loguru import logger
 from s2clientprotocol.raw_pb2 import Unit as RawUnit
 from sc2.constants import ALL_GAS, IS_PLACEHOLDER, FakeEffectID, geyser_ids, mineral_ids
@@ -955,7 +955,10 @@ class AresBot(CustomBotAI):
                     [
                         u.tag
                         for u in build_from
-                        if u.is_ready and u.is_idle and u not in build_dict
+                        if u.is_ready
+                        and u.is_idle
+                        and u not in build_dict
+                        and u.tag not in ignored_build_from_tags
                     ]
                 )
                 if self.race == Race.Terran:
@@ -966,6 +969,7 @@ class AresBot(CustomBotAI):
                         and u.has_reactor
                         and len(u.orders) < 2
                         and u not in build_dict
+                        and u.tag not in ignored_build_from_tags
                     )
             else:
                 build_from_tags.extend(
@@ -978,6 +982,7 @@ class AresBot(CustomBotAI):
                         and self.unit_tag_dict[u.add_on_tag].is_ready
                         and u.add_on_tag in self.techlab_tags
                         and u not in build_dict
+                        and u.tag not in ignored_build_from_tags
                     ]
                 )
 
@@ -1098,7 +1103,7 @@ class AresBot(CustomBotAI):
 
         if pos := await self.find_placement(
             unit_type,
-            base_location.towards(self.game_info.map_center, 8.0),
+            Point2(cy_towards(base_location, self.game_info.map_center, 6.0)),
             30,
         ):
             if worker := self.mediator.select_worker(

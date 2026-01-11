@@ -468,7 +468,7 @@ class ManagerMediator(IManagerMediator):
         """
         return self.manager_request(
             ManagerName.CREEP_MANAGER,
-            ManagerRequestType.GET_RANDOM_CREEP_POSITION,
+            ManagerRequestType.GET_POSITION_BLOCKS_EXPO,
             **kwargs,
         )
 

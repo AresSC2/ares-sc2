@@ -9,7 +9,7 @@ AOE_ABILITY_SPELLS_INFO: dict[AbilityId, dict] = {
         "effect": EffectId.BLINDINGCLOUDCP,
     },
     AbilityId.EFFECT_CORROSIVEBILE: {
-        "radius": 0.5,
+        "radius": 0.25,
         "range": 9.0,
         "effect": EffectId.RAVAGERCORROSIVEBILECP,
     },
@@ -31,8 +31,8 @@ AOE_ABILITY_SPELLS_INFO: dict[AbilityId, dict] = {
         "effect": BuffId.PARASITICBOMB,
     },
     AbilityId.PSISTORM_PSISTORM: {
-        "radius": 1.5,
-        "range": 9.0,
+        "radius": 2.0,
+        "range": 8.0,
         "effect": EffectId.PSISTORMPERSISTENT,
     },
     AbilityId.TACNUKESTRIKE_NUKECALLDOWN: {

@@ -43,9 +43,11 @@ class QueenSpreadCreep(CombatIndividualBehavior):
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         spreading: bool = self.unit.is_using_ability(AbilityId.BUILD_CREEPTUMOR)
-        grid: np.ndarray = mediator.get_cached_ground_grid
+
+        grid: np.ndarray = mediator.get_ground_grid
         if spreading and (self.cancel_if_close_enemy or self.pre_move_queen_to_tumor):
-            return KeepUnitSafe(self.unit, grid).execute(ai, config, mediator)
+            if KeepUnitSafe(self.unit, grid).execute(ai, config, mediator):
+                return True
 
         # queen already spreading creep, leave alone
         if spreading and not [
@@ -65,15 +67,13 @@ class QueenSpreadCreep(CombatIndividualBehavior):
             unit_tag=self.unit.tag,
             cache_result=not ability_available,
         )
-        if not ability_available:
+        if not ability_available and self.pre_move_queen_to_tumor:
             if (
                 edge_position
-                and self.pre_move_queen_to_tumor
                 and cy_distance_to_squared(self.unit.position, edge_position) > 9.0
             ):
                 self.unit.move(edge_position)
-                return True
-            return False
+            return True
 
         creep_spot: Point2 | None = None
         target: Point2 = (

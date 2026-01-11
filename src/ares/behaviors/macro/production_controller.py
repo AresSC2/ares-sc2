@@ -82,6 +82,12 @@ class ProductionController(MacroBehavior):
     max_production_structures: int = 12
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+        # no need for anything else if zerg
+        if ai.race == Race.Zerg:
+            logger.warning(
+                f"{ai.time_formatted}: ProductionController not supported for Zerg."
+            )
+            return False
         if ai.race == Race.Protoss and self.should_repower_structures:
             if RestorePower().execute(ai, config, mediator):
                 return True

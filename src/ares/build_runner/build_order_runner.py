@@ -2,7 +2,11 @@ from typing import TYPE_CHECKING, Optional, Union
 
 from cython_extensions import cy_distance_to_squared, cy_towards
 from cython_extensions.combat_utils import cy_attack_ready
-from cython_extensions.units_utils import cy_closest_to, cy_in_attack_range
+from cython_extensions.units_utils import (
+    cy_closer_than,
+    cy_closest_to,
+    cy_in_attack_range,
+)
 from sc2.constants import ALL_GAS
 from sc2.data import Race
 from sc2.ids.buff_id import BuffId
@@ -391,6 +395,24 @@ class BuildOrderRunner:
                         )
                         self.current_step_started = True
 
+            elif command == AbilityId.UPGRADETOHIVE_HIVE:
+                if available_hatch := [
+                    th
+                    for th in self.ai.townhalls
+                    if th.is_idle and th.is_ready and th.type_id == UnitID.LAIR
+                ]:
+                    available_hatch[0](AbilityId.UPGRADETOHIVE_HIVE)
+                    self.current_step_started = True
+
+            elif command == AbilityId.UPGRADETOLAIR_LAIR:
+                if available_hatch := [
+                    th
+                    for th in self.ai.townhalls
+                    if th.is_idle and th.is_ready and th.type_id == UnitID.HATCHERY
+                ]:
+                    available_hatch[0](AbilityId.UPGRADETOLAIR_LAIR)
+                    self.current_step_started = True
+
             elif command == AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND:
                 if available_ccs := [
                     th
@@ -591,10 +613,31 @@ class BuildOrderRunner:
                 if structure_type == self.ai.supply_type:
                     return list(self.ai.main_base_ramp.corner_depots)[0]
 
+            behind_mineral_line: list[
+                Point2
+            ] = self.mediator.get_behind_mineral_positions(
+                th_pos=self.ai.start_location
+            )
+            build_near: Point2 | None = None
+            if structure_type not in {UnitID.SPINECRAWLER, UnitID.SPORECRAWLER}:
+                for pos in (behind_mineral_line[0], behind_mineral_line[-1]):
+                    if not self.ai.structures or not cy_closer_than(
+                        self.ai.structures, 1.5, pos
+                    ):
+                        build_near = pos
+                        break
+
+            if not build_near:
+                build_near = Point2(
+                    cy_towards(
+                        self.ai.start_location, self.ai.game_info.map_center, 6.0
+                    )
+                )
+
             return await self.ai.find_placement(
                 structure_type,
-                self.ai.start_location.towards(self.ai.game_info.map_center, 8.0),
-                30,
+                build_near,
+                5,
             )
 
     def get_structure(self, target: str) -> Optional[Unit]:

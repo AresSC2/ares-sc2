@@ -48,7 +48,6 @@ class GroupUseAbility(CombatGroupBehavior):
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if len(self.group) == 0:
             return False
-
         issue_command: bool
         if self.sync_command:
             issue_command = all([self.ability in u.abilities for u in self.group])
