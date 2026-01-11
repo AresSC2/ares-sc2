@@ -1,7 +1,12 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Optional
 
-from cython_extensions import cy_closest_to, cy_distance_to, cy_find_aoe_position
+from cython_extensions import (
+    cy_closer_than,
+    cy_closest_to,
+    cy_distance_to,
+    cy_find_aoe_position,
+)
 from loguru import logger
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
@@ -97,7 +102,7 @@ class UseAOEAbility(CombatIndividualBehavior):
             }:
                 self.unit(self.ability_id, cy_closest_to(position, self.targets))
             else:
-                self.unit(self.ability_id, Point2(position))
+                self.unit(self.ability_id, position)
 
             return True
         return False
@@ -106,15 +111,7 @@ class UseAOEAbility(CombatIndividualBehavior):
         self, ai: "AresBot", mediator: ManagerMediator, position: Point2, radius: float
     ) -> bool:
         can_cast: bool = (
-            self.min_targets >= 1
-            or len(
-                [
-                    u
-                    for u in self.targets
-                    if cy_distance_to(u.position, position) < radius
-                ]
-            )
-            >= self.min_targets
+            len(cy_closer_than(self.targets, radius, position)) >= self.min_targets
         )
         # check for friendly splash damage
         if can_cast and self.avoid_own_ground or self.avoid_own_flying:
@@ -150,7 +147,7 @@ class UseAOEAbility(CombatIndividualBehavior):
                     ):
                         can_cast = False
             elif isinstance(effect_or_buff, BuffId):
-                if [u for u in self.targets if u.has_buff(effect_or_buff)]:
+                if len([u for u in self.targets if u.has_buff(effect_or_buff)]) > 0:
                     can_cast = False
 
         return can_cast
