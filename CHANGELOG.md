@@ -2,6 +2,27 @@
 
 <!--next-version-placeholder-->
 
+## v3.1.0 (2026-01-11)
+
+### Feature
+
+* Add new unit roles and fix creep manager request type ([`54e9f37`](https://github.com/AresSC2/ares-sc2/commit/54e9f3797fff7e85463cfcb0a6eb33c1caa00f86))
+* Add auto use aoe ability behavior ([`a8a1c29`](https://github.com/AresSC2/ares-sc2/commit/a8a1c29ea130f85ce9f203383a10d58e663867b6))
+
+### Fix
+
+* Prioritize hatcheries for queen production commands ([`c4fbf14`](https://github.com/AresSC2/ares-sc2/commit/c4fbf14f97c034c88e9385dff8d4a4e63736ac22))
+* Warn and exit ProductionController early for Zerg race ([`2307466`](https://github.com/AresSC2/ares-sc2/commit/2307466976826869631caec5370a0acf5f7530bc))
+* Refine queen creep spreading logic and return correctly when keeping safe ([`39ccf5c`](https://github.com/AresSC2/ares-sc2/commit/39ccf5c46c8f2589fa2b1b07b81d9e17d1545778))
+* Refine build logic to handle ignored unit tags and update placement calculations ([`39283cd`](https://github.com/AresSC2/ares-sc2/commit/39283cdac37a43095eb93f7ede8ad5a75de12f4a))
+* Filter creep edges near townhalls to prevent invalid pathing ([`5aad51c`](https://github.com/AresSC2/ares-sc2/commit/5aad51ceb5be931382f3d7de9df9689b60a69d3f))
+* Optimize building tracker logic and resolve edge cases for worker assignments ([`ccad9ac`](https://github.com/AresSC2/ares-sc2/commit/ccad9acf764258e9020b4f240d818e2180dc0daa))
+* Adjust Zerg build requirements and add handling for Hive/Lair upgrades ([`a36039f`](https://github.com/AresSC2/ares-sc2/commit/a36039f58c7c2c9da5f154b85327a30273ccdf4f))
+* Update Zerg unit tech requirements to include required structures ([`879d8fe`](https://github.com/AresSC2/ares-sc2/commit/879d8fe2a260eb6ab4977250cc4e2684b2245c56))
+* Prevent invalid tech upgrades for Hive and Lair ([`e84acd8`](https://github.com/AresSC2/ares-sc2/commit/e84acd87e099c92f5d1d061ff2c42f590217fb0d))
+* Handle special cases for worker types and overlords in tech requirement check ([`16c3371`](https://github.com/AresSC2/ares-sc2/commit/16c337144dbf2d63e39142e96a56baf1fc420fc7))
+* Use rounding for placement origin calculations ([`ad3bd2a`](https://github.com/AresSC2/ares-sc2/commit/ad3bd2aa244549f19f1a2b95b7b6bea56526a9c2))
+
 ## v3.0.0 (2025-12-22)
 
 ### Feature
