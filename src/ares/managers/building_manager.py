@@ -16,6 +16,7 @@ from typing import (
 
 from cython_extensions import (
     cy_center,
+    cy_closer_than,
     cy_closest_to,
     cy_distance_to,
     cy_distance_to_squared,
@@ -202,7 +203,6 @@ class BuildingManager(Manager, IManagerMediator):
                 )
 
             structure_id: UnitID = self.building_tracker[worker_tag][ID]
-
             if (
                 self.ai.race != Race.Terran or structure_id == UnitID.REFINERY
             ) and self.ai.time > self.building_tracker[worker_tag][
@@ -236,10 +236,14 @@ class BuildingManager(Manager, IManagerMediator):
             building_spots.add(target)
 
             # check if we are finished with the building worker
-            if close_structures := self.ai.structures.filter(
-                lambda s: cy_distance_to_squared(s.position, target.position) < 2.0
-            ):
+            close_structures: list[Unit] = cy_closer_than(
+                self.ai.structures, 1.5, target.position
+            )
+            if len(close_structures) > 0:
                 structure: Unit = close_structures[0]
+                if structure.build_progress >= 1.0:
+                    tags_to_remove.add(worker_tag)
+
                 target_progress: float = 1.0 if self.ai.race == Race.Terran else 1e-16
                 if structure.build_progress >= target_progress:
                     tags_to_remove.add(worker_tag)
@@ -247,26 +251,13 @@ class BuildingManager(Manager, IManagerMediator):
 
             distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
 
-            # TODO: This is a workaround for a strange bug where the client
-            #   returns an error when issuing a build gas command occasionally
-            #   this seems to fix it for now
-            if (
-                self.ai.race in {Race.Protoss, Race.Terran}
-                and structure_id in GAS_BUILDINGS
-                and cy_distance_to_squared(worker.position, target.position) < 25.0
-            ):
-                if self.ai.can_afford(structure_id):
-                    worker.build_gas(target)
-                continue
-
             # if terran, check for unfinished structure
             existing_unfinished_structure: Optional[Unit] = None
             if self.ai.race == Race.Terran and structure_id in structures_dict:
                 if existing_unfinished_structures := [
                     s
                     for s in structures_dict[structure_id]
-                    if s.type_id == structure_id
-                    and cy_distance_to_squared(s.position, target.position) < 2.25
+                    if cy_distance_to_squared(s.position, target.position) < 2.25
                     and s.build_progress < 1.0
                 ]:
                     existing_unfinished_structure = existing_unfinished_structures[0]
@@ -307,20 +298,27 @@ class BuildingManager(Manager, IManagerMediator):
                             ] = available_geysers.closest_to(self.ai.start_location)
                             continue
                     else:
-                        worker.build_gas(target)
+                        # this to fix the occasional bug where despite build gas action
+                        # being issued, the worker refuses to construct a gas building
+                        if worker.is_idle:
+                            tags_to_remove.add(worker_tag)
+                        else:
+                            worker.build_gas(target)
 
                 # handle blocked positions
-                # TODO: extend this for Zerg
-                elif self.ai.race != Race.Zerg and structure_id not in GAS_BUILDINGS:
+                elif structure_id not in GAS_BUILDINGS:
                     if not self.manager_mediator.can_place_structure(
                         position=target.position, structure_type=structure_id
                     ):
-                        self.building_tracker[worker_tag][
-                            TARGET
-                        ] = self.manager_mediator.request_building_placement(
-                            base_location=self.ai.start_location,
-                            structure_type=structure_id,
-                        )
+                        if self.ai.race == Race.Zerg:
+                            tags_to_remove.add(worker_tag)
+                        else:
+                            self.building_tracker[worker_tag][
+                                TARGET
+                            ] = self.manager_mediator.request_building_placement(
+                                base_location=self.ai.start_location,
+                                structure_type=structure_id,
+                            )
                         continue
 
                 if (
