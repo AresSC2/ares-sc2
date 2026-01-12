@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.2.0 (2026-01-12)
+
+### Feature
+
+* Add AutoUseAOEAbility behavior ([`07fb963`](https://github.com/AresSC2/ares-sc2/commit/07fb9632c6ac0c9cbfd887630f01fa0ce3b74e3e))
+
 ## v3.1.0 (2026-01-11)
 
 ### Feature
