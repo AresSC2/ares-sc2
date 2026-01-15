@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.3.0 (2026-01-15)
+
+### Feature
+
+* Handle blocked expansion locations ([`88a3cc6`](https://github.com/AresSC2/ares-sc2/commit/88a3cc6b1bec7a8743813cb3b81a8d267d7e456f))
+
 ## v3.2.0 (2026-01-12)
 
 ### Feature
