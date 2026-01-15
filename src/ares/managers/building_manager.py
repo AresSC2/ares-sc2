@@ -40,6 +40,7 @@ from ares.consts import (
     STRUCTURE_ORDER_COMPLETE,
     TARGET,
     TIME_ORDER_COMMENCED,
+    TOWNHALL_TYPES,
     BuildingPurpose,
     ManagerName,
     ManagerRequestType,
@@ -234,6 +235,18 @@ class BuildingManager(Manager, IManagerMediator):
                 continue
 
             building_spots.add(target)
+
+            if structure_id in TOWNHALL_TYPES and (
+                self.ai.location_is_blocked(self.manager_mediator, target)
+                or self.ai.building_worker_blocked_by_burrowed_unit(worker_tag, target)
+            ):
+                self.blocked_expansion_locations.add(target)
+                pos: Point2 = self.ai.get_next_expansion_location(self.manager_mediator)
+                if pos:
+                    self.building_tracker[worker_tag][TARGET] = pos
+                else:
+                    tags_to_remove.add(worker_tag)
+                continue
 
             # check if we are finished with the building worker
             close_structures: list[Unit] = cy_closer_than(

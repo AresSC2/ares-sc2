@@ -795,6 +795,7 @@ class AresBot(CustomBotAI):
         -------
         None
         """
+        self._blocked_positions = set()
         # Set of enemy units detected by own sensor tower,
         # as blips have less unit information than normal visible units
         self.all_units: Units = Units([], self)
