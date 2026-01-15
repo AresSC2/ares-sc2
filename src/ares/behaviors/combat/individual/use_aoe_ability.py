@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Optional
 
+import numpy as np
 from cython_extensions import (
     cy_closer_than,
     cy_closest_to,
@@ -88,11 +89,14 @@ class UseAOEAbility(CombatIndividualBehavior):
         ):
             return False
 
-        position = Point2(
-            cy_find_aoe_position(
-                radius, self.targets, self.min_targets, self.bonus_tags
-            )
+        aoe_position: np.ndarray | None = cy_find_aoe_position(
+            radius, self.targets, self.min_targets, self.bonus_tags
         )
+
+        if aoe_position is None:
+            return False
+
+        position = Point2(aoe_position)
 
         if self._can_cast(ai, mediator, position, radius):
             # need to cast on the actual unit

@@ -1,8 +1,9 @@
 """Extension of sc2.BotAI to add custom functions.
 
 """
-from typing import Dict, List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Union
 
+import numpy as np
 from cython_extensions import cy_distance_to_squared
 from loguru import logger
 from s2clientprotocol import raw_pb2 as raw_pb
@@ -18,7 +19,14 @@ from sc2.position import Point2, Point3
 from sc2.unit import Unit
 from sc2.units import Units
 
-from ares.consts import ALL_STRUCTURES, ID, TARGET, WORKER_TYPES
+from ares.consts import (
+    ALL_STRUCTURES,
+    ID,
+    TARGET,
+    TOWNHALL_TYPES,
+    WORKER_TYPES,
+    UnitTreeQueryType,
+)
 from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 from ares.managers.manager_mediator import ManagerMediator
@@ -29,11 +37,13 @@ class CustomBotAI(BotAI):
 
     base_townhall_type: UnitID
     enemy_detectors: Units
-    enemy_parasitic_bomb_positions: List[Point2]
+    enemy_parasitic_bomb_positions: list[Point2]
     gas_type: UnitID
-    unit_tag_dict: Dict[int, Unit]
+    unit_tag_dict: dict[int, Unit]
     worker_type: UnitID
     mediator: ManagerMediator
+    CANT_BUILD_LOCATION_INVALID: int = 44
+    _blocked_positions: set[Point2] = set()
 
     async def on_step(self, iteration: int):  # pragma: no cover
         """Here because all abstract methods have to be implemented.
@@ -385,3 +395,71 @@ class CustomBotAI(BotAI):
             for s in self.enemy_structures
             if cy_distance_to_squared(s.position, from_position) < dist
         ]
+
+    def get_next_expansion_location(
+        self, mediator: ManagerMediator, check_location_is_safe: bool = True
+    ) -> Point2 | None:
+        grid: np.ndarray = mediator.get_ground_grid
+        for el in mediator.get_own_expansions:
+            location: Point2 = el[0]
+            if (
+                check_location_is_safe
+                and not mediator.is_position_safe(grid=grid, position=location)
+                or self.location_is_blocked(mediator, location)
+            ):
+                continue
+
+            return location
+        return None
+
+    def location_is_blocked(self, mediator: ManagerMediator, position: Point2) -> bool:
+        """
+        Check if enemy or own townhalls are blocking `position`.
+
+        Parameters
+        ----------
+        mediator : ManagerMediator
+        position : Point2
+
+        Returns
+        -------
+        bool : True if location is blocked by something.
+
+        """
+        if position in self._blocked_positions:
+            return True
+        # TODO: Not currently an issue, but maybe we should consider rocks
+        close_enemy: Units = mediator.get_units_in_range(
+            start_points=[position],
+            distances=5.5,
+            query_tree=UnitTreeQueryType.EnemyGround,
+        )[0]
+
+        close_enemy: Units = close_enemy.filter(
+            lambda u: u.type_id != UnitID.AUTOTURRET
+        )
+        if close_enemy:
+            return True
+
+        if mediator.get_units_in_range(
+            start_points=[position],
+            distances=5.5,
+            query_tree=UnitTreeQueryType.AllOwn,
+        )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
+            return True
+
+        return False
+
+    def building_worker_blocked_by_burrowed_unit(
+        self, worker_tag: int, position: Point2
+    ) -> bool:
+
+        for error in self.state.action_errors:
+            if (
+                error.unit_tag == worker_tag
+                and error.result == self.CANT_BUILD_LOCATION_INVALID
+            ):
+                self._blocked_positions.add(position)
+                return True
+
+        return False
