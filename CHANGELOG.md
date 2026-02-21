@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.3.2 (2026-02-21)
+
+### Fix
+
+* Nydus manager on arcade mode ([`564e962`](https://github.com/AresSC2/ares-sc2/commit/564e962ad78bf144a5262102497b3cb31669068b))
+
 ## v3.3.1 (2026-02-20)
 
 ### Fix
