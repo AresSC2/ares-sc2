@@ -50,9 +50,14 @@ class NydusManager(Manager, IManagerMediator):
         """
         super().__init__(ai, config, mediator)
 
-        self.all_enemy_main_nydus_points: list[Point2] = [
-            self.ai.enemy_start_locations[0]
-        ]
+        if not self.ai.arcade_mode:
+            self.all_enemy_main_nydus_points: list[Point2] = [
+                self.ai.enemy_start_locations[0]
+            ]
+        else:
+            self.all_enemy_main_nydus_points: list[Point2] = [
+                self.ai.game_info.map_center
+            ]
         self.all_own_main_nydus_points: list[Point2] = [self.ai.start_location]
 
         # key is tag of travelling unit,
