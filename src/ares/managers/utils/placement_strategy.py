@@ -1,9 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import Callable, dataclass
 from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared
-from jedi.inference.gradual.typing import Callable
 from loguru import logger
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
