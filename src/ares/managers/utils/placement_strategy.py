@@ -1,5 +1,5 @@
-from dataclasses import Callable, dataclass
-from typing import TYPE_CHECKING
+from dataclasses import dataclass
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared
