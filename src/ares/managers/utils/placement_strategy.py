@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+import numpy as np
 from cython_extensions import cy_distance_to_squared
+from jedi.inference.gradual.typing import Callable
 from loguru import logger
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -52,9 +54,21 @@ class BasePlacementStrategy:
         self.building_size = building_size
 
     def _filter_by_flag(
-        self, flag_name: str, available, placements_for_base: dict[Point2, dict]
+        self,
+        flag_name: str,
+        available: list[Point2],
+        placements_for_base: dict[Point2, dict],
     ) -> list[Point2]:
-        return [a for a in available if placements_for_base[a].get(flag_name, False)]
+        grid: np.ndarray = self.placement_manager.manager_mediator.get_ground_grid
+        safety_check: Callable = (
+            self.placement_manager.manager_mediator.is_position_safe
+        )
+        return [
+            a
+            for a in available
+            if safety_check(grid=grid, position=a)
+            and placements_for_base[a].get(flag_name, False)
+        ]
 
 
 class PoweredPlacementStrategy(BasePlacementStrategy):
