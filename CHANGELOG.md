@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v3.4.0 (2026-03-06)
+
+### Feature
+
+* Placement strategy safety check ([`02d4b6e`](https://github.com/AresSC2/ares-sc2/commit/02d4b6e0fbad6f28fa86a572fabf5ffab99d5aa5))
+
+### Fix
+
+* Correct Callable import in placement strategy ([`fd069a0`](https://github.com/AresSC2/ares-sc2/commit/fd069a0175aada73123afb2227a840ce2935a31c))
+* Correct Callable import in placement strategy utils ([`bda019f`](https://github.com/AresSC2/ares-sc2/commit/bda019f4dfe7f7453348989b4d2508ea9a00102a))
+
 ## v3.3.2 (2026-02-21)
 
 ### Fix
