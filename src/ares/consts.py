@@ -194,6 +194,13 @@ class BuildingSize(str, Enum):
     TWO_BY_TWO = "TWO_BY_TWO"
 
 
+BUILDING_SIZE_ENUM_TO_RADIUS: dict[BuildingSize, float] = {
+    BuildingSize.FIVE_BY_FIVE: 2.5,
+    BuildingSize.THREE_BY_THREE: 1.5,
+    BuildingSize.TWO_BY_TWO: 1.0,
+}
+
+
 class BuildOrderOptions(str, Enum):
     ADDONSWAP = "ADDONSWAP"
     CANCEL_GAS = "CANCEL_GAS"

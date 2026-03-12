@@ -33,6 +33,7 @@ from sc2.units import Units
 from ares.config_parser import ConfigParser
 from ares.consts import (
     BUILDING_PLACEMENTS,
+    BUILDING_SIZE_ENUM_TO_RADIUS,
     DEBUG,
     DEBUG_OPTIONS,
     GAS_BUILDINGS,
@@ -83,11 +84,6 @@ class PlacementManager(Manager, IManagerMediator):
         BuildingSize.FIVE_BY_FIVE: (5, 5),
         BuildingSize.THREE_BY_THREE: (3, 3),
         BuildingSize.TWO_BY_TWO: (2, 2),
-    }
-    BUILDING_SIZE_ENUM_TO_RADIUS: dict[BuildingSize, float] = {
-        BuildingSize.FIVE_BY_FIVE: 2.5,
-        BuildingSize.THREE_BY_THREE: 1.5,
-        BuildingSize.TWO_BY_TWO: 1.0,
     }
     SKIP_CREEP_CHECK_IDS: set[UnitID] = {UnitID.HATCHERY, UnitID.NYDUSCANAL}
     UNBUILDABLES: set[UnitID] = {
@@ -293,7 +289,7 @@ class PlacementManager(Manager, IManagerMediator):
             return len(existing_gas_buildings) == 0
 
         size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[structure_type]
-        offset: float = self.BUILDING_SIZE_ENUM_TO_RADIUS[size]
+        offset: float = BUILDING_SIZE_ENUM_TO_RADIUS[size]
         origin_x: int = round(position[0] - offset)
         origin_y: int = round(position[1] - offset)
 
