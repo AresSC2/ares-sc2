@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.4.1 (2026-03-12)
+
+### Fix
+
+* BuildStructure calculates radius for num existing at base ([`c6fdee8`](https://github.com/AresSC2/ares-sc2/commit/c6fdee80a3bde973a5fe7a177543e38eb240563c))
+
 ## v3.4.0 (2026-03-06)
 
 ### Feature
