@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from cython_extensions.geometry import cy_distance_to_squared
+from loguru import logger
 from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
     from ares import AresBot
 
 from ares.behaviors.macro.macro_behavior import MacroBehavior
+from ares.consts import BUILDING_SIZE_ENUM_TO_RADIUS
 from ares.managers.manager_mediator import ManagerMediator
 
 
@@ -91,6 +93,13 @@ class BuildStructure(MacroBehavior):
     reaper_wall: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+        if self.structure_id not in STRUCTURE_TO_BUILDING_SIZE:
+            logger.error(
+                f"Invalid structure type passed to `BuildStructure`: "
+                f"{self.structure_id}"
+            )
+            return False
+
         # already enough workers on route to build this
         if (
             ai.not_started_but_in_building_tracker(self.structure_id)
@@ -167,11 +176,13 @@ class BuildStructure(MacroBehavior):
             if not potential_placements[placement]["available"]
         ]
         num_structures: int = 0
+        radius_sq: float = BUILDING_SIZE_ENUM_TO_RADIUS[size] ** 2
+        structures_dict = mediator.get_own_structures_dict
         for t in taken:
             if [
                 s
-                for s in mediator.get_own_structures_dict[self.structure_id]
-                if cy_distance_to_squared(s.position, t) < 9.0
+                for s in structures_dict[self.structure_id]
+                if cy_distance_to_squared(s.position, t) < radius_sq
             ]:
                 num_structures += 1
         return num_structures >= self.to_count_per_base
