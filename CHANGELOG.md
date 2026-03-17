@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.4.2 (2026-03-17)
+
+### Fix
+
+* Make warpgate warpin more resilient ([`10739e3`](https://github.com/AresSC2/ares-sc2/commit/10739e3b2d9162f465cdff9f72283f1f5e0cb251))
+
 ## v3.4.1 (2026-03-12)
 
 ### Fix
