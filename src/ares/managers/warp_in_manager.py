@@ -116,9 +116,15 @@ class WarpInManager(Manager, IManagerMediator):
     async def do_warp_ins(self) -> None:
         if not self.requested_warp_ins:
             return
+
+        own_structures_dict: dict[
+            UnitID, list[Unit]
+        ] = self.manager_mediator.get_own_structures_dict
+        pylons: list[Unit] = [
+            s for s in own_structures_dict[UnitID.PYLON] if s.is_ready
+        ]
         power_sources: list[Unit] = (
-            self.manager_mediator.get_own_structures_dict[UnitID.PYLON]
-            + self.manager_mediator.get_own_army_dict[UnitID.WARPPRISMPHASING]
+            pylons + self.manager_mediator.get_own_army_dict[UnitID.WARPPRISMPHASING]
         )
         if not power_sources:
             logger.warning("Requesting warp in spot, but no power sources found")
@@ -133,11 +139,10 @@ class WarpInManager(Manager, IManagerMediator):
                 if AbilityId.WARPGATETRAIN_STALKER in build_from.abilities:
                     placement = await self.ai.find_placement(
                         AbilityId.WARPGATETRAIN_STALKER,
-                        power_source.position,
+                        power_source.position.random_on_distance(6.0),
                         placement_step=1,
                     )
                     if placement is None:
-                        # return ActionResult.CantFindPlacementLocation
                         logger.info(f"Can't find placement for {unit_type}")
                         return
                     build_from.warp_in(unit_type, placement)
