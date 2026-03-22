@@ -122,6 +122,7 @@ class Mining(MacroBehavior):
             assigned_mineral_patch: bool = worker_tag in worker_to_mineral_patch_dict
             assigned_gas_building: bool = worker_tag in worker_to_geyser_dict
             dist_to_resource: float = 15.0
+
             if assigned_mineral_patch or assigned_gas_building:
                 resource_tag: int = (
                     worker_to_mineral_patch_dict[worker_tag]
@@ -151,12 +152,20 @@ class Mining(MacroBehavior):
                         mediator.remove_gas_building(gas_building_tag=resource_tag)
                     continue
 
+            worker_safe: bool = pos_safe(grid=grid, position=worker_position)
+            if (
+                not worker_safe
+                and main_enemy_ground_threats
+                and self._worker_attacking_enemy(ai, dist_to_resource, worker)
+            ):
+                continue
+
             perc_health: float = (
                 worker.health_percentage
                 if race != Race.Protoss
                 else worker.shield_health_percentage
             )
-            worker_safe: bool = pos_safe(grid=grid, position=worker_position)
+
             # keeping worker safe is first priority
             if self.keep_safe and (
                 # lib zone / nukes etc
@@ -170,13 +179,6 @@ class Mining(MacroBehavior):
                 )
             ):
                 self._keep_worker_safe(mediator, grid, worker)
-
-            elif (
-                not worker_safe
-                and main_enemy_ground_threats
-                and self._worker_attacking_enemy(ai, dist_to_resource, worker)
-            ):
-                pass
 
             # do we have record of this worker? If so mine from the relevant resource
             elif ai.townhalls and (assigned_mineral_patch or assigned_gas_building):
