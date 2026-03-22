@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.0 (2026-03-22)
+
+### Feature
+
+* Improve worker safety logic in mining behavior ([`6246e23`](https://github.com/AresSC2/ares-sc2/commit/6246e230ed301238d53a003a356d3915b54dad82))
+
 ## v3.4.2 (2026-03-17)
 
 ### Fix
