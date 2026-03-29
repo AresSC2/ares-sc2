@@ -462,6 +462,7 @@ class BuildOrderRunner:
                     command in GAS_BUILDINGS
                     and len(self._geyser_tag_to_probe_tag) == 0
                     and self.mediator.get_building_counter[command] == 0
+                    and not [g for g in self.ai.gas_buildings if g.build_progress < 1.0]
                 ):
                     if worker := self.mediator.select_worker(
                         target_position=self.current_build_position, force_close=True
