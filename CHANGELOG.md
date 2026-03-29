@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.1 (2026-03-29)
+
+### Fix
+
+* Account for incomplete gas buildings in build order logic ([`8c40aaa`](https://github.com/AresSC2/ares-sc2/commit/8c40aaa69bc5f2f1028f1ee10d8f198a3e2ce37e))
+
 ## v3.5.0 (2026-03-22)
 
 ### Feature
