@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.2 (2026-03-30)
+
+### Fix
+
+* Handle gas building conflicts and timing in build order logic ([`5bdd01a`](https://github.com/AresSC2/ares-sc2/commit/5bdd01a5c98e5e91d40f700484af302017c13ab2))
+
 ## v3.5.1 (2026-03-29)
 
 ### Fix
