@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.5.3 (2026-03-30)
+
+### Fix
+
+* Correct indentation for unit spawn handling logic in build order runner ([`1208032`](https://github.com/AresSC2/ares-sc2/commit/1208032c990375980e0ea252fe29216fa9102b30))
+
 ## v3.5.2 (2026-03-30)
 
 ### Fix
