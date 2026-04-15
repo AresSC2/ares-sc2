@@ -547,12 +547,6 @@ class BuildOrderParser:
         self, order_target: BuildOrderTargetOptions, target_positions: list[Point2]
     ) -> list[Point2]:
         location: Point2 = self._get_target(order_target)
-        behind_min_line: Point2 = self.ai.mediator.get_behind_mineral_positions(
-            th_pos=location
-        )[1]
-        if order_target == BuildOrderTargetOptions.ENEMY_SPAWN:
-            target_positions.append(behind_min_line)
-
         # Using region perimeter to get some scout points
         # filter out areas by ramp and minerals as don't need to check there
         map_data: MapData = self.ai.mediator.get_map_data_object
@@ -562,18 +556,53 @@ class BuildOrderParser:
         ramp_point_array = np.array([ramp_point.x, ramp_point.y])
         distances = np.linalg.norm(perimeter - ramp_point_array, axis=1)
         filtered_points = perimeter[distances > 8.0]
-        distances = np.linalg.norm(
-            filtered_points - np.array([behind_min_line.x, behind_min_line.y]),
-            axis=1,
-        )
-        filtered_points = filtered_points[distances > 10.0]
+        if len(filtered_points) == 0:
+            return target_positions
 
-        # Number of points
-        n = len(filtered_points)
-        _step = n // 6
-        indices = [(i * _step) % n for i in range(6)]
-        for point in filtered_points[indices]:
-            target_positions.append(Point2(point))
+        center = region.center
+        angles = np.arctan2(
+            filtered_points[:, 1] - center.y, filtered_points[:, 0] - center.x
+        )
+        ordered = filtered_points[np.argsort(angles)]
+
+        if order_target == BuildOrderTargetOptions.ENEMY_SPAWN:
+            ramp_point = region.region_ramps[0].top_center.rounded
+            ramp_distances = np.linalg.norm(
+                ordered - np.array([ramp_point.x, ramp_point.y]), axis=1
+            )
+            spawn_distances = np.linalg.norm(
+                ordered - np.array([location.x, location.y]), axis=1
+            )
+            min_ramp = float(np.min(ramp_distances))
+            # Prefer points that are closest to the ramp, then pick the side
+            # closest to the enemy spawn.
+            ramp_mask = ramp_distances <= (min_ramp + 0.5)
+            if np.any(ramp_mask):
+                candidate_indices = np.where(ramp_mask)[0]
+                start_index = int(
+                    candidate_indices[np.argmin(spawn_distances[candidate_indices])]
+                )
+            else:
+                start_index = int(np.argmin(ramp_distances))
+        else:
+            start_distances = np.linalg.norm(
+                ordered - np.array([location.x, location.y]), axis=1
+            )
+            start_index = int(np.argmin(start_distances))
+        ordered = np.roll(ordered, -start_index, axis=0)
+
+        min_spacing = 4.0
+        last_point: Optional[np.ndarray] = None
+        for point in ordered:
+            if last_point is None:
+                _pos: Point2 = Point2(cy_towards(point, location, 2.0))
+                target_positions.append(_pos)
+                last_point = point
+                continue
+            if np.linalg.norm(point - last_point) >= min_spacing:
+                _pos: Point2 = Point2(cy_towards(point, location, 2.0))
+                target_positions.append(_pos)
+                last_point = point
 
         return target_positions
 
