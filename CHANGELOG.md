@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v3.6.0 (2026-04-15)
+
+### Feature
+
+* Refine enemy spawn scouting points logic for improved worker scout ([`46bdb31`](https://github.com/AresSC2/ares-sc2/commit/46bdb3171cfbff4e3ac0fff28f5c3932f63c4655))
+
+### Fix
+
+* Improve handling of unfinished structures and worker reassignment logic ([`e55aee0`](https://github.com/AresSC2/ares-sc2/commit/e55aee00c1ae1b7d39718709b467e8fd83a26187))
+* Adjust production threshold for better alignment with target proportion ([`4534638`](https://github.com/AresSC2/ares-sc2/commit/453463815a1558fa43ee7619109ed9da4de1e94f))
+* Exclude idle workers from health-based filtering logic in resource manager ([`581ecc7`](https://github.com/AresSC2/ares-sc2/commit/581ecc70f4315a9c6a4865349c6863f8a4cca10f))
+
 ## v3.5.3 (2026-03-30)
 
 ### Fix

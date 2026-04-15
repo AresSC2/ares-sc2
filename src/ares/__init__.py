@@ -1,3 +1,3 @@
-__version__ = "3.5.3"
+__version__ = "3.6.0"
 
 from .main import *  # noqa: F403 F401
