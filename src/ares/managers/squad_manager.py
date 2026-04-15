@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from cython_extensions import cy_center, cy_distance_to_squared
-from loguru import logger
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -518,13 +517,4 @@ class SquadManager(Manager, IManagerMediator):
                 self._role_to_main_squad_pos[role] = main_group_position
 
     def _get_position_of_main_squad(self, role: UnitRole) -> Point2:
-        squads = self._squads_list_for_role(role)
-        if len(squads) == 0:
-            logger.warning(
-                f"Attempting to find main squad for {role}, "
-                f"but there are none assigned. Return value might be unexpected."
-                f"Hint: Have you run `self.mediator.get_squads()` yet?"
-            )
-            return self._role_to_main_squad_pos[role]
-
         return self._role_to_main_squad_pos[role]
