@@ -379,7 +379,7 @@ class ResourceManager(Manager, IManagerMediator):
             return
 
         workers: Units = self.manager_mediator.get_units_from_roles(
-            roles={UnitRole.GATHERING, UnitRole.IDLE}, unit_type=self.ai.worker_type
+            roles={UnitRole.GATHERING}, unit_type=self.ai.worker_type
         ).filter(lambda u: u.health_percentage >= min_health_perc)
         if self.ai.race == Race.Protoss and min_shield_perc > 0.0:
             workers = workers.filter(lambda u: u.shield_percentage >= min_shield_perc)
