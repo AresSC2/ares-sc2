@@ -235,10 +235,28 @@ class BuildingManager(Manager, IManagerMediator):
                 continue
 
             building_spots.add(target)
+            distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
+            # if terran, check for unfinished structure
+            existing_unfinished_structure: Optional[Unit] = None
+            if self.ai.race == Race.Terran and structure_id in structures_dict:
+                if existing_unfinished_structures := [
+                    s
+                    for s in structures_dict[structure_id]
+                    if cy_distance_to_squared(s.position, target.position) < 2.25
+                    and s.build_progress < 1.0
+                ]:
+                    existing_unfinished_structure = existing_unfinished_structures[0]
+                    distance = 4.5
 
-            if structure_id in TOWNHALL_TYPES and (
-                self.ai.location_is_blocked(self.manager_mediator, target)
-                or self.ai.building_worker_blocked_by_burrowed_unit(worker_tag, target)
+            if (
+                structure_id in TOWNHALL_TYPES
+                and not existing_unfinished_structure
+                and (
+                    self.ai.location_is_blocked(self.manager_mediator, target)
+                    or self.ai.building_worker_blocked_by_burrowed_unit(
+                        worker_tag, target
+                    )
+                )
             ):
                 self.blocked_expansion_locations.add(target)
                 pos: Point2 = self.ai.get_next_expansion_location(self.manager_mediator)
@@ -261,20 +279,6 @@ class BuildingManager(Manager, IManagerMediator):
                 if structure.build_progress >= target_progress:
                     tags_to_remove.add(worker_tag)
                     continue
-
-            distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
-
-            # if terran, check for unfinished structure
-            existing_unfinished_structure: Optional[Unit] = None
-            if self.ai.race == Race.Terran and structure_id in structures_dict:
-                if existing_unfinished_structures := [
-                    s
-                    for s in structures_dict[structure_id]
-                    if cy_distance_to_squared(s.position, target.position) < 2.25
-                    and s.build_progress < 1.0
-                ]:
-                    existing_unfinished_structure = existing_unfinished_structures[0]
-                    distance = 4.5
 
             if cy_distance_to(worker.position, target.position) > distance:
                 order_target: Union[int, Point2, None] = worker.order_target
@@ -363,6 +367,16 @@ class BuildingManager(Manager, IManagerMediator):
                 self.manager_mediator.assign_role(
                     tag=new_worker.tag, role=UnitRole.BUILDING
                 )
+            # backup option, take any worker
+            elif gatherers := self.manager_mediator.get_units_from_role(
+                role=UnitRole.GATHERING, unit_type=self.ai.worker_type
+            ):
+                worker_tag: int = gatherers[0].tag
+                self.manager_mediator.assign_role(
+                    tag=worker_tag, role=UnitRole.BUILDING
+                )
+                self.building_tracker[worker_tag] = self.building_tracker.pop(tag)
+                self.manager_mediator.remove_worker_from_mineral(worker_tag=worker_tag)
 
     def cancel_structure(self, structure: Unit) -> None:
         # firstly cancel this structure no matter what
