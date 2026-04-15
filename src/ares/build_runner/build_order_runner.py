@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 from cython_extensions import cy_distance_to_squared, cy_towards
 from cython_extensions.combat_utils import cy_attack_ready
@@ -7,10 +7,8 @@ from cython_extensions.units_utils import (
     cy_closest_to,
     cy_in_attack_range,
 )
-from loguru import logger
 from sc2.constants import ALL_GAS
 from sc2.data import Race
-from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
@@ -24,6 +22,9 @@ from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
     from ares import AresBot
+
+from loguru import logger
+from sc2.ids.ability_id import AbilityId
 
 from ares.build_runner.build_order_parser import BuildOrderParser
 from ares.consts import (
@@ -107,7 +108,6 @@ class BuildOrderRunner:
         self._temporary_build_step: int = -1
         self.should_handle_gas_steal: bool = True
         self._geyser_tag_to_probe_tag: dict[int, int] = dict()
-        self._last_gas_order_time: float = -999.0
 
     def set_build_completed(self) -> None:
         logger.info("Build order completed")
@@ -176,9 +176,7 @@ class BuildOrderRunner:
         ):
             self.current_step_complete = True
 
-    def set_step_started(
-        self, value: bool, command: AbilityId | UnitID | UpgradeId | BuildOrderOptions
-    ) -> None:
+    def set_step_started(self, value: bool, command) -> None:
         if command == self.build_order[self.build_step].command:
             self.current_step_started = value
 
@@ -310,11 +308,6 @@ class BuildOrderRunner:
                 if command in GAS_BUILDINGS and len(self._geyser_tag_to_probe_tag) > 0:
                     self.current_step_started = True
                     return
-                # gas already pending elsewhere (eg. macro), consider this step started
-                if command in GAS_BUILDINGS and self.ai.structure_pending(command) > 0:
-                    self.current_step_started = True
-                    self.current_step_complete = True
-                    return
 
                 persistent_workers: Units = self.mediator.get_units_from_role(
                     role=UnitRole.PERSISTENT_BUILDER
@@ -355,8 +348,6 @@ class BuildOrderRunner:
                             in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
                         ):
                             self.current_step_started = True
-                            if command in GAS_BUILDINGS:
-                                self._last_gas_order_time = self.ai.time
                     elif command in STRUCTURE_TO_BUILDING_SIZE:
                         size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[command]
                         self.mediator.make_placement_available(
@@ -369,18 +360,14 @@ class BuildOrderRunner:
                 army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
                 spawn_target: Point2 = self._get_target(step.target)
                 did_spawn_action: bool = SpawnController(
-                    army_comp,
-                    freeflow_mode=True,
-                    maximum=1,
-                    spawn_target=spawn_target,
+                    army_comp, freeflow_mode=True, maximum=1, spawn_target=spawn_target
                 ).execute(self.ai, self.config, self.mediator)
                 if did_spawn_action:
                     if (
                         UpgradeId.WARPGATERESEARCH in self.ai.state.upgrades
                         and command in GATEWAY_UNITS
                     ):
-                        # main.on_unit_created will set
-                        # self.current_step_started = True
+                        # main.on_unit_created will set self.current_step_started = True
                         pass
                     else:
                         self.current_step_started = True
@@ -440,8 +427,8 @@ class BuildOrderRunner:
                     target_position=self.ai.start_location
                 ):
                     worker.return_resource()
-                    for target in step.target:
-                        worker.move(target, queue=True)
+                    for i, target in enumerate(step.target):
+                        worker.move(target, queue=i != 0)
                     self.mediator.assign_role(
                         tag=worker.tag, role=UnitRole.BUILD_RUNNER_SCOUT
                     )
@@ -468,17 +455,13 @@ class BuildOrderRunner:
                 self.current_step_complete = step.end_condition()
             # end condition hasn't yet activated
             if not self.current_step_complete:
-                command: UnitID | UpgradeId = step.command
+                command: Union[UnitID, UpgradeId] = step.command
                 # sometimes gas building didn't go through
                 # due to conflict with gas steal
                 if (
                     command in GAS_BUILDINGS
                     and len(self._geyser_tag_to_probe_tag) == 0
-                    and self.ai.structure_pending(command) == 0
-                    and not self.ai.structures.filter(
-                        lambda s: s.type_id == command and s.build_progress > 0.0
-                    )
-                    and (self.ai.time - self._last_gas_order_time) > 6.0
+                    and self.mediator.get_building_counter[command] == 0
                 ):
                     if worker := self.mediator.select_worker(
                         target_position=self.current_build_position, force_close=True
@@ -487,14 +470,13 @@ class BuildOrderRunner:
                             step.command, step.target
                         ):
                             self.current_build_position = next_building_position
-                            if self.mediator.build_with_specific_worker(
+                            self.mediator.build_with_specific_worker(
                                 worker=worker,
                                 structure_type=command,
                                 pos=self.current_build_position,
                                 assign_role=worker.tag
                                 in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
-                            ):
-                                self._last_gas_order_time = self.ai.time
+                            )
                 elif command in ADD_ONS and self.ai.can_afford(command):
                     if base_structures := [
                         s
@@ -822,6 +804,7 @@ class BuildOrderRunner:
             or any(
                 [self.mediator.get_building_counter[gas_type] for gas_type in ALL_GAS]
             )
+            or self.mediator.get_enemy_worker_rushed
         ):
             can_assign = False
 
@@ -859,7 +842,7 @@ class BuildOrderRunner:
 
         # iterate through our geyser records
         # control the worker / work out if we need to remove
-        to_remove: list[tuple[int, int]] = []
+        to_remove: (list[tuple]) = []
         for geyser_tag, worker_tag in self._geyser_tag_to_probe_tag.items():
             assigned_worker_tag: int = self._geyser_tag_to_probe_tag[geyser_tag]
             if geyser_tag in self.ai.unit_tag_dict:
@@ -867,11 +850,15 @@ class BuildOrderRunner:
 
                 # no enemy workers, or
                 # gas building exists here now, clean up
-                if not enemy_workers or [
-                    g
-                    for g in self.ai.all_gas_buildings
-                    if cy_distance_to_squared(geyser.position, g.position) < 25.0
-                ]:
+                if (
+                    not enemy_workers
+                    or self.mediator.get_enemy_worker_rushed
+                    or [
+                        g
+                        for g in self.ai.all_gas_buildings
+                        if cy_distance_to_squared(geyser.position, g.position) < 25.0
+                    ]
+                ):
                     to_remove.append((geyser_tag, worker_tag))
 
                 elif assigned_worker_tag in self.ai.unit_tag_dict:
@@ -891,7 +878,6 @@ class BuildOrderRunner:
                     ):
                         worker.build_gas(geyser)
                         self.current_step_started = True
-                        self._last_gas_order_time = self.ai.time
                     else:
                         worker.move(geyser.position)
                 # worker doesn't exist for some reason

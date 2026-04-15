@@ -200,7 +200,7 @@ class ProductionController(MacroBehavior):
                 continue
 
             # already have enough of this unit type, don't need production
-            if current_proportion * 1.05 >= target_proportion:
+            if current_proportion * 1.2 >= target_proportion:
                 continue
 
             # already could build this unit if we wanted to?
