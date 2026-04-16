@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.6.1 (2026-04-16)
+
+### Fix
+
+* Revert to previous build runner that fixed duplicate gas buildings ([`bf2c7c0`](https://github.com/AresSC2/ares-sc2/commit/bf2c7c0a376170645eaf26921f62355925b8f0b6))
+
 ## v3.6.0 (2026-04-15)
 
 ### Feature
