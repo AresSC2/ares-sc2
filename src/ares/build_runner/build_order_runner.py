@@ -310,11 +310,6 @@ class BuildOrderRunner:
                 if command in GAS_BUILDINGS and len(self._geyser_tag_to_probe_tag) > 0:
                     self.current_step_started = True
                     return
-                # gas already pending elsewhere (eg. macro), consider this step started
-                if command in GAS_BUILDINGS and self.ai.structure_pending(command) > 0:
-                    self.current_step_started = True
-                    self.current_step_complete = True
-                    return
 
                 persistent_workers: Units = self.mediator.get_units_from_role(
                     role=UnitRole.PERSISTENT_BUILDER
