@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.6.2 (2026-04-18)
+
+### Fix
+
+* Remove gas building step completion logic in build order runner ([`d4cf23e`](https://github.com/AresSC2/ares-sc2/commit/d4cf23e94989ce0d40ce960d4b8e829dfcfc0b1f))
+
 ## v3.6.1 (2026-04-16)
 
 ### Fix
