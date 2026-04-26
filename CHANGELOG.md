@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.6.3 (2026-04-26)
+
+### Fix
+
+* Update placement logic to prioritize main base ramp for building placement fallback ([`65095e2`](https://github.com/AresSC2/ares-sc2/commit/65095e27166122dfa47a093a574d8611e990f987))
+
 ## v3.6.2 (2026-04-18)
 
 ### Fix
