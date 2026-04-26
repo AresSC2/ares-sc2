@@ -269,6 +269,8 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
                         key=lambda k: cy_distance_to_squared(k, closest_to),
                     )
             # Fallback: closest among all available
+            if building_at_base == self.placement_manager.ai.start_location:
+                closest_to = self.placement_manager.ai.main_base_ramp.top_center
             return min(
                 available,
                 key=lambda k: cy_distance_to_squared(k, closest_to),
