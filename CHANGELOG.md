@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.7.0 (2026-04-28)
+
+### Feature
+
+* Add Protoss static defense behavior ([`42cc0cb`](https://github.com/AresSC2/ares-sc2/commit/42cc0cb932e589d30a2a31b464ea0eda405282f4))
+
 ## v3.6.3 (2026-04-26)
 
 ### Fix
