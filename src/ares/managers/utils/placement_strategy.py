@@ -297,7 +297,7 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
                         key=lambda k: cy_distance_to_squared(k, closest_to),
                     )
 
-            if self.structure_type == UnitID.PYLON:
+            if self.structure_type == UnitID.PYLON and self.req.production:
                 available_opt = self._filter_by_flag(
                     "optimal_pylon", available, placements_for_base
                 )

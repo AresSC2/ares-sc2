@@ -1,3 +1,4 @@
+import math
 import time
 from collections import defaultdict
 from itertools import product
@@ -16,6 +17,7 @@ from typing import (
 import numpy as np
 from cython_extensions import (
     cy_can_place_structure,
+    cy_closer_than,
     cy_distance_to_squared,
     cy_find_building_locations,
     cy_get_bounding_box,
@@ -447,40 +449,33 @@ class PlacementManager(Manager, IManagerMediator):
             ]
 
         # If nothing available at this base, optionally search alternative bases
-        if not available:
-            if not find_alternative:
-                logger.warning(
-                    f"No available {building_size} found near location: {origin_point}"
+        if not available and find_alternative:
+            other_bases = set(base_locations)
+            other_bases.discard(initial_location)
+            locations = sorted(
+                other_bases,
+                key=lambda k: cy_distance_to_squared(k, origin_point),
+            )
+            for loc in locations:
+                alt_available: list[Point2] = self._find_potential_placements_at_base(
+                    building_size,
+                    loc,
+                    structure_type,
+                    within_psionic_matrix,
+                    pylon_build_progress,
                 )
-            else:
-                other_bases = set(base_locations)
-                other_bases.discard(initial_location)
-                locations = sorted(
-                    other_bases,
-                    key=lambda k: cy_distance_to_squared(k, origin_point),
-                )
-                for loc in locations:
-                    alt_available: list[
-                        Point2
-                    ] = self._find_potential_placements_at_base(
-                        building_size,
-                        loc,
-                        structure_type,
-                        within_psionic_matrix,
-                        pylon_build_progress,
-                    )
-                    if structure_type == UnitID.PYLON:
-                        alt_available = [
-                            a
-                            for a in alt_available
-                            if not self.placements_dict[loc][building_size][a][
-                                "static_defence"
-                            ]
+                if structure_type == UnitID.PYLON:
+                    alt_available = [
+                        a
+                        for a in alt_available
+                        if not self.placements_dict[loc][building_size][a][
+                            "static_defence"
                         ]
-                    if alt_available:
-                        building_at_base = loc
-                        available = alt_available
-                        break
+                    ]
+                if alt_available:
+                    building_at_base = loc
+                    available = alt_available
+                    break
 
         return available, building_at_base
 
@@ -1059,12 +1054,15 @@ class PlacementManager(Manager, IManagerMediator):
                 self.placements_dict[el] = {}
                 self.placements_dict[el][BuildingSize.TWO_BY_TWO] = {}
                 self.placements_dict[el][BuildingSize.THREE_BY_THREE] = {}
-            # avoid building within 9 distance of el
-            start_x: int = int(el.x - 6)
-            start_y: int = int(el.y - 6)
+            # avoid building within el
+            dist_from_th: int = 5
+            start_x: int = int(el.x - dist_from_th)
+            start_y: int = int(el.y - dist_from_th)
             self.points_to_avoid_grid[
-                start_y : start_y + 12, start_x : start_x + 12
+                start_y : start_y + dist_from_th * 2,
+                start_x : start_x + dist_from_th * 2,
             ] = 1
+            self._add_mineral_line_avoidance(el)
             max_dist: int = 16
             # calculate the wall positions first
             if el == self.ai.start_location:
@@ -1110,6 +1108,56 @@ class PlacementManager(Manager, IManagerMediator):
 
             # find optimal pylon to build around (fits most 3x3)
             self._find_optimal_pylon_for_base(el)
+
+    def _add_mineral_line_avoidance(self, el: Point2) -> None:
+        """Mark mineral line area as unbuildable to avoid blocking worker paths."""
+        mineral_fields: Units = cy_closer_than(self.ai.mineral_field, 11.0, el)
+        if not mineral_fields:
+            return
+
+        angles: list[float] = []
+        max_dist: float = 0.0
+        for mf in mineral_fields:
+            dx: float = mf.position.x - el.x
+            dy: float = mf.position.y - el.y
+            angles.append(math.atan2(dy, dx))
+            max_dist = max(max_dist, math.hypot(dx, dy))
+
+        if not angles:
+            return
+
+        mean_angle: float = math.atan2(
+            sum(math.sin(a) for a in angles),
+            sum(math.cos(a) for a in angles),
+        )
+        max_deviation: float = max(
+            abs(math.atan2(math.sin(a - mean_angle), math.cos(a - mean_angle)))
+            for a in angles
+        )
+        max_dist = max_dist - 1.0
+        if max_dist <= 0:
+            return
+
+        grid_h, grid_w = self.points_to_avoid_grid.shape
+        min_x: int = max(int(el.x - max_dist), 0)
+        max_x: int = min(int(el.x + max_dist) + 1, grid_w)
+        min_y: int = max(int(el.y - max_dist), 0)
+        max_y: int = min(int(el.y + max_dist) + 1, grid_h)
+        max_dist_sq: float = max_dist * max_dist
+
+        for y in range(min_y, max_y):
+            dy: float = (y + 0.5) - el.y
+            for x in range(min_x, max_x):
+                dx: float = (x + 0.5) - el.x
+                dist_sq: float = dx * dx + dy * dy
+                if dist_sq > max_dist_sq:
+                    continue
+                angle: float = math.atan2(dy, dx)
+                diff: float = math.atan2(
+                    math.sin(angle - mean_angle), math.cos(angle - mean_angle)
+                )
+                if abs(diff) <= max_deviation:
+                    self.points_to_avoid_grid[y, x] = 1
 
     def _find_optimal_pylon_for_base(self, el: Point2) -> None:
         two_by_twos: dict[Point2:dict] = self.placements_dict[el][

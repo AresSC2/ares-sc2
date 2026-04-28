@@ -71,6 +71,8 @@ class BuildStructure(MacroBehavior):
             Defaults to False.
         reaper_wall: Choose a predefined reaper wall location.
             Defaults to False.
+        find_alternative: If no placements are available at this base, optionally
+            search nearby bases. Defaults to True.
 
     """
 
@@ -88,9 +90,10 @@ class BuildStructure(MacroBehavior):
     missile_turret: bool = False
     sensor_tower: bool = False
     upgrade_structure: bool = False
-    production: bool = False
+    production: bool = True
     bunker: bool = False
     reaper_wall: bool = False
+    find_alternative: bool = True
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if self.structure_id not in STRUCTURE_TO_BUILDING_SIZE:
@@ -135,6 +138,7 @@ class BuildStructure(MacroBehavior):
             first_pylon=self.first_pylon,
             static_defence=self.static_defence,
             wall=self.wall,
+            find_alternative=self.find_alternative,
             within_psionic_matrix=within_psionic_matrix,
             closest_to=self.closest_to,
             supply_depot=self.supply_depot,
