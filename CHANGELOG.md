@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.7.1 (2026-04-29)
+
+### Fix
+
+* Improve expansion placement by adding avoidance areas before finding placements ([`b6a83db`](https://github.com/AresSC2/ares-sc2/commit/b6a83db1f0312cba51eed2b0fcfcc7bb4196122a))
+
 ## v3.7.0 (2026-04-28)
 
 ### Feature
