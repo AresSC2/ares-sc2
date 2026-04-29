@@ -1049,7 +1049,9 @@ class PlacementManager(Manager, IManagerMediator):
                 this is for supply pylons, cannons, shield batteries
             - add found locations to `self.placements_dict`
         """
-        for el in self.ai.expansion_locations_list:
+        expansion_list: list[Point2] = self.ai.expansion_locations_list
+        # add avoidance areas first
+        for el in expansion_list:
             if el not in self.placements_dict:
                 self.placements_dict[el] = {}
                 self.placements_dict[el][BuildingSize.TWO_BY_TWO] = {}
@@ -1063,12 +1065,14 @@ class PlacementManager(Manager, IManagerMediator):
                 start_x : start_x + dist_from_th * 2,
             ] = 1
             self._add_mineral_line_avoidance(el)
+
+        # then find placements
+        for el in expansion_list:
             max_dist: int = 16
             # calculate the wall positions first
             if el == self.ai.start_location:
                 max_dist = 22
                 self._calculate_protoss_main_ramp_placements(el)
-
             # find prod pylons first
             self._find_placements_for_base_location(
                 el=el,
