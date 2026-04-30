@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.7.2 (2026-04-30)
+
+### Fix
+
+* Add tech requirements for shield battery ([`436526d`](https://github.com/AresSC2/ares-sc2/commit/436526d63b858e30e5343c003ce6ef4af8f794e0))
+
 ## v3.7.1 (2026-04-29)
 
 ### Fix
