@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.8.0 (2026-06-03)
+
+### Feature
+
+* Improve worker kiting logic with smarter mf selection ([`470c286`](https://github.com/AresSC2/ares-sc2/commit/470c2865088931f5eda86c48b7c5b2dc5bbb340b))
+
 ## v3.7.2 (2026-04-30)
 
 ### Fix
