@@ -562,6 +562,13 @@ class UnitTreeQueryType(str, Enum):
     EnemyGround = "EnemyGround"
 
 
+class WallOffDetection(Enum):
+    THREES = 3.6704408393270125
+    TWOS = 2.1278778266151512
+    THRESHOLD = 6
+    DISTANCE = 3.5
+
+
 """Sets"""
 REACTOR_TRAIN_ABILITIES: list[AbilityId] = [
     AbilityId.BARRACKSTRAIN_MARINE,
