@@ -505,7 +505,7 @@ class CustomBotAI(BotAI):
         """
         close_ground_enemy: Units = self.mediator.get_units_in_range(
             start_points=[ramp.top_center],
-            distances=12.5,
+            distances=WallOffDetection.DISTANCE.value,
             query_tree=UnitTreeQueryType.EnemyGround,
         )[0].filter(lambda u: u.type_id not in COMMON_UNIT_IGNORE_TYPES)
 
