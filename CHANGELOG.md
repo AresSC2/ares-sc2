@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v3.9.0 (2026-06-05)
+
+### Feature
+
+* Add main ramp wall-off detection logic ([`cd945e3`](https://github.com/AresSC2/ares-sc2/commit/cd945e37d2371cfa8dfbc226e25a5b3eee2c76a1))
+
+### Fix
+
+* Update wall-off detection to use enum distance value ([`1b975cd`](https://github.com/AresSC2/ares-sc2/commit/1b975cdf6e22cffedbe094e22eba616331040a42))
+
 ## v3.8.0 (2026-06-03)
 
 ### Feature
