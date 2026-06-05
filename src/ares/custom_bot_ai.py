@@ -6,12 +6,14 @@ from typing import List, Optional, Tuple, Union
 import numpy as np
 from cython_extensions import cy_distance_to_squared
 from loguru import logger
+from map_analyzer.destructibles import buildings_2x2, buildings_3x3
 from s2clientprotocol import raw_pb2 as raw_pb
 from s2clientprotocol import sc2api_pb2 as sc_pb
 from s2clientprotocol import ui_pb2 as ui_pb
 from sc2.bot_ai import BotAI
 from sc2.constants import EQUIVALENTS_FOR_TECH_PROGRESS
 from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
+from sc2.game_info import Ramp
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
@@ -21,11 +23,13 @@ from sc2.units import Units
 
 from ares.consts import (
     ALL_STRUCTURES,
+    COMMON_UNIT_IGNORE_TYPES,
     ID,
     TARGET,
     TOWNHALL_TYPES,
     WORKER_TYPES,
     UnitTreeQueryType,
+    WallOffDetection,
 )
 from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
@@ -484,3 +488,31 @@ class CustomBotAI(BotAI):
             else:
                 val: int = int(grid[x, y])
             self.client.debug_text_world(str(val), pos, color, size)
+
+    def main_ramp_walled_off(self, ramp: Ramp) -> bool:
+        """
+        Check if a main base ramp is walled off.
+        `self.main_base_ramp` or `self.mediator.get_enemy_ramp`
+
+        Parameters
+        ----------
+        ramp : Either our own main ramp or enemy main ramp
+
+        Returns
+        -------
+        bool : True if ramp is walled off
+
+        """
+        close_ground_enemy: Units = self.mediator.get_units_in_range(
+            start_points=[ramp.top_center],
+            distances=WallOffDetection.DISTANCE.value,
+            query_tree=UnitTreeQueryType.EnemyGround,
+        )[0].filter(lambda u: u.type_id not in COMMON_UNIT_IGNORE_TYPES)
+
+        num_twos: int = close_ground_enemy(buildings_2x2).amount
+        num_threes: int = close_ground_enemy(buildings_3x3).amount
+        return (
+            WallOffDetection.TWOS.value * num_twos
+            + WallOffDetection.THREES.value * num_threes
+            >= WallOffDetection.THRESHOLD.value
+        )
