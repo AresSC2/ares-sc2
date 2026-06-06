@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.9.2 (2026-06-06)
+
+### Fix
+
+* Handle gas building target tracking for workers ([`010e284`](https://github.com/AresSC2/ares-sc2/commit/010e284e2704a8c3c63ec78ffd81af51cd49955e))
+
 ## v3.9.1 (2026-06-06)
 
 ### Fix
