@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.9.1 (2026-06-06)
+
+### Fix
+
+* Find unfinished Terran structures removed from tracker ([`0fce397`](https://github.com/AresSC2/ares-sc2/commit/0fce3976ffec8a9cfbcf5fce6e4d96ed698b5d6a))
+
 ## v3.9.0 (2026-06-05)
 
 ### Feature
