@@ -187,7 +187,9 @@ class BuildingManager(Manager, IManagerMediator):
                     ):
                         self.building_tracker[worker.tag] = {
                             ID: structure.type_id,
-                            TARGET: structure.position,
+                            TARGET: structure
+                            if structure in GAS_BUILDINGS
+                            else structure.position,
                             TIME_ORDER_COMMENCED: self.ai.time,
                         }
                         self.manager_mediator.assign_role(
@@ -410,6 +412,8 @@ class BuildingManager(Manager, IManagerMediator):
         """
         return [
             self.building_tracker[worker_tag][TARGET]
+            if isinstance(self.building_tracker[worker_tag][TARGET], Point2)
+            else self.building_tracker[worker_tag][TARGET].position
             for worker_tag in self.building_tracker
             if TARGET in self.building_tracker[worker_tag]
             and self.building_tracker[worker_tag][TARGET] is not None
