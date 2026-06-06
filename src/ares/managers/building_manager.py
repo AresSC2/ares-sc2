@@ -173,6 +173,28 @@ class BuildingManager(Manager, IManagerMediator):
                 if mfs := self.ai.mineral_field:
                     worker.gather(cy_closest_to(self.ai.start_location, mfs))
 
+        # check for unfinished Terran structures not in tracker
+        if self.ai.race == Race.Terran:
+            if existing_unfinished_structures := [
+                s for s in self.ai.structures if s.build_progress < 1
+            ]:
+                targets: list[Point2] = self.get_all_building_targets()
+                for structure in existing_unfinished_structures:
+                    if structure.position in targets:
+                        continue
+                    if worker := self.manager_mediator.select_worker(
+                        target_position=structure.position, force_close=True
+                    ):
+                        self.building_tracker[worker.tag] = {
+                            ID: structure.type_id,
+                            TARGET: structure.position,
+                            TIME_ORDER_COMMENCED: self.ai.time,
+                        }
+                        self.manager_mediator.assign_role(
+                            tag=worker.tag, role=UnitRole.BUILDING
+                        )
+                        break
+
     def _handle_construction_orders(self) -> None:
         """Construct tracked buildings.
 
@@ -377,6 +399,21 @@ class BuildingManager(Manager, IManagerMediator):
                 )
                 self.building_tracker[worker_tag] = self.building_tracker.pop(tag)
                 self.manager_mediator.remove_worker_from_mineral(worker_tag=worker_tag)
+
+    def get_all_building_targets(self) -> list[Point2]:
+        """Get all TARGET values from building_tracker.
+
+        Returns
+        -------
+        list[Point2] :
+            List of all target positions/units from the building tracker.
+        """
+        return [
+            self.building_tracker[worker_tag][TARGET]
+            for worker_tag in self.building_tracker
+            if TARGET in self.building_tracker[worker_tag]
+            and self.building_tracker[worker_tag][TARGET] is not None
+        ]
 
     def cancel_structure(self, structure: Unit) -> None:
         # firstly cancel this structure no matter what
