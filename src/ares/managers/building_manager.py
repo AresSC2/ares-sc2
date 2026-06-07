@@ -21,6 +21,7 @@ from cython_extensions import (
     cy_distance_to,
     cy_distance_to_squared,
 )
+from loguru import logger
 from sc2.constants import ALL_GAS
 from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
@@ -180,15 +181,23 @@ class BuildingManager(Manager, IManagerMediator):
             ]:
                 targets: list[Point2] = self.get_all_building_targets()
                 for structure in existing_unfinished_structures:
-                    if structure.position in targets:
+                    if [
+                        target
+                        for target in targets
+                        if cy_distance_to_squared(structure.position, target) < 2.25
+                    ]:
                         continue
                     if worker := self.manager_mediator.select_worker(
                         target_position=structure.position, force_close=True
                     ):
+                        logger.info(
+                            f"{self.ai.time_formatted} Replacing scv for "
+                            f"{structure.type_id} at {structure.position}"
+                        )
                         self.building_tracker[worker.tag] = {
                             ID: structure.type_id,
                             TARGET: structure
-                            if structure in GAS_BUILDINGS
+                            if structure.type_id in GAS_BUILDINGS
                             else structure.position,
                             TIME_ORDER_COMMENCED: self.ai.time,
                         }
@@ -322,6 +331,7 @@ class BuildingManager(Manager, IManagerMediator):
             else:
                 if existing_unfinished_structure:
                     worker(AbilityId.SMART, existing_unfinished_structure)
+                    continue
                 elif structure_id in GAS_BUILDINGS and self.ai.can_afford(structure_id):
                     # check if target geyser got taken by enemy
                     if self.ai.enemy_structures.filter(
@@ -345,6 +355,7 @@ class BuildingManager(Manager, IManagerMediator):
                             tags_to_remove.add(worker_tag)
                         else:
                             worker.build_gas(target)
+                    continue
 
                 # handle blocked positions
                 elif structure_id not in GAS_BUILDINGS:
@@ -615,7 +626,7 @@ class BuildingManager(Manager, IManagerMediator):
         self,
         worker: Unit,
         structure_type: UnitID,
-        pos: Point2,
+        pos: Union[Point2, Unit],
         assign_role: bool = True,
         building_purpose: BuildingPurpose = BuildingPurpose.NORMAL_BUILDING,
     ) -> bool:
@@ -628,7 +639,7 @@ class BuildingManager(Manager, IManagerMediator):
         structure_type :
             What type of structure to build.
         pos :
-            Where the structure should be placed.
+            Where the structure should be placed, or the geyser unit for gas buildings.
         assign_role :
             Auto assign BUILDING UnitRole?
         building_purpose :
@@ -643,6 +654,14 @@ class BuildingManager(Manager, IManagerMediator):
         """
         if not pos or not worker:
             return False
+
+        if structure_type in GAS_BUILDINGS and isinstance(pos, Point2):
+            if geysers := self.ai.vespene_geyser.filter(
+                lambda g: cy_distance_to_squared(g.position, pos) < 1.0
+            ):
+                pos = geysers.closest_to(pos)
+            else:
+                return False
 
         tag: int = worker.tag
         if tag not in self.building_tracker:
