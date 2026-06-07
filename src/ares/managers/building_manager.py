@@ -351,7 +351,12 @@ class BuildingManager(Manager, IManagerMediator):
                     else:
                         # this to fix the occasional bug where despite build gas action
                         # being issued, the worker refuses to construct a gas building
-                        if worker.is_idle:
+                        if (
+                            worker.is_idle
+                            and self.ai.time
+                            > self.building_tracker[worker_tag][TIME_ORDER_COMMENCED]
+                            + self.BUILDING_WORKER_TIMEOUT / 4
+                        ):
                             tags_to_remove.add(worker_tag)
                         else:
                             worker.build_gas(target)
