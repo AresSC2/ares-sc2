@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.9.3 (2026-06-07)
+
+### Fix
+
+* Improve gas building targeting and worker reassignment ([`1fd9880`](https://github.com/AresSC2/ares-sc2/commit/1fd9880525aa6da1a092a5e1ec68975b0adaeabe))
+
 ## v3.9.2 (2026-06-06)
 
 ### Fix
