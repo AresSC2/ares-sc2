@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.9.4 (2026-06-07)
+
+### Fix
+
+* Handle worker timeout when building gas structures ([`3009fa4`](https://github.com/AresSC2/ares-sc2/commit/3009fa471c512ce7ce72022ded8ca75a3897d7c1))
+
 ## v3.9.3 (2026-06-07)
 
 ### Fix
