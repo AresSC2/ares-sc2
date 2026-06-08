@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.9.5 (2026-06-08)
+
+### Fix
+
+* Exclude Terran add-ons from unfinished structures tracking ([`2ff778b`](https://github.com/AresSC2/ares-sc2/commit/2ff778bd34fb368eff7a365e2e3098cccbc79d00))
+
 ## v3.9.4 (2026-06-07)
 
 ### Fix
