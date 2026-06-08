@@ -31,6 +31,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.consts import (
+    ADD_ONS,
     BUILDING_PURPOSE,
     CREEP_TUMOR_TYPES,
     DEBUG,
@@ -177,7 +178,9 @@ class BuildingManager(Manager, IManagerMediator):
         # check for unfinished Terran structures not in tracker
         if self.ai.race == Race.Terran:
             if existing_unfinished_structures := [
-                s for s in self.ai.structures if s.build_progress < 1
+                s
+                for s in self.ai.structures
+                if s.build_progress < 1 and s.type_id not in ADD_ONS
             ]:
                 targets: list[Point2] = self.get_all_building_targets()
                 for structure in existing_unfinished_structures:
