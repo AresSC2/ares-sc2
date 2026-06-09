@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.9.6 (2026-06-09)
+
+### Fix
+
+* Exclude Planetary Fortress and Orbital Command from unfinished structures tracking ([`26e6bc7`](https://github.com/AresSC2/ares-sc2/commit/26e6bc713ab43366704ea498cabb06eaf54c8b15))
+
 ## v3.9.5 (2026-06-08)
 
 ### Fix
