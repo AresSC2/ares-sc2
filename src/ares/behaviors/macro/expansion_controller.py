@@ -1,12 +1,9 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.position import Point2
-from sc2.units import Units
-
-from ares.consts import TOWNHALL_TYPES, UnitTreeQueryType
 
 if TYPE_CHECKING:
     from ares import AresBot
@@ -36,10 +33,7 @@ class ExpansionController(MacroBehavior):
         check_location_is_safe: Check if we don't knowingly expand at a dangerous
             location. Defaults to True.
         max_pending: Maximum pending townhalls at any time. Defaults to 1.
-        prioritize: If True and there is a CC waiting to upgrade, but
-            we can't afford it yet, this behavior will return True
-            This is useful in a MacroPlan as it will prevent other
-            spending actions occurring.
+        prioritize: Will return True for this behavior if we can't afford expansion.
             Default is False
     """
 
@@ -64,7 +58,7 @@ class ExpansionController(MacroBehavior):
         ):
             return False
 
-        if location := self._get_next_expansion_location(mediator):
+        if location := self._get_next_expansion_location(ai, mediator):
             if worker := mediator.select_worker(target_position=location):
                 mediator.build_with_specific_worker(
                     worker=worker, structure_type=ai.base_townhall_type, pos=location
@@ -74,53 +68,23 @@ class ExpansionController(MacroBehavior):
         return False
 
     def _get_next_expansion_location(
-        self, mediator: ManagerMediator
-    ) -> Optional[Point2]:
+        self, ai: "AresBot", mediator: ManagerMediator
+    ) -> Point2 | None:
         grid: np.ndarray = mediator.get_ground_grid
         for el in mediator.get_own_expansions:
             location: Point2 = el[0]
             if (
-                self.check_location_is_safe
-                and not mediator.is_position_safe(grid=grid, position=location)
-                or self._location_is_blocked(mediator, location)
+                (
+                    self.check_location_is_safe
+                    and not mediator.is_position_safe(grid=grid, position=location)
+                )
+                or ai.location_is_blocked(mediator, location)
+                or not mediator.can_place_structure(
+                    position=location, structure_type=UnitID.COMMANDCENTER
+                )
             ):
                 continue
 
             return location
 
-    @staticmethod
-    def _location_is_blocked(mediator: ManagerMediator, position: Point2) -> bool:
-        """
-        Check if enemy or own townhalls are blocking `position`.
-
-        Parameters
-        ----------
-        mediator : ManagerMediator
-        position : Point2
-
-        Returns
-        -------
-        bool : True if location is blocked by something.
-
-        """
-        # TODO: Not currently an issue, but maybe we should consider rocks
-        close_enemy: Units = mediator.get_units_in_range(
-            start_points=[position],
-            distances=5.5,
-            query_tree=UnitTreeQueryType.EnemyGround,
-        )[0]
-
-        close_enemy: Units = close_enemy.filter(
-            lambda u: u.type_id != UnitID.AUTOTURRET
-        )
-        if close_enemy:
-            return True
-
-        if mediator.get_units_in_range(
-            start_points=[position],
-            distances=5.5,
-            query_tree=UnitTreeQueryType.AllOwn,
-        )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
-            return True
-
-        return False
+        return None

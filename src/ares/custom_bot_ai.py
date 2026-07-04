@@ -4,7 +4,7 @@
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
-from cython_extensions import cy_distance_to_squared
+from cython_extensions import cy_closer_than, cy_distance_to_squared
 from loguru import logger
 from map_analyzer.destructibles import buildings_2x2, buildings_3x3
 from s2clientprotocol import raw_pb2 as raw_pb
@@ -435,7 +435,6 @@ class CustomBotAI(BotAI):
         """
         if position in self._blocked_positions:
             return True
-        # TODO: Not currently an issue, but maybe we should consider rocks
         close_enemy: Units = mediator.get_units_in_range(
             start_points=[position],
             distances=5.5,
@@ -455,6 +454,10 @@ class CustomBotAI(BotAI):
                 query_tree=UnitTreeQueryType.AllOwn,
             )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
                 return True
+
+        neutral_units = self.destructables + self.watchtowers
+        if cy_closer_than(neutral_units, 5.5, position):
+            return True
 
         return False
 
