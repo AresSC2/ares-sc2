@@ -442,20 +442,6 @@ class AresBot(CustomBotAI):
         """
         self.behavior_executioner.register_behavior(behavior)
 
-    @property
-    def mediator(self) -> ManagerMediator:
-        """Register behavior.
-
-        Shortcut to `self.manager_hub.manager_mediator`
-
-
-        Returns
-        -------
-        ManagerMediator
-
-        """
-        return self.manager_hub.manager_mediator
-
     async def on_end(self, game_result: Result) -> None:
         """Output game info to the log and save data (if enabled)
 
