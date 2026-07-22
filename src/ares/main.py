@@ -68,7 +68,7 @@ class AresBot(CustomBotAI):
     behavior_executioner: BehaviorExecutioner  # executes behaviors on each step
     build_order_runner: BuildOrderRunner  # execute exact build order from config
     cost_dict: Dict[UnitID, Cost]  #: UnitTypeId to cost for faster lookup later
-    manager_hub: Hub  #: Hub in charge of handling the Managers
+
     NYDUSES: set[UnitID] = {UnitID.NYDUSCANAL, UnitID.NYDUSNETWORK}
     UNIT_TYPES_NOT_IN_SLIM: set[UnitID] = {
         UnitID.EGG,
