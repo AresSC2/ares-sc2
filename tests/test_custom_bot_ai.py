@@ -1,6 +1,8 @@
 from pathlib import Path
 
 import pytest
+from sc2.game_data import Cost
+from sc2.ids.unit_typeid import UnitTypeId as UnitID
 
 from ares import AresBot
 
@@ -26,3 +28,9 @@ class TestCustomBotAI:
         ground, flying = bot.split_ground_fliers(bot.workers)
         assert len(ground) == 15
         assert len(flying) == 0
+
+    def test_calculate_cost_rich_gas(self, bot: AresBot, event_loop):
+        assert bot.calculate_cost(UnitID.REFINERYRICH) == Cost(75, 0)
+        assert bot.calculate_cost(UnitID.ASSIMILATORRICH) == Cost(75, 0)
+        assert bot.calculate_cost(UnitID.EXTRACTORRICH) == Cost(25, 0)
+        assert isinstance(bot.can_afford(UnitID.REFINERYRICH), bool)

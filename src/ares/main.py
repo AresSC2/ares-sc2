@@ -150,6 +150,16 @@ class AresBot(CustomBotAI):
     def do_unload_container(self, container_tag: int, index: int = 0) -> None:
         self._drop_unload_actions.append((container_tag, index))
 
+    def calculate_cost(
+        self, item_id: Union[UnitTypeId, UpgradeId, AbilityId]
+    ) -> Cost:
+        if isinstance(item_id, UnitTypeId):
+            cost_dict: Dict[UnitID, Cost] = getattr(self, "cost_dict", COST_DICT)
+            if item_id in cost_dict:
+                return cost_dict[item_id]
+
+        return super().calculate_cost(item_id)
+
     def request_archon_morph(self, templar: list[Unit]) -> None:
         self._archon_morph_actions.append(templar)
 
@@ -795,7 +805,9 @@ class AresBot(CustomBotAI):
         -------
         None
         """
-        self._blocked_positions = set()
+        # clear every 3 minutes
+        if self.state.game_loop % 4032 == 0:
+            self._blocked_positions = set()
         # Set of enemy units detected by own sensor tower,
         # as blips have less unit information than normal visible units
         self.all_units: Units = Units([], self)

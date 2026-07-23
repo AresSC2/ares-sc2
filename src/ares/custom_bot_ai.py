@@ -406,7 +406,7 @@ class CustomBotAI(BotAI):
         grid: np.ndarray = mediator.get_ground_grid
         for el in mediator.get_own_expansions:
             location: Point2 = el[0]
-            if (
+            if location in self._blocked_positions or (
                 check_location_is_safe
                 and not mediator.is_position_safe(grid=grid, position=location)
                 or self.location_is_blocked(mediator, location, check_own=True)
