@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v3.10.0 (2026-07-24)
+
+### Feature
+
+* Add rich gas structures cost calculation and related unit tests ([`b39bd99`](https://github.com/AresSC2/ares-sc2/commit/b39bd99e17c58aace4beb2ea577a73c159e3f0bc))
+
+### Fix
+
+* Correct return types in `manager_mediator` ([`c66c8be`](https://github.com/AresSC2/ares-sc2/commit/c66c8bebdfd187ddb3bb919e698c40e9e5eb7016))
+* Update placement grid for creep tumor events ([`19cb3fd`](https://github.com/AresSC2/ares-sc2/commit/19cb3fda5cbfa635be8a6cf4d1e17f19a5a8d189))
+* Expansion controller checks for blocked locations ([`9c8942d`](https://github.com/AresSC2/ares-sc2/commit/9c8942da5642d44ef894c9dfc32071b9265adc0f))
+
 ## v3.9.7 (2026-07-24)
 
 ### Fix
