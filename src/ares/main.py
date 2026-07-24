@@ -68,7 +68,7 @@ class AresBot(CustomBotAI):
     behavior_executioner: BehaviorExecutioner  # executes behaviors on each step
     build_order_runner: BuildOrderRunner  # execute exact build order from config
     cost_dict: Dict[UnitID, Cost]  #: UnitTypeId to cost for faster lookup later
-    manager_hub: Hub  #: Hub in charge of handling the Managers
+
     NYDUSES: set[UnitID] = {UnitID.NYDUSCANAL, UnitID.NYDUSNETWORK}
     UNIT_TYPES_NOT_IN_SLIM: set[UnitID] = {
         UnitID.EGG,
@@ -441,20 +441,6 @@ class AresBot(CustomBotAI):
         None
         """
         self.behavior_executioner.register_behavior(behavior)
-
-    @property
-    def mediator(self) -> ManagerMediator:
-        """Register behavior.
-
-        Shortcut to `self.manager_hub.manager_mediator`
-
-
-        Returns
-        -------
-        ManagerMediator
-
-        """
-        return self.manager_hub.manager_mediator
 
     async def on_end(self, game_result: Result) -> None:
         """Output game info to the log and save data (if enabled)

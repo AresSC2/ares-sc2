@@ -33,6 +33,7 @@ from ares.consts import (
 )
 from ares.dicts.unit_data import UNIT_DATA
 from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
+from ares.managers.hub import Hub
 from ares.managers.manager_mediator import ManagerMediator
 
 
@@ -45,9 +46,24 @@ class CustomBotAI(BotAI):
     gas_type: UnitID
     unit_tag_dict: dict[int, Unit]
     worker_type: UnitID
-    mediator: ManagerMediator
+    manager_hub: Hub
+    """Hub in charge of handling the Managers"""
     CANT_BUILD_LOCATION_INVALID: int = 44
     _blocked_positions: set[Point2] = set()
+
+    @property
+    def mediator(self) -> ManagerMediator:
+        """Register behavior.
+
+        Shortcut to `self.manager_hub.manager_mediator`
+
+
+        Returns
+        -------
+        ManagerMediator
+
+        """
+        return self.manager_hub.manager_mediator
 
     async def on_step(self, iteration: int):  # pragma: no cover
         """Here because all abstract methods have to be implemented.
