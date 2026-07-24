@@ -1769,7 +1769,9 @@ class ManagerMediator(IManagerMediator):
             Tag of existing structure.
         """
         return self.manager_request(
-            ManagerName.PLACEMENT_MANAGER, ManagerRequestType.MAKE_PLACEMENT_AVAILABLE
+            ManagerName.PLACEMENT_MANAGER,
+            ManagerRequestType.MAKE_PLACEMENT_AVAILABLE,
+            **kwargs,
         )
 
     def request_building_placement(self, **kwargs) -> Optional[Point2]:
