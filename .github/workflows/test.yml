@@ -18,8 +18,6 @@ jobs:
       # check-out repo
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
       # install poetry
       - name: Install poetry
         run: pipx install poetry
@@ -43,7 +41,7 @@ jobs:
           poetry run make unit-tests-cov-fail
       # add pytest coverage report to PR
       - name: Pytest coverage comment
-        if: ${{ success() && github.event_name == 'pull_request' }}
+        if: ${{ success() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository }}
         id: coverageComment
         uses: MishaKav/pytest-coverage-comment@main
         with:

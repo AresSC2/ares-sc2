@@ -12,9 +12,7 @@ jobs:
     steps:
       # check-out repo
       - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
+        uses: actions/checkout@v4
       # install poetry
       - name: Install poetry
         run: pipx install poetry==1.6.1
