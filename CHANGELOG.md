@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v3.9.7 (2026-07-24)
+
+### Fix
+
+* Update actions to fetch from fork repo ([`a71e525`](https://github.com/AresSC2/ares-sc2/commit/a71e52529cedb2077c39072c35377b6250ee6938))
+* **custom_bot_ai:** Add type hint for mediator property ([`1777d44`](https://github.com/AresSC2/ares-sc2/commit/1777d44811279c9a92ef0bbd0e4438087b2ed8f6))
+
 ## v3.9.6 (2026-06-09)
 
 ### Fix
