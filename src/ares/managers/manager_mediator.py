@@ -742,7 +742,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_ravager_rush(self) -> Point2:
+    def get_enemy_ravager_rush(self) -> bool:
         """Has the enemy ravager rushed?
 
         WARNING: Opinionated method, please write your own if you don't
@@ -758,7 +758,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_roach_rushed(self) -> Point2:
+    def get_enemy_roach_rushed(self) -> bool:
         """Did the enemy roach rush?
 
         WARNING: Opinionated method, please write your own if you don't
@@ -774,7 +774,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_was_greedy(self) -> Point2:
+    def get_enemy_was_greedy(self) -> bool:
         """Was the enemy greedy?
 
         WARNING: Currently not working, will always return `False`
@@ -791,7 +791,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_went_four_gate(self) -> Point2:
+    def get_enemy_went_four_gate(self) -> bool:
         """The enemy went four gate this game?
 
         WARNING: Opinionated method, please write your own if you don't
@@ -807,7 +807,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_went_marine_rush(self) -> Point2:
+    def get_enemy_went_marine_rush(self) -> bool:
         """The enemy went marine rush this game?
 
         WARNING: Opinionated method, please write your own if you don't
@@ -823,7 +823,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_went_marauder_rush(self) -> Point2:
+    def get_enemy_went_marauder_rush(self) -> bool:
         """The enemy went marauder rush this game?
 
         WARNING: Opinionated method, please write your own if you don't
@@ -840,7 +840,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_went_reaper(self) -> Point2:
+    def get_enemy_went_reaper(self) -> bool:
         """The enemy opened with reaper this game?
 
         WARNING: Opinionated method, please write your own if you don't
@@ -856,7 +856,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_worker_rushed(self) -> Point2:
+    def get_enemy_worker_rushed(self) -> bool:
         """The enemy went for a worker rush this game?
 
         WARNING: Opinionated method, please write your own if you don't
@@ -1011,7 +1011,9 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_nydus_travellers_dict(self, **kwargs) -> None:
+    def get_nydus_travellers_dict(
+        self, **kwargs
+    ) -> dict[int, dict[str, Union[int, Point2, UnitID]]]:
         """Get the nydus travellers dictionary.
 
         NydusManager
@@ -1041,7 +1043,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_main_nydus_points(self) -> Point2:
+    def get_enemy_main_nydus_points(self) -> list[Point2]:
         """Get the optimal position for a nydus in enemy main,
         considering distance from base and ramp.
 
@@ -1767,7 +1769,7 @@ class ManagerMediator(IManagerMediator):
             Tag of existing structure.
         """
         return self.manager_request(
-            ManagerName.PLACEMENT_MANAGER, ManagerRequestType.GET_PVZ_NAT_GATEKEEPER_POS
+            ManagerName.PLACEMENT_MANAGER, ManagerRequestType.MAKE_PLACEMENT_AVAILABLE
         )
 
     def request_building_placement(self, **kwargs) -> Optional[Point2]:
@@ -2284,7 +2286,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_army_dict(self) -> DefaultDict[UnitID, Units]:
+    def get_enemy_army_dict(self) -> DefaultDict[UnitID, list[Unit]]:
         """Get the dictionary of enemy army unit types to the units themselves.
 
         UnitCacheManager
@@ -2299,7 +2301,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_old_own_army_dict(self) -> Dict[UnitID, Units]:
+    def get_old_own_army_dict(self) -> Dict[UnitID, list[Unit]]:
         """Get the previous iteration's `own_army` dict.
 
         UnitCacheManager
@@ -2325,7 +2327,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_army_dict(self) -> Dict[UnitID, Units]:
+    def get_own_army_dict(self) -> Dict[UnitID, list[Unit]]:
         """Get the dictionary of own army unit types to the units themselves.
 
         UnitCacheManager
@@ -2412,7 +2414,7 @@ class ManagerMediator(IManagerMediator):
             ManagerName.UNIT_MEMORY_MANAGER, ManagerRequestType.GET_ALL_ENEMY
         )
 
-    def get_any_enemies_in_range(self, **kwargs) -> Units:
+    def get_any_enemies_in_range(self, **kwargs) -> list[bool]:
         """Check various positions for any enemy units in range.
 
         UnitMemoryManager
@@ -2458,7 +2460,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_tree(self) -> KDTree:
+    def get_enemy_tree(self) -> KDTree | None:
         """Get the KDTree representing all enemy unit positions.
 
         UnitMemoryManager
@@ -2501,7 +2503,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_tree(self) -> Units:
+    def get_own_tree(self) -> KDTree | None:
         """Get the KDTree representing all friendly unit positions.
 
         UnitMemoryManager

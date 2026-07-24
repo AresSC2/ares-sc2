@@ -4,10 +4,10 @@
 
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 
-from sc2.data import Result
+from sc2.data import Race, Result
 from sc2.unit import Unit
 
-from ares.consts import DEBUG
+from ares.consts import CREEP_TUMOR_TYPES, DEBUG
 from ares.managers.ability_tracker_manager import AbilityTrackerManager
 from ares.managers.building_manager import BuildingManager
 from ares.managers.combat_sim_manager import CombatSimManager
@@ -100,6 +100,7 @@ class Hub:
         self.debug: bool = config[DEBUG]
         self.config: Dict = config
         self.manager_mediator: ManagerMediator = manager_mediator
+        self._is_zerg: bool = ai.race == Race.Zerg
 
         self.data_manager: DataManager = (
             DataManager(ai, config, self.manager_mediator)
@@ -237,6 +238,12 @@ class Hub:
         -------
 
         """
+        # update placement grid if tumor dies (placement grid doesn't refresh)
+        if self._is_zerg and (unit := self.ai._all_units_previous_map.get(unit_tag)):
+            if unit.type_id in CREEP_TUMOR_TYPES:
+                x, y = unit.position.rounded
+                self.ai.game_info.placement_grid.data_numpy[y, x] = 1
+
         self.unit_cache_manager.remove_unit(unit_tag)
         self.unit_memory_manager.remove_unit(unit_tag)
         self.unit_role_manager.clear_role(unit_tag)
@@ -305,6 +312,11 @@ class Hub:
         ----------
         unit :
         """
+        # update placement grid for new tumor (placement grid doesn't refresh)
+        if self._is_zerg and unit.type_id in CREEP_TUMOR_TYPES:
+            x, y = unit.position.rounded
+            self.ai.game_info.placement_grid.data_numpy[y, x] = 0
+
         self.placement_manager.on_building_started(unit)
 
     async def update_managers(self, iteration: int) -> None:
