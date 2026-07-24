@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.10.1 (2026-07-24)
+
+### Fix
+
+* Pass kwargs to `make_placement_available` request ([`e59f5a7`](https://github.com/AresSC2/ares-sc2/commit/e59f5a793d0f1a8ecf313805bd22aee0d9ee3000))
+
 ## v3.10.0 (2026-07-24)
 
 ### Feature
