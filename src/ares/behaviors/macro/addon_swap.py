@@ -55,7 +55,7 @@ class AddonSwap(MacroBehavior):
         # check if user provided a precise addon into addon_required
         if self.addon_required not in ADDON_TYPES:
             assert (
-                    self.addon_required in ADDONS
+                self.addon_required in ADDONS
             ), f"Invalid addon type: {self.addon_required}"
             self.precise_addon_structure_id = self.addon_required
             if self.addon_required in REACTOR_TYPES:

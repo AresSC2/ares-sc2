@@ -1373,7 +1373,6 @@ class PlacementManager(Manager, IManagerMediator):
 
             # 3x3 placements
             for placement in three_by_three:
-
                 info = self.placements_dict[location][BuildingSize.THREE_BY_THREE][
                     placement
                 ]

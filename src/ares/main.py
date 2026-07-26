@@ -26,8 +26,8 @@ from ares.behaviors.behavior import Behavior
 from ares.build_runner.build_order_runner import BuildOrderRunner
 from ares.config_parser import ConfigParser
 from ares.consts import (
-    ADDONS,
     ADD_SHADES_ON_FRAME,
+    ADDONS,
     ALL_STRUCTURES,
     CHAT_DEBUG,
     CONFIG_FILE,

@@ -68,7 +68,6 @@ class TestDataManager:
         assert dm.chosen_opening == "A"  # Only A has winrate > 0
 
     def test_choose_opening_tie(self, bot: AresBot, event_loop):
-
         dm: DataManager = bot.manager_hub.data_manager
         dm.build_selection_method = WINRATE_BASED
         dm.build_cycle = ["A", "B", "C"]

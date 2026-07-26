@@ -132,7 +132,6 @@ class DataManager(Manager, IManagerMediator):
         return self.manager_requests_dict[request](kwargs)
 
     def initialise(self) -> None:
-
         if BUILD_SELECTION in self.config and self.config[USE_DATA]:
             if self.config[BUILD_SELECTION] == WINRATE_BASED:
                 self.build_selection_method = WINRATE_BASED

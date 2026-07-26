@@ -20,9 +20,9 @@ if TYPE_CHECKING:
 
 from ares.build_runner.build_order_step import BuildOrderStep
 from ares.consts import (
-    ALL_STRUCTURES,
-    ADDONS,
     ADDON_ABLE,
+    ADDONS,
+    ALL_STRUCTURES,
     TOWNHALL_TYPES,
     BuildOrderOptions,
     BuildOrderTargetOptions,
@@ -203,7 +203,9 @@ class BuildOrderParser:
             main_struc = UnitID[commands[2].upper()]
             addon_struc = UnitID[commands[3].upper()]
         except KeyError as e:
-            logger.error(f"Error: {e} does not exist in UnitID.(`_generate_addon_build_step`)")
+            logger.error(
+                f"Error: {e} does not exist in UnitID.(`_generate_addon_build_step`)"
+            )
             if not self.ai.ladder:
                 raise
             return None
@@ -215,8 +217,10 @@ class BuildOrderParser:
         else:
             invalid_struc = None
         if invalid_struc:
-            error_msg = (f"Error: {invalid_struc} is not a valid structure"
-                         f" for addon_swap.(`_generate_addon_build_step`)")
+            error_msg = (
+                f"Error: {invalid_struc} is not a valid structure"
+                f" for addon_swap.(`_generate_addon_build_step`)"
+            )
             logger.error(error_msg)
             if not self.ai.ladder:
                 raise ValueError(error_msg)
@@ -225,17 +229,16 @@ class BuildOrderParser:
         def structures_ready():
             """Check if a main and addon structures are completed."""
             struc_dict = self.ai.mediator.get_own_structures_dict
-            return (
-                any(m.is_ready for m in struc_dict.get(main_struc, []))
-                and any(a.is_ready for a in struc_dict.get(addon_struc, []))
+            return any(m.is_ready for m in struc_dict.get(main_struc, [])) and any(
+                a.is_ready for a in struc_dict.get(addon_struc, [])
             )
 
         return BuildOrderStep(
-            command = AbilityId.LIFT,
-            start_condition = structures_ready,
+            command=AbilityId.LIFT,
+            start_condition=structures_ready,
             # Set via on_structure_started hook.
-            end_condition = lambda: True,
-            target = [main_struc, addon_struc]
+            end_condition=lambda: True,
+            target=[main_struc, addon_struc],
         )
 
     def _generate_structure_build_step(self, structure_id: UnitID) -> Callable:
@@ -370,7 +373,6 @@ class BuildOrderParser:
     def _parse_string_command(
         self, raw_step: str, build_order: list[BuildOrderStep]
     ) -> list[BuildOrderStep]:
-
         commands: list[str] = raw_step.split(" ")
         step: BuildOrderStep | None
         supply, command = self._get_supply_and_command(raw_step)
@@ -380,17 +382,13 @@ class BuildOrderParser:
         try:
             unit_id_command: UnitID = UnitID[command]
             if unit_id_command in ALL_STRUCTURES:
-                step = self._generate_structure_build_step(
-                    unit_id_command
-                )()
+                step = self._generate_structure_build_step(unit_id_command)()
             else:
                 step = self._generate_unit_build_step(unit_id_command)()
         except Exception:
             try:
                 upgrade_id_command: UpgradeId = UpgradeId[command]
-                step = self._generate_upgrade_build_step(
-                    upgrade_id_command
-                )()
+                step = self._generate_upgrade_build_step(upgrade_id_command)()
             except Exception:
                 assert BuildOrderOptions.contains_key(
                     command

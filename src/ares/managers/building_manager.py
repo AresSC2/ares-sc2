@@ -181,8 +181,8 @@ class BuildingManager(Manager, IManagerMediator):
                 s
                 for s in self.ai.structures
                 if s.build_progress < 1
-                   and s.type_id not in ADDONS
-                   and s.type_id not in {UnitID.PLANETARYFORTRESS, UnitID.ORBITALCOMMAND}
+                and s.type_id not in ADDONS
+                and s.type_id not in {UnitID.PLANETARYFORTRESS, UnitID.ORBITALCOMMAND}
             ]:
                 targets: list[Point2] = self.get_all_building_targets()
                 for structure in existing_unfinished_structures:

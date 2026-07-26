@@ -131,7 +131,6 @@ class WarpInManager(Manager, IManagerMediator):
             return
 
         for build_from, unit_type, target in self.requested_warp_ins:
-
             sorted_power_sources = sorted(
                 power_sources, key=lambda x: cy_distance_to_squared(x.position, target)
             )

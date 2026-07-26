@@ -27,7 +27,6 @@ MAPS: list[Path] = [
 @pytest.mark.parametrize("bot", MAPS, indirect=True)
 class TestCombatManeuver:
     def test_combat_maneuver(self, bot: AresBot, event_loop):
-
         # arrange
         maneuver: CombatManeuver = CombatManeuver()
         unit: Unit = bot.workers[0]

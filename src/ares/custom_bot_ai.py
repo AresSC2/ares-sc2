@@ -496,7 +496,6 @@ class CustomBotAI(BotAI):
     def building_worker_blocked_by_burrowed_unit(
         self, worker_tag: int, position: Point2
     ) -> bool:
-
         for error in self.state.action_errors:
             if (
                 error.unit_tag == worker_tag
