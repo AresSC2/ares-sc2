@@ -1,6 +1,8 @@
 """Extension of sc2.BotAI to add custom functions.
 
 """
+import argparse
+from functools import cached_property
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
@@ -50,6 +52,20 @@ class CustomBotAI(BotAI):
     """Hub in charge of handling the Managers"""
     CANT_BUILD_LOCATION_INVALID: int = 44
     _blocked_positions: set[Point2] = set()
+
+    @cached_property
+    def ladder(self) -> bool:
+        """
+        Is this a ladder match?
+
+        `True` if running in an automated/managed environment
+        """
+        parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument("--GamePort", type=int, nargs="?")
+        parser.add_argument("--Opponent_Id", type=str, nargs="?")
+        args, _ = parser.parse_known_args()
+
+        return args.GamePort is not None or args.OpponentId is not None
 
     @property
     def mediator(self) -> ManagerMediator:

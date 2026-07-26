@@ -26,7 +26,7 @@ from ares.behaviors.behavior import Behavior
 from ares.build_runner.build_order_runner import BuildOrderRunner
 from ares.config_parser import ConfigParser
 from ares.consts import (
-    ADD_ONS,
+    ADDONS,
     ADD_SHADES_ON_FRAME,
     ALL_STRUCTURES,
     CHAT_DEBUG,
@@ -677,7 +677,7 @@ class AresBot(CustomBotAI):
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_structure(unit_obj)
             self.structures.append(unit_obj)
-            if unit_id in ADD_ONS:
+            if unit_id in ADDONS:
                 if unit_id in TECHLAB_TYPES:
                     self.techlab_tags.add(tag)
                 else:
@@ -1081,7 +1081,7 @@ class AresBot(CustomBotAI):
 
             num_pending += 1
 
-        if self.race != Race.Terran or structure_type in ADD_ONS:
+        if self.race != Race.Terran or structure_type in ADDONS:
             num_pending += len(
                 [
                     s

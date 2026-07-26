@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
 from ares.build_runner.build_order_parser import BuildOrderParser
 from ares.consts import (
-    ADD_ONS,
+    ADDONS,
     ALL_STRUCTURES,
     BUILDS,
     GAS_BUILDINGS,
@@ -303,7 +303,7 @@ class BuildOrderRunner:
                     addon_required=step.target[1],
                 ).execute(self.ai, self.config, self.mediator):
                     self.current_step_started = True
-            elif command in ADD_ONS:
+            elif command in ADDONS:
                 self.current_step_started = True
             elif command in ALL_STRUCTURES:
                 # let the gas steal preventer handle this step
@@ -490,11 +490,11 @@ class BuildOrderRunner:
                                 in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
                             ):
                                 self._last_gas_order_time = self.ai.time
-                elif command in ADD_ONS and self.ai.can_afford(command):
+                elif command in ADDONS and self.ai.can_afford(command):
                     if base_structures := [
                         s
                         for s in self.ai.structures
-                        if s.is_ready and s.is_idle and s.type_id == ADD_ONS[command]
+                        if s.is_ready and s.is_idle and s.type_id == ADDONS[command]
                     ]:
                         base_structures[0].build(command)
                 # should have already started upgraded when step started,

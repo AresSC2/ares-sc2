@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable, Optional, Union
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 from cython_extensions import cy_towards, cy_unit_pending
@@ -21,6 +21,8 @@ if TYPE_CHECKING:
 from ares.build_runner.build_order_step import BuildOrderStep
 from ares.consts import (
     ALL_STRUCTURES,
+    ADDONS,
+    ADDON_ABLE,
     TOWNHALL_TYPES,
     BuildOrderOptions,
     BuildOrderTargetOptions,
@@ -42,7 +44,7 @@ class BuildOrderParser:
     """
 
     ai: "AresBot"
-    build_order_step_dict: dict = None
+    build_order_step_dict: dict | None = None
 
     def __post_init__(self) -> None:
         """Initializes the `build_order_step_dict` attribute."""
@@ -157,67 +159,83 @@ class BuildOrderParser:
             ),
         }
 
-    def _generate_addon_build_step(self, commands) -> Callable:
+    def _generate_addon_build_step(self, commands) -> BuildOrderStep | None:
         """
         Generates a callable build step for executing an
-        "addonswap" command in the build runner.
+        `AddonSwap` command in the build runner.
 
-        The "addonswap" command allows structures to exchange addon components.
+        The `AddonSwap` command allows structures to exchange addon components.
         This function validates the provided command arguments to ensure they
         represent valid structure types
         before creating a lambda build step for execution.
 
         Args:
             commands (list[str]): List of command parameters.
-                The first two parameters are positional, while the last two
+                The first two parameters are positional; the last two
                 specify the structures involved in the addon swap.
+
+        Returns:
+             (BuildOrderStep): The constructed build step.
 
         Raises:
             Exception: If the length of the `commands` list is not exactly 4.
-            ValueError: If any structure names provided in the `commands`
-                are invalid.
-
-        Returns:
-            Callable: A callable object that represents the constructed build step.
+            KeyError: If the 2 structures are not valid `UnitID`.
+            ValueError: If the 2 structures are not structures.
         """
-        # ['21', 'addonswap', 'factory', 'barracksreactor']
+        # [worker count, step function, building to be addon'd, addon to attach to.]
+        # [21, 'AddonSwap', 'factory', 'barracksreactor']
+
         if len(commands) != 4:
-            raise Exception(
-                f"Invalid addonswap command in build runner, "
-                f"expected 4 arguments, got {len(commands)} \n "
-                f"Example: `21 addonswap factory barracksreactor`"
+            error_msg = (
+                f"Error: And Saint Attila raised the `AddonSwap` on high,"
+                f" saying, 'First shalt thou count to four. Four shall be"
+                f" the number thou shalt count, and the number of the counting"
+                f" shall be four. Five shalt thou not count, neither count thou"
+                f" three, excepting that thou then proceed to four.'"
+                f" {len(commands)} is right out.(`_generate_addon_build_step`)"
             )
-        extra_commands: list[str] = commands[2:]
-        add_on_structures: list[UnitID] = []
+            logger.error(error_msg)
+            if not self.ai.ladder:
+                raise Exception(error_msg)
+            return None
 
-        invalid: list[str] = []
-        for cmd in extra_commands:
-            name = cmd.upper()
-            unit_type: UnitID = UnitID.__members__.get(name)
-            if unit_type is None or unit_type not in ALL_STRUCTURES:
-                invalid.append(cmd)
-            else:
-                add_on_structures.append(unit_type)
+        try:
+            main_struc = UnitID[commands[2].upper()]
+            addon_struc = UnitID[commands[3].upper()]
+        except KeyError as e:
+            logger.error(f"Error: {e} does not exist in UnitID.(`_generate_addon_build_step`)")
+            if not self.ai.ladder:
+                raise
+            return None
 
-        if invalid:
-            raise ValueError(
-                f"Invalid addonswap command(s): expected structure "
-                f"types, got: {', '.join(invalid)}"
+        if main_struc not in ADDON_ABLE:
+            invalid_struc = main_struc
+        elif addon_struc not in ADDONS:
+            invalid_struc = addon_struc
+        else:
+            invalid_struc = None
+        if invalid_struc:
+            error_msg = (f"Error: {invalid_struc} is not a valid structure"
+                         f" for addon_swap.(`_generate_addon_build_step`)")
+            logger.error(error_msg)
+            if not self.ai.ladder:
+                raise ValueError(error_msg)
+            return None
+
+        def structures_ready():
+            """Check if a main and addon structures are completed."""
+            struc_dict = self.ai.mediator.get_own_structures_dict
+            return (
+                any(m.is_ready for m in struc_dict.get(main_struc, []))
+                and any(a.is_ready for a in struc_dict.get(addon_struc, []))
             )
 
-        main_structure: UnitID = add_on_structures[0]
-        add_on_structure: UnitID = add_on_structures[1]
-        structures_dict = self.ai.mediator.get_own_structures_dict
-        return lambda: BuildOrderStep(
-            command=AbilityId.LIFT,
-            start_condition=lambda: len(
-                [s for s in structures_dict[main_structure] if s.is_ready]
-            )
-            > 0
-            and len([s for s in structures_dict[add_on_structure] if s.is_ready]) > 0,
-            # set via on_structure_started hook
-            end_condition=lambda: True,
-            target=add_on_structures,
+        return BuildOrderStep(
+            command = AbilityId.LIFT,
+            start_condition = structures_ready,
+            # Set via on_structure_started hook.
+            end_condition = lambda: True,
+            target = [main_struc, addon_struc]
         )
 
     def _generate_structure_build_step(self, structure_id: UnitID) -> Callable:
@@ -352,36 +370,34 @@ class BuildOrderParser:
     def _parse_string_command(
         self, raw_step: str, build_order: list[BuildOrderStep]
     ) -> list[BuildOrderStep]:
-        commands: list[str] = raw_step.split(" ")
 
-        supply: int
-        command: str
+        commands: list[str] = raw_step.split(" ")
+        step: BuildOrderStep | None
         supply, command = self._get_supply_and_command(raw_step)
 
-        # if a user passed a command matching a UnitTypeID enum key
+        # if a user passed a command matching a UnitID enum key
         # then automatically handle that
         try:
             unit_id_command: UnitID = UnitID[command]
             if unit_id_command in ALL_STRUCTURES:
-                step: BuildOrderStep = self._generate_structure_build_step(
+                step = self._generate_structure_build_step(
                     unit_id_command
                 )()
             else:
-                step: BuildOrderStep = self._generate_unit_build_step(unit_id_command)()
+                step = self._generate_unit_build_step(unit_id_command)()
         except Exception:
             try:
                 upgrade_id_command: UpgradeId = UpgradeId[command]
-                step: BuildOrderStep = self._generate_upgrade_build_step(
+                step = self._generate_upgrade_build_step(
                     upgrade_id_command
                 )()
             except Exception:
                 assert BuildOrderOptions.contains_key(
                     command
                 ), f"Unrecognized build order command, got: {command}"
-                step: BuildOrderStep
 
                 if command == BuildOrderOptions.ADDONSWAP:
-                    step = self._generate_addon_build_step(commands)()
+                    step = self._generate_addon_build_step(commands)
                 elif command == BuildOrderOptions.CORE:
                     step = self._generate_structure_build_step(UnitID.CYBERNETICSCORE)()
                 elif command == BuildOrderOptions.GATE:
@@ -485,7 +501,7 @@ class BuildOrderParser:
         return build_order
 
     @staticmethod
-    def extract_integer_from_target(target: str) -> Optional[int]:
+    def extract_integer_from_target(target: str) -> int | None:
         """Extract integer from target if it starts with 'X'."""
         if target.startswith("X") or target.startswith("*"):
             try:
@@ -495,7 +511,7 @@ class BuildOrderParser:
         return None
 
     @staticmethod
-    def _get_target_for_step(target: str) -> Union[str, UnitID]:
+    def _get_target_for_step(target: str) -> str | UnitID:
         """Set the target for the step."""
         try:
             if target == BuildOrderOptions.CORE:
@@ -538,7 +554,7 @@ class BuildOrderParser:
             )
             supply: int = 0
 
-        # this is the main command of a build order step (worker, gas, expand etc)
+        # this is the main command of a build order step (worker, gas, expand etc.)
         command: str = commands[1].upper()
 
         return supply, command
@@ -592,7 +608,7 @@ class BuildOrderParser:
         ordered = np.roll(ordered, -start_index, axis=0)
 
         min_spacing = 4.0
-        last_point: Optional[np.ndarray] = None
+        last_point: np.ndarray | None = None
         for point in ordered:
             if last_point is None:
                 _pos: Point2 = Point2(cy_towards(point, location, 2.0))
@@ -606,7 +622,7 @@ class BuildOrderParser:
 
         return target_positions
 
-    def _get_target(self, target: Optional[str]) -> Point2:
+    def _get_target(self, target: str | None) -> Point2:
         match target:
             case BuildOrderTargetOptions.ENEMY_FOURTH:
                 return self.ai.mediator.get_enemy_expansions[2][0]
@@ -671,7 +687,7 @@ class BuildOrderParser:
         num_same_steps_found[self.ai.worker_type] = 12
 
         for i, step in enumerate(build_order):
-            command: Union[AbilityId, UnitID, UpgradeId] = step.command
+            command: AbilityId | UnitID | UpgradeId = step.command
             if command == BuildOrderOptions.WORKER_SCOUT:
                 logger.info(
                     f"Removing {command} from build order. "
