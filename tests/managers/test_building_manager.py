@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 
 from ares import AresBot
@@ -31,14 +31,14 @@ class TestBuildingManager:
 
         # act
         building_manager.build_with_specific_worker(
-            worker, UnitID.COMMANDCENTER, bot.mediator.get_own_nat
+            worker, UnitTypeId.COMMANDCENTER, bot.mediator.get_own_nat
         )
 
         # assert
         tracker = building_manager.building_tracker
         assert worker.tag in tracker
-        assert tracker[worker.tag]["id"] == UnitID.COMMANDCENTER
-        assert building_manager.building_counter[UnitID.COMMANDCENTER] == 1
+        assert tracker[worker.tag]["id"] == UnitTypeId.COMMANDCENTER
+        assert building_manager.building_counter[UnitTypeId.COMMANDCENTER] == 1
         assert (
             worker.tag
             in bot.manager_hub.unit_role_manager.unit_role_dict[UnitRole.BUILDING]
@@ -52,7 +52,7 @@ class TestBuildingManager:
 
         # act
         building_manager.build_with_specific_worker(
-            worker, UnitID.COMMANDCENTER, bot.mediator.get_own_nat
+            worker, UnitTypeId.COMMANDCENTER, bot.mediator.get_own_nat
         )
         assert worker.tag in tracker
         building_manager.remove_unit(worker.tag)
@@ -65,8 +65,8 @@ class TestBuildingManager:
         building_manager: BuildingManager = bot.manager_hub.building_manager
         worker: Unit = bot.workers[0]
         building_manager.build_with_specific_worker(
-            worker, UnitID.COMMANDCENTER, bot.mediator.get_own_nat
+            worker, UnitTypeId.COMMANDCENTER, bot.mediator.get_own_nat
         )
 
         # act
-        assert building_manager.is_pending(UnitID.COMMANDCENTER, 1)
+        assert building_manager.is_pending(UnitTypeId.COMMANDCENTER, 1)

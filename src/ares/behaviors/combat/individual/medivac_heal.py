@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 import numpy as np
 from cython_extensions import cy_closest_to
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 
 from ares.behaviors.combat.individual import CombatIndividualBehavior, KeepUnitSafe
@@ -32,7 +32,7 @@ class MedivacHeal(CombatIndividualBehavior):
     keep_safe: bool = True
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        if self.unit.type_id != UnitID.MEDIVAC:
+        if self.unit.type_id != UnitTypeId.MEDIVAC:
             return False
 
         if self.keep_safe and KeepUnitSafe(self.unit, self.grid).execute(

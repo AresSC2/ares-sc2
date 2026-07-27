@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from cython_extensions.geometry import cy_distance_to_squared
 from loguru import logger
 from sc2.data import Race
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 
 from ares.consts import BuildingSize
@@ -77,7 +77,7 @@ class BuildStructure(MacroBehavior):
     """
 
     base_location: Point2
-    structure_id: UnitID
+    structure_id: UnitTypeId
     max_on_route: int = 1
     first_pylon: bool = False
     static_defence: bool = False
@@ -129,7 +129,7 @@ class BuildStructure(MacroBehavior):
             return True
 
         within_psionic_matrix: bool = (
-            ai.race == Race.Protoss and self.structure_id != UnitID.PYLON
+            ai.race == Race.Protoss and self.structure_id != UnitTypeId.PYLON
         )
 
         if placement := mediator.request_building_placement(

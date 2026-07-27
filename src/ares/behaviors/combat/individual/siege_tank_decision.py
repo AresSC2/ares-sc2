@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from cython_extensions import cy_closest_to, cy_distance_to_squared
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -16,14 +16,14 @@ from ares.managers.manager_mediator import ManagerMediator
 if TYPE_CHECKING:
     from ares import AresBot
 
-STATIC_DEFENCE: set[UnitID] = {
-    UnitID.BUNKER,
-    UnitID.PLANETARYFORTRESS,
-    UnitID.SPINECRAWLER,
-    UnitID.PHOTONCANNON,
+STATIC_DEFENCE: set[UnitTypeId] = {
+    UnitTypeId.BUNKER,
+    UnitTypeId.PLANETARYFORTRESS,
+    UnitTypeId.SPINECRAWLER,
+    UnitTypeId.PHOTONCANNON,
 }
 
-TANK_TYPES: set[UnitID] = {UnitID.SIEGETANKSIEGED, UnitID.SIEGETANK}
+TANK_TYPES: set[UnitTypeId] = {UnitTypeId.SIEGETANKSIEGED, UnitTypeId.SIEGETANK}
 
 
 @dataclass
@@ -53,7 +53,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
     force_unsiege: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        type_id: UnitID = self.unit.type_id
+        type_id: UnitTypeId = self.unit.type_id
         if type_id not in TANK_TYPES:
             return False
 
@@ -66,7 +66,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
         ]
         unit_pos: Point2 = self.unit.position
 
-        if type_id == UnitID.SIEGETANK:
+        if type_id == UnitTypeId.SIEGETANK:
             if self.force_unsiege:
                 return False
 
@@ -111,7 +111,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
                 self.unit(AbilityId.SIEGEMODE_SIEGEMODE)
                 return True
 
-        elif type_id == UnitID.SIEGETANKSIEGED:
+        elif type_id == UnitTypeId.SIEGETANKSIEGED:
             if self.force_unsiege:
                 self.unit(AbilityId.UNSIEGE_UNSIEGE)
                 return True
@@ -155,7 +155,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
 
         # return true for sieged up tanks, as no further action needed
         # return False for non sieged tanks
-        return type_id == UnitID.SIEGETANKSIEGED
+        return type_id == UnitTypeId.SIEGETANKSIEGED
 
     @staticmethod
     def _enemy_too_close(unit_pos: Point2, near_enemy_ground) -> bool:

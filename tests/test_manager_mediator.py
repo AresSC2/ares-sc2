@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 
 from ares import AresBot
@@ -77,13 +77,13 @@ class TestMediator:
         # act
         bot.mediator.build_with_specific_worker(
             worker=worker,
-            structure_type=UnitID.SPAWNINGPOOL,
+            structure_type=UnitTypeId.SPAWNINGPOOL,
             pos=bot.game_info.map_center,
         )
         # assert
         building_tracker: dict = bot.mediator.get_building_tracker_dict
         assert worker.tag in building_tracker
-        assert building_tracker[worker.tag]["id"] == UnitID.SPAWNINGPOOL
+        assert building_tracker[worker.tag]["id"] == UnitTypeId.SPAWNINGPOOL
 
     def test_can_win_fight(self, bot: AresBot, event_loop):
         # arrange

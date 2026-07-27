@@ -12,7 +12,7 @@ from sc2.constants import ALL_GAS
 from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -106,7 +106,7 @@ class BuildOrderRunner:
 
         self._temporary_build_step: int = -1
         self.should_handle_gas_steal: bool = True
-        self._geyser_tag_to_probe_tag: dict[int, int] = dict()
+        self._geyser_tag_to_probe_tag: dict[int, int] = {}
         self._last_gas_order_time: float = -999.0
 
     def set_build_completed(self) -> None:
@@ -168,7 +168,7 @@ class BuildOrderRunner:
 
             self.build_order = self._build_order_parser.parse(build, remove_completed)
 
-    def set_step_complete(self, value: UnitID) -> None:
+    def set_step_complete(self, value: UnitTypeId) -> None:
         if (
             self.build_step < len(self.build_order)
             and value == self.build_order[self.build_step].command
@@ -177,7 +177,9 @@ class BuildOrderRunner:
             self.current_step_complete = True
 
     def set_step_started(
-        self, value: bool, command: AbilityId | UnitID | UpgradeId | BuildOrderOptions
+        self,
+        value: bool,
+        command: AbilityId | UnitTypeId | UpgradeId | BuildOrderOptions,
     ) -> None:
         if command == self.build_order[self.build_step].command:
             self.current_step_started = value
@@ -273,7 +275,7 @@ class BuildOrderRunner:
             and UpgradeId.WARPGATERESEARCH in self.ai.state.upgrades
             and [
                 g
-                for g in self.mediator.get_own_structures_dict[UnitID.GATEWAY]
+                for g in self.mediator.get_own_structures_dict[UnitTypeId.GATEWAY]
                 if g.is_ready and g.is_idle
             ]
         ):
@@ -287,7 +289,7 @@ class BuildOrderRunner:
             self.ai.race == Race.Protoss
             and start_condition_triggered
             and step.command in ALL_STRUCTURES
-            and step.command != UnitID.PYLON
+            and step.command != UnitTypeId.PYLON
         ):
             start_at_supply -= 1
         if (
@@ -295,7 +297,9 @@ class BuildOrderRunner:
             and not self.current_step_started
             and self.ai.supply_used >= start_at_supply
         ):
-            command: AbilityId | UnitID | UpgradeId | BuildOrderOptions = step.command
+            command: AbilityId | UnitTypeId | UpgradeId | BuildOrderOptions = (
+                step.command
+            )
             # add on swap
             if command == AbilityId.LIFT:
                 if AddonSwap(
@@ -336,7 +340,7 @@ class BuildOrderRunner:
                     worker: Unit | None = self.mediator.select_worker(
                         target_position=self.current_build_position,
                         force_close=True,
-                        select_persistent_builder=command != UnitID.REFINERY,
+                        select_persistent_builder=command != UnitTypeId.REFINERY,
                         only_select_persistent_builder=persistent_worker_available,
                     )
                     if worker:
@@ -360,7 +364,7 @@ class BuildOrderRunner:
                             building_pos=next_building_position,
                         )
 
-            elif isinstance(command, UnitID) and command not in ALL_STRUCTURES:
+            elif isinstance(command, UnitTypeId) and command not in ALL_STRUCTURES:
                 army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
                 spawn_target: Point2 = self._get_target(step.target)
                 did_spawn_action: bool = SpawnController(
@@ -407,7 +411,7 @@ class BuildOrderRunner:
                 if available_hatch := [
                     th
                     for th in self.ai.townhalls
-                    if th.is_idle and th.is_ready and th.type_id == UnitID.LAIR
+                    if th.is_idle and th.is_ready and th.type_id == UnitTypeId.LAIR
                 ]:
                     available_hatch[0](AbilityId.UPGRADETOHIVE_HIVE)
                     self.current_step_started = True
@@ -416,7 +420,7 @@ class BuildOrderRunner:
                 if available_hatch := [
                     th
                     for th in self.ai.townhalls
-                    if th.is_idle and th.is_ready and th.type_id == UnitID.HATCHERY
+                    if th.is_idle and th.is_ready and th.type_id == UnitTypeId.HATCHERY
                 ]:
                     available_hatch[0](AbilityId.UPGRADETOLAIR_LAIR)
                     self.current_step_started = True
@@ -425,7 +429,9 @@ class BuildOrderRunner:
                 if available_ccs := [
                     th
                     for th in self.ai.townhalls
-                    if th.is_idle and th.is_ready and th.type_id == UnitID.COMMANDCENTER
+                    if th.is_idle
+                    and th.is_ready
+                    and th.type_id == UnitTypeId.COMMANDCENTER
                 ]:
                     available_ccs[0](AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND)
                     self.current_step_started = True
@@ -447,7 +453,7 @@ class BuildOrderRunner:
                 ] = self.mediator.get_unit_role_dict
                 if overlords := [
                     ol
-                    for ol in self.mediator.get_own_army_dict[UnitID.OVERLORD]
+                    for ol in self.mediator.get_own_army_dict[UnitTypeId.OVERLORD]
                     if ol.tag not in unit_role_dict[UnitRole.BUILD_RUNNER_SCOUT]
                 ]:
                     overlord: Unit = overlords[0]
@@ -463,7 +469,7 @@ class BuildOrderRunner:
                 self.current_step_complete = step.end_condition()
             # end condition hasn't yet activated
             if not self.current_step_complete:
-                command: UnitID | UpgradeId = step.command
+                command: UnitTypeId | UpgradeId = step.command
                 # sometimes gas building didn't go through
                 # due to conflict with gas steal
                 if (
@@ -501,7 +507,7 @@ class BuildOrderRunner:
                 # backup here just in case
                 elif isinstance(command, UpgradeId):
                     self.ai.research(command)
-                elif command == UnitID.ARCHON:
+                elif command == UnitTypeId.ARCHON:
                     army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
                     SpawnController(army_comp, freeflow_mode=True, maximum=1).execute(
                         self.ai, self.config, self.mediator
@@ -521,14 +527,14 @@ class BuildOrderRunner:
 
                 self.current_step_started = False
                 self.current_step_complete = False
-                if step.command == UnitID.PYLON:
+                if step.command == UnitTypeId.PYLON:
                     self.mediator.switch_roles(
                         from_role=UnitRole.PERSISTENT_BUILDER,
                         to_role=UnitRole.GATHERING,
                     )
 
     async def get_position(
-        self, structure_type: UnitID, target: str | None
+        self, structure_type: UnitTypeId, target: str | None
     ) -> Point2 | Unit | None:
         """Convert a position command from the build order to an actual location.
         Examples
@@ -591,7 +597,7 @@ class BuildOrderRunner:
             within_psionic_matrix: bool = (
                 self.ai.race == Race.Protoss
                 and structure_type in STRUCTURE_TO_BUILDING_SIZE
-                and structure_type != UnitID.PYLON
+                and structure_type != UnitTypeId.PYLON
             )
             at_wall: bool = target in {
                 BuildOrderTargetOptions.RAMP,
@@ -632,7 +638,7 @@ class BuildOrderRunner:
                 th_pos=self.ai.start_location
             )
             build_near: Point2 | None = None
-            if structure_type not in {UnitID.SPINECRAWLER, UnitID.SPORECRAWLER}:
+            if structure_type not in {UnitTypeId.SPINECRAWLER, UnitTypeId.SPORECRAWLER}:
                 for pos in (behind_mineral_line[0], behind_mineral_line[-1]):
                     if not self.ai.structures or not cy_closer_than(
                         self.ai.structures, 1.5, pos
@@ -664,7 +670,7 @@ class BuildOrderRunner:
 
         """
         # this block is currently for chrono
-        if isinstance(target, UnitID):
+        if isinstance(target, UnitTypeId):
             if valid_structures := self.ai.structures.filter(
                 lambda s: s.build_progress == 1.0
                 and s.type_id == target
@@ -702,7 +708,7 @@ class BuildOrderRunner:
                 < self.build_order[self.build_step].start_at_supply
                 or self.build_order[self.build_step].command
                 == AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND
-                and self.ai.tech_requirement_progress(UnitID.ORBITALCOMMAND) < 0.95
+                and self.ai.tech_requirement_progress(UnitTypeId.ORBITALCOMMAND) < 0.95
             )
         ):
             self.ai.train(self.ai.worker_type)
@@ -770,7 +776,7 @@ class BuildOrderRunner:
 
         """
         for step in self.build_order:
-            if step.command in {UnitID.SUPPLYDEPOT, UnitID.PYLON}:
+            if step.command in {UnitTypeId.SUPPLYDEPOT, UnitTypeId.PYLON}:
                 target: Point2 = self._get_target(step.target)
                 time = (
                     3.0
@@ -785,7 +791,8 @@ class BuildOrderRunner:
                         base_location=target,
                         structure_type=self.ai.supply_type,
                         reserve_placement=False,
-                        first_pylon=self.ai.time < 30 and step.command == UnitID.PYLON,
+                        first_pylon=self.ai.time < 30
+                        and step.command == UnitTypeId.PYLON,
                         wall=True,
                     ),
                     time,

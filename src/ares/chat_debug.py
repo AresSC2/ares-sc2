@@ -3,7 +3,7 @@
 Feel free to add to this.
 """
 
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.units import Units
 
@@ -52,20 +52,22 @@ class ChatDebug:
                 if len(commands) < 3:
                     await self.ai.chat_send("Not a valid command")
                     return
-                if commands[2].upper() not in UnitID.__members__:
-                    await self.ai.chat_send("Not a valid UnitID, try again")
+                if commands[2].upper() not in UnitTypeId.__members__:
+                    await self.ai.chat_send("Not a valid UnitTypeId, try again")
                     return
                 # example chat command
                 # kill 1 overseers
                 if len(commands) >= 3:
                     await self._destroy_units(
-                        int(commands[1]), UnitID[commands[2].upper()]
+                        int(commands[1]), UnitTypeId[commands[2].upper()]
                     )
                 # example chat command
                 # kill 1 overseers 2
                 if len(commands) >= 4:
                     await self._destroy_units(
-                        int(commands[1]), UnitID[commands[2].upper()], int(commands[3])
+                        int(commands[1]),
+                        UnitTypeId[commands[2].upper()],
+                        int(commands[3]),
                     )
 
                 if len(commands) >= 2:
@@ -78,20 +80,22 @@ class ChatDebug:
                     await self.ai.chat_send("Not a valid command")
                     return
                 # check for valid unit id
-                if commands[2].upper() not in UnitID.__members__:
-                    await self.ai.chat_send("Not a valid UnitID, try again")
+                if commands[2].upper() not in UnitTypeId.__members__:
+                    await self.ai.chat_send("Not a valid UnitTypeId, try again")
                     return
                 # example chat command, by default creates for player 1
                 # create 10 overseer
                 if len(commands) == 3:
                     await self._create_units(
-                        int(commands[1]), UnitID[commands[2].upper()]
+                        int(commands[1]), UnitTypeId[commands[2].upper()]
                     )
                 # example chat command, last element is player id
                 # create 10 overseer 2
                 if len(commands) == 4:
                     await self._create_units(
-                        int(commands[1]), UnitID[commands[2].upper()], int(commands[3])
+                        int(commands[1]),
+                        UnitTypeId[commands[2].upper()],
+                        int(commands[3]),
                     )
 
             if first_command in COOLDOWN:
@@ -118,7 +122,7 @@ class ChatDebug:
     async def _create_units(
         self,
         amount: int,
-        unit_id: UnitID,
+        unit_id: UnitTypeId,
         player_id: int = 1,
     ) -> None:  # pragma: no cover
         """Create units at player camera location.
@@ -142,7 +146,7 @@ class ChatDebug:
         await self.ai.client.debug_create_unit([[unit_id, amount, pos, player_id]])
 
     async def _destroy_units(
-        self, num_to_destroy: int, unit_id: UnitID, player_id: int = 1
+        self, num_to_destroy: int, unit_id: UnitTypeId, player_id: int = 1
     ) -> None:  # pragma: no cover
         """Destroy units for provided player.
 

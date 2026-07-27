@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any, Coroutine, DefaultDict, Optional, Union
 from cython_extensions.geometry import cy_distance_to_squared
 from loguru import logger
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -44,7 +44,7 @@ class WarpInManager(Manager, IManagerMediator):
         }
 
         self.warp_in_positions: set[Point2] = set()
-        self.requested_warp_ins: list[(UnitID, Point2)] = []
+        self.requested_warp_ins: list[(UnitTypeId, Point2)] = []
 
     def manager_request(
         self,
@@ -90,7 +90,7 @@ class WarpInManager(Manager, IManagerMediator):
         self.requested_warp_ins = []
 
     def request_warp_in(
-        self, build_from: UnitID, unit_type: UnitID, target: Optional[Point2]
+        self, build_from: UnitTypeId, unit_type: UnitTypeId, target: Optional[Point2]
     ) -> None:
         """
         Get a warp in spot closest to target
@@ -118,20 +118,20 @@ class WarpInManager(Manager, IManagerMediator):
             return
 
         own_structures_dict: dict[
-            UnitID, list[Unit]
+            UnitTypeId, list[Unit]
         ] = self.manager_mediator.get_own_structures_dict
         pylons: list[Unit] = [
-            s for s in own_structures_dict[UnitID.PYLON] if s.is_ready
+            s for s in own_structures_dict[UnitTypeId.PYLON] if s.is_ready
         ]
         power_sources: list[Unit] = (
-            pylons + self.manager_mediator.get_own_army_dict[UnitID.WARPPRISMPHASING]
+            pylons
+            + self.manager_mediator.get_own_army_dict[UnitTypeId.WARPPRISMPHASING]
         )
         if not power_sources:
             logger.warning("Requesting warp in spot, but no power sources found")
             return
 
         for build_from, unit_type, target in self.requested_warp_ins:
-
             sorted_power_sources = sorted(
                 power_sources, key=lambda x: cy_distance_to_squared(x.position, target)
             )

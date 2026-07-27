@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Optional, Union
 from cython_extensions import cy_distance_to_squared
 from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 from sc2.units import Units
 
@@ -34,12 +34,12 @@ class GhostSnipe(CombatIndividualBehavior):
         if (
             ai.enemy_race != Race.Zerg
             or not self.close_enemy
-            or self.unit.type_id != UnitID.GHOST
+            or self.unit.type_id != UnitTypeId.GHOST
         ):
             return False
 
         snipe_ability: AbilityId = AbilityId.EFFECT_GHOSTSNIPE
-        ghosts: list[Unit] = mediator.get_own_army_dict[UnitID.GHOST]
+        ghosts: list[Unit] = mediator.get_own_army_dict[UnitTypeId.GHOST]
         if snipe_ability in self.unit.abilities:
             if target := self.get_snipe_target(ai, ghosts, self.close_enemy):
                 self.unit(snipe_ability, target)

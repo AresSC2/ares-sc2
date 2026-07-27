@@ -204,7 +204,6 @@ class UnitMemoryManager(Manager, IManagerMediator):
                 if (
                     snap.type_id in BURROWED_ALIAS or snap.is_burrowed
                 ) and unit_tag not in self._tags_destroyed:
-
                     if self.get_is_detected(snap, by_enemy=False):
                         self.clear_unit_cache(memory_tags_to_remove, unit_tag)
                     else:

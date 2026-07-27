@@ -3,15 +3,15 @@
 """
 from typing import Dict
 
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 
 # army_value = (((minerals / 0.9) + gas) * supply) / 50
 # with some edits where appropriate
 # Zerg building data includes Drone cost
-UNIT_DATA: Dict[UnitID, Dict] = {
+UNIT_DATA: Dict[UnitTypeId, Dict] = {
     # these first 2 entries are rich vespene buildings?
     # on patch 5.0.14 AIE maps
-    UnitID.SIEGETANKMENGSKACGLUESCREENDUMMY: {
+    UnitTypeId.SIEGETANKMENGSKACGLUESCREENDUMMY: {
         "minerals": 75,
         "gas": 0,
         "supply": 0,
@@ -19,7 +19,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.MEDIVACMENGSKACGLUESCREENDUMMY: {
+    UnitTypeId.MEDIVACMENGSKACGLUESCREENDUMMY: {
         "minerals": 75,
         "gas": 0,
         "supply": 0,
@@ -27,7 +27,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.SCV: {
+    UnitTypeId.SCV: {
         "minerals": 50,
         "gas": 0,
         "supply": 1,
@@ -35,7 +35,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.MULE: {
+    UnitTypeId.MULE: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -43,7 +43,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.MARINE: {
+    UnitTypeId.MARINE: {
         "minerals": 50,
         "gas": 0,
         "supply": 1,
@@ -51,7 +51,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.MARAUDER: {
+    UnitTypeId.MARAUDER: {
         "minerals": 100,
         "gas": 25,
         "supply": 2,
@@ -59,7 +59,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5625,
         "flying": False,
     },
-    UnitID.REAPER: {
+    UnitTypeId.REAPER: {
         "minerals": 50,
         "gas": 50,
         "supply": 1,
@@ -67,7 +67,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.GHOST: {
+    UnitTypeId.GHOST: {
         "minerals": 150,
         "gas": 125,
         "supply": 2,
@@ -75,7 +75,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.HELLION: {
+    UnitTypeId.HELLION: {
         "minerals": 100,
         "gas": 0,
         "supply": 2,
@@ -83,7 +83,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.625,
         "flying": False,
     },
-    UnitID.HELLIONTANK: {
+    UnitTypeId.HELLIONTANK: {
         "minerals": 100,
         "gas": 0,
         "supply": 2,
@@ -91,7 +91,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.625,
         "flying": False,
     },
-    UnitID.WIDOWMINE: {
+    UnitTypeId.WIDOWMINE: {
         "minerals": 75,
         "gas": 25,
         "supply": 2,
@@ -99,7 +99,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.WIDOWMINEBURROWED: {
+    UnitTypeId.WIDOWMINEBURROWED: {
         "minerals": 75,
         "gas": 25,
         "supply": 2,
@@ -107,7 +107,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.SIEGETANK: {
+    UnitTypeId.SIEGETANK: {
         "minerals": 150,
         "gas": 125,
         "supply": 3,
@@ -115,7 +115,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.875,
         "flying": False,
     },
-    UnitID.SIEGETANKSIEGED: {
+    UnitTypeId.SIEGETANKSIEGED: {
         "minerals": 150,
         "gas": 125,
         "supply": 3,
@@ -123,7 +123,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.875,
         "flying": False,
     },
-    UnitID.CYCLONE: {
+    UnitTypeId.CYCLONE: {
         "minerals": 150,
         "gas": 100,
         "supply": 3,
@@ -131,7 +131,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.THOR: {
+    UnitTypeId.THOR: {
         "minerals": 300,
         "gas": 200,
         "supply": 6,
@@ -139,7 +139,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.THORAP: {
+    UnitTypeId.THORAP: {
         "minerals": 300,
         "gas": 200,
         "supply": 6,
@@ -147,7 +147,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.VIKINGASSAULT: {
+    UnitTypeId.VIKINGASSAULT: {
         "minerals": 150,
         "gas": 75,
         "supply": 2,
@@ -155,7 +155,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.VIKINGFIGHTER: {
+    UnitTypeId.VIKINGFIGHTER: {
         "minerals": 150,
         "gas": 75,
         "supply": 2,
@@ -163,7 +163,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": True,
     },
-    UnitID.MEDIVAC: {
+    UnitTypeId.MEDIVAC: {
         "minerals": 100,
         "gas": 100,
         "supply": 2,
@@ -171,7 +171,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": True,
     },
-    UnitID.LIBERATOR: {
+    UnitTypeId.LIBERATOR: {
         "minerals": 150,
         "gas": 150,
         "supply": 3,
@@ -179,7 +179,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": True,
     },
-    UnitID.LIBERATORAG: {
+    UnitTypeId.LIBERATORAG: {
         "minerals": 150,
         "gas": 150,
         "supply": 3,
@@ -187,7 +187,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": True,
     },
-    UnitID.BANSHEE: {
+    UnitTypeId.BANSHEE: {
         "minerals": 150,
         "gas": 100,
         "supply": 3,
@@ -195,7 +195,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": True,
     },
-    UnitID.RAVEN: {
+    UnitTypeId.RAVEN: {
         "minerals": 100,
         "gas": 200,
         "supply": 2,
@@ -203,7 +203,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.625,
         "flying": True,
     },
-    UnitID.BATTLECRUISER: {
+    UnitTypeId.BATTLECRUISER: {
         "minerals": 400,
         "gas": 300,
         "supply": 6,
@@ -211,7 +211,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.25,
         "flying": True,
     },
-    UnitID.POINTDEFENSEDRONE: {
+    UnitTypeId.POINTDEFENSEDRONE: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -219,7 +219,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.PROBE: {
+    UnitTypeId.PROBE: {
         "minerals": 50,
         "gas": 0,
         "supply": 1,
@@ -227,7 +227,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.ZEALOT: {
+    UnitTypeId.ZEALOT: {
         "minerals": 100,
         "gas": 0,
         "supply": 2,
@@ -235,7 +235,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.SENTRY: {
+    UnitTypeId.SENTRY: {
         "minerals": 50,
         "gas": 100,
         "supply": 2,
@@ -243,7 +243,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.STALKER: {
+    UnitTypeId.STALKER: {
         "minerals": 125,
         "gas": 50,
         "supply": 2,
@@ -251,7 +251,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.625,
         "flying": False,
     },
-    UnitID.ADEPT: {
+    UnitTypeId.ADEPT: {
         "minerals": 100,
         "gas": 25,
         "supply": 2,
@@ -259,7 +259,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.ADEPTPHASESHIFT: {
+    UnitTypeId.ADEPTPHASESHIFT: {
         "minerals": 100,
         "gas": 25,
         "supply": 2,
@@ -267,7 +267,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.HIGHTEMPLAR: {
+    UnitTypeId.HIGHTEMPLAR: {
         "minerals": 50,
         "gas": 150,
         "supply": 2,
@@ -275,7 +275,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.DARKTEMPLAR: {
+    UnitTypeId.DARKTEMPLAR: {
         "minerals": 125,
         "gas": 125,
         "supply": 2,
@@ -283,7 +283,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.ARCHON: {
+    UnitTypeId.ARCHON: {
         "minerals": 175,
         "gas": 275,
         "supply": 4,
@@ -291,7 +291,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.OBSERVER: {
+    UnitTypeId.OBSERVER: {
         "minerals": 25,
         "gas": 75,
         "supply": 1,
@@ -299,7 +299,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": True,
     },
-    UnitID.OBSERVERSIEGEMODE: {
+    UnitTypeId.OBSERVERSIEGEMODE: {
         "minerals": 25,
         "gas": 75,
         "supply": 1,
@@ -307,7 +307,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": True,
     },
-    UnitID.WARPPRISM: {
+    UnitTypeId.WARPPRISM: {
         "minerals": 200,
         "gas": 0,
         "supply": 2,
@@ -315,7 +315,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.875,
         "flying": True,
     },
-    UnitID.WARPPRISMPHASING: {
+    UnitTypeId.WARPPRISMPHASING: {
         "minerals": 200,
         "gas": 0,
         "supply": 2,
@@ -323,7 +323,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.875,
         "flying": True,
     },
-    UnitID.IMMORTAL: {
+    UnitTypeId.IMMORTAL: {
         "minerals": 275,
         "gas": 100,
         "supply": 4,
@@ -331,7 +331,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.COLOSSUS: {
+    UnitTypeId.COLOSSUS: {
         "minerals": 300,
         "gas": 200,
         "supply": 6,
@@ -339,7 +339,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.DISRUPTOR: {
+    UnitTypeId.DISRUPTOR: {
         "minerals": 150,
         "gas": 150,
         "supply": 3,
@@ -347,7 +347,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.DISRUPTORPHASED: {
+    UnitTypeId.DISRUPTORPHASED: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -355,7 +355,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.PHOENIX: {
+    UnitTypeId.PHOENIX: {
         "minerals": 150,
         "gas": 100,
         "supply": 2,
@@ -363,7 +363,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": True,
     },
-    UnitID.VOIDRAY: {
+    UnitTypeId.VOIDRAY: {
         "minerals": 250,
         "gas": 150,
         "supply": 4,
@@ -371,7 +371,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.ORACLE: {
+    UnitTypeId.ORACLE: {
         "minerals": 150,
         "gas": 150,
         "supply": 3,
@@ -379,7 +379,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": True,
     },
-    UnitID.TEMPEST: {
+    UnitTypeId.TEMPEST: {
         "minerals": 250,
         "gas": 175,
         "supply": 5,
@@ -387,7 +387,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.25,
         "flying": True,
     },
-    UnitID.CARRIER: {
+    UnitTypeId.CARRIER: {
         "minerals": 350,
         "gas": 250,
         "supply": 6,
@@ -395,7 +395,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.INTERCEPTOR: {
+    UnitTypeId.INTERCEPTOR: {
         "minerals": 15,
         "gas": 0,
         "supply": 0,
@@ -403,7 +403,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.25,
         "flying": True,
     },
-    UnitID.MOTHERSHIP: {
+    UnitTypeId.MOTHERSHIP: {
         "minerals": 300,
         "gas": 300,
         "supply": 8,
@@ -411,7 +411,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.75,
         "flying": True,
     },
-    UnitID.LARVA: {
+    UnitTypeId.LARVA: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -419,7 +419,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.125,
         "flying": False,
     },
-    UnitID.EGG: {
+    UnitTypeId.EGG: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -427,7 +427,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.125,
         "flying": False,
     },
-    UnitID.DRONE: {
+    UnitTypeId.DRONE: {
         "minerals": 50,
         "gas": 0,
         "supply": 1,
@@ -435,7 +435,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.DRONEBURROWED: {
+    UnitTypeId.DRONEBURROWED: {
         "minerals": 50,
         "gas": 0,
         "supply": 1,
@@ -443,7 +443,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.QUEEN: {
+    UnitTypeId.QUEEN: {
         "minerals": 150,
         "gas": 0,
         "supply": 2,
@@ -451,7 +451,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.875,
         "flying": False,
     },
-    UnitID.QUEENBURROWED: {
+    UnitTypeId.QUEENBURROWED: {
         "minerals": 150,
         "gas": 0,
         "supply": 2,
@@ -459,7 +459,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.875,
         "flying": False,
     },
-    UnitID.ZERGLING: {
+    UnitTypeId.ZERGLING: {
         "minerals": 25,
         "gas": 0,
         "supply": 0.5,
@@ -467,7 +467,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.ZERGLINGBURROWED: {
+    UnitTypeId.ZERGLINGBURROWED: {
         "minerals": 25,
         "gas": 0,
         "supply": 0.5,
@@ -475,7 +475,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.BANELINGCOCOON: {
+    UnitTypeId.BANELINGCOCOON: {
         "minerals": 25,
         "gas": 25,
         "supply": 0.5,
@@ -483,7 +483,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.BANELING: {
+    UnitTypeId.BANELING: {
         "minerals": 25,
         "gas": 25,
         "supply": 0.5,
@@ -491,7 +491,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.BANELINGBURROWED: {
+    UnitTypeId.BANELINGBURROWED: {
         "minerals": 25,
         "gas": 25,
         "supply": 0.5,
@@ -499,7 +499,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.ROACH: {
+    UnitTypeId.ROACH: {
         "minerals": 75,
         "gas": 25,
         "supply": 2,
@@ -507,7 +507,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.ROACHBURROWED: {
+    UnitTypeId.ROACHBURROWED: {
         "minerals": 75,
         "gas": 25,
         "supply": 2,
@@ -515,7 +515,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": False,
     },
-    UnitID.RAVAGER: {
+    UnitTypeId.RAVAGER: {
         "minerals": 75 + 25,
         "gas": 75 + 25,
         "supply": 3,
@@ -523,7 +523,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.RAVAGERBURROWED: {
+    UnitTypeId.RAVAGERBURROWED: {
         "minerals": 75 + 25,
         "gas": 75 + 25,
         "supply": 3,
@@ -531,7 +531,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.RAVAGERCOCOON: {
+    UnitTypeId.RAVAGERCOCOON: {
         "minerals": 75 + 25,
         "gas": 75 + 25,
         "supply": 3,
@@ -539,7 +539,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.HYDRALISK: {
+    UnitTypeId.HYDRALISK: {
         "minerals": 100,
         "gas": 50,
         "supply": 2,
@@ -547,7 +547,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.625,
         "flying": False,
     },
-    UnitID.HYDRALISKBURROWED: {
+    UnitTypeId.HYDRALISKBURROWED: {
         "minerals": 100,
         "gas": 50,
         "supply": 2,
@@ -555,7 +555,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.625,
         "flying": False,
     },
-    UnitID.LURKERMP: {
+    UnitTypeId.LURKERMP: {
         "minerals": 50 + 100,
         "gas": 100 + 50,
         "supply": 3,
@@ -563,7 +563,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.LURKERMPBURROWED: {
+    UnitTypeId.LURKERMPBURROWED: {
         "minerals": 50 + 100,
         "gas": 100 + 50,
         "supply": 3,
@@ -571,7 +571,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.LURKERMPEGG: {
+    UnitTypeId.LURKERMPEGG: {
         "minerals": 50 + 100,
         "gas": 100 + 50,
         "supply": 3,
@@ -579,7 +579,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.INFESTOR: {
+    UnitTypeId.INFESTOR: {
         "minerals": 100,
         "gas": 150,
         "supply": 2,
@@ -587,7 +587,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.INFESTEDTERRANSEGG: {
+    UnitTypeId.INFESTEDTERRANSEGG: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -595,7 +595,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.INFESTEDTERRAN: {
+    UnitTypeId.INFESTEDTERRAN: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -603,7 +603,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.INFESTORTERRAN: {
+    UnitTypeId.INFESTORTERRAN: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -611,7 +611,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.INFESTORBURROWED: {
+    UnitTypeId.INFESTORBURROWED: {
         "minerals": 100,
         "gas": 150,
         "supply": 2,
@@ -619,7 +619,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.75,
         "flying": False,
     },
-    UnitID.SWARMHOSTMP: {
+    UnitTypeId.SWARMHOSTMP: {
         "minerals": 100,
         "gas": 75,
         "supply": 3,
@@ -627,7 +627,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.8125,
         "flying": False,
     },
-    UnitID.SWARMHOSTBURROWEDMP: {
+    UnitTypeId.SWARMHOSTBURROWEDMP: {
         "minerals": 100,
         "gas": 75,
         "supply": 3,
@@ -635,7 +635,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.8125,
         "flying": False,
     },
-    UnitID.LOCUSTMP: {
+    UnitTypeId.LOCUSTMP: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -643,7 +643,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.LOCUSTMPFLYING: {
+    UnitTypeId.LOCUSTMPFLYING: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -651,7 +651,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": True,
     },
-    UnitID.ULTRALISK: {
+    UnitTypeId.ULTRALISK: {
         "minerals": 300,
         "gas": 200,
         "supply": 6,
@@ -659,7 +659,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.ULTRALISKBURROWED: {
+    UnitTypeId.ULTRALISKBURROWED: {
         "minerals": 300,
         "gas": 200,
         "supply": 6,
@@ -667,7 +667,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.OVERLORD: {
+    UnitTypeId.OVERLORD: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -675,7 +675,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.OVERLORDCOCOON: {
+    UnitTypeId.OVERLORDCOCOON: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -683,7 +683,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.OVERLORDTRANSPORT: {
+    UnitTypeId.OVERLORDTRANSPORT: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -691,7 +691,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.TRANSPORTOVERLORDCOCOON: {
+    UnitTypeId.TRANSPORTOVERLORDCOCOON: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -699,7 +699,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.OVERSEER: {
+    UnitTypeId.OVERSEER: {
         "minerals": 150,
         "gas": 50,
         "supply": 0,
@@ -707,7 +707,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.OVERSEERSIEGEMODE: {
+    UnitTypeId.OVERSEERSIEGEMODE: {
         "minerals": 150,
         "gas": 50,
         "supply": 0,
@@ -715,7 +715,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.CHANGELING: {
+    UnitTypeId.CHANGELING: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -723,7 +723,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.CHANGELINGMARINE: {
+    UnitTypeId.CHANGELINGMARINE: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -731,7 +731,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.CHANGELINGMARINESHIELD: {
+    UnitTypeId.CHANGELINGMARINESHIELD: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -739,7 +739,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.CHANGELINGZEALOT: {
+    UnitTypeId.CHANGELINGZEALOT: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -747,7 +747,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.CHANGELINGZERGLING: {
+    UnitTypeId.CHANGELINGZERGLING: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -755,7 +755,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.CHANGELINGZERGLINGWINGS: {
+    UnitTypeId.CHANGELINGZERGLINGWINGS: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -763,7 +763,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.MUTALISK: {
+    UnitTypeId.MUTALISK: {
         "minerals": 100,
         "gas": 100,
         "supply": 2,
@@ -771,7 +771,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.5,
         "flying": True,
     },
-    UnitID.CORRUPTOR: {
+    UnitTypeId.CORRUPTOR: {
         "minerals": 150,
         "gas": 100,
         "supply": 2,
@@ -779,7 +779,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.625,
         "flying": True,
     },
-    UnitID.VIPER: {
+    UnitTypeId.VIPER: {
         "minerals": 100,
         "gas": 200,
         "supply": 3,
@@ -787,7 +787,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.BROODLORD: {
+    UnitTypeId.BROODLORD: {
         "minerals": 150 + 150,
         "gas": 150 + 100,
         "supply": 4,
@@ -795,7 +795,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.BROODLORDCOCOON: {
+    UnitTypeId.BROODLORDCOCOON: {
         "minerals": 150 + 150,
         "gas": 150 + 100,
         "supply": 4,
@@ -803,7 +803,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": True,
     },
-    UnitID.BROODLING: {
+    UnitTypeId.BROODLING: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -811,7 +811,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.COMMANDCENTER: {
+    UnitTypeId.COMMANDCENTER: {
         "minerals": 400,
         "gas": 0,
         "supply": 0,
@@ -819,7 +819,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": False,
     },
-    UnitID.COMMANDCENTERFLYING: {
+    UnitTypeId.COMMANDCENTERFLYING: {
         "minerals": 400,
         "gas": 0,
         "supply": 0,
@@ -827,7 +827,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": True,
     },
-    UnitID.ORBITALCOMMAND: {
+    UnitTypeId.ORBITALCOMMAND: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -835,7 +835,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": True,
     },
-    UnitID.ORBITALCOMMANDFLYING: {
+    UnitTypeId.ORBITALCOMMANDFLYING: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -843,7 +843,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": True,
     },
-    UnitID.PLANETARYFORTRESS: {
+    UnitTypeId.PLANETARYFORTRESS: {
         "minerals": 150,
         "gas": 150,
         "supply": 0,
@@ -851,7 +851,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": False,
     },
-    UnitID.SUPPLYDEPOT: {
+    UnitTypeId.SUPPLYDEPOT: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -859,7 +859,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.SUPPLYDEPOTLOWERED: {
+    UnitTypeId.SUPPLYDEPOTLOWERED: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -867,7 +867,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.REFINERY: {
+    UnitTypeId.REFINERY: {
         "minerals": 75,
         "gas": 0,
         "supply": 0,
@@ -875,7 +875,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.BARRACKS: {
+    UnitTypeId.BARRACKS: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -883,7 +883,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.BARRACKSFLYING: {
+    UnitTypeId.BARRACKSFLYING: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -891,7 +891,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": True,
     },
-    UnitID.ENGINEERINGBAY: {
+    UnitTypeId.ENGINEERINGBAY: {
         "minerals": 125,
         "gas": 0,
         "supply": 0,
@@ -899,7 +899,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.BUNKER: {
+    UnitTypeId.BUNKER: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -907,7 +907,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.MISSILETURRET: {
+    UnitTypeId.MISSILETURRET: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -915,7 +915,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.AUTOTURRET: {
+    UnitTypeId.AUTOTURRET: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -923,7 +923,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.SENSORTOWER: {
+    UnitTypeId.SENSORTOWER: {
         "minerals": 125,
         "gas": 100,
         "supply": 0,
@@ -931,7 +931,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.FACTORY: {
+    UnitTypeId.FACTORY: {
         "minerals": 150,
         "gas": 100,
         "supply": 0,
@@ -939,7 +939,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.FACTORYFLYING: {
+    UnitTypeId.FACTORYFLYING: {
         "minerals": 150,
         "gas": 100,
         "supply": 0,
@@ -947,7 +947,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": True,
     },
-    UnitID.GHOSTACADEMY: {
+    UnitTypeId.GHOSTACADEMY: {
         "minerals": 150,
         "gas": 50,
         "supply": 0,
@@ -955,7 +955,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.ARMORY: {
+    UnitTypeId.ARMORY: {
         "minerals": 150,
         "gas": 100,
         "supply": 0,
@@ -963,7 +963,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.STARPORT: {
+    UnitTypeId.STARPORT: {
         "minerals": 150,
         "gas": 100,
         "supply": 0,
@@ -971,7 +971,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.STARPORTFLYING: {
+    UnitTypeId.STARPORTFLYING: {
         "minerals": 150,
         "gas": 100,
         "supply": 0,
@@ -979,7 +979,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": True,
     },
-    UnitID.FUSIONCORE: {
+    UnitTypeId.FUSIONCORE: {
         "minerals": 150,
         "gas": 150,
         "supply": 0,
@@ -987,7 +987,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.TECHLAB: {
+    UnitTypeId.TECHLAB: {
         "minerals": 125,
         "gas": 100,
         "supply": 0,
@@ -995,7 +995,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.BARRACKSTECHLAB: {
+    UnitTypeId.BARRACKSTECHLAB: {
         "minerals": 125,
         "gas": 100,
         "supply": 0,
@@ -1003,7 +1003,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.FACTORYTECHLAB: {
+    UnitTypeId.FACTORYTECHLAB: {
         "minerals": 125,
         "gas": 100,
         "supply": 0,
@@ -1011,7 +1011,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.STARPORTTECHLAB: {
+    UnitTypeId.STARPORTTECHLAB: {
         "minerals": 125,
         "gas": 100,
         "supply": 0,
@@ -1019,7 +1019,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.REACTOR: {
+    UnitTypeId.REACTOR: {
         "minerals": 50,
         "gas": 50,
         "supply": 0,
@@ -1027,7 +1027,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.BARRACKSREACTOR: {
+    UnitTypeId.BARRACKSREACTOR: {
         "minerals": 50,
         "gas": 50,
         "supply": 0,
@@ -1035,7 +1035,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.FACTORYREACTOR: {
+    UnitTypeId.FACTORYREACTOR: {
         "minerals": 50,
         "gas": 50,
         "supply": 0,
@@ -1043,7 +1043,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.STARPORTREACTOR: {
+    UnitTypeId.STARPORTREACTOR: {
         "minerals": 50,
         "gas": 50,
         "supply": 0,
@@ -1051,7 +1051,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.NEXUS: {
+    UnitTypeId.NEXUS: {
         "minerals": 400,
         "gas": 0,
         "supply": 0,
@@ -1059,7 +1059,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": False,
     },
-    UnitID.PYLON: {
+    UnitTypeId.PYLON: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -1067,7 +1067,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.ASSIMILATOR: {
+    UnitTypeId.ASSIMILATOR: {
         "minerals": 75,
         "gas": 0,
         "supply": 0,
@@ -1075,7 +1075,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.GATEWAY: {
+    UnitTypeId.GATEWAY: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -1083,7 +1083,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.FORGE: {
+    UnitTypeId.FORGE: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -1091,7 +1091,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.PHOTONCANNON: {
+    UnitTypeId.PHOTONCANNON: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -1099,7 +1099,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.SHIELDBATTERY: {
+    UnitTypeId.SHIELDBATTERY: {
         "minerals": 100,
         "gas": 0,
         "supply": 0,
@@ -1107,7 +1107,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.WARPGATE: {
+    UnitTypeId.WARPGATE: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -1115,7 +1115,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.CYBERNETICSCORE: {
+    UnitTypeId.CYBERNETICSCORE: {
         "minerals": 150,
         "gas": 0,
         "supply": 0,
@@ -1123,7 +1123,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.TWILIGHTCOUNCIL: {
+    UnitTypeId.TWILIGHTCOUNCIL: {
         "minerals": 150,
         "gas": 100,
         "supply": 0,
@@ -1131,7 +1131,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.ROBOTICSFACILITY: {
+    UnitTypeId.ROBOTICSFACILITY: {
         "minerals": 200,
         "gas": 100,
         "supply": 0,
@@ -1139,7 +1139,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.STARGATE: {
+    UnitTypeId.STARGATE: {
         "minerals": 150,
         "gas": 150,
         "supply": 0,
@@ -1147,7 +1147,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.TEMPLARARCHIVE: {
+    UnitTypeId.TEMPLARARCHIVE: {
         "minerals": 150,
         "gas": 200,
         "supply": 0,
@@ -1155,7 +1155,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.DARKSHRINE: {
+    UnitTypeId.DARKSHRINE: {
         "minerals": 150,
         "gas": 150,
         "supply": 0,
@@ -1163,7 +1163,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.ROBOTICSBAY: {
+    UnitTypeId.ROBOTICSBAY: {
         "minerals": 150,
         "gas": 150,
         "supply": 0,
@@ -1171,7 +1171,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.FLEETBEACON: {
+    UnitTypeId.FLEETBEACON: {
         "minerals": 300,
         "gas": 200,
         "supply": 0,
@@ -1179,7 +1179,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.ORACLESTASISTRAP: {
+    UnitTypeId.ORACLESTASISTRAP: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -1187,7 +1187,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.HATCHERY: {
+    UnitTypeId.HATCHERY: {
         "minerals": 300 + 50,
         "gas": 0,
         "supply": 0,
@@ -1195,7 +1195,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": False,
     },
-    UnitID.EXTRACTOR: {
+    UnitTypeId.EXTRACTOR: {
         "minerals": 25 + 50,
         "gas": 0,
         "supply": 0,
@@ -1203,7 +1203,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.SPAWNINGPOOL: {
+    UnitTypeId.SPAWNINGPOOL: {
         "minerals": 200 + 50,
         "gas": 0,
         "supply": 0,
@@ -1211,7 +1211,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.EVOLUTIONCHAMBER: {
+    UnitTypeId.EVOLUTIONCHAMBER: {
         "minerals": 75 + 50,
         "gas": 0,
         "supply": 0,
@@ -1219,7 +1219,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.SPINECRAWLER: {
+    UnitTypeId.SPINECRAWLER: {
         "minerals": 100 + 50,
         "gas": 0,
         "supply": 0,
@@ -1227,7 +1227,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.SPINECRAWLERUPROOTED: {
+    UnitTypeId.SPINECRAWLERUPROOTED: {
         "minerals": 100 + 50,
         "gas": 0,
         "supply": 0,
@@ -1235,7 +1235,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.SPORECRAWLER: {
+    UnitTypeId.SPORECRAWLER: {
         "minerals": 75 + 50,
         "gas": 0,
         "supply": 0,
@@ -1243,7 +1243,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.SPORECRAWLERUPROOTED: {
+    UnitTypeId.SPORECRAWLERUPROOTED: {
         "minerals": 75 + 50,
         "gas": 0,
         "supply": 0,
@@ -1251,7 +1251,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.ROACHWARREN: {
+    UnitTypeId.ROACHWARREN: {
         "minerals": 150 + 50,
         "gas": 0,
         "supply": 0,
@@ -1259,7 +1259,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.BANELINGNEST: {
+    UnitTypeId.BANELINGNEST: {
         "minerals": 100 + 50,
         "gas": 50,
         "supply": 0,
@@ -1267,7 +1267,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.INFESTATIONPIT: {
+    UnitTypeId.INFESTATIONPIT: {
         "minerals": 150 + 50,
         "gas": 100,
         "supply": 0,
@@ -1275,7 +1275,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.LAIR: {
+    UnitTypeId.LAIR: {
         "minerals": 450 + 50,
         "gas": 100,
         "supply": 0,
@@ -1283,7 +1283,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": False,
     },
-    UnitID.HIVE: {
+    UnitTypeId.HIVE: {
         "minerals": 650 + 50,
         "gas": 250,
         "supply": 0,
@@ -1291,7 +1291,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 2.5,
         "flying": False,
     },
-    UnitID.HYDRALISKDEN: {
+    UnitTypeId.HYDRALISKDEN: {
         "minerals": 100 + 50,
         "gas": 100,
         "supply": 0,
@@ -1299,7 +1299,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.LURKERDENMP: {
+    UnitTypeId.LURKERDENMP: {
         "minerals": 150 + 50,
         "gas": 150,
         "supply": 0,
@@ -1307,7 +1307,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.SPIRE: {
+    UnitTypeId.SPIRE: {
         "minerals": 200 + 50,
         "gas": 200,
         "supply": 0,
@@ -1315,7 +1315,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.NYDUSNETWORK: {
+    UnitTypeId.NYDUSNETWORK: {
         "minerals": 150 + 50,
         "gas": 200,
         "supply": 0,
@@ -1323,7 +1323,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.NYDUSCANAL: {
+    UnitTypeId.NYDUSCANAL: {
         "minerals": 50,
         "gas": 50,
         "supply": 0,
@@ -1331,7 +1331,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.ULTRALISKCAVERN: {
+    UnitTypeId.ULTRALISKCAVERN: {
         "minerals": 150 + 50,
         "gas": 200,
         "supply": 0,
@@ -1339,7 +1339,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.GREATERSPIRE: {
+    UnitTypeId.GREATERSPIRE: {
         "minerals": 300 + 50,
         "gas": 350,
         "supply": 0,
@@ -1347,7 +1347,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.0,
         "flying": False,
     },
-    UnitID.CREEPTUMOR: {
+    UnitTypeId.CREEPTUMOR: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -1355,7 +1355,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.CREEPTUMORBURROWED: {
+    UnitTypeId.CREEPTUMORBURROWED: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -1363,7 +1363,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.CREEPTUMORQUEEN: {
+    UnitTypeId.CREEPTUMORQUEEN: {
         "minerals": 0,
         "gas": 0,
         "supply": 0,
@@ -1371,7 +1371,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 0.375,
         "flying": False,
     },
-    UnitID.REFINERYRICH: {
+    UnitTypeId.REFINERYRICH: {
         "minerals": 75,
         "gas": 0,
         "supply": 0,
@@ -1379,7 +1379,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.ASSIMILATORRICH: {
+    UnitTypeId.ASSIMILATORRICH: {
         "minerals": 75,
         "gas": 0,
         "supply": 0,
@@ -1387,7 +1387,7 @@ UNIT_DATA: Dict[UnitID, Dict] = {
         "radius": 1.5,
         "flying": False,
     },
-    UnitID.EXTRACTORRICH: {
+    UnitTypeId.EXTRACTORRICH: {
         "minerals": 75,
         "gas": 0,
         "supply": 0,

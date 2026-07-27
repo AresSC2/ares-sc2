@@ -4,7 +4,7 @@
 from typing import TYPE_CHECKING, Dict, Optional
 
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 
 from ares.consts import ManagerName, ManagerRequestType
@@ -65,7 +65,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         self.ability_frame_cd_dict: Dict[
             AbilityId, int
         ] = ABILITY_FRAME_COOL_DOWN.copy()
-        self.unit_to_ability_dict: Dict[int, Dict[AbilityId, int]] = dict()
+        self.unit_to_ability_dict: Dict[int, Dict[AbilityId, int]] = {}
 
     def manager_request(
         self,
@@ -113,7 +113,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         """
         pass
 
-    def catch_unit(self, unit: Unit, unit_type: UnitID, tag: int) -> None:
+    def catch_unit(self, unit: Unit, unit_type: UnitTypeId, tag: int) -> None:
         """Make sure units are included in the tracking.
 
         Notes
@@ -139,70 +139,71 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         """
         current_frame: int = self.ai.state.game_loop
         if tag not in self.unit_to_ability_dict:
-            if unit_type == UnitID.WIDOWMINE:
+            if unit_type == UnitTypeId.WIDOWMINE:
                 self.unit_to_ability_dict[tag] = {
                     AbilityId.WIDOWMINEATTACK_WIDOWMINEATTACK: current_frame
                 }
             # Protoss
-            # if unit_type == UnitID.ADEPT:
+            # if unit_type == UnitTypeId.ADEPT:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT: current_frame
             #     }
-            # elif unit_type == UnitID.DARKTEMPLAR:
+            # elif unit_type == UnitTypeId.DARKTEMPLAR:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_SHADOWSTRIDE: current_frame
             #     }
-            # elif unit_type == UnitID.DISRUPTOR:
+            # elif unit_type == UnitTypeId.DISRUPTOR:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_PURIFICATIONNOVA: current_frame
             #     }
-            # elif unit_type == UnitID.ORACLE:
+            # elif unit_type == UnitTypeId.ORACLE:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.BEHAVIOR_PULSARBEAMON: current_frame,
             #         AbilityId.ORACLEREVELATION_ORACLEREVELATION: current_frame,
             #     }
-            # elif unit_type == UnitID.STALKER:
+            # elif unit_type == UnitTypeId.STALKER:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_BLINK_STALKER: current_frame
             #     }
-            # elif unit_type == UnitID.VOIDRAY:
+            # elif unit_type == UnitTypeId.VOIDRAY:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_VOIDRAYPRISMATICALIGNMENT: current_frame
             #     }
 
             # Terran
-            # elif unit_type == UnitID.BATTLECRUISER:
+            # elif unit_type == UnitTypeId.BATTLECRUISER:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_TACTICALJUMP: current_frame,
             #         AbilityId.YAMATO_YAMATOGUN: current_frame,
             #     }
-            # elif unit_type == UnitID.CYCLONE:
+            # elif unit_type == UnitTypeId.CYCLONE:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.LOCKON_LOCKON: current_frame,
             #     }
-            # elif unit_type == UnitID.GHOST:
+            # elif unit_type == UnitTypeId.GHOST:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.TACNUKESTRIKE_NUKECALLDOWN: current_frame,
             #     }
-            # elif unit_type == UnitID.MEDIVAC:
+            # elif unit_type == UnitTypeId.MEDIVAC:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_MEDIVACIGNITEAFTERBURNERS: current_frame,
             #     }
-            # elif unit_type == UnitID.REAPER:
+            # elif unit_type == UnitTypeId.REAPER:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.KD8CHARGE_KD8CHARGE: current_frame
             #     }
 
             # Zerg
-            # elif unit_type == UnitID.CORRUPTOR:
+            # elif unit_type == UnitTypeId.CORRUPTOR:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.CAUSTICSPRAY_CAUSTICSPRAY: current_frame
             #     }
-            # elif unit_type in {UnitID.SWARMHOSTMP, UnitID.SWARMHOSTBURROWEDMP}:
+            # elif unit_type in {UnitTypeId.SWARMHOSTMP,
+            # UnitTypeId.SWARMHOSTBURROWEDMP}:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_SPAWNLOCUSTS: current_frame
             #     }
-            # elif unit_type == UnitID.RAVAGER:
+            # elif unit_type == UnitTypeId.RAVAGER:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_CORROSIVEBILE: current_frame
             #     }

@@ -73,7 +73,7 @@ from ares.cython_extensions.geometry import cy_distance_to
 from ares.managers.manager_mediator import ManagerMediator
 from ares.consts import UnitTreeQueryType
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -95,7 +95,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         unit_pos: Point2 = self.unit.position
-        type_id: UnitID = self.unit.type_id
+        type_id: UnitTypeId = self.unit.type_id
         
         # get near enemy ground
         # ares uses `KDTree` algorithm for faster distance queries
@@ -106,7 +106,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
             query_tree=UnitTreeQueryType.EnemyGround,
         )[0]
 
-        if type_id == UnitID.SIEGETANK:
+        if type_id == UnitTypeId.SIEGETANK:
             # if enemies are not too close, and enough ground enemy around then siege
             close_to_tank: list[Unit] = [
                 e for e in near_enemy_ground if cy_distance_to(e.position, unit_pos) < 6.5
@@ -117,7 +117,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
                 self.unit(AbilityId.SIEGEMODE_SIEGEMODE)
                 return True
 
-        elif type_id == UnitID.SIEGETANKSIEGED:
+        elif type_id == UnitTypeId.SIEGETANKSIEGED:
             # just a general if nothing around then unsiege
             if len(near_enemy_ground) == 0:
                 self.unit(AbilityId.UNSIEGE_UNSIEGE)

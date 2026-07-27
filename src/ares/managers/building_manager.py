@@ -25,7 +25,7 @@ from loguru import logger
 from sc2.constants import ALL_GAS
 from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -62,13 +62,13 @@ class BuildingManager(Manager, IManagerMediator):
     ----------
     blocked_expansion_locations : Set[Point2]
         Which expansion locations are blocked and not considered for expanding
-    building_tracker : Dict[int, Dict[str, Union[Point2, Unit, UnitID], float]
+    building_tracker : Dict[int, Dict[str, Union[Point2, Unit, UnitTypeId], float]
         Tracks the worker tag to:
-            UnitID of the building to be built
+            UnitTypeId of the building to be built
             Point2 of where the building is to be placed
             In-game time when the order started
             Why the building is being built
-    building_counter : DefaultDict[UnitID, int]
+    building_counter : DefaultDict[UnitTypeId, int]
         Tracks the type of building in the tracker and how many are present
 
     """
@@ -114,9 +114,9 @@ class BuildingManager(Manager, IManagerMediator):
         }
 
         self.building_tracker: Dict[
-            int, Dict[str, Union[Point2, Unit, UnitID], float]
-        ] = dict()
-        self.building_counter: DefaultDict[UnitID, int] = defaultdict(int)
+            int, Dict[str, Union[Point2, Unit, UnitTypeId], float]
+        ] = {}
+        self.building_counter: DefaultDict[UnitTypeId, int] = defaultdict(int)
         # remember for each expansion attempt, otherwise we lose memory
         # should be cleared after expanding
         self.blocked_expansion_locations: Set[Point2] = set()
@@ -182,7 +182,8 @@ class BuildingManager(Manager, IManagerMediator):
                 for s in self.ai.structures
                 if s.build_progress < 1
                 and s.type_id not in ADD_ONS
-                and s.type_id not in {UnitID.PLANETARYFORTRESS, UnitID.ORBITALCOMMAND}
+                and s.type_id
+                not in {UnitTypeId.PLANETARYFORTRESS, UnitTypeId.ORBITALCOMMAND}
             ]:
                 targets: list[Point2] = self.get_all_building_targets()
                 for structure in existing_unfinished_structures:
@@ -225,7 +226,7 @@ class BuildingManager(Manager, IManagerMediator):
         dead_tags_to_remove: set[int] = set()
         tags_to_remove: set[int] = set()
         structures_dict: dict[
-            UnitID, Units
+            UnitTypeId, Units
         ] = self.manager_mediator.get_own_structures_dict
 
         building_spots: set[Point2] = set()
@@ -241,9 +242,9 @@ class BuildingManager(Manager, IManagerMediator):
                     "BUILDING TARGET",
                 )
 
-            structure_id: UnitID = self.building_tracker[worker_tag][ID]
+            structure_id: UnitTypeId = self.building_tracker[worker_tag][ID]
             if (
-                self.ai.race != Race.Terran or structure_id == UnitID.REFINERY
+                self.ai.race != Race.Terran or structure_id == UnitTypeId.REFINERY
             ) and self.ai.time > self.building_tracker[worker_tag][
                 TIME_ORDER_COMMENCED
             ] + self.BUILDING_WORKER_TIMEOUT:
@@ -445,7 +446,7 @@ class BuildingManager(Manager, IManagerMediator):
         structure(AbilityId.CANCEL_BUILDINPROGRESS)
 
         # now look for this structure in the building tracker, and remove it
-        structure_id: UnitID = structure.type_id
+        structure_id: UnitTypeId = structure.type_id
         worker_tag_to_remove: int = 0
         for worker_tag in self.building_tracker:
             if target := self.building_tracker[worker_tag][TARGET]:
@@ -569,7 +570,7 @@ class BuildingManager(Manager, IManagerMediator):
                     tag=worker.tag, role=UnitRole.BUILDING
                 )
 
-    def is_pending(self, structure_type: UnitID, simul_amount: int):
+    def is_pending(self, structure_type: UnitTypeId, simul_amount: int):
         """See how many structure_type buildings are being tracked.
 
         Parameters
@@ -581,7 +582,7 @@ class BuildingManager(Manager, IManagerMediator):
 
         Examples
         --------
-        ``is_pending(UnitID.BARRACKS, 2)``
+        ``is_pending(UnitTypeId.BARRACKS, 2)``
 
         This will return False if only one Barracks is in progress/tracked since 2
         are allowed to be built simultaneously.
@@ -601,7 +602,7 @@ class BuildingManager(Manager, IManagerMediator):
         return True
 
     async def find_valid_position(
-        self, building: UnitID, pos: Point2
+        self, building: UnitTypeId, pos: Point2
     ) -> Union[Point2, Coroutine[Any, Any, Optional[Point2]]]:
         """Make sure multiple workers aren't trying to build in the same position.
 
@@ -635,7 +636,7 @@ class BuildingManager(Manager, IManagerMediator):
     def build_with_specific_worker(
         self,
         worker: Unit,
-        structure_type: UnitID,
+        structure_type: UnitTypeId,
         pos: Union[Point2, Unit],
         assign_role: bool = True,
         building_purpose: BuildingPurpose = BuildingPurpose.NORMAL_BUILDING,

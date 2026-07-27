@@ -5,7 +5,7 @@ import numpy as np
 from cython_extensions import cy_distance_to_squared
 from cython_extensions.general_utils import cy_has_creep
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -52,7 +52,7 @@ class QueenSpreadCreep(CombatIndividualBehavior):
         # queen already spreading creep, leave alone
         if spreading and not [
             u
-            for u in mediator.get_own_structures_dict[UnitID.CREEPTUMORQUEEN]
+            for u in mediator.get_own_structures_dict[UnitTypeId.CREEPTUMORQUEEN]
             if cy_distance_to_squared(self.unit.order_target, u.position) < 3.0
         ]:
             return True

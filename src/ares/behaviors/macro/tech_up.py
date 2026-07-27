@@ -5,7 +5,7 @@ from loguru import logger
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -18,10 +18,10 @@ from ares.managers.manager_mediator import ManagerMediator
 if TYPE_CHECKING:
     from ares import AresBot
 
-BUILD_TECHLAB_FROM: dict[UnitID:UnitID] = {
-    UnitID.BARRACKSTECHLAB: UnitID.BARRACKS,
-    UnitID.FACTORYTECHLAB: UnitID.FACTORY,
-    UnitID.STARPORTTECHLAB: UnitID.STARPORT,
+BUILD_TECHLAB_FROM: dict[UnitTypeId:UnitTypeId] = {
+    UnitTypeId.BARRACKSTECHLAB: UnitTypeId.BARRACKS,
+    UnitTypeId.FACTORYTECHLAB: UnitTypeId.FACTORY,
+    UnitTypeId.STARPORTTECHLAB: UnitTypeId.STARPORT,
 }
 
 
@@ -48,24 +48,24 @@ class TechUp(MacroBehavior):
 
     """
 
-    desired_tech: Union[UpgradeId, UnitID]
+    desired_tech: Union[UpgradeId, UnitTypeId]
     base_location: Point2
     ignore_existing_techlabs: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert isinstance(
-            self.desired_tech, (UpgradeId, UnitID)
+            self.desired_tech, (UpgradeId, UnitTypeId)
         ), f"Wrong type provided for `desired_tech`, got {type(self.desired_tech)}"
 
         if (
-            self.desired_tech in {UnitID.HIVE, UnitID.LAIR}
+            self.desired_tech in {UnitTypeId.HIVE, UnitTypeId.LAIR}
             and mediator.get_own_structures_dict[self.desired_tech]
         ):
             return False
 
         # figure out where we research this unit / upgrade from
-        researched_from_id: UnitID
-        tech_required: list[UnitID]
+        researched_from_id: UnitTypeId
+        tech_required: list[UnitTypeId]
         if isinstance(self.desired_tech, UpgradeId):
             researched_from_id = UPGRADE_RESEARCHED_FROM[self.desired_tech]
             tech_required = UNIT_TECH_REQUIREMENT[researched_from_id]
@@ -76,7 +76,7 @@ class TechUp(MacroBehavior):
             else:
                 researched_from_id = next(iter(UNIT_TRAINED_FROM[self.desired_tech]))
                 if self.desired_tech in GATEWAY_UNITS:
-                    researched_from_id = UnitID.GATEWAY
+                    researched_from_id = UnitTypeId.GATEWAY
                 tech_required = UNIT_TECH_REQUIREMENT[self.desired_tech]
 
         # special handling of teching to techlabs
@@ -107,7 +107,7 @@ class TechUp(MacroBehavior):
         if tech_progress == 1.0 and not ai.structure_present_or_pending(
             researched_from_id
         ):
-            if researched_from_id in {UnitID.LAIR, UnitID.HIVE}:
+            if researched_from_id in {UnitTypeId.LAIR, UnitTypeId.HIVE}:
                 upgrading: bool = self._upgrade_zerg_townhall(researched_from_id, ai)
                 if upgrading:
                     logger.info(
@@ -117,8 +117,8 @@ class TechUp(MacroBehavior):
                 return upgrading
             # need a gateway, but we have a warpgate already
             if (
-                researched_from_id == UnitID.GATEWAY
-                and mediator.get_own_structures_dict[UnitID.WARPGATE]
+                researched_from_id == UnitTypeId.GATEWAY
+                and mediator.get_own_structures_dict[UnitTypeId.WARPGATE]
             ):
                 return False
             logger.info(
@@ -133,9 +133,9 @@ class TechUp(MacroBehavior):
         # figure out what to build to get there
         else:
             for structure_type in tech_required:
-                checks: list[UnitID] = [structure_type]
-                if structure_type == UnitID.GATEWAY:
-                    checks.append(UnitID.WARPGATE)
+                checks: list[UnitTypeId] = [structure_type]
+                if structure_type == UnitTypeId.GATEWAY:
+                    checks.append(UnitTypeId.WARPGATE)
 
                 if structure_type in TECHLAB_TYPES:
                     if self._adding_techlab(
@@ -163,7 +163,7 @@ class TechUp(MacroBehavior):
                     continue
 
                 if tech_ready:
-                    if structure_type in {UnitID.LAIR, UnitID.HIVE}:
+                    if structure_type in {UnitTypeId.LAIR, UnitTypeId.HIVE}:
                         upgrading: bool = self._upgrade_zerg_townhall(
                             structure_type, ai
                         )
@@ -190,9 +190,9 @@ class TechUp(MacroBehavior):
         self,
         ai: "AresBot",
         base_location: Point2,
-        researched_from_id: UnitID,
-        tech_required: list[UnitID],
-        desired_tech: Union[UnitID, UpgradeId],
+        researched_from_id: UnitTypeId,
+        tech_required: list[UnitTypeId],
+        desired_tech: Union[UnitTypeId, UpgradeId],
         ignore_existing_techlabs: bool = False,
     ) -> bool:
         """
@@ -206,7 +206,7 @@ class TechUp(MacroBehavior):
             The thing we are actually trying to research / build
         """
         structures_dict: dict = ai.mediator.get_own_structures_dict
-        build_techlab_from: UnitID = BUILD_TECHLAB_FROM[researched_from_id]
+        build_techlab_from: UnitTypeId = BUILD_TECHLAB_FROM[researched_from_id]
         _build_techlab_from_structures: list[Unit] = structures_dict[
             build_techlab_from
         ].copy()
@@ -261,7 +261,7 @@ class TechUp(MacroBehavior):
                 return True
         return False
 
-    def _upgrade_zerg_townhall(self, structure_type: UnitID, ai: "AresBot") -> bool:
+    def _upgrade_zerg_townhall(self, structure_type: UnitTypeId, ai: "AresBot") -> bool:
         structures_dict = ai.mediator.get_own_structures_dict
         if (
             not ai.can_afford(structure_type)
@@ -272,8 +272,8 @@ class TechUp(MacroBehavior):
 
         # lair
         if (
-            structure_type == UnitID.LAIR
-            and not structures_dict[UnitID.HIVE]
+            structure_type == UnitTypeId.LAIR
+            and not structures_dict[UnitTypeId.HIVE]
             and (
                 idle_townhalls := [
                     th for th in ai.townhalls if th.is_idle and th.is_ready
@@ -287,12 +287,12 @@ class TechUp(MacroBehavior):
 
         # hive
         if (
-            structure_type == UnitID.HIVE
-            and not structures_dict[UnitID.HIVE]
+            structure_type == UnitTypeId.HIVE
+            and not structures_dict[UnitTypeId.HIVE]
             and (
                 idle_lair := [
                     th
-                    for th in structures_dict[UnitID.LAIR]
+                    for th in structures_dict[UnitTypeId.LAIR]
                     if th.is_idle and th.is_ready
                 ]
             )

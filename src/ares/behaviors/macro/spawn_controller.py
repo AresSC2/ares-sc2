@@ -6,7 +6,7 @@ from cython_extensions import cy_sorted_by_distance_to
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.game_data import Cost
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -29,10 +29,10 @@ class SpawnController(MacroBehavior):
 
     # Note: This does not try to build production facilities and
     # will ignore units that are impossible to currently spawn.
-    army_composition: dict[UnitID: {float, bool}] = {
-        UnitID.MARINE: {"proportion": 0.6, "priority": 2},  # lowest priority
-        UnitID.MEDIVAC: {"proportion": 0.25, "priority": 1},
-        UnitID.SIEGETANK: {"proportion": 0.15, "priority": 0},  # highest priority
+    army_composition: dict[UnitTypeId: {float, bool}] = {
+        UnitTypeId.MARINE: {"proportion": 0.6, "priority": 2},  # lowest priority
+        UnitTypeId.MEDIVAC: {"proportion": 0.25, "priority": 1},
+        UnitTypeId.SIEGETANK: {"proportion": 0.15, "priority": 0},  # highest priority
     }
     # where `self` is an `AresBot` object
     self.register_behavior(SpawnController(army_composition))
@@ -63,7 +63,7 @@ class SpawnController(MacroBehavior):
 
     """
 
-    army_composition_dict: dict[UnitID, dict[str, float | int]]
+    army_composition_dict: dict[UnitTypeId, dict[str, float | int]]
     freeflow_mode: bool = False
     ignore_proportions_below_unit_count: int = 0
     over_produce_on_low_tech: bool = True
@@ -71,8 +71,8 @@ class SpawnController(MacroBehavior):
     maximum: int = 20
     spawn_target: Point2 | None = None
 
-    # key: Unit that should get a build order, value: what UnitID to build
-    __build_dict: dict[Unit, UnitID] = field(default_factory=dict)
+    # key: Unit that should get a build order, value: what UnitTypeId to build
+    __build_dict: dict[Unit, UnitTypeId] = field(default_factory=dict)
     # already used tags
     __excluded_structure_tags: set[int] = field(default_factory=set)
     __supply_available: float = 0.0
@@ -81,7 +81,7 @@ class SpawnController(MacroBehavior):
         # allow gateways to morph before issuing commands
         if UpgradeId.WARPGATERESEARCH in ai.state.upgrades and [
             g
-            for g in mediator.get_own_structures_dict[UnitID.GATEWAY]
+            for g in mediator.get_own_structures_dict[UnitTypeId.GATEWAY]
             if g.is_ready and g.is_idle
         ]:
             return False
@@ -95,7 +95,7 @@ class SpawnController(MacroBehavior):
 
         # get the current standing army based on the army comp dict
         # note we don't consider units outside the army comp dict
-        unit_types: list[UnitID] = [*army_comp_dict]
+        unit_types: list[UnitTypeId] = [*army_comp_dict]
         num_total_units: int = 0
         for unit_type in unit_types:
             num_total_units += mediator.get_own_unit_count(unit_type_id=unit_type)
@@ -103,14 +103,14 @@ class SpawnController(MacroBehavior):
         check_proportion: bool = True
         proportion_sum: float = 0.0
         # remember units that meet tech requirement
-        units_ready_to_build: list[UnitID] = []
+        units_ready_to_build: list[UnitTypeId] = []
         # keep track of what units we have tech for
-        tech_ready_for: list[UnitID] = []
+        tech_ready_for: list[UnitTypeId] = []
         # iterate through desired army comp starting with the highest priority unit
         for unit_type_id, army_comp_info in sorted(
             army_comp_dict.items(), key=lambda x: x[1].get("priority", int(0))
         ):
-            assert isinstance(unit_type_id, UnitID), (
+            assert isinstance(unit_type_id, UnitTypeId), (
                 f"army_composition_dict expects UnitTypeId type as keys, "
                 f"got {type(unit_type_id)}"
             )
@@ -130,9 +130,9 @@ class SpawnController(MacroBehavior):
 
             tech_ready_for.append(unit_type_id)
 
-            trained_from: set[UnitID]
-            if unit_type_id == UnitID.ARCHON:
-                trained_from = {UnitID.HIGHTEMPLAR, UnitID.DARKTEMPLAR}
+            trained_from: set[UnitTypeId]
+            if unit_type_id == UnitTypeId.ARCHON:
+                trained_from = {UnitTypeId.HIGHTEMPLAR, UnitTypeId.DARKTEMPLAR}
             else:
                 trained_from = UNIT_TRAINED_FROM[unit_type_id]
 
@@ -148,7 +148,7 @@ class SpawnController(MacroBehavior):
                 continue
 
             # archon is a special case that can't be handled generically
-            if unit_type_id == UnitID.ARCHON:
+            if unit_type_id == UnitTypeId.ARCHON:
                 self._handle_archon_morph(ai, build_structures, mediator)
                 continue
 
@@ -158,9 +158,9 @@ class SpawnController(MacroBehavior):
                     build_structures, self.spawn_target
                 )
 
-            if unit_type_id == UnitID.QUEEN:
+            if unit_type_id == UnitTypeId.QUEEN:
                 build_structures.sort(
-                    key=lambda x: 0 if x.type_id == UnitID.HATCHERY else 1
+                    key=lambda x: 0 if x.type_id == UnitTypeId.HATCHERY else 1
                 )
 
             # can't afford unit?
@@ -236,7 +236,7 @@ class SpawnController(MacroBehavior):
     def _add_to_build_dict(
         self,
         ai: "AresBot",
-        type_id: UnitID,
+        type_id: UnitTypeId,
         base_unit: list[Unit],
         amount: int,
         supply_cost: float,
@@ -271,7 +271,7 @@ class SpawnController(MacroBehavior):
     @staticmethod
     def _calculate_build_amount(
         ai: "AresBot",
-        unit_type: UnitID,
+        unit_type: UnitTypeId,
         base_units: list[Unit],
         supply_left: float,
         maximum: int = 20,
@@ -305,8 +305,8 @@ class SpawnController(MacroBehavior):
         return amount, supply_cost, cost
 
     @staticmethod
-    def _can_afford(ai: "AresBot", unit_type_id: UnitID) -> bool:
-        if unit_type_id == UnitID.ARCHON:
+    def _can_afford(ai: "AresBot", unit_type_id: UnitTypeId) -> bool:
+        if unit_type_id == UnitTypeId.ARCHON:
             return True
         return ai.can_afford(unit_type_id)
 
@@ -331,13 +331,13 @@ class SpawnController(MacroBehavior):
         for unit, value in self.__build_dict.items():
             did_action = True
             mediator.clear_role(tag=unit.tag)
-            if value == UnitID.BANELING:
+            if value == UnitTypeId.BANELING:
                 unit(AbilityId.MORPHTOBANELING_BANELING)
-            elif value == UnitID.RAVAGER:
+            elif value == UnitTypeId.RAVAGER:
                 unit(AbilityId.MORPHTORAVAGER_RAVAGER)
             # prod building is warp gate, but we really
             # want to spawn from psionic field
-            elif unit.type_id == UnitID.WARPGATE:
+            elif unit.type_id == UnitTypeId.WARPGATE:
                 mediator.request_warp_in(
                     build_from=unit, unit_type=value, target=self.spawn_target
                 )
