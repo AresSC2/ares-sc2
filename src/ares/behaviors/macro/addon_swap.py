@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 from cython_extensions import cy_sorted_by_distance_to
 
 from ares.behaviors.macro.macro_behavior import MacroBehavior
-from ares.consts import ADD_ONS, ALL_STRUCTURES
+from ares.consts import ADDONS, ALL_STRUCTURES
 from ares.managers.manager_mediator import ManagerMediator
 
 ADDON_TYPES: set[UnitID] = {UnitID.TECHLAB, UnitID.REACTOR}
@@ -55,7 +55,7 @@ class AddonSwap(MacroBehavior):
         # check if user provided a precise addon into addon_required
         if self.addon_required not in ADDON_TYPES:
             assert (
-                self.addon_required in ADD_ONS
+                self.addon_required in ADDONS
             ), f"Invalid addon type: {self.addon_required}"
             self.precise_addon_structure_id = self.addon_required
             if self.addon_required in REACTOR_TYPES:

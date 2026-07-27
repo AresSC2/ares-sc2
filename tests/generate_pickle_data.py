@@ -100,7 +100,6 @@ class ExporterBot(AresBot):
 
 
 def main():
-
     maps_ = [
         "IncorporealAIE_v4",
         "PersephoneAIE_v4",

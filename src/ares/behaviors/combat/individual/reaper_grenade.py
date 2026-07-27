@@ -86,7 +86,6 @@ class ReaperGrenade(CombatIndividualBehavior):
                 grid=self.grid,
                 sensitivity=1,
             ):
-
                 if PlacePredictiveAoE(
                     unit=self.unit,
                     path=path_to_target[:30],

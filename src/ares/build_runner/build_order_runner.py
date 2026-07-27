@@ -1,3 +1,4 @@
+from functools import cached_property
 from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to_squared, cy_towards
@@ -19,7 +20,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.behaviors.macro import AddonSwap, AutoSupply, SpawnController
-from ares.build_runner.build_order_step import BuildOrderStep
+from ares.build_runner.build_order_parser import BuildOrderStep
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
@@ -27,7 +28,7 @@ if TYPE_CHECKING:
 
 from ares.build_runner.build_order_parser import BuildOrderParser
 from ares.consts import (
-    ADD_ONS,
+    ADDONS,
     ALL_STRUCTURES,
     BUILDS,
     GAS_BUILDINGS,
@@ -106,7 +107,7 @@ class BuildOrderRunner:
 
         self._temporary_build_step: int = -1
         self.should_handle_gas_steal: bool = True
-        self._geyser_tag_to_probe_tag: dict[int, int] = dict()
+        self._geyser_tag_to_probe_tag: dict[int, int] = {}
         self._last_gas_order_time: float = -999.0
 
     def set_build_completed(self) -> None:
@@ -199,7 +200,7 @@ class BuildOrderRunner:
         """
         return self._opening_build_completed
 
-    @property
+    @cached_property
     def chosen_opening(self) -> str:
         """
         Returns
@@ -303,7 +304,7 @@ class BuildOrderRunner:
                     addon_required=step.target[1],
                 ).execute(self.ai, self.config, self.mediator):
                     self.current_step_started = True
-            elif command in ADD_ONS:
+            elif command in ADDONS:
                 self.current_step_started = True
             elif command in ALL_STRUCTURES:
                 # let the gas steal preventer handle this step
@@ -490,11 +491,11 @@ class BuildOrderRunner:
                                 in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
                             ):
                                 self._last_gas_order_time = self.ai.time
-                elif command in ADD_ONS and self.ai.can_afford(command):
+                elif command in ADDONS and self.ai.can_afford(command):
                     if base_structures := [
                         s
                         for s in self.ai.structures
-                        if s.is_ready and s.is_idle and s.type_id == ADD_ONS[command]
+                        if s.is_ready and s.is_idle and s.type_id == ADDONS[command]
                     ]:
                         base_structures[0].build(command)
                 # should have already started upgraded when step started,

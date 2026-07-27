@@ -97,7 +97,6 @@ class CreepManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def get_creep_edges(self) -> tuple[np.ndarray, np.ndarray]:
-
         if self.ai.last_game_loop % 16 == 0 or not hasattr(self, "_creep_edges"):
             creep_grid = self.get_creep_grid
             edges = convolve(creep_grid, self.EDGE_FILTER, mode="constant")
