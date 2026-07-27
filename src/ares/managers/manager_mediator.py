@@ -2615,9 +2615,9 @@ class ManagerMediator(IManagerMediator):
     def get_units_from_role(self, **kwargs) -> Units:
         """Get a Units object containing units with a given role.
 
-        If a UnitTypeId or set of UnitTypeIds are given, it will only return units of those
-        types, otherwise it will return all units with the role. If `restrict_to` is
-        specified, it will only retrieve units from that object.
+        If a UnitTypeId or set of UnitTypeIds are given, it will only return units of
+        those types, otherwise it will return all units with the role. If `restrict_to`
+        is specified, it will only retrieve units from that object.
 
         UnitRoleManager
 

@@ -198,7 +198,8 @@ class AbilityTrackerManager(Manager, IManagerMediator):
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.CAUSTICSPRAY_CAUSTICSPRAY: current_frame
             #     }
-            # elif unit_type in {UnitTypeId.SWARMHOSTMP, UnitTypeId.SWARMHOSTBURROWEDMP}:
+            # elif unit_type in {UnitTypeId.SWARMHOSTMP,
+            # UnitTypeId.SWARMHOSTBURROWEDMP}:
             #     self.unit_to_ability_dict[tag] = {
             #         AbilityId.EFFECT_SPAWNLOCUSTS: current_frame
             #     }
