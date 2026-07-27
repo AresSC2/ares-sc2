@@ -43,7 +43,7 @@ class ConfigParser:
             with open(internal_config_path, "r") as config_file:
                 internal_config: dict = yaml.safe_load(config_file)
         else:
-            internal_config: dict = dict()
+            internal_config: dict = {}
 
         if path.isfile(user_config_path):
             with open(user_config_path, "r") as config_file:
@@ -75,9 +75,9 @@ class ConfigParser:
         Parameters
         ----------
         internal_config :
-            Internal config dictionary already parsed from the original yaml file.
+            Internal config dictionary already parsed from the original `.yml` file.
         user_config :
-            User config dictionary already parsed from the original yaml file.
+            User config dictionary already parsed from the original `.yml` file.
 
         Returns
         -------

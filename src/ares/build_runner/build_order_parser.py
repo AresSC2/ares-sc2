@@ -18,7 +18,6 @@ from sc2.position import Point2
 if TYPE_CHECKING:
     from ares import AresBot
 
-from ares.build_runner.build_order_step import BuildOrderStep
 from ares.consts import (
     ADDON_ABLE,
     ADDONS,
@@ -30,17 +29,43 @@ from ares.consts import (
 
 
 @dataclass
+class BuildOrderStep:
+    # Non-standard attribute format used to bypass PyCharm's docstring auto-completion quirks.
+    """
+    Individual BuildOrderStep.
+
+    Attributes:
+        command (command: AbilityId | UnitID | UpgradeId | BuildOrderOptions : What should happen in this step of the build order.
+        start_condition (start_condition: Callable : What should be checked to determine when this
+            step should start.
+        end_condition (end_condition: Callable : What should be checked to determine when this
+            step has been completed.
+        command_started (command_started: bool = False : Whether this step has started.
+        start_at_supply (start_at_supply: int = 0 : What supply should this step commence at.
+        target (target: str | list[Point2] | list[UnitID] = "" : Specifier in the case that additional information is
+            needed to complete the step.
+    """
+
+    command: AbilityId | UnitID | UpgradeId | BuildOrderOptions
+    start_condition: Callable
+    end_condition: Callable
+    command_started: bool = False
+    start_at_supply: int = 0
+    target: str | list[Point2] | list[UnitID] = ""
+
+
+@dataclass
 class BuildOrderParser:
+    # Non-standard attribute format used to bypass PyCharm's docstring auto-completion quirks.
     """Parses a build order string into a list of `BuildOrderStep`.
 
     Attributes:
-        ai: The bot instance.
-        build_order_step_dict: A dictionary of `BuildOrderStep` objects representing
+        ai: "Bot Name" : The bot instance.
+        build_order_step_dict (build_order_step_dict: dict | None = None : A dictionary of `BuildOrderStep` objects representing
             the recognized build order commands.
 
     Methods:
         parse: Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
-
     """
 
     ai: "AresBot"
@@ -53,24 +78,36 @@ class BuildOrderParser:
     def parse(
         self, raw_build_order: list[str], remove_completed: bool = False
     ) -> list[BuildOrderStep]:
-        """Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
+        """
+        Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
+
+        Args:
+            raw_build_order (list[str]): build
+            remove_completed (bool = False) description
 
         Returns:
-        --------
-        List[BuildOrderStep]
-            The list of `BuildOrderStep` objects parsed from `raw_build_order`.
+
+            parsed_build_order list[BuildOrderStep]: The list of `BuildOrderStep` objects parsed from `raw_build_order`.
+
+        Raises:
+                object_name (object_type) description
         """
-        build_order: list[BuildOrderStep] = []
+        parsed_build_order: list[BuildOrderStep] = []
+
         for raw_step in raw_build_order:
             if isinstance(raw_step, str):
-                build_order = self._parse_string_command(raw_step, build_order)
+                parsed_build_order = self._parse_string_command(
+                    raw_step, parsed_build_order
+                )
             elif isinstance(raw_step, dict):
-                build_order = self._parse_dict_command(raw_step, build_order)
+                parsed_build_order = self._parse_dict_command(
+                    raw_step, parsed_build_order
+                )
 
         # incase we switched from a different build
         if remove_completed:
-            build_order = self._remove_completed_steps(build_order)
-        return build_order
+            parsed_build_order = self._remove_completed_steps(parsed_build_order)
+        return parsed_build_order
 
     def _generate_build_step_dict(self) -> dict:
         """Generates a dictionary of `BuildOrderStep` objects representing the
@@ -160,6 +197,7 @@ class BuildOrderParser:
         }
 
     def _generate_addon_build_step(self, commands) -> BuildOrderStep | None:
+        # Non-standard attribute format used to bypass PyCharm's docstring auto-completion quirks
         """
         Generates a callable build step for executing an
         `AddonSwap` command in the build runner.
@@ -170,12 +208,12 @@ class BuildOrderParser:
         before creating a lambda build step for execution.
 
         Args:
-            commands (list[str]): List of command parameters.
+            commands : `list[str]` : List of command parameters.
                 The first two parameters are positional; the last two
                 specify the structures involved in the addon swap.
 
         Returns:
-             (BuildOrderStep): The constructed build step.
+             BuildOrderStep : `BuildOrderStep` : The constructed build step.
 
         Raises:
             Exception: If the length of the `commands` list is not exactly 4.

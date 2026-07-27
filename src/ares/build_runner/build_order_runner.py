@@ -1,3 +1,4 @@
+from functools import cached_property
 from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to_squared, cy_towards
@@ -19,7 +20,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 
 from ares.behaviors.macro import AddonSwap, AutoSupply, SpawnController
-from ares.build_runner.build_order_step import BuildOrderStep
+from ares.build_runner.build_order_parser import BuildOrderStep
 from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
@@ -106,7 +107,7 @@ class BuildOrderRunner:
 
         self._temporary_build_step: int = -1
         self.should_handle_gas_steal: bool = True
-        self._geyser_tag_to_probe_tag: dict[int, int] = dict()
+        self._geyser_tag_to_probe_tag: dict[int, int] = {}
         self._last_gas_order_time: float = -999.0
 
     def set_build_completed(self) -> None:
@@ -199,7 +200,7 @@ class BuildOrderRunner:
         """
         return self._opening_build_completed
 
-    @property
+    @cached_property
     def chosen_opening(self) -> str:
         """
         Returns
