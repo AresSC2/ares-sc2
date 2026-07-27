@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import numpy as np
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -45,7 +45,7 @@ class RestorePower(MacroBehavior):
             if s.type_id in REQUIRE_POWER_STRUCTURE_TYPES
             and not cy_pylon_matrix_covers(
                 s.position,
-                mediator.get_own_structures_dict[UnitID.PYLON],
+                mediator.get_own_structures_dict[UnitTypeId.PYLON],
                 ai.game_info.terrain_height.data_numpy,
                 pylon_build_progress=1e-16,
             )
@@ -76,8 +76,8 @@ class RestorePower(MacroBehavior):
         """
         building_tracker: dict = mediator.get_building_tracker_dict
         for tag, building_info in building_tracker.items():
-            type_id: UnitID = building_info[ID]
-            if type_id == UnitID.PYLON:
+            type_id: UnitTypeId = building_info[ID]
+            if type_id == UnitTypeId.PYLON:
                 pos: Point2 = building_info[TARGET]
                 if (
                     cy_distance_to_squared(structure.position, pos)
@@ -134,7 +134,7 @@ class RestorePower(MacroBehavior):
                 ):
                     mediator.build_with_specific_worker(
                         worker=worker,
-                        structure_type=UnitID.PYLON,
+                        structure_type=UnitTypeId.PYLON,
                         pos=available[0],
                     )
                     return True

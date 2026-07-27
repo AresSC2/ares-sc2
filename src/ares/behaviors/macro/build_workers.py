@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 
 from ares.behaviors.macro.spawn_controller import SpawnController
 
@@ -33,7 +33,7 @@ class BuildWorkers(MacroBehavior):
     to_count: int
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
-        worker_type: UnitID = ai.worker_type
+        worker_type: UnitTypeId = ai.worker_type
         if (
             ai.can_afford(worker_type)
             and ai.townhalls.idle

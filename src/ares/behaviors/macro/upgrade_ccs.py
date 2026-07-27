@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 
 if TYPE_CHECKING:
@@ -39,13 +39,13 @@ class UpgradeCCs(MacroBehavior):
 
     """
 
-    to: UnitID
+    to: UnitTypeId
     prioritize: bool = False
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         ccs: list[Unit] = [
             th
-            for th in mediator.get_own_structures_dict[UnitID.COMMANDCENTER]
+            for th in mediator.get_own_structures_dict[UnitTypeId.COMMANDCENTER]
             if th.is_ready and th.is_idle
         ]
         # quick exit if no ccs ready
@@ -65,7 +65,7 @@ class UpgradeCCs(MacroBehavior):
 
         ability: AbilityId = (
             AbilityId.UPGRADETOPLANETARYFORTRESS_PLANETARYFORTRESS
-            if self.to == UnitID.PLANETARYFORTRESS
+            if self.to == UnitTypeId.PLANETARYFORTRESS
             else AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND
         )
         # we know there are ccs, and we can afford the upgrade

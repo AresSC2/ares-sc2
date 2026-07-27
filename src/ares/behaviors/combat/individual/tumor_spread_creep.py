@@ -28,7 +28,7 @@ class TumorSpreadCreep(CombatIndividualBehavior):
     ```py
     from ares.behaviors.combat.individual import TumorSpreadCreep
 
-    tumors: Units = self.mediator.get_own_structures_dict[UnitID.CREEPTUMORBURROWED]
+    tumors: Units = self.mediator.get_own_structures_dict[UnitTypeId.CREEPTUMORBURROWED]
     for tumor in tumors:
         self.register_behavior(
             TumorSpreadCreep(tumor, self.enemy_start_locations[0])

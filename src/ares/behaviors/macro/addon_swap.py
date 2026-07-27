@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from sc2.data import Race
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 
 if TYPE_CHECKING:
@@ -14,11 +14,11 @@ from ares.behaviors.macro.macro_behavior import MacroBehavior
 from ares.consts import ADD_ONS, ALL_STRUCTURES
 from ares.managers.manager_mediator import ManagerMediator
 
-ADDON_TYPES: set[UnitID] = {UnitID.TECHLAB, UnitID.REACTOR}
-REACTOR_TYPES: set[UnitID] = {
-    UnitID.BARRACKSREACTOR,
-    UnitID.FACTORYREACTOR,
-    UnitID.STARPORTREACTOR,
+ADDON_TYPES: set[UnitTypeId] = {UnitTypeId.TECHLAB, UnitTypeId.REACTOR}
+REACTOR_TYPES: set[UnitTypeId] = {
+    UnitTypeId.BARRACKSREACTOR,
+    UnitTypeId.FACTORYREACTOR,
+    UnitTypeId.STARPORTREACTOR,
 }
 
 
@@ -37,7 +37,7 @@ class AddonSwap(MacroBehavior):
     # factory will find a reactor to fly to, any existing
     # structure will fly to the factory's starting position
     self.register_behavior(
-        AddonSwap(factory, UnitID.REACTOR)
+        AddonSwap(factory, UnitTypeId.REACTOR)
     )
     ```
 
@@ -46,9 +46,9 @@ class AddonSwap(MacroBehavior):
         addon_required: Type of addon required.
     """
 
-    structure_needing_addon: Unit | UnitID
-    addon_required: UnitID
-    precise_addon_structure_id: UnitID | None = None
+    structure_needing_addon: Unit | UnitTypeId
+    addon_required: UnitTypeId
+    precise_addon_structure_id: UnitTypeId | None = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         assert ai.race == Race.Terran, "Can only swap addons with Terran."
@@ -59,15 +59,15 @@ class AddonSwap(MacroBehavior):
             ), f"Invalid addon type: {self.addon_required}"
             self.precise_addon_structure_id = self.addon_required
             if self.addon_required in REACTOR_TYPES:
-                self.addon_required = UnitID.REACTOR
+                self.addon_required = UnitTypeId.REACTOR
             else:
-                self.addon_required = UnitID.TECHLAB
+                self.addon_required = UnitTypeId.TECHLAB
         else:
             assert (
                 self.addon_required in ADDON_TYPES
             ), f"`self.addon_required` should be one of {ADDON_TYPES}"
 
-        if isinstance(self.structure_needing_addon, UnitID):
+        if isinstance(self.structure_needing_addon, UnitTypeId):
             assert (
                 self.structure_needing_addon in ALL_STRUCTURES
             ), f"structure_needing_addon should be one of {ALL_STRUCTURES}"
@@ -86,7 +86,7 @@ class AddonSwap(MacroBehavior):
 
         search_for_tags: set[int] = (
             ai.reactor_tags
-            if self.addon_required == UnitID.REACTOR
+            if self.addon_required == UnitTypeId.REACTOR
             else ai.techlab_tags
         )
 

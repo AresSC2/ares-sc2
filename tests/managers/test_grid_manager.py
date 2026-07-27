@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -54,7 +54,7 @@ class TestGridManager:
 
         # act
         # pretend influence added is a marine, for ease here
-        grid_manager._add_cost_to_all_grids(unit, WEIGHT_COSTS[UnitID.MARINE])
+        grid_manager._add_cost_to_all_grids(unit, WEIGHT_COSTS[UnitTypeId.MARINE])
 
         # assert
         # check all grids that a marine cost would be added to

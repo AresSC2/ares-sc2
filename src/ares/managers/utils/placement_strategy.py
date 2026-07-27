@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Callable
 import numpy as np
 from cython_extensions import cy_distance_to_squared
 from loguru import logger
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 
 from ares.consts import BuildingSize
@@ -44,7 +44,7 @@ class BasePlacementStrategy:
         self,
         placement_manager: "PlacementManager",
         request: PlacementRequest,
-        structure_type: UnitID,
+        structure_type: UnitTypeId,
         building_size: BuildingSize,
     ) -> None:
         self.placement_manager: "PlacementManager" = placement_manager
@@ -227,7 +227,7 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
                 "is_wall", available, placements_for_base
             )
             if available_wall:
-                if self.structure_type == UnitID.PYLON:
+                if self.structure_type == UnitTypeId.PYLON:
                     # Filter out static defense spots for pylons
                     available_wall = [
                         p
@@ -297,7 +297,7 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
                         key=lambda k: cy_distance_to_squared(k, closest_to),
                     )
 
-            if self.structure_type == UnitID.PYLON and self.req.production:
+            if self.structure_type == UnitTypeId.PYLON and self.req.production:
                 available_opt = self._filter_by_flag(
                     "optimal_pylon", available, placements_for_base
                 )
@@ -316,7 +316,7 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
                         key=lambda k: cy_distance_to_squared(k, closest_to),
                     )
 
-            if self.structure_type == UnitID.SUPPLYDEPOT and self.req.supply_depot:
+            if self.structure_type == UnitTypeId.SUPPLYDEPOT and self.req.supply_depot:
                 available_opt = self._filter_by_flag(
                     "supply_depot", available, placements_for_base
                 )
@@ -326,7 +326,10 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
                         key=lambda k: cy_distance_to_squared(k, closest_to),
                     )
 
-            if self.structure_type == UnitID.MISSILETURRET and self.req.missile_turret:
+            if (
+                self.structure_type == UnitTypeId.MISSILETURRET
+                and self.req.missile_turret
+            ):
                 available_opt = self._filter_by_flag(
                     "missile_turret", available, placements_for_base
                 )
@@ -336,7 +339,7 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
                         key=lambda k: cy_distance_to_squared(k, closest_to),
                     )
 
-            if self.structure_type == UnitID.SENSORTOWER and self.req.sensor_tower:
+            if self.structure_type == UnitTypeId.SENSORTOWER and self.req.sensor_tower:
                 available_opt = self._filter_by_flag(
                     "sensor_tower", available, placements_for_base
                 )

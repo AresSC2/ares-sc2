@@ -15,7 +15,6 @@ from sc2.game_state import EffectData
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.buff_id import BuffId
 from sc2.ids.unit_typeid import UnitTypeId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -67,19 +66,19 @@ class AresBot(CustomBotAI):
 
     behavior_executioner: BehaviorExecutioner  # executes behaviors on each step
     build_order_runner: BuildOrderRunner  # execute exact build order from config
-    cost_dict: Dict[UnitID, Cost]  #: UnitTypeId to cost for faster lookup later
+    cost_dict: Dict[UnitTypeId, Cost]  #: UnitTypeId to cost for faster lookup later
 
-    NYDUSES: set[UnitID] = {UnitID.NYDUSCANAL, UnitID.NYDUSNETWORK}
-    UNIT_TYPES_NOT_IN_SLIM: set[UnitID] = {
-        UnitID.EGG,
-        UnitID.LARVA,
-        UnitID.CHANGELINGMARINE,
-        UnitID.CHANGELINGMARINESHIELD,
-        UnitID.CHANGELINGZEALOT,
-        UnitID.CHANGELINGZERGLING,
-        UnitID.CHANGELINGZERGLINGWINGS,
-        UnitID.CREEPTUMOR,
-        UnitID.CREEPTUMORQUEEN,
+    NYDUSES: set[UnitTypeId] = {UnitTypeId.NYDUSCANAL, UnitTypeId.NYDUSNETWORK}
+    UNIT_TYPES_NOT_IN_SLIM: set[UnitTypeId] = {
+        UnitTypeId.EGG,
+        UnitTypeId.LARVA,
+        UnitTypeId.CHANGELINGMARINE,
+        UnitTypeId.CHANGELINGMARINESHIELD,
+        UnitTypeId.CHANGELINGZEALOT,
+        UnitTypeId.CHANGELINGZERGLING,
+        UnitTypeId.CHANGELINGZERGLINGWINGS,
+        UnitTypeId.CREEPTUMOR,
+        UnitTypeId.CREEPTUMORQUEEN,
     }
 
     def __init__(self, game_step_override: Optional[int] = None):  # pragma: no cover
@@ -125,8 +124,8 @@ class AresBot(CustomBotAI):
         self.adept_tags_with_shades_assigned: Set[int] = set()
         # we skip python-sc2 iterations in realtime, so we keep track of our own one
         self.actual_iteration: int = 0
-        self.WORKER_TYPES = WORKER_TYPES | {UnitID.DRONEBURROWED}
-        self.supply_type: UnitID = UnitID.OVERLORD
+        self.WORKER_TYPES = WORKER_TYPES | {UnitTypeId.DRONEBURROWED}
+        self.supply_type: UnitTypeId = UnitTypeId.OVERLORD
         self.num_larva_left: int = 0
 
         self._same_order_actions: list[
@@ -152,7 +151,7 @@ class AresBot(CustomBotAI):
 
     def calculate_cost(self, item_id: Union[UnitTypeId, UpgradeId, AbilityId]) -> Cost:
         if isinstance(item_id, UnitTypeId):
-            cost_dict: Dict[UnitID, Cost] = getattr(self, "cost_dict", COST_DICT)
+            cost_dict: Dict[UnitTypeId, Cost] = getattr(self, "cost_dict", COST_DICT)
             if item_id in cost_dict:
                 return cost_dict[item_id]
 
@@ -162,7 +161,7 @@ class AresBot(CustomBotAI):
         self._archon_morph_actions.append(templar)
 
     def request_zerg_placement(
-        self, base_location: Point2, structure_type: UnitID
+        self, base_location: Point2, structure_type: UnitTypeId
     ) -> None:
         self._requested_zerg_placements.append((base_location, structure_type))
 
@@ -214,7 +213,7 @@ class AresBot(CustomBotAI):
                 fake_unit = EffectData(unit, fake=True)
                 self.state.effects.add(fake_unit)
                 # our parasitic bomb that isn't attached to an enemy
-                if unit_type == UnitID.PARASITICBOMBDUMMY.value:
+                if unit_type == UnitTypeId.PARASITICBOMBDUMMY.value:
                     if unit.alliance == 1:
                         self.friendly_parasitic_bomb_positions.append(
                             list(fake_unit.positions)[0]
@@ -251,7 +250,9 @@ class AresBot(CustomBotAI):
 
             # Alliance.Self.value = 1
             elif alliance == 1:
-                self._add_own_unit(unit_obj, update_managers, UnitID(unit_type), tag)
+                self._add_own_unit(
+                    unit_obj, update_managers, UnitTypeId(unit_type), tag
+                )
 
             # Alliance.Enemy.value = 4
             elif alliance == 4:
@@ -267,7 +268,7 @@ class AresBot(CustomBotAI):
                     enemy_vs_ground_static_defense_list,
                     unit_obj,
                     update_managers,
-                    UnitID(unit_type),
+                    UnitTypeId(unit_type),
                 )
 
         self.batteries = Units(batteries_list, self)
@@ -305,10 +306,12 @@ class AresBot(CustomBotAI):
         self.supply_type = RACE_SUPPLY[self.race]
         if self.race != Race.Zerg:
             self.base_townhall_type = (
-                UnitID.COMMANDCENTER if self.race == Race.Terran else UnitID.NEXUS
+                UnitTypeId.COMMANDCENTER
+                if self.race == Race.Terran
+                else UnitTypeId.NEXUS
             )
         else:
-            self.base_townhall_type = UnitID.HATCHERY
+            self.base_townhall_type = UnitTypeId.HATCHERY
 
     async def on_start(self) -> None:  # pragma: no cover
         """Set up game step, managers, and information that requires game data
@@ -352,7 +355,7 @@ class AresBot(CustomBotAI):
 
             self.chat_debug = ChatDebug(self)
 
-        self.cost_dict: Dict[UnitID, Cost] = COST_DICT
+        self.cost_dict: Dict[UnitTypeId, Cost] = COST_DICT
 
     def register_managers(self) -> None:
         """Register standard and custom managers.
@@ -511,9 +514,9 @@ class AresBot(CustomBotAI):
             self.build_order_runner.set_step_started(True, unit.type_id)
         if (
             not self.build_order_runner.build_completed
-            and unit.type_id == UnitID.ARCHON
+            and unit.type_id == UnitTypeId.ARCHON
         ):
-            self.build_order_runner.set_step_complete(UnitID.ARCHON)
+            self.build_order_runner.set_step_complete(UnitTypeId.ARCHON)
         await self.manager_hub.on_unit_created(unit)
 
     async def on_unit_destroyed(self, unit_tag: int) -> None:
@@ -567,7 +570,7 @@ class AresBot(CustomBotAI):
         enemy_vs_ground_static_defense_list: List[Unit],
         unit_obj: Unit,
         update_managers: bool,
-        unit_id: UnitID,
+        unit_id: UnitTypeId,
     ) -> Tuple[List, List, List]:
         """Add a given enemy unit to the appropriate objects
 
@@ -595,11 +598,11 @@ class AresBot(CustomBotAI):
             self.enemy_detectors.append(unit_obj)
         if unit_id in ALL_STRUCTURES:
             self.enemy_structures.append(unit_obj)
-            if unit_id == UnitID.SHIELDBATTERY:
+            if unit_id == UnitTypeId.SHIELDBATTERY:
                 batteries_list.append(unit_obj)
                 if unit_obj.has_buff(BuffId.BATTERYOVERCHARGE):
                     self.overcharged_battery = unit_obj
-            elif unit_id == UnitID.PHOTONCANNON:
+            elif unit_id == UnitTypeId.PHOTONCANNON:
                 cannons_list.append(unit_obj)
             if unit_id in ENEMY_VS_GROUND_STATIC_DEFENSE_TYPES:
                 enemy_vs_ground_static_defense_list.append(unit_obj)
@@ -644,7 +647,7 @@ class AresBot(CustomBotAI):
                 self.destructables.append(unit_obj)
 
     def _add_own_unit(
-        self, unit_obj: Unit, update_managers: bool, unit_id: UnitID, tag: int
+        self, unit_obj: Unit, update_managers: bool, unit_id: UnitTypeId, tag: int
     ):
         """Add a given friendly unit to the appropriate objects
 
@@ -666,7 +669,7 @@ class AresBot(CustomBotAI):
         #     self.all_own_units_slim.append(unit_obj)
 
         if unit_id in ALL_STRUCTURES:
-            if unit_id == UnitID.WARPGATE:
+            if unit_id == UnitTypeId.WARPGATE:
                 self.own_units_slim.append(unit_obj)
             elif unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
                 self.own_structures_slim.append(unit_obj)
@@ -703,9 +706,9 @@ class AresBot(CustomBotAI):
             self.units.append(unit_obj)
             if unit_id in self.WORKER_TYPES:
                 self.workers.append(unit_obj)
-            elif unit_id == UnitID.LARVA:
+            elif unit_id == UnitTypeId.LARVA:
                 self.larva.append(unit_obj)
-            elif unit_id == UnitID.EGG:
+            elif unit_id == UnitTypeId.EGG:
                 self.eggs.append(unit_obj)
             if BuffId.PARASITICBOMB in unit_obj.buffs:
                 self.enemy_parasitic_bomb_positions.append(unit_obj.position)
@@ -758,7 +761,7 @@ class AresBot(CustomBotAI):
                 return_as_dict=False,
             )[0].filter(
                 lambda u: u.tag not in self.adept_tags_with_shades_assigned
-                and u.type_id == UnitID.ADEPT
+                and u.type_id == UnitTypeId.ADEPT
             )
             if close_adepts:
                 self.adept_shades[shade_tag][SHADE_OWNER] = close_adepts.closest_to(
@@ -851,7 +854,7 @@ class AresBot(CustomBotAI):
         bool :
             True if the unit should be recorded, False otherwise
         """
-        if unit.unit_type == UnitID.ADEPTPHASESHIFT.value:
+        if unit.unit_type == UnitTypeId.ADEPTPHASESHIFT.value:
             if unit.tag not in self.adept_shades:
                 self._record_shade(unit)
 
@@ -886,8 +889,8 @@ class AresBot(CustomBotAI):
 
     def get_build_structures(
         self,
-        structure_unit_types: set[UnitID],
-        unit_type: UnitID,
+        structure_unit_types: set[UnitTypeId],
+        unit_type: UnitTypeId,
         build_dict=None,
         ignored_build_from_tags=None,
     ) -> list[Unit]:
@@ -901,10 +904,10 @@ class AresBot(CustomBotAI):
             The valid build structures we can spawn this unit_type from.
         unit_type :
             The target unit we are trying to spawn.
-        build_dict : dict[Unit, UnitID] (optional)
+        build_dict : dict[Unit, UnitTypeId] (optional)
             Use to prevent selecting idle build structures that
             have already got a pending order this frame.
-            Key: Unit that should get order, value: what UnitID to build
+            Key: Unit that should get order, value: what UnitTypeId to build
         ignored_build_from_tags : Set[int]
             Pass in if you don't want certain build structures selected.
 
@@ -918,11 +921,11 @@ class AresBot(CustomBotAI):
         if build_dict is None:
             build_dict = {}
 
-        structures_dict: dict[UnitID:Units] = self.mediator.get_own_structures_dict
-        own_army_dict: dict[UnitID:Units] = self.mediator.get_own_army_dict
-        build_from_dict: dict[UnitID:Units] = structures_dict
+        structures_dict: dict[UnitTypeId:Units] = self.mediator.get_own_structures_dict
+        own_army_dict: dict[UnitTypeId:Units] = self.mediator.get_own_army_dict
+        build_from_dict: dict[UnitTypeId:Units] = structures_dict
         if self.race != Race.Terran:
-            build_from_dict: dict[UnitID:Units] = {
+            build_from_dict: dict[UnitTypeId:Units] = {
                 **structures_dict,
                 **own_army_dict,
             }
@@ -932,12 +935,12 @@ class AresBot(CustomBotAI):
             if structure_type not in build_from_dict:
                 continue
 
-            if structure_type == UnitID.LARVA:
+            if structure_type == UnitTypeId.LARVA:
                 using_larva = True
 
             build_from: Union[Units, list[Unit]] = build_from_dict[structure_type]
             # only add if warpgate is off cooldown
-            if structure_type == UnitID.WARPGATE:
+            if structure_type == UnitTypeId.WARPGATE:
                 build_from = [
                     b
                     for b in build_from
@@ -1018,12 +1021,13 @@ class AresBot(CustomBotAI):
                 s
                 for s in build_structures
                 if s.is_powered
-                or s.type_id in {UnitID.NEXUS, UnitID.DARKTEMPLAR, UnitID.HIGHTEMPLAR}
+                or s.type_id
+                in {UnitTypeId.NEXUS, UnitTypeId.DARKTEMPLAR, UnitTypeId.HIGHTEMPLAR}
             ]
 
         return build_structures
 
-    def structure_present_or_pending(self, structure_type: UnitID) -> bool:
+    def structure_present_or_pending(self, structure_type: UnitTypeId) -> bool:
         """
         Checks presence of a structure, or if worker is on route to
         build structure.
@@ -1042,7 +1046,7 @@ class AresBot(CustomBotAI):
             or self.mediator.get_building_counter[structure_type] > 0
         )
 
-    def unit_pending(self, unit_type: UnitID) -> int:
+    def unit_pending(self, unit_type: UnitTypeId) -> int:
         """
         Checks pending units.
         Alternative and faster version of `self.already_pending`
@@ -1058,7 +1062,7 @@ class AresBot(CustomBotAI):
         """
         return cy_unit_pending(self, unit_type)
 
-    def structure_pending(self, structure_type: UnitID) -> int:
+    def structure_pending(self, structure_type: UnitTypeId) -> int:
         """
         Checks pending structures, includes workers on route.
         Alternative and faster version of `self.already_pending`
@@ -1075,7 +1079,7 @@ class AresBot(CustomBotAI):
         num_pending: int = 0
         building_tracker: dict = self.mediator.get_building_tracker_dict
         for tag, info in building_tracker.items():
-            structure_id: UnitID = building_tracker[tag][ID]
+            structure_id: UnitTypeId = building_tracker[tag][ID]
             if structure_id != structure_type:
                 continue
 
@@ -1093,10 +1097,10 @@ class AresBot(CustomBotAI):
         return num_pending
 
     async def _do_zerg_build_placement(
-        self, requested_zerg_placement: tuple[Point2, UnitID]
+        self, requested_zerg_placement: tuple[Point2, UnitTypeId]
     ) -> None:
         base_location: Point2 = requested_zerg_placement[0]
-        unit_type: UnitID = requested_zerg_placement[1]
+        unit_type: UnitTypeId = requested_zerg_placement[1]
 
         if pos := await self.find_placement(
             unit_type,

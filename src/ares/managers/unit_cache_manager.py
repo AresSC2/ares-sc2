@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Set, Union
 from cython_extensions import cy_unit_pending
 from sc2.data import Race
 from sc2.game_data import AbilityData
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 from sc2.units import Units
 
@@ -92,11 +92,11 @@ class UnitCacheManager(Manager, IManagerMediator):
         # keep a dict of units for fast lookup
         # caution: this is for bookkeeping only,
         # don't use distance checks here for example
-        self.enemy_army_dict: defaultdict[UnitID, list] = defaultdict(list)
-        self.own_army_dict: defaultdict[UnitID, list] = defaultdict(list)
+        self.enemy_army_dict: defaultdict[UnitTypeId, list] = defaultdict(list)
+        self.own_army_dict: defaultdict[UnitTypeId, list] = defaultdict(list)
         # used for assigning roles to locusts, may not be useful
-        self.old_own_army: defaultdict[UnitID, list] = defaultdict(list)
-        self.own_structures_dict: defaultdict[UnitID, list] = defaultdict(list)
+        self.old_own_army: defaultdict[UnitTypeId, list] = defaultdict(list)
+        self.own_structures_dict: defaultdict[UnitTypeId, list] = defaultdict(list)
         self.own_structure_tags: Set = set()
         # keep track of units that get removed, so they can be deleted from memory units
         self.removed_units: Units = Units([], ai)
@@ -179,10 +179,10 @@ class UnitCacheManager(Manager, IManagerMediator):
         """
         value: int = 0
         for unit in self.own_army:
-            type_id: UnitID = unit.type_id
+            type_id: UnitTypeId = unit.type_id
             if type_id in ALL_WORKER_TYPES:
                 continue
-            if type_id == UnitID.EGG:
+            if type_id == UnitTypeId.EGG:
                 egg_building: AbilityData = unit.orders[0].ability
                 if egg_building.button_name not in EGG_BUTTON_NAMES:
                     value += egg_building.cost.minerals + egg_building.cost.vespene
@@ -198,7 +198,9 @@ class UnitCacheManager(Manager, IManagerMediator):
                 and _s.type_id not in TOWNHALL_TYPES
             ):
                 try:
-                    order: UnitID = UnitID[s.orders[0].ability.button_name.upper()]
+                    order: UnitTypeId = UnitTypeId[
+                        s.orders[0].ability.button_name.upper()
+                    ]
                     if order not in ALL_STRUCTURES:
                         unit_cost = self.ai.calculate_unit_value(order)
                         value += unit_cost.minerals + unit_cost.vespene
@@ -212,7 +214,8 @@ class UnitCacheManager(Manager, IManagerMediator):
                     th
                     for th in self.ai.townhalls
                     if th.orders
-                    and th.orders[0].ability.button_name.upper() == UnitID.QUEEN.name
+                    and th.orders[0].ability.button_name.upper()
+                    == UnitTypeId.QUEEN.name
                 ]
             )
 
@@ -294,9 +297,9 @@ class UnitCacheManager(Manager, IManagerMediator):
         -------
 
         """
-        enemy_army_dict: dict[UnitID, list] = self.enemy_army_dict
+        enemy_army_dict: dict[UnitTypeId, list] = self.enemy_army_dict
         tag: int = enemy.tag
-        type_id: UnitID = enemy.type_id
+        type_id: UnitTypeId = enemy.type_id
 
         # we don't care about saving these
         if type_id in UNITS_TO_IGNORE or enemy.is_hallucination:
@@ -316,7 +319,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         # ZERGLING -> BANELINGCOCOON -> BANELING
         else:
             # This first part handles units that have morphed from something
-            if type_id in DOES_NOT_USE_LARVA or type_id == UnitID.HELLIONTANK:
+            if type_id in DOES_NOT_USE_LARVA or type_id == UnitTypeId.HELLIONTANK:
                 if enemy_unit := self.ai.unit_tag_dict.get(tag, None):
                     self.enemy_tags_to_remove.add(tag)
                     self.removed_units.append(enemy_unit)
@@ -350,7 +353,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         # add fresh units
         self.enemy_army.extend(self.enemy_army_units_to_add)
 
-    def store_own_unit(self, unit: Unit, type_id: UnitID) -> None:
+    def store_own_unit(self, unit: Unit, type_id: UnitTypeId) -> None:
         """Store friendly unit.
 
         Called from _prepare_units.
@@ -383,7 +386,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         -------
 
         """
-        type_id: UnitID = unit.type_id
+        type_id: UnitTypeId = unit.type_id
         if type_id not in CREEP_TUMOR_TYPES:
             self.own_structure_tags.add(type_id)
 
@@ -426,7 +429,7 @@ class UnitCacheManager(Manager, IManagerMediator):
 
     def get_own_unit_count(
         self,
-        unit_type_id: UnitID,
+        unit_type_id: UnitTypeId,
         include_alias: bool = True,
         include_pending: bool = True,
     ) -> int:
@@ -435,11 +438,11 @@ class UnitCacheManager(Manager, IManagerMediator):
 
         Examples:
         ```
-        self.get_own_unit_count(UnitID.SIEGETANK, include_alias=True)
-        Returns count for UnitID.SIEGETANK + UnitID.SIEGETANKSIEGED
+        self.get_own_unit_count(UnitTypeId.SIEGETANK, include_alias=True)
+        Returns count for UnitTypeId.SIEGETANK + UnitTypeId.SIEGETANKSIEGED
 
-        self.get_own_unit_count(UnitID.ZERGLING, include_alias=True)
-        Returns count for UnitID.ZERGLING + UnitID.ZERGLINGBURROWED
+        self.get_own_unit_count(UnitTypeId.ZERGLING, include_alias=True)
+        Returns count for UnitTypeId.ZERGLING + UnitTypeId.ZERGLINGBURROWED
         ```
 
         Parameters
@@ -456,7 +459,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         int :
             Total number of unit_type_id.
         """
-        army_dict: dict[UnitID, list[UnitID]] = self.own_army_dict
+        army_dict: dict[UnitTypeId, list[UnitTypeId]] = self.own_army_dict
 
         num_units: int = len(army_dict[unit_type_id])
 

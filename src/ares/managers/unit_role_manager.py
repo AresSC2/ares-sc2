@@ -3,7 +3,7 @@
 """
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 from sc2.units import Units
 
@@ -27,9 +27,12 @@ class UnitRoleManager(Manager, IManagerMediator):
     themselves.
     """
 
-    LOCUSTS: Set[UnitID] = {UnitID.LOCUSTMP, UnitID.LOCUSTMPFLYING}
+    LOCUSTS: Set[UnitTypeId] = {UnitTypeId.LOCUSTMP, UnitTypeId.LOCUSTMPFLYING}
     SQUAD_ROLES: Set[UnitRole] = {UnitRole.ATTACKING}
-    ZERG_STATIC_DEFENCE: Set[UnitID] = {UnitID.SPINECRAWLER, UnitID.SPORECRAWLER}
+    ZERG_STATIC_DEFENCE: Set[UnitTypeId] = {
+        UnitTypeId.SPINECRAWLER,
+        UnitTypeId.SPORECRAWLER,
+    }
 
     def __init__(
         self,
@@ -127,7 +130,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         # TODO: This was an Eris fix, commented out for now to be investigated later
         # if self.ai.realtime and iteration % 8 == 0:
         #     overseers: Units = self.manager_mediator.get_units_from_role(
-        #         role=UnitRole.SCOUTING, unit_type=UnitID.OVERSEER
+        #         role=UnitRole.SCOUTING, unit_type=UnitTypeId.OVERSEER
         #     )
         #     # Bots should assign appropriately once overseers have defending role
         #     for overseer in overseers:
@@ -146,7 +149,7 @@ class UnitRoleManager(Manager, IManagerMediator):
             assigned_tags_list += self.unit_role_dict[role]
         self.all_assigned_tags = set(assigned_tags_list)
 
-    def catch_unit(self, unit: Unit, type_id: UnitID, tag: int) -> None:
+    def catch_unit(self, unit: Unit, type_id: UnitTypeId, tag: int) -> None:
         """Check if unit is unassigned and give it a role if necessary.
 
         Parameters
@@ -253,12 +256,12 @@ class UnitRoleManager(Manager, IManagerMediator):
     def get_units_from_role(
         self,
         role: UnitRole,
-        unit_type: Optional[Union[UnitID, Set[UnitID]]] = None,
+        unit_type: Optional[Union[UnitTypeId, Set[UnitTypeId]]] = None,
         restrict_to: Optional[Units] = None,
     ) -> Units:
         """Get a Units object containing units with a given role.
 
-        If a UnitID or set of UnitIDs are given, it will only return units of those
+        If a UnitTypeId or set of UnitTypeIds are given, it will only return units of those
         types, otherwise it will return all units with the role. If `restrict_to` is
         specified, it will only retrieve units from that object.
 
@@ -281,7 +284,7 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         """
         if unit_type:
-            if isinstance(unit_type, UnitID):
+            if isinstance(unit_type, UnitTypeId):
                 # single unit type, use the single type and role function
                 return Units(
                     self.get_single_type_from_single_role(unit_type, role, restrict_to),
@@ -319,7 +322,7 @@ class UnitRoleManager(Manager, IManagerMediator):
     def get_units_from_roles(
         self,
         roles: Set[UnitRole],
-        unit_type: Union[None, UnitID, Set[UnitID]] = None,
+        unit_type: Union[None, UnitTypeId, Set[UnitTypeId]] = None,
     ) -> Units:
         """Get the units matching `unit_type` from the given roles.
 
@@ -359,7 +362,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         self.batch_assign_role(self.get_units_from_role(from_role).tags, to_role)
 
     def get_all_from_roles_except(
-        self, roles: Set[UnitRole], excluded: Set[UnitID]
+        self, roles: Set[UnitRole], excluded: Set[UnitTypeId]
     ) -> Units:
         """Get all units from the given roles except for unit types in excluded.
 
@@ -401,7 +404,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         )
 
     def get_single_type_from_single_role(
-        self, unit_type: UnitID, role: UnitRole, restrict_to: Optional[Units] = None
+        self, unit_type: UnitTypeId, role: UnitRole, restrict_to: Optional[Units] = None
     ) -> List[Unit]:
         """Get all units of a given type that have a specified role.
 

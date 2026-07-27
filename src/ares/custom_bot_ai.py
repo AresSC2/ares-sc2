@@ -15,7 +15,7 @@ from sc2.constants import EQUIVALENTS_FOR_TECH_PROGRESS
 from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
 from sc2.game_info import Ramp
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
@@ -40,12 +40,12 @@ from ares.managers.manager_mediator import ManagerMediator
 class CustomBotAI(BotAI):
     """Extension of sc2.BotAI to add custom functions."""
 
-    base_townhall_type: UnitID
+    base_townhall_type: UnitTypeId
     enemy_detectors: Units
     enemy_parasitic_bomb_positions: list[Point2]
-    gas_type: UnitID
+    gas_type: UnitTypeId
     unit_tag_dict: dict[int, Unit]
-    worker_type: UnitID
+    worker_type: UnitTypeId
     manager_hub: Hub
     """Hub in charge of handling the Managers"""
     CANT_BUILD_LOCATION_INVALID: int = 44
@@ -142,7 +142,7 @@ class CustomBotAI(BotAI):
             ]
         )
 
-    def not_started_but_in_building_tracker(self, structure_type: UnitID) -> int:
+    def not_started_but_in_building_tracker(self, structure_type: UnitTypeId) -> int:
         """
         Figures out if worker in on route to build something, and
         that structure_type doesn't exist yet.
@@ -158,7 +158,7 @@ class CustomBotAI(BotAI):
         num_in_tracker: int = 0
         building_tracker: dict = self.mediator.get_building_tracker_dict
         for tag, info in building_tracker.items():
-            structure_id: UnitID = building_tracker[tag][ID]
+            structure_id: UnitTypeId = building_tracker[tag][ID]
             if structure_id != structure_type:
                 continue
 
@@ -178,7 +178,7 @@ class CustomBotAI(BotAI):
             upgrade_id.value
         ].research_ability.exact_id
 
-        researched_from: UnitID = UPGRADE_RESEARCHED_FROM[upgrade_id]
+        researched_from: UnitTypeId = UPGRADE_RESEARCHED_FROM[upgrade_id]
         upgrade_from_structures: Units = self.mediator.get_own_structures_dict[
             researched_from
         ]
@@ -218,7 +218,7 @@ class CustomBotAI(BotAI):
         else:
             return Units(ground, self), Units(fly, self)
 
-    def tech_ready_for_unit(self, unit_type: UnitID) -> bool:
+    def tech_ready_for_unit(self, unit_type: UnitTypeId) -> bool:
         """
         Similar to python-sc2's `tech_requirement_progress` but this one specializes
         in units and simply returns a boolean.
@@ -237,14 +237,14 @@ class CustomBotAI(BotAI):
         # special cases
         if (
             unit_type in WORKER_TYPES and self.townhalls.ready
-        ) or unit_type == UnitID.OVERLORD:
+        ) or unit_type == UnitTypeId.OVERLORD:
             return True
 
         if unit_type not in UNIT_TECH_REQUIREMENT:
             logger.warning(f"{unit_type} not in UNIT_TECH_REQUIREMENT dictionary")
             return True
 
-        tech_buildings_required: set[UnitID] = UNIT_TECH_REQUIREMENT[unit_type]
+        tech_buildings_required: set[UnitTypeId] = UNIT_TECH_REQUIREMENT[unit_type]
 
         for tech_building_id in tech_buildings_required:
             to_check = [tech_building_id]
@@ -368,8 +368,8 @@ class CustomBotAI(BotAI):
         await self.unload_container(container.tag, index)
 
         if exit_towards and container.type_id in {
-            UnitID.NYDUSCANAL,
-            UnitID.NYDUSNETWORK,
+            UnitTypeId.NYDUSCANAL,
+            UnitTypeId.NYDUSNETWORK,
         }:
             # by the time this is called, CustomBotAI will have manager_hub
             # noinspection PyUnresolvedReferences
@@ -458,7 +458,7 @@ class CustomBotAI(BotAI):
         )[0]
 
         close_enemy: Units = close_enemy.filter(
-            lambda u: u.type_id != UnitID.AUTOTURRET
+            lambda u: u.type_id != UnitTypeId.AUTOTURRET
         )
         if close_enemy:
             return True
@@ -480,7 +480,6 @@ class CustomBotAI(BotAI):
     def building_worker_blocked_by_burrowed_unit(
         self, worker_tag: int, position: Point2
     ) -> bool:
-
         for error in self.state.action_errors:
             if (
                 error.unit_tag == worker_tag

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from sc2.data import Race
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 
 if TYPE_CHECKING:
@@ -43,7 +43,7 @@ class AutoSupply(MacroBehavior):
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if self._num_supply_required(ai, mediator) > 0:
-            supply_type: UnitID = RACE_SUPPLY[ai.race]
+            supply_type: UnitTypeId = RACE_SUPPLY[ai.race]
             if ai.race == Race.Zerg:
                 if ai.num_larva_left > 0 and ai.can_afford(supply_type):
                     ai.train(supply_type)
@@ -72,7 +72,7 @@ class AutoSupply(MacroBehavior):
         supply_used: float = ai.supply_used
         pending_supply_units: int
         if ai.race == Race.Zerg:
-            pending_supply_units = cy_unit_pending(ai, UnitID.OVERLORD)
+            pending_supply_units = cy_unit_pending(ai, UnitTypeId.OVERLORD)
         else:
             pending_supply_units = ai.structure_pending(RACE_SUPPLY[ai.race])
 

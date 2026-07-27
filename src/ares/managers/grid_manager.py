@@ -12,7 +12,7 @@ import numpy as np
 from map_analyzer import MapData
 from sc2.data import Race
 from sc2.ids.effect_id import EffectId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
 from sc2.units import Units
@@ -201,8 +201,8 @@ class GridManager(Manager, IManagerMediator):
 
         # track biles, since they disappear from the observation right before they land
         # key is position, value is the frame the bile was first seen (50 frames total)
-        self.biles_dict: Dict[Point2, int] = dict()
-        self.storms_dict: Dict[Point2, int] = dict()
+        self.biles_dict: Dict[Point2, int] = {}
+        self.storms_dict: Dict[Point2, int] = {}
 
     async def update(self, iteration: int) -> None:
         """Keep track of everything.
@@ -229,8 +229,8 @@ class GridManager(Manager, IManagerMediator):
                 self.ai.units if self.ai.race == Race.Zerg else self.ai.all_own_units
             )
             for unit in units_collection:
-                type_id: UnitID = unit.type_id
-                if type_id == UnitID.DISRUPTOR:
+                type_id: UnitTypeId = unit.type_id
+                if type_id == UnitTypeId.DISRUPTOR:
                     continue
                 data: dict = unit_data[type_id]
                 if not data["flying"]:
@@ -418,7 +418,7 @@ class GridManager(Manager, IManagerMediator):
             The enemy structure to add the influence of.
         """
         # these will expire out of our vision, don't add to grid
-        if enemy.type_id == UnitID.AUTOTURRET and enemy.is_snapshot:
+        if enemy.type_id == UnitTypeId.AUTOTURRET and enemy.is_snapshot:
             return
         if enemy.is_ready:
             self._add_structure_influence(enemy)
@@ -588,12 +588,12 @@ class GridManager(Manager, IManagerMediator):
             The structure to add the influence of.
         """
         structure_handlers = {
-            UnitID.PHOTONCANNON: self._handle_photon_cannon,
-            UnitID.MISSILETURRET: self._handle_missile_turret,
-            UnitID.SPORECRAWLER: self._handle_spore_crawler,
-            UnitID.BUNKER: self._handle_bunker,
-            UnitID.PLANETARYFORTRESS: self._handle_planetary_fortress,
-            UnitID.AUTOTURRET: self._handle_auto_turret,
+            UnitTypeId.PHOTONCANNON: self._handle_photon_cannon,
+            UnitTypeId.MISSILETURRET: self._handle_missile_turret,
+            UnitTypeId.SPORECRAWLER: self._handle_spore_crawler,
+            UnitTypeId.BUNKER: self._handle_bunker,
+            UnitTypeId.PLANETARYFORTRESS: self._handle_planetary_fortress,
+            UnitTypeId.AUTOTURRET: self._handle_auto_turret,
         }
 
         if structure.type_id in structure_handlers:
@@ -702,7 +702,7 @@ class GridManager(Manager, IManagerMediator):
 
     def _handle_auto_turret(self, structure: Unit) -> None:
         """Handle auto turret influence."""
-        self._add_cost_to_all_grids(structure, WEIGHT_COSTS[UnitID.AUTOTURRET])
+        self._add_cost_to_all_grids(structure, WEIGHT_COSTS[UnitTypeId.AUTOTURRET])
 
     def _add_unit_influence(self, unit: Unit) -> None:
         """Add unit influence to maps.
@@ -713,10 +713,10 @@ class GridManager(Manager, IManagerMediator):
             The unit to add the influence of.
         """
         unit_handlers = {
-            UnitID.DISRUPTORPHASED: self._handle_disruptor,
-            UnitID.BANELING: self._handle_baneling,
-            UnitID.INFESTOR: self._handle_infestor,
-            UnitID.ORACLE: self._handle_oracle,
+            UnitTypeId.DISRUPTORPHASED: self._handle_disruptor,
+            UnitTypeId.BANELING: self._handle_baneling,
+            UnitTypeId.INFESTOR: self._handle_infestor,
+            UnitTypeId.ORACLE: self._handle_oracle,
         }
 
         if unit.type_id in WEIGHT_COSTS:
@@ -776,15 +776,15 @@ class GridManager(Manager, IManagerMediator):
         ]
         self.add_cost_to_multiple_grids(
             pos=unit.position,
-            weight=WEIGHT_COSTS[UnitID.BANELING][GROUND_COST],
-            unit_range=WEIGHT_COSTS[UnitID.BANELING][GROUND_RANGE],
+            weight=WEIGHT_COSTS[UnitTypeId.BANELING][GROUND_COST],
+            unit_range=WEIGHT_COSTS[UnitTypeId.BANELING][GROUND_RANGE],
             grids=grids,
         )
 
     def _handle_infestor(self, unit: Unit) -> None:
         """Handle infestor unit influence."""
         if unit.energy >= 75:  # Has enough energy for fungal growth
-            weight_values = WEIGHT_COSTS[UnitID.INFESTOR]
+            weight_values = WEIGHT_COSTS[UnitTypeId.INFESTOR]
             self._add_cost_to_all_grids(unit, weight_values)
             self.ground_to_air_grid = self.map_data.add_cost(
                 unit.position,
@@ -862,7 +862,7 @@ class GridManager(Manager, IManagerMediator):
         weight_values :
             Dictionary containing the weights of units.
         """
-        if unit.type_id == UnitID.AUTOTURRET:
+        if unit.type_id == UnitTypeId.AUTOTURRET:
             (
                 self.air_grid,
                 self.air_vs_ground_grid,

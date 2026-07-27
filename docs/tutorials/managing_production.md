@@ -16,15 +16,15 @@ none at all!
 ## Defining army compositions
 Both controllers rely on an army composition dictionary, for example:
 ```python
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 
 @property
 def viking_tank(self) -> dict:
     return {
-        UnitID.MARINE: {"proportion": 0.69, "priority": 4},
-        UnitID.SIEGETANK: {"proportion": 0.13, "priority": 0},
-        UnitID.VIKINGFIGHTER: {"proportion": 0.16, "priority": 3},
-        UnitID.RAVEN: {"proportion": 0.02, "priority": 1},
+        UnitTypeId.MARINE: {"proportion": 0.69, "priority": 4},
+        UnitTypeId.SIEGETANK: {"proportion": 0.13, "priority": 0},
+        UnitTypeId.VIKINGFIGHTER: {"proportion": 0.16, "priority": 3},
+        UnitTypeId.RAVEN: {"proportion": 0.02, "priority": 1},
     }
 
 ```
@@ -42,17 +42,17 @@ Let's create a simple bot, demonstrating how to run these controllers.
 from ares import AresBot
 from ares.behaviors.macro import ProductionController, SpawnController
 
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 
 class TestBot(AresBot):
     
     @property
     def viking_tank(self) -> dict:
         return {
-            UnitID.MARINE: {"proportion": 0.69, "priority": 4},
-            UnitID.SIEGETANK: {"proportion": 0.13, "priority": 0},
-            UnitID.VIKINGFIGHTER: {"proportion": 0.16, "priority": 3},
-            UnitID.RAVEN: {"proportion": 0.02, "priority": 1},
+            UnitTypeId.MARINE: {"proportion": 0.69, "priority": 4},
+            UnitTypeId.SIEGETANK: {"proportion": 0.13, "priority": 0},
+            UnitTypeId.VIKINGFIGHTER: {"proportion": 0.16, "priority": 3},
+            UnitTypeId.RAVEN: {"proportion": 0.02, "priority": 1},
         }
 
     async def on_step(self, iteration: int) -> None:
@@ -95,17 +95,17 @@ from ares.behaviors.macro import (
     SpawnController,
 )
 
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 
 class TestBot(AresBot):
     
     @property
     def viking_tank(self) -> dict:
         return {
-            UnitID.MARINE: {"proportion": 0.69, "priority": 4},
-            UnitID.SIEGETANK: {"proportion": 0.13, "priority": 0},
-            UnitID.VIKINGFIGHTER: {"proportion": 0.16, "priority": 3},
-            UnitID.RAVEN: {"proportion": 0.02, "priority": 1},
+            UnitTypeId.MARINE: {"proportion": 0.69, "priority": 4},
+            UnitTypeId.SIEGETANK: {"proportion": 0.13, "priority": 0},
+            UnitTypeId.VIKINGFIGHTER: {"proportion": 0.16, "priority": 3},
+            UnitTypeId.RAVEN: {"proportion": 0.02, "priority": 1},
         }
 
     async def on_step(self, iteration: int) -> None:

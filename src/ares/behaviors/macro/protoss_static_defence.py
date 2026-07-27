@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 from loguru import logger
 from sc2.data import Race
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 
 if TYPE_CHECKING:
@@ -87,7 +87,7 @@ class ProtossStaticDefence(MacroBehavior):
             if self.pylons_per_base > 0:
                 if BuildStructure(
                     base_location=base_loc,
-                    structure_id=UnitID.PYLON,
+                    structure_id=UnitTypeId.PYLON,
                     max_on_route=self.max_on_route,
                     to_count_per_base=self.pylons_per_base,
                     closest_to=base_loc,
@@ -99,7 +99,7 @@ class ProtossStaticDefence(MacroBehavior):
             if self.photon_cannons_per_base > 0:
                 if BuildStructure(
                     base_location=base_loc,
-                    structure_id=UnitID.PHOTONCANNON,
+                    structure_id=UnitTypeId.PHOTONCANNON,
                     max_on_route=self.max_on_route,
                     static_defence=True,
                     to_count_per_base=self.photon_cannons_per_base,
@@ -111,7 +111,7 @@ class ProtossStaticDefence(MacroBehavior):
             if self.shield_batteries_per_base > 0:
                 if BuildStructure(
                     base_location=base_loc,
-                    structure_id=UnitID.SHIELDBATTERY,
+                    structure_id=UnitTypeId.SHIELDBATTERY,
                     max_on_route=self.max_on_route,
                     static_defence=True,
                     to_count_per_base=self.shield_batteries_per_base,
@@ -128,14 +128,14 @@ class ProtossStaticDefence(MacroBehavior):
         tech_location: Point2 = self.tech_base_location or ai.start_location
 
         if self.photon_cannons_per_base > 0:
-            if ai.tech_requirement_progress(UnitID.PHOTONCANNON) < 1.0:
-                return TechUp(UnitID.PHOTONCANNON, tech_location).execute(
+            if ai.tech_requirement_progress(UnitTypeId.PHOTONCANNON) < 1.0:
+                return TechUp(UnitTypeId.PHOTONCANNON, tech_location).execute(
                     ai, config, mediator
                 )
 
         if self.shield_batteries_per_base > 0:
-            if ai.tech_requirement_progress(UnitID.SHIELDBATTERY) < 1.0:
-                return TechUp(UnitID.SHIELDBATTERY, tech_location).execute(
+            if ai.tech_requirement_progress(UnitTypeId.SHIELDBATTERY) < 1.0:
+                return TechUp(UnitTypeId.SHIELDBATTERY, tech_location).execute(
                     ai, config, mediator
                 )
 

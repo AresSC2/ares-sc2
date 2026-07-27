@@ -7,7 +7,7 @@ from sc2.data import Race
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
 from sc2.dicts.unit_unit_alias import UNIT_UNIT_ALIAS
 from sc2.game_data import Cost
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -38,10 +38,10 @@ class ProductionController(MacroBehavior):
 
     # Note: This does not try to build production facilities and
     # will ignore units that are impossible to currently spawn.
-    army_composition: dict[UnitID: {float, bool}] = {
-        UnitID.MARINE: {"proportion": 0.6, "priority": 2}, # lowest priority
-        UnitID.MEDIVAC: {"proportion": 0.25, "priority": 1},
-        UnitID.SIEGETANK: {"proportion": 0.15, "priority": 0}, # highest priority
+    army_composition: dict[UnitTypeId: {float, bool}] = {
+        UnitTypeId.MARINE: {"proportion": 0.6, "priority": 2}, # lowest priority
+        UnitTypeId.MEDIVAC: {"proportion": 0.25, "priority": 1},
+        UnitTypeId.SIEGETANK: {"proportion": 0.15, "priority": 0}, # highest priority
     }
     # where `self` is an `AresBot` object
     self.register_behavior(ProductionController(
@@ -72,7 +72,7 @@ class ProductionController(MacroBehavior):
 
     """
 
-    army_composition_dict: dict[UnitID, dict[str, float | int]]
+    army_composition_dict: dict[UnitTypeId, dict[str, float | int]]
     base_location: Point2
     add_production_at_bank: tuple[int, int] = (400, 400)
     alpha: float = 0.9
@@ -99,7 +99,7 @@ class ProductionController(MacroBehavior):
 
         # get the current standing army based on the army comp dict
         # note we don't consider units outside the army comp dict
-        unit_types: list[UnitID] = [*army_comp_dict]
+        unit_types: list[UnitTypeId] = [*army_comp_dict]
 
         num_total_units: int = sum(
             [
@@ -108,7 +108,7 @@ class ProductionController(MacroBehavior):
             ]
         )
         proportion_sum: float = 0.0
-        structure_dict: dict[UnitID, Units] = mediator.get_own_structures_dict
+        structure_dict: dict[UnitTypeId, Units] = mediator.get_own_structures_dict
         flying_structures: dict[int, dict] = mediator.get_flying_structure_tracker
         # +1 to avoid division by zero
         collection_rate_minerals: int = ai.state.score.collection_rate_minerals + 1
@@ -118,7 +118,7 @@ class ProductionController(MacroBehavior):
         for unit_type_id, army_comp_info in sorted(
             army_comp_dict.items(), key=lambda x: x[1].get("priority", int(0))
         ):
-            assert isinstance(unit_type_id, UnitID), (
+            assert isinstance(unit_type_id, UnitTypeId), (
                 f"army_composition_dict expects UnitTypeId type as keys, "
                 f"got {type(unit_type_id)}"
             )
@@ -127,10 +127,10 @@ class ProductionController(MacroBehavior):
             current_proportion: float = num_this_unit / (num_total_units + 1e-16)
             target_proportion: float = army_comp_info["proportion"]
             proportion_sum += target_proportion
-            train_from: set[UnitID] = UNIT_TRAINED_FROM[unit_type_id]
-            trained_from: UnitID = next(iter(UNIT_TRAINED_FROM[unit_type_id]))
+            train_from: set[UnitTypeId] = UNIT_TRAINED_FROM[unit_type_id]
+            trained_from: UnitTypeId = next(iter(UNIT_TRAINED_FROM[unit_type_id]))
             if unit_type_id in GATEWAY_UNITS:
-                trained_from = UnitID.GATEWAY
+                trained_from = UnitTypeId.GATEWAY
 
             existing_structures: list[Unit] = []
             for structure_type in train_from:
@@ -232,11 +232,11 @@ class ProductionController(MacroBehavior):
     def _building_production_due_to_bank(
         self,
         ai: "AresBot",
-        unit_type_id: UnitID,
+        unit_type_id: UnitTypeId,
         collection_rate_minerals: int,
         collection_rate_vespene: int,
         existing_structures: list[Unit],
-        trained_from: UnitID,
+        trained_from: UnitTypeId,
         target_proportion: float,
     ) -> bool:
         # work out how many units we could afford at once
@@ -267,7 +267,7 @@ class ProductionController(MacroBehavior):
 
     def _can_already_produce(self, train_from, structure_dict) -> bool:
         for structure_type in train_from:
-            if structure_type == UnitID.WARPGATE and [
+            if structure_type == UnitTypeId.WARPGATE and [
                 s for s in structure_dict[structure_type] if not s.is_ready
             ]:
                 return True
@@ -285,7 +285,7 @@ class ProductionController(MacroBehavior):
         return False
 
     def is_flying_production(
-        self, ai: "AresBot", flying_structures: dict, train_from: set[UnitID]
+        self, ai: "AresBot", flying_structures: dict, train_from: set[UnitTypeId]
     ) -> bool:
         if ai.race == Race.Terran:
             prod_flying: bool = False
@@ -307,10 +307,10 @@ class ProductionController(MacroBehavior):
         return False
 
     def _add_techlab_to_existing(
-        self, ai: "AresBot", unit_type_id: UnitID, researched_from_id
+        self, ai: "AresBot", unit_type_id: UnitTypeId, researched_from_id
     ) -> bool:
         structures_dict: dict = ai.mediator.get_own_structures_dict
-        build_techlab_from: UnitID = BUILD_TECHLAB_FROM[researched_from_id]
+        build_techlab_from: UnitTypeId = BUILD_TECHLAB_FROM[researched_from_id]
         _build_techlab_from_structures: list[Unit] = structures_dict[
             build_techlab_from
         ].copy()

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from cython_extensions import cy_center, cy_distance_to_squared
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -116,7 +116,7 @@ class SquadManager(Manager, IManagerMediator):
         # self._squads: dict[UnitRole, list[UnitSquad]] = defaultdict(list)
         # key -> UnitRole, value -> Dict[key -> squad_id, value -> tags, squad object]
         self._squads_dict: dict[UnitRole, dict[str, Any]] = {
-            role: dict() for role in UnitRole
+            role: {} for role in UnitRole
         }
         self._role_to_main_squad_pos: dict[UnitRole, Point2] = {
             role: ai.start_location for role in UnitRole
@@ -191,7 +191,7 @@ class SquadManager(Manager, IManagerMediator):
         self,
         role: UnitRole,
         squad_radius: float = 6.0,
-        unit_type: Optional[Union[UnitID, set[UnitID]]] = None,
+        unit_type: Optional[Union[UnitTypeId, set[UnitTypeId]]] = None,
     ) -> list[UnitSquad]:
         """
         The main entry point to this manager. Since we do not want

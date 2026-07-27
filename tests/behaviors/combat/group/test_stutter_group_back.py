@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 
@@ -23,7 +23,7 @@ MAPS: list[Path] = [
 class TestStutterGroupBack:
     def test_stutter_group_back(self, bot: AresBot, event_loop):
         # simple test, a move should always return True
-        units: list[Unit] = [u for u in bot.units if u.type_id != UnitID.SCV]
+        units: list[Unit] = [u for u in bot.units if u.type_id != UnitTypeId.SCV]
         target: Point2 = bot.game_info.map_center
         # should be true, as all units are able to attack
         assert StutterGroupBack(

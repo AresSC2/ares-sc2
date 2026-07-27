@@ -7,7 +7,7 @@ from cython_extensions.units_utils import cy_closest_to
 from map_analyzer import Region
 from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from scipy.spatial import KDTree
@@ -61,10 +61,10 @@ class NydusManager(Manager, IManagerMediator):
         self.all_own_main_nydus_points: list[Point2] = [self.ai.start_location]
 
         # key is tag of travelling unit,
-        # value is dictionary of tags of ENTRY/EXIT nodes and UnitID
+        # value is dictionary of tags of ENTRY/EXIT nodes and UnitTypeId
         self._nydus_travellers: dict[
-            int, dict[str, Union[int, Point2, UnitID]]
-        ] = dict()
+            int, dict[str, Union[int, Point2, UnitTypeId]]
+        ] = {}
         self._nydus_tags_with_actions: set[int] = set()
         # if unit just left nydus, it will be banned from nydus travel for a bit
         self._units_banned_from_travelling: dict[int, float] = {}
@@ -366,8 +366,8 @@ class NydusManager(Manager, IManagerMediator):
     async def _handle_nydus_travellers(self):
         own_structures_dict: dict = self.manager_mediator.get_own_structures_dict
         nyduses: list[Unit] = (
-            own_structures_dict[UnitID.NYDUSNETWORK]
-            + own_structures_dict[UnitID.NYDUSCANAL]
+            own_structures_dict[UnitTypeId.NYDUSNETWORK]
+            + own_structures_dict[UnitTypeId.NYDUSCANAL]
         )
         num_nyduses: int = len(nyduses)
         # no nydus? clear all data about passengers, no need to do anything else
@@ -389,7 +389,7 @@ class NydusManager(Manager, IManagerMediator):
         exit_queue: DefaultDict[int, deque[int]] = defaultdict(deque)
         for traveller_tag in passengers:
             if traveller_tag in self._nydus_travellers:
-                if self._nydus_travellers[traveller_tag][UNIT_TYPE] == UnitID.QUEEN:
+                if self._nydus_travellers[traveller_tag][UNIT_TYPE] == UnitTypeId.QUEEN:
                     exit_queue[self._nydus_travellers[traveller_tag][EXIT]].appendleft(
                         traveller_tag
                     )
@@ -436,8 +436,8 @@ class NydusManager(Manager, IManagerMediator):
         # Gather surviving nyduses
         own_structures_dict: dict = self.manager_mediator.get_own_structures_dict
         nyduses: list[Unit] = (
-            own_structures_dict[UnitID.NYDUSNETWORK]
-            + own_structures_dict[UnitID.NYDUSCANAL]
+            own_structures_dict[UnitTypeId.NYDUSNETWORK]
+            + own_structures_dict[UnitTypeId.NYDUSCANAL]
         )
 
         # If none remain, clear travellers and return

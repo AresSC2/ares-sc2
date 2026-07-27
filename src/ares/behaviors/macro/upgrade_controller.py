@@ -6,7 +6,7 @@ from sc2.data import Race
 from sc2.dicts.unit_research_abilities import RESEARCH_INFO
 from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
 from sc2.ids.ability_id import AbilityId
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.ids.upgrade_id import UpgradeId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -66,7 +66,7 @@ class UpgradeController(MacroBehavior):
             if ai.pending_or_complete_upgrade(upgrade):
                 continue
 
-            researched_from_id: UnitID = UPGRADE_RESEARCHED_FROM[upgrade]
+            researched_from_id: UnitTypeId = UPGRADE_RESEARCHED_FROM[upgrade]
             researched_from: list[Unit] = [
                 s for s in mediator.get_own_structures_dict[researched_from_id]
             ]

@@ -9,7 +9,7 @@ from cython_extensions import cy_flood_fill_grid, cy_towards
 from map_analyzer import MapData
 from map_analyzer.constructs import ChokeArea, VisionBlockerArea
 from sc2.game_info import Ramp
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.units import Units
 
@@ -459,8 +459,8 @@ class TerrainManager(Manager, IManagerMediator):
 
         close_enemy: Units = close_enemy.filter(
             lambda u: u.type_id not in FLYING_IGNORE
-            and u.type_id != UnitID.AUTOTURRET
-            and u.type_id != UnitID.MARINE
+            and u.type_id != UnitTypeId.AUTOTURRET
+            and u.type_id != UnitTypeId.MARINE
         )
         if structures_only and close_enemy(ALL_STRUCTURES):
             return True
@@ -503,7 +503,7 @@ class TerrainManager(Manager, IManagerMediator):
             start_points=[position],
             distance=3,
             query_tree=UnitTreeQueryType.EnemyGround,
-        )[0].filter(lambda u: u.type_id == UnitID.WIDOWMINEBURROWED)
+        )[0].filter(lambda u: u.type_id == UnitTypeId.WIDOWMINEBURROWED)
         if close_mines:
             self.positions_blocked_by_enemy_burrowed_units.append(position)
             return position

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Any
 from cython_extensions import cy_distance_to_squared
 from loguru import logger
 from sc2.data import Race
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 from sc2.units import Units
 
@@ -202,12 +202,12 @@ class IntelManager(Manager, IManagerMediator):
             return False
 
         num_marauders: int = len(
-            self.manager_mediator.get_enemy_army_dict[UnitID.MARAUDER]
+            self.manager_mediator.get_enemy_army_dict[UnitTypeId.MARAUDER]
         )
         proxies: list[Unit] = [
             p
             for p in self.ai.get_enemy_proxies(55.0, self.manager_mediator.get_own_nat)
-            if p.type_id == UnitID.BARRACKSTECHLAB
+            if p.type_id == UnitTypeId.BARRACKSTECHLAB
         ]
         if (
             len(proxies) > 0
@@ -237,7 +237,7 @@ class IntelManager(Manager, IManagerMediator):
         four_gate: bool = (
             self.ai.time < 200.0
             and len(
-                [s for s in self.ai.enemy_structures if s.type_id == UnitID.GATEWAY]
+                [s for s in self.ai.enemy_structures if s.type_id == UnitTypeId.GATEWAY]
             )
             >= 3
         )
@@ -262,12 +262,12 @@ class IntelManager(Manager, IManagerMediator):
         ):
             return False
 
-        if self.ai.enemy_structures(UnitID.FACTORY):
+        if self.ai.enemy_structures(UnitTypeId.FACTORY):
             return False
         num_marines: int = len(
             [
                 m
-                for m in self.manager_mediator.get_enemy_army_dict[UnitID.MARINE]
+                for m in self.manager_mediator.get_enemy_army_dict[UnitTypeId.MARINE]
                 if cy_distance_to_squared(m.position, self.ai.enemy_start_locations[0])
                 > 3600.0
             ]
@@ -276,7 +276,11 @@ class IntelManager(Manager, IManagerMediator):
         marine_rush: bool = (
             self.ai.time < 180.0
             and len(
-                [s for s in self.ai.enemy_structures if s.type_id == UnitID.BARRACKS]
+                [
+                    s
+                    for s in self.ai.enemy_structures
+                    if s.type_id == UnitTypeId.BARRACKS
+                ]
             )
             >= 3
         ) or (
@@ -300,7 +304,7 @@ class IntelManager(Manager, IManagerMediator):
         """
         if self.ai.enemy_race == Race.Zerg:
             num_ravagers: int = len(
-                self.manager_mediator.get_enemy_army_dict[UnitID.RAVAGER]
+                self.manager_mediator.get_enemy_army_dict[UnitTypeId.RAVAGER]
             )
             if self.ai.time < 240.0 and num_ravagers > 0:
                 return True
@@ -339,16 +343,18 @@ class IntelManager(Manager, IManagerMediator):
             or self.manager_mediator.get_enemy_worker_rushed
             or (
                 self.ai.time < 240.0
-                and len(self.manager_mediator.get_enemy_army_dict[UnitID.ROACH]) >= 3
+                and len(self.manager_mediator.get_enemy_army_dict[UnitTypeId.ROACH])
+                >= 3
             )
             or (
                 self.ai.time < 105.0
-                and len(self.manager_mediator.get_enemy_army_dict[UnitID.ZERGLING]) >= 1
+                and len(self.manager_mediator.get_enemy_army_dict[UnitTypeId.ZERGLING])
+                >= 1
             )
             # 2+ rax way too fast
             or (
                 self.ai.time < 120.0
-                and len(self.ai.enemy_structures(UnitID.BARRACKS)) >= 2
+                and len(self.ai.enemy_structures(UnitTypeId.BARRACKS)) >= 2
             )
         )
         if rush:
@@ -367,7 +373,7 @@ class IntelManager(Manager, IManagerMediator):
             return False
 
         num_proxy_gateways: int = self.ai.enemy_structures.filter(
-            lambda s: s.type_id == UnitID.GATEWAY
+            lambda s: s.type_id == UnitTypeId.GATEWAY
             and cy_distance_to_squared(self.ai.start_location, s.position) < 10000.0
             and cy_distance_to_squared(self.ai.enemy_start_locations[0], s.position)
             > 3600.0
@@ -375,7 +381,7 @@ class IntelManager(Manager, IManagerMediator):
         proxy_zealots: list[Unit] = [
             z
             for z in self.ai.enemy_units
-            if z.type_id == UnitID.ZEALOT
+            if z.type_id == UnitTypeId.ZEALOT
             and cy_distance_to_squared(z.position, self.ai.start_location) < 4225
         ]
         if num_proxy_gateways >= 2 or (
@@ -393,14 +399,14 @@ class IntelManager(Manager, IManagerMediator):
         if (
             self.ai.enemy_race == Race.Terran
             and not self.enemy_went_reaper
-            and len(self.manager_mediator.get_enemy_army_dict[UnitID.REAPER]) > 0
+            and len(self.manager_mediator.get_enemy_army_dict[UnitTypeId.REAPER]) > 0
         ):
             self.enemy_went_reaper = True
 
     def _check_for_enemy_rush(self):
         if self.ai.enemy_race == Race.Zerg and not self.enemy_ling_rushed:
             enemy_lings: list[Unit] = self.manager_mediator.get_enemy_army_dict[
-                UnitID.ZERGLING
+                UnitTypeId.ZERGLING
             ]
             if (
                 self.ai.time < 150.0
@@ -432,7 +438,7 @@ class IntelManager(Manager, IManagerMediator):
                     [
                         ling
                         for ling in self.manager_mediator.get_enemy_army_dict[
-                            UnitID.ROACH
+                            UnitTypeId.ROACH
                         ]
                         if cy_distance_to_squared(ling.position, self.ai.start_location)
                         < 2500.0
@@ -445,7 +451,8 @@ class IntelManager(Manager, IManagerMediator):
 
             if (
                 self.ai.time < 180.0
-                and len(self.manager_mediator.get_enemy_army_dict[UnitID.ROACH]) >= 3
+                and len(self.manager_mediator.get_enemy_army_dict[UnitTypeId.ROACH])
+                >= 3
             ):
                 logger.info(f"{self.ai.time}: enemy roach rush detected")
                 self.enemy_roach_rushed = True

@@ -27,7 +27,7 @@ from cython_extensions import (
 from loguru import logger
 from sc2.constants import ALL_GAS
 from sc2.data import Race
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2, Point3
 from sc2.unit import Unit
 from sc2.units import Units
@@ -87,11 +87,11 @@ class PlacementManager(Manager, IManagerMediator):
         BuildingSize.THREE_BY_THREE: (3, 3),
         BuildingSize.TWO_BY_TWO: (2, 2),
     }
-    SKIP_CREEP_CHECK_IDS: set[UnitID] = {UnitID.HATCHERY, UnitID.NYDUSCANAL}
-    UNBUILDABLES: set[UnitID] = {
-        UnitID.UNBUILDABLEPLATESDESTRUCTIBLE,
-        UnitID.UNBUILDABLEBRICKSDESTRUCTIBLE,
-        UnitID.UNBUILDABLEROCKSDESTRUCTIBLE,
+    SKIP_CREEP_CHECK_IDS: set[UnitTypeId] = {UnitTypeId.HATCHERY, UnitTypeId.NYDUSCANAL}
+    UNBUILDABLES: set[UnitTypeId] = {
+        UnitTypeId.UNBUILDABLEPLATESDESTRUCTIBLE,
+        UnitTypeId.UNBUILDABLEBRICKSDESTRUCTIBLE,
+        UnitTypeId.UNBUILDABLEROCKSDESTRUCTIBLE,
     }
 
     def __init__(
@@ -137,17 +137,17 @@ class PlacementManager(Manager, IManagerMediator):
         # main dict where all data is organised
         # {base_loc: 3x3: {building_pos: (2, 2), taken: False, is_wall: True}, {...}
         #            2x2: {building_pos: (5, 5), taken: True, is_wall: False}, {...}}
-        self.placements_dict: dict[Point2, dict[BuildingSize, dict]] = dict()
+        self.placements_dict: dict[Point2, dict[BuildingSize, dict]] = {}
         self.race_to_building_solver_method: dict[Race, Callable] = {
             Race.Terran: lambda: self._solve_terran_building_formation(),
             Race.Protoss: lambda: self._solve_protoss_building_formation(),
             Race.Zerg: lambda: self._solve_zerg_building_formation(),
         }
         # this is to allow faster lookup of placements_dict
-        self.structure_tag_to_base_location: dict[int, Point2] = dict()
+        self.structure_tag_to_base_location: dict[int, Point2] = {}
         # this prevents iterating through all bases to check workers on route
         # key: Unique placement location, value: main base location
-        self.worker_on_route_tracker: dict[Point2, Point2] = dict()
+        self.worker_on_route_tracker: dict[Point2, Point2] = {}
         self.WORKER_ON_ROUTE_TIMEOUT: float = self.config[PLACEMENT][
             WORKER_ON_ROUTE_TIMEOUT
         ]
@@ -258,7 +258,7 @@ class PlacementManager(Manager, IManagerMediator):
         logger.info(f"Solved placement formation in {(finish - start)*1000} ms")
 
     def can_place_structure(
-        self, position: Point2, structure_type: UnitID, include_addon: bool = False
+        self, position: Point2, structure_type: UnitTypeId, include_addon: bool = False
     ) -> bool:
         """Check if structure can be placed at a given position.
 
@@ -268,7 +268,7 @@ class PlacementManager(Manager, IManagerMediator):
         ----------
         position : Point2
             The intended building position.
-        structure_type : UnitID
+        structure_type : UnitTypeId
             Structure we are trying to place.
         include_addon : bool, optional
             For Terran structures, check addon will place too.
@@ -311,7 +311,7 @@ class PlacementManager(Manager, IManagerMediator):
     def request_building_placement(
         self,
         base_location: Point2,
-        structure_type: UnitID,
+        structure_type: UnitTypeId,
         first_pylon: bool = False,
         static_defence: bool = False,
         wall: bool = False,
@@ -420,7 +420,7 @@ class PlacementManager(Manager, IManagerMediator):
         self,
         building_size: BuildingSize,
         initial_location: Point2,
-        structure_type: UnitID,
+        structure_type: UnitTypeId,
         within_psionic_matrix: bool,
         pylon_build_progress: float,
         find_alternative: bool,
@@ -439,7 +439,7 @@ class PlacementManager(Manager, IManagerMediator):
         )
 
         # Don't steal static defence positions for pylons
-        if structure_type == UnitID.PYLON:
+        if structure_type == UnitTypeId.PYLON:
             available = [
                 a
                 for a in available
@@ -464,7 +464,7 @@ class PlacementManager(Manager, IManagerMediator):
                     within_psionic_matrix,
                     pylon_build_progress,
                 )
-                if structure_type == UnitID.PYLON:
+                if structure_type == UnitTypeId.PYLON:
                     alt_available = [
                         a
                         for a in alt_available
@@ -520,7 +520,7 @@ class PlacementManager(Manager, IManagerMediator):
 
         def _add_positions(
             _positions: list,
-            unit_to_check: UnitID,
+            unit_to_check: UnitTypeId,
             building_size: BuildingSize,
             **placement_flags: bool,
         ) -> None:
@@ -568,7 +568,7 @@ class PlacementManager(Manager, IManagerMediator):
             }:
                 _add_positions(
                     positions,
-                    UnitID.BARRACKS,
+                    UnitTypeId.BARRACKS,
                     building_size=BuildingSize.THREE_BY_THREE,
                     supply_depot=False,
                     wall=building
@@ -596,7 +596,7 @@ class PlacementManager(Manager, IManagerMediator):
             }:
                 _add_positions(
                     positions,
-                    UnitID.SHIELDBATTERY,
+                    UnitTypeId.SHIELDBATTERY,
                     BuildingSize.TWO_BY_TWO,
                     static_defence=True,
                     custom=True,
@@ -617,7 +617,7 @@ class PlacementManager(Manager, IManagerMediator):
                     for p in extractor.iter_point_pairs(positions):
                         pos = Point2(p)
                         first_pylon_pos = pos
-                        if not self.can_place_structure(pos, UnitID.PYLON):
+                        if not self.can_place_structure(pos, UnitTypeId.PYLON):
                             log_warning(pos)
                             continue
                         el: Point2 = self._get_closest_base_location(pos)
@@ -633,7 +633,7 @@ class PlacementManager(Manager, IManagerMediator):
                 elif building == BuildingPlacementOptions.PYLONS:
                     _add_positions(
                         positions,
-                        UnitID.PYLON,
+                        UnitTypeId.PYLON,
                         BuildingSize.TWO_BY_TWO,
                         wall=True,
                         production_pylon=True,
@@ -642,7 +642,7 @@ class PlacementManager(Manager, IManagerMediator):
                 elif building == BuildingPlacementOptions.PYLONS_REAPER_WALL:
                     _add_positions(
                         positions,
-                        UnitID.PYLON,
+                        UnitTypeId.PYLON,
                         BuildingSize.TWO_BY_TWO,
                         reaper_wall=True,
                         custom=True,
@@ -658,7 +658,7 @@ class PlacementManager(Manager, IManagerMediator):
                 }:
                     _add_positions(
                         positions,
-                        UnitID.SUPPLYDEPOT,
+                        UnitTypeId.SUPPLYDEPOT,
                         BuildingSize.TWO_BY_TWO,
                         supply_depot=building
                         in {
@@ -677,7 +677,7 @@ class PlacementManager(Manager, IManagerMediator):
                 }:
                     _add_positions(
                         positions,
-                        UnitID.BUNKER,
+                        UnitTypeId.BUNKER,
                         BuildingSize.THREE_BY_THREE,
                         bunker=True,
                         wall=building == BuildingPlacementOptions.BUNKERS_WALL,
@@ -704,7 +704,7 @@ class PlacementManager(Manager, IManagerMediator):
         self,
         building_size: BuildingSize,
         location: Point2,
-        structure_type: UnitID,
+        structure_type: UnitTypeId,
         within_psionic_matrix: bool,
         pylon_build_progress: float = 1.0,
     ) -> list[Point2]:
@@ -719,7 +719,7 @@ class PlacementManager(Manager, IManagerMediator):
             and self.can_place_structure(placement, structure_type)
         ]
         if within_psionic_matrix:
-            pylons = self.manager_mediator.get_own_structures_dict[UnitID.PYLON]
+            pylons = self.manager_mediator.get_own_structures_dict[UnitTypeId.PYLON]
             available = [
                 a
                 for a in available
@@ -740,7 +740,7 @@ class PlacementManager(Manager, IManagerMediator):
         pylon_build_progress: float,
         closest_to: Point2,
     ) -> Optional[Point2]:
-        pylons = self.manager_mediator.get_own_structures_dict[UnitID.PYLON]
+        pylons = self.manager_mediator.get_own_structures_dict[UnitTypeId.PYLON]
         # first we check for ready pylons
         if available := [
             a
@@ -1373,7 +1373,6 @@ class PlacementManager(Manager, IManagerMediator):
 
             # 3x3 placements
             for placement in three_by_three:
-
                 info = self.placements_dict[location][BuildingSize.THREE_BY_THREE][
                     placement
                 ]
@@ -1547,7 +1546,7 @@ class PlacementManager(Manager, IManagerMediator):
             if len(bunkers) > 0:
                 return
 
-        size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[UnitID.BUNKER]
+        size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[UnitTypeId.BUNKER]
 
         towards_ramp: tuple[float, float] = cy_towards(
             nat_location, self.ai.main_base_ramp.bottom_center, 4.0
@@ -1560,7 +1559,7 @@ class PlacementManager(Manager, IManagerMediator):
 
         for x, y in product(range(-2, 2), range(-2, 2)):
             pos: Point2 = Point2((goal_x + x + 0.5, goal_y + y + 0.5))
-            if self.can_place_structure(pos, UnitID.BUNKER):
+            if self.can_place_structure(pos, UnitTypeId.BUNKER):
                 self._add_placement_position(size, nat_location, pos, bunker=True)
                 avoid_x = int(pos.x - 1.5)
                 avoid_y = int(pos.y - 1.5)

@@ -32,7 +32,7 @@ class CreepManager(Manager, IManagerMediator):
     def __init__(self, ai, config: dict, mediator: ManagerMediator) -> None:
         super().__init__(ai, config, mediator)
         self._creep_coverage: float = 0.0
-        self._overlord_spotter_dict: dict[int:Point2] = dict()
+        self._overlord_spotter_dict: dict[int:Point2] = {}
         self._setup_overlord_spotter_dict: bool = False
         # Cache for queen edge positions when ability not available
         self._queen_edge_position_cache: dict[int, dict] = {}
@@ -97,7 +97,6 @@ class CreepManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def get_creep_edges(self) -> tuple[np.ndarray, np.ndarray]:
-
         if self.ai.last_game_loop % 16 == 0 or not hasattr(self, "_creep_edges"):
             creep_grid = self.get_creep_grid
             edges = convolve(creep_grid, self.EDGE_FILTER, mode="constant")

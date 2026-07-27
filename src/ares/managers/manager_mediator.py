@@ -17,7 +17,7 @@ from typing import (
 import numpy as np
 from map_analyzer import MapData
 from sc2.game_info import Ramp
-from sc2.ids.unit_typeid import UnitTypeId as UnitID
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
@@ -202,7 +202,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_building_counter(self) -> DefaultDict[UnitID, int]:
+    def get_building_counter(self) -> DefaultDict[UnitTypeId, int]:
         """Get a dictionary containing the number of each type of building in progress.
 
         BuildingManager.
@@ -219,7 +219,7 @@ class ManagerMediator(IManagerMediator):
     @property
     def get_building_tracker_dict(
         self,
-    ) -> dict[int, dict[str, Union[Point2, Unit, UnitID, float]]]:
+    ) -> dict[int, dict[str, Union[Point2, Unit, UnitTypeId, float]]]:
         """Get the building tracker dictionary.
 
         Building Manager.
@@ -1013,7 +1013,7 @@ class ManagerMediator(IManagerMediator):
     @property
     def get_nydus_travellers_dict(
         self, **kwargs
-    ) -> dict[int, dict[str, Union[int, Point2, UnitID]]]:
+    ) -> dict[int, dict[str, Union[int, Point2, UnitTypeId]]]:
         """Get the nydus travellers dictionary.
 
         NydusManager
@@ -1646,7 +1646,7 @@ class ManagerMediator(IManagerMediator):
 
         Parameters:
             position (Point2): The intended building position.
-            structure_type (UnitID): Structure type we want to place.
+            structure_type (UnitTypeId): Structure type we want to place.
             include_addon (bool, optional): For Terran structures,
                 check addon will place too.
 
@@ -1782,7 +1782,7 @@ class ManagerMediator(IManagerMediator):
         Parameters:
             base_location (Point2): The general area where the placement should be near.
                 This should be an expansion location.
-            structure_type (UnitID): Structure type requested.
+            structure_type (UnitTypeId): Structure type requested.
             first_pylon (bool, optional): Try to take designated
                 first pylon if available.
                 Default value is False.
@@ -2288,7 +2288,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_army_dict(self) -> DefaultDict[UnitID, list[Unit]]:
+    def get_enemy_army_dict(self) -> DefaultDict[UnitTypeId, list[Unit]]:
         """Get the dictionary of enemy army unit types to the units themselves.
 
         UnitCacheManager
@@ -2303,7 +2303,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_old_own_army_dict(self) -> Dict[UnitID, list[Unit]]:
+    def get_old_own_army_dict(self) -> Dict[UnitTypeId, list[Unit]]:
         """Get the previous iteration's `own_army` dict.
 
         UnitCacheManager
@@ -2329,7 +2329,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_army_dict(self) -> Dict[UnitID, list[Unit]]:
+    def get_own_army_dict(self) -> Dict[UnitTypeId, list[Unit]]:
         """Get the dictionary of own army unit types to the units themselves.
 
         UnitCacheManager
@@ -2342,7 +2342,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_structures_dict(self) -> DefaultDict[UnitID, list[Unit]]:
+    def get_own_structures_dict(self) -> DefaultDict[UnitTypeId, list[Unit]]:
         """Get the dictionary of own structure types to the units themselves.
 
         UnitCacheManager
@@ -2360,7 +2360,7 @@ class ManagerMediator(IManagerMediator):
         UnitCacheManager
 
         Parameters:
-            unit_type_id (UnitID): Unit type to count.
+            unit_type_id (UnitTypeId): Unit type to count.
             include_alias (bool): Check aliases. (default=True)
 
         Returns:
@@ -2615,7 +2615,7 @@ class ManagerMediator(IManagerMediator):
     def get_units_from_role(self, **kwargs) -> Units:
         """Get a Units object containing units with a given role.
 
-        If a UnitID or set of UnitIDs are given, it will only return units of those
+        If a UnitTypeId or set of UnitTypeIds are given, it will only return units of those
         types, otherwise it will return all units with the role. If `restrict_to` is
         specified, it will only retrieve units from that object.
 
