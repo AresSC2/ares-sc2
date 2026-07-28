@@ -1,12 +1,14 @@
 """Extension of sc2.BotAI to add custom functions.
 
 """
+import argparse
 from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from cython_extensions import cy_closer_than, cy_distance_to_squared
 from loguru import logger
 from map_analyzer.destructibles import buildings_2x2, buildings_3x3
+from propcache.api import cached_property
 from s2clientprotocol import raw_pb2 as raw_pb
 from s2clientprotocol import sc2api_pb2 as sc_pb
 from s2clientprotocol import ui_pb2 as ui_pb
@@ -50,6 +52,23 @@ class CustomBotAI(BotAI):
     """Hub in charge of handling the Managers"""
     CANT_BUILD_LOCATION_INVALID: int = 44
     _blocked_positions: set[Point2] = set()
+
+    @cached_property
+    def ladder_match(self) -> bool:
+        """Determines whether the current match is a ladder match.
+
+        Checks command-line arguments for ladder-specific flags.
+
+        Returns:
+            bool: True if running in an automated/managed environment,
+            otherwise False.
+        """
+        parser = argparse.ArgumentParser(add_help=False)
+        parser.add_argument("--GamePort", type=int, nargs="?")
+        parser.add_argument("--OpponentId", type=str, nargs="?")
+        args, _ = parser.parse_known_args()
+
+        return args.GamePort is not None or args.OpponentId is not None
 
     @property
     def mediator(self) -> ManagerMediator:
