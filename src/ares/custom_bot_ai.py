@@ -59,8 +59,10 @@ class CustomBotAI(BotAI):
 
         Checks command-line arguments for ladder-specific flags.
 
-        Returns:
-            bool: True if running in an automated/managed environment,
+        Returns
+        -------
+        is_ladder : bool
+            True if running in an automated/managed environment,
             otherwise False.
         """
         parser = argparse.ArgumentParser(add_help=False)
