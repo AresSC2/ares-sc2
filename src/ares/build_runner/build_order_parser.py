@@ -117,9 +117,11 @@ class BuildOrderParser:
             ),
             BuildOrderOptions.GAS: lambda: BuildOrderStep(
                 command=self.ai.gas_type,
-                start_condition=lambda: self.ai.minerals >= 0
-                if self.ai.race == Race.Zerg
-                else self.ai.minerals >= 50,
+                start_condition=lambda: (
+                    self.ai.minerals >= 0
+                    if self.ai.race == Race.Zerg
+                    else self.ai.minerals >= 50
+                ),
                 end_condition=lambda: self.ai.structures.filter(
                     lambda s: 0.00001 <= s.build_progress < 0.05
                     and s.type_id == self.ai.gas_type
@@ -140,15 +142,19 @@ class BuildOrderParser:
             ),
             BuildOrderOptions.SUPPLY: lambda: BuildOrderStep(
                 command=self.ai.supply_type,
-                start_condition=lambda: self.ai.can_afford(self.ai.supply_type)
-                if self.ai.race == Race.Zerg
-                else self.ai.minerals >= 25,
-                end_condition=lambda: True
-                if self.ai.race == Race.Zerg
-                else (
-                    self.ai.structures.filter(
-                        lambda s: 0.00001 <= s.build_progress < 0.05
-                        and s.type_id == self.ai.supply_type
+                start_condition=lambda: (
+                    self.ai.can_afford(self.ai.supply_type)
+                    if self.ai.race == Race.Zerg
+                    else self.ai.minerals >= 25
+                ),
+                end_condition=lambda: (
+                    True
+                    if self.ai.race == Race.Zerg
+                    else (
+                        self.ai.structures.filter(
+                            lambda s: 0.00001 <= s.build_progress < 0.05
+                            and s.type_id == self.ai.supply_type
+                        )
                     )
                 ),
             ),
@@ -252,9 +258,11 @@ class BuildOrderParser:
                 else UnitTypeId.HATCHERY
             )
             return lambda: BuildOrderStep(
-                command=AbilityId.UPGRADETOLAIR_LAIR
-                if structure_id == UnitTypeId.LAIR
-                else AbilityId.UPGRADETOHIVE_HIVE,
+                command=(
+                    AbilityId.UPGRADETOLAIR_LAIR
+                    if structure_id == UnitTypeId.LAIR
+                    else AbilityId.UPGRADETOHIVE_HIVE
+                ),
                 start_condition=lambda: self.ai.townhalls.filter(
                     lambda th: th.is_ready and th.is_idle and th.type_id == upgrade_from
                 )
@@ -486,9 +494,9 @@ class BuildOrderParser:
                 # look behind natural
                 elif order_target == BuildOrderTargetOptions.NAT:
                     location: Point2 = self._get_target(order_target)
-                    behind_min_line_points: list[
-                        Point2
-                    ] = self.ai.mediator.get_behind_mineral_positions(th_pos=location)
+                    behind_min_line_points: list[Point2] = (
+                        self.ai.mediator.get_behind_mineral_positions(th_pos=location)
+                    )
                     for point in behind_min_line_points:
                         target_positions.append(point)
                 # otherwise just go to location
@@ -549,10 +557,8 @@ class BuildOrderParser:
         try:
             supply: int = int(commands[0])
         except ValueError:
-            logger.warning(
-                f"""{raw_step} should begin with an integer supply count,
-                found {commands[0]}, setting supply target to 0"""
-            )
+            logger.warning(f"""{raw_step} should begin with an integer supply count,
+                found {commands[0]}, setting supply target to 0""")
             supply: int = 0
 
         # this is the main command of a build order step (worker, gas, expand etc.)

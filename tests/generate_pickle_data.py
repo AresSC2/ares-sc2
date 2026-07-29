@@ -3,6 +3,7 @@ This "bot" will loop over several available ladder maps and generate the pickle 
 Thanks to burny's `python-sc2` where most of this logic was taken from.
 TODO: Make this pickle `ares` specific stuff (manager hub?) so we can run tests.
 """
+
 import lzma
 import os
 import pickle

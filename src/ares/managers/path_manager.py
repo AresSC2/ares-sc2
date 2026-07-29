@@ -3,6 +3,7 @@
 This manager handles path finding and coordinates with GridManager for grid-related
 operations.
 """
+
 from typing import TYPE_CHECKING, Any, Dict, List, Union
 
 import numpy as np

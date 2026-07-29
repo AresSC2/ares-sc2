@@ -1,6 +1,5 @@
-"""Base class for Managers.
+"""Base class for Managers."""
 
-"""
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Any, Dict
 

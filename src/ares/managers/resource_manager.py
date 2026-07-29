@@ -1,6 +1,4 @@
-"""Anything to do with resource management and collection.
-
-"""
+"""Anything to do with resource management and collection."""
 
 import math
 from collections import defaultdict
@@ -113,9 +111,9 @@ class ResourceManager(Manager, IManagerMediator):
         self.geyser_to_list_of_workers: Dict[int, Set[int]] = {}
 
         self.mineral_tag_to_mineral: Dict[int, Unit] = {}
-        self.mineral_object_to_worker_units_object: DefaultDict[
-            Unit, List[Unit]
-        ] = defaultdict(list)
+        self.mineral_object_to_worker_units_object: DefaultDict[Unit, List[Unit]] = (
+            defaultdict(list)
+        )
         # keep track of how many mineral patches we have available
         self.num_available_min_patches: int = 0
         # mineral targets are positions just before the mineral (for speed mining)
@@ -945,12 +943,8 @@ class ResourceManager(Manager, IManagerMediator):
 
         """
         if self.ai.state.game_loop == 6720:
-            print(
-                f"{self.ai.time_formatted} Mined a total of {int(self.ai.minerals)}\
-                 minerals"
-            )
+            print(f"{self.ai.time_formatted} Mined a total of {int(self.ai.minerals)}\
+                 minerals")
 
-            print(
-                f"{self.ai.time_formatted} Mined a total of\
-                 {int(self.ai.state.score.collected_vespene)} vespene"
-            )
+            print(f"{self.ai.time_formatted} Mined a total of\
+                 {int(self.ai.state.score.collected_vespene)} vespene")

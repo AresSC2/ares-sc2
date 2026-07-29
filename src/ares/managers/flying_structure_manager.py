@@ -1,6 +1,5 @@
-"""Handle manual tracking of abilities until python-sc2 PR #163 is merged.
+"""Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
-"""
 from typing import TYPE_CHECKING, Dict, Optional
 
 from cython_extensions import cy_distance_to_squared

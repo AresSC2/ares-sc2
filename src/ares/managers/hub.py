@@ -1,6 +1,4 @@
-"""The core of the bot.
-
-"""
+"""The core of the bot."""
 
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 

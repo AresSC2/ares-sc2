@@ -1,6 +1,5 @@
-"""Zerg units that do not use Larva.
+"""Zerg units that do not use Larva."""
 
-"""
 from typing import Dict
 
 from sc2.ids.unit_typeid import UnitTypeId

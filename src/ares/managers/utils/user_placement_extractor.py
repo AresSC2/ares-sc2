@@ -144,9 +144,9 @@ class UserPlacementExtractor:
                 defaults=building_location_info.get(
                     BuildingPlacementOptions.VS_ALL.value
                 ),
-                race_specific=building_location_info.get(race_key)
-                if race_key
-                else None,
+                race_specific=(
+                    building_location_info.get(race_key) if race_key else None
+                ),
             )
 
         return None

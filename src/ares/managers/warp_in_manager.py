@@ -117,9 +117,9 @@ class WarpInManager(Manager, IManagerMediator):
         if not self.requested_warp_ins:
             return
 
-        own_structures_dict: dict[
-            UnitTypeId, list[Unit]
-        ] = self.manager_mediator.get_own_structures_dict
+        own_structures_dict: dict[UnitTypeId, list[Unit]] = (
+            self.manager_mediator.get_own_structures_dict
+        )
         pylons: list[Unit] = [
             s for s in own_structures_dict[UnitTypeId.PYLON] if s.is_ready
         ]

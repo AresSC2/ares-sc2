@@ -86,9 +86,9 @@ class PoweredPlacementStrategy(BasePlacementStrategy):
         two_by_twos: dict = self.placement_manager.placements_dict[building_at_base][
             BuildingSize.TWO_BY_TWO
         ]
-        placements_for_base: dict[
-            Point2, dict
-        ] = self.placement_manager.placements_dict[building_at_base][self.building_size]
+        placements_for_base: dict[Point2, dict] = (
+            self.placement_manager.placements_dict[building_at_base][self.building_size]
+        )
 
         if self.req.reaper_wall:
             available_reaper_wall = self._filter_by_flag(
@@ -174,9 +174,9 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
         available: list[Point2],
         building_at_base: Point2,
     ) -> None | Point2:
-        placements_for_base: dict[
-            Point2, dict
-        ] = self.placement_manager.placements_dict[building_at_base][self.building_size]
+        placements_for_base: dict[Point2, dict] = (
+            self.placement_manager.placements_dict[building_at_base][self.building_size]
+        )
 
         closest_to: Point2 = (
             building_at_base if not self.req.closest_to else self.req.closest_to

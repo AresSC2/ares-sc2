@@ -448,9 +448,9 @@ class BuildOrderRunner:
                     )
                     self.current_step_started = True
             elif command == BuildOrderOptions.OVERLORD_SCOUT:
-                unit_role_dict: dict[
-                    UnitRole, set[int]
-                ] = self.mediator.get_unit_role_dict
+                unit_role_dict: dict[UnitRole, set[int]] = (
+                    self.mediator.get_unit_role_dict
+                )
                 if overlords := [
                     ol
                     for ol in self.mediator.get_own_army_dict[UnitTypeId.OVERLORD]
@@ -632,10 +632,10 @@ class BuildOrderRunner:
                 if structure_type == self.ai.supply_type:
                     return list(self.ai.main_base_ramp.corner_depots)[0]
 
-            behind_mineral_line: list[
-                Point2
-            ] = self.mediator.get_behind_mineral_positions(
-                th_pos=self.ai.start_location
+            behind_mineral_line: list[Point2] = (
+                self.mediator.get_behind_mineral_positions(
+                    th_pos=self.ai.start_location
+                )
             )
             build_near: Point2 | None = None
             if structure_type not in {UnitTypeId.SPINECRAWLER, UnitTypeId.SPORECRAWLER}:

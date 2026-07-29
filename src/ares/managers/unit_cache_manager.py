@@ -1,6 +1,5 @@
-"""Cache armies for better and faster tracking.
+"""Cache armies for better and faster tracking."""
 
-"""
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Dict, List, Set, Union
 

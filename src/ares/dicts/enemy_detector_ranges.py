@@ -4,6 +4,7 @@ This is considered a dictionary for enemy detectors due to the safety buffer. Fr
 detectors will not be in range if they use these values.
 
 """
+
 from typing import Dict, Union
 
 from sc2.ids.effect_id import EffectId

@@ -161,9 +161,9 @@ class CreepManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def existing_tumor_positions_or_order_targets(self) -> list[Point2]:
-        own_structures_dict: dict[
-            UnitTypeId, Units
-        ] = self.manager_mediator.get_own_structures_dict
+        own_structures_dict: dict[UnitTypeId, Units] = (
+            self.manager_mediator.get_own_structures_dict
+        )
         positions: list[Point2] = [
             u.position
             for creep_tumor_type in CREEP_TUMOR_TYPES
@@ -332,11 +332,11 @@ class CreepManager(Manager, IManagerMediator):
                         ):
                             too_close = True
 
-                        own_ths: list[
-                            Unit
-                        ] = self.manager_mediator.get_own_structures_dict[
-                            UnitTypeId.HATCHERY
-                        ]
+                        own_ths: list[Unit] = (
+                            self.manager_mediator.get_own_structures_dict[
+                                UnitTypeId.HATCHERY
+                            ]
+                        )
                         # can act a bit weird near pending hatchery, avoid it
                         if not all(
                             cy_distance_to_squared(creep_pos, townhall.position)

@@ -1,6 +1,5 @@
-"""Tools for caching attribute values.
+"""Tools for caching attribute values."""
 
-"""
 from functools import wraps
 
 

@@ -3,6 +3,7 @@
 Includes some offset, plus opinions on Planetary Fortresses.
 
 """
+
 from typing import Dict
 
 from sc2.ids.unit_typeid import UnitTypeId

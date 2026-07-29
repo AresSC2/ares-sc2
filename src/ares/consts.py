@@ -1,4 +1,5 @@
 """Keep constants here for ease of use."""
+
 from __future__ import annotations
 
 from enum import Enum, auto

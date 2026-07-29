@@ -1,6 +1,5 @@
-"""Extension of sc2.BotAI to add custom functions.
+"""Extension of sc2.BotAI to add custom functions."""
 
-"""
 import argparse
 from typing import List, Optional, Tuple, Union
 

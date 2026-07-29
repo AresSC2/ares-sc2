@@ -62,9 +62,9 @@ class NydusManager(Manager, IManagerMediator):
 
         # key is tag of travelling unit,
         # value is dictionary of tags of ENTRY/EXIT nodes and UnitTypeId
-        self._nydus_travellers: dict[
-            int, dict[str, Union[int, Point2, UnitTypeId]]
-        ] = {}
+        self._nydus_travellers: dict[int, dict[str, Union[int, Point2, UnitTypeId]]] = (
+            {}
+        )
         self._nydus_tags_with_actions: set[int] = set()
         # if unit just left nydus, it will be banned from nydus travel for a bit
         self._units_banned_from_travelling: dict[int, float] = {}
@@ -310,10 +310,10 @@ class NydusManager(Manager, IManagerMediator):
             return None
 
         # see if any enemies are in range 12 of each point
-        enemy_in_range_of_points: list[
-            bool
-        ] = self.manager_mediator.get_any_enemies_in_range(
-            positions=potential_locations, radius=12.0
+        enemy_in_range_of_points: list[bool] = (
+            self.manager_mediator.get_any_enemies_in_range(
+                positions=potential_locations, radius=12.0
+            )
         )
         # points that are far enough away
         distanced_locations: list[Point2] = [

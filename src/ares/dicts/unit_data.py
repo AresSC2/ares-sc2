@@ -1,6 +1,5 @@
-"""Mineral, gas, supply, and army values for units.
+"""Mineral, gas, supply, and army values for units."""
 
-"""
 from typing import Dict
 
 from sc2.ids.unit_typeid import UnitTypeId

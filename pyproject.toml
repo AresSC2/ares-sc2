@@ -86,6 +86,8 @@ filterwarnings = [
 
 [tool.isort]
 profile = "black"
+line_length = 88
+known_first_party = ["ares"]
 
 [tool.mypy]
 # 3rd party import

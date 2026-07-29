@@ -1,6 +1,5 @@
-"""Calculations involving terrain.
+"""Calculations involving terrain."""
 
-"""
 from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
 

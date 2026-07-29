@@ -1,6 +1,5 @@
-"""Manage assigning/removing of roles and getting units by role.
+"""Manage assigning/removing of roles and getting units by role."""
 
-"""
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 
 from sc2.ids.unit_typeid import UnitTypeId

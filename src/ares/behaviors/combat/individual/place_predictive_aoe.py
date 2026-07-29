@@ -171,9 +171,11 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
                 current_position=real_path[-1],
                 current_target=unit_path[curr_target_idx],
                 distance_per_step=unit_speed,
-                next_target=unit_path[curr_target_idx + 1]
-                if curr_target_idx != len(unit_path) - 1
-                else None,
+                next_target=(
+                    unit_path[curr_target_idx + 1]
+                    if curr_target_idx != len(unit_path) - 1
+                    else None
+                ),
             )
             real_path.append(next_position)
 

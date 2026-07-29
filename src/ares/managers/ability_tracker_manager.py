@@ -1,6 +1,5 @@
-"""Handle manual tracking of abilities until python-sc2 PR #163 is merged.
+"""Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
-"""
 from typing import TYPE_CHECKING, Dict, Optional
 
 from sc2.ids.ability_id import AbilityId
@@ -62,9 +61,9 @@ class AbilityTrackerManager(Manager, IManagerMediator):
             ),
         }
         # make a copy, so we don't mess with anything when updating Medivac cds
-        self.ability_frame_cd_dict: Dict[
-            AbilityId, int
-        ] = ABILITY_FRAME_COOL_DOWN.copy()
+        self.ability_frame_cd_dict: Dict[AbilityId, int] = (
+            ABILITY_FRAME_COOL_DOWN.copy()
+        )
         self.unit_to_ability_dict: Dict[int, Dict[AbilityId, int]] = {}
 
     def manager_request(

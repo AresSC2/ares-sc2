@@ -1,6 +1,5 @@
-"""Manager for keeping track of enemy last known positions.
+"""Manager for keeping track of enemy last known positions."""
 
-"""
 from collections import deque
 from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, Tuple, Union
 
@@ -465,9 +464,11 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         return (
             {
-                start_points[idx].tag
-                if isinstance(start_points[idx], Unit)
-                else start_points[idx]: in_range_list[idx]
+                (
+                    start_points[idx].tag
+                    if isinstance(start_points[idx], Unit)
+                    else start_points[idx]
+                ): in_range_list[idx]
                 for idx in range(len(start_points))
             }
             if return_as_dict

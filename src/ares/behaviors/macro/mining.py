@@ -94,16 +94,16 @@ class Mining(MacroBehavior):
         health_perc: float = self.flee_at_health_perc
         avoidance_grid: np.ndarray = mediator.get_ground_avoidance_grid
         grid: np.ndarray = mediator.get_ground_grid
-        mineral_patch_to_list_of_workers: dict[
-            int, set[int]
-        ] = mediator.get_mineral_patch_to_list_of_workers
+        mineral_patch_to_list_of_workers: dict[int, set[int]] = (
+            mediator.get_mineral_patch_to_list_of_workers
+        )
         path_find: Callable = mediator.find_path_next_point
         pos_safe: Callable = mediator.is_position_safe
         th_dist_factor: float = config[MINING][TOWNHALL_DISTANCE_FACTOR]
         worker_to_geyser_dict: dict[int, int] = mediator.get_worker_to_vespene_dict
-        worker_to_mineral_patch_dict: dict[
-            int, int
-        ] = mediator.get_worker_to_mineral_patch_dict
+        worker_to_mineral_patch_dict: dict[int, int] = (
+            mediator.get_worker_to_mineral_patch_dict
+        )
         worker_to_th: dict[int, int] = mediator.get_worker_tag_to_townhall_tag
         # for each mineral tag, get the position in front of the mineral
         min_target: dict[int, Point2] = mediator.get_mineral_target_dict

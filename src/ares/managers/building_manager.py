@@ -1,6 +1,5 @@
-"""Handle the construction of buildings.
+"""Handle the construction of buildings."""
 
-"""
 from collections import defaultdict
 from typing import (
     TYPE_CHECKING,
@@ -202,9 +201,11 @@ class BuildingManager(Manager, IManagerMediator):
                         )
                         self.building_tracker[worker.tag] = {
                             ID: structure.type_id,
-                            TARGET: structure
-                            if structure.type_id in GAS_BUILDINGS
-                            else structure.position,
+                            TARGET: (
+                                structure
+                                if structure.type_id in GAS_BUILDINGS
+                                else structure.position
+                            ),
                             TIME_ORDER_COMMENCED: self.ai.time,
                         }
                         self.manager_mediator.assign_role(
@@ -225,9 +226,9 @@ class BuildingManager(Manager, IManagerMediator):
         """
         dead_tags_to_remove: set[int] = set()
         tags_to_remove: set[int] = set()
-        structures_dict: dict[
-            UnitTypeId, Units
-        ] = self.manager_mediator.get_own_structures_dict
+        structures_dict: dict[UnitTypeId, Units] = (
+            self.manager_mediator.get_own_structures_dict
+        )
 
         building_spots: set[Point2] = set()
 
@@ -350,9 +351,9 @@ class BuildingManager(Manager, IManagerMediator):
                         if available_geysers := self.ai.vespene_geyser.filter(
                             lambda g: not existing_gas_buildings.closer_than(5.0, g)
                         ):
-                            self.building_tracker[worker_tag][
-                                TARGET
-                            ] = available_geysers.closest_to(self.ai.start_location)
+                            self.building_tracker[worker_tag][TARGET] = (
+                                available_geysers.closest_to(self.ai.start_location)
+                            )
                             continue
                     else:
                         # this to fix the occasional bug where despite build gas action
@@ -376,11 +377,11 @@ class BuildingManager(Manager, IManagerMediator):
                         if self.ai.race == Race.Zerg:
                             tags_to_remove.add(worker_tag)
                         else:
-                            self.building_tracker[worker_tag][
-                                TARGET
-                            ] = self.manager_mediator.request_building_placement(
-                                base_location=self.ai.start_location,
-                                structure_type=structure_id,
+                            self.building_tracker[worker_tag][TARGET] = (
+                                self.manager_mediator.request_building_placement(
+                                    base_location=self.ai.start_location,
+                                    structure_type=structure_id,
+                                )
                             )
                         continue
 
@@ -433,9 +434,11 @@ class BuildingManager(Manager, IManagerMediator):
             List of all target positions/units from the building tracker.
         """
         return [
-            self.building_tracker[worker_tag][TARGET]
-            if isinstance(self.building_tracker[worker_tag][TARGET], Point2)
-            else self.building_tracker[worker_tag][TARGET].position
+            (
+                self.building_tracker[worker_tag][TARGET]
+                if isinstance(self.building_tracker[worker_tag][TARGET], Point2)
+                else self.building_tracker[worker_tag][TARGET].position
+            )
             for worker_tag in self.building_tracker
             if TARGET in self.building_tracker[worker_tag]
             and self.building_tracker[worker_tag][TARGET] is not None

@@ -1,6 +1,5 @@
-"""Ability base cooldowns.
+"""Ability base cooldowns."""
 
-"""
 from typing import Dict
 
 from sc2.ids.ability_id import AbilityId
