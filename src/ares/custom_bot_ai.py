@@ -8,7 +8,12 @@ import numpy as np
 from cython_extensions import cy_closer_than, cy_distance_to_squared
 from loguru import logger
 from map_analyzer.destructibles import buildings_2x2, buildings_3x3
-from propcache.api import cached_property
+
+try:
+    from propcache.api import cached_property
+except ImportError:
+    from functools import cached_property
+
 from s2clientprotocol import raw_pb2 as raw_pb
 from s2clientprotocol import sc2api_pb2 as sc_pb
 from s2clientprotocol import ui_pb2 as ui_pb
