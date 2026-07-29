@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.11.0 (2026-07-29)
+
+### Feature
+
+* **core:** Add cached ladder match property ([`85afbc6`](https://github.com/AresSC2/ares-sc2/commit/85afbc625173770fde876febdd6d08f74dbb16fe))
+
 ## v3.10.1 (2026-07-24)
 
 ### Fix
