@@ -184,23 +184,18 @@ class BuildOrderParser:
         represent valid structure types before creating a lambda build step for
         execution.
 
-        Parameters
-        ----------
-        commands : list[str]
-            List of command parameters. The first two parameters are positional,
-            while the last two specify the structures involved in the addon swap.
+        Args:
+            commands (list[str]): List of command parameters.
+                The first two parameters are positional, while the last two
+                specify the structures involved in the addon swap.
 
-        Raises
-        ------
-        Exception
-            If the length of the `commands` list is not exactly 4.
-        ValueError
-            If any structure names provided in the `commands` are invalid.
+        Raises:
+            Exception: If the length of the `commands` list is not exactly 4.
+            ValueError: If any structure names provided in the `commands`
+                are invalid.
 
-        Returns
-        -------
-        Callable
-            A callable object that represents the constructed build step.
+        Returns:
+            Callable: A callable object that represents the constructed build step.
         """
         # ['21', 'addonswap', 'factory', 'barracksreactor']
         if len(commands) != 4:

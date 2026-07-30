@@ -20,19 +20,13 @@ class CombatGroupBehavior(Behavior, Protocol):
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         """Execute the implemented behavior.
 
-        Parameters
-        ----------
-        ai : AresBot
-            AresBot instance.
-        config : dict
-            Dictionary with the data from the configuration file.
-        mediator : ManagerMediator
-            Mediator instance.
+        Parameters:
+            ai (AresBot): AresBot instance
+            config (dict): Dictionary with the data from the configuration file.
+            mediator (ManagerMediator): Mediator instance
 
-        Returns
-        -------
-        bool
-            CombatGroupBehavior carried out an action.
+        Returns:
+            bool: CombatGroupBehavior carried out an action.
         """
         ...
 

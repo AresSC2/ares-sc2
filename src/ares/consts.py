@@ -890,7 +890,7 @@ TOWNHALL_TYPES_NO_PF: frozenset[UnitTypeId] = frozenset(
     }
 )
 
-UNITS_TO_AVOID_TYPES: set[UnitTypeId] = ({
+UNITS_TO_AVOID_TYPES: set[UnitTypeId] = {
     UnitTypeId.CREEPTUMOR,
     UnitTypeId.CREEPTUMORBURROWED,
     UnitTypeId.CREEPTUMORQUEEN,
@@ -898,7 +898,7 @@ UNITS_TO_AVOID_TYPES: set[UnitTypeId] = ({
     UnitTypeId.INFESTORBURROWED,
     UnitTypeId.ROACHBURROWED,
     UnitTypeId.SPORECRAWLER,
-})
+}
 
 UNITS_TO_IGNORE: set[UnitTypeId] = set()
 UNIT_TYPES_WITH_NO_ROLE: set[UnitTypeId] = set()
