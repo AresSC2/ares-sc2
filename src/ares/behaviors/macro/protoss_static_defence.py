@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -46,7 +47,7 @@ class ProtossStaticDefence(MacroBehavior):
     max_on_route: int = 1
     tech_base_location: Point2 | None = None
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if ai.race != Race.Protoss:
             logger.warning(
                 f"{ai.time_formatted}: ProtossStaticDefence only supports Protoss."
@@ -123,7 +124,7 @@ class ProtossStaticDefence(MacroBehavior):
         return False
 
     def _tech_required(
-        self, ai: "AresBot", config: dict, mediator: ManagerMediator
+        self, ai: AresBot, config: dict, mediator: ManagerMediator
     ) -> bool:
         tech_location: Point2 = self.tech_base_location or ai.start_location
 

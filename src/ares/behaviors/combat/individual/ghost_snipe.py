@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -30,7 +31,7 @@ class GhostSnipe(CombatIndividualBehavior):
     unit: Unit
     close_enemy: list[Unit] | Units
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if (
             ai.enemy_race != Race.Zerg
             or not self.close_enemy
@@ -48,7 +49,7 @@ class GhostSnipe(CombatIndividualBehavior):
         return False
 
     def get_snipe_target(
-    ) -> Optional[Unit]:
+        self, ai: AresBot, ghosts: list[Unit], units: Units
     ) -> Unit | None:
         max_value: float = 0.0
         target: Unit | None = None

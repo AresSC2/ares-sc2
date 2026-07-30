@@ -1,5 +1,6 @@
 """Handle the construction of buildings."""
 
+from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Coroutine
 
@@ -65,8 +66,7 @@ class BuildingManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
-        config: Dict,
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -74,16 +74,12 @@ class BuildingManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-
         """
         super(BuildingManager, self).__init__(ai, config, mediator)
 
@@ -145,10 +141,6 @@ class BuildingManager(Manager, IManagerMediator):
         ----------
         iteration :
             The current game iteration.
-
-        Returns
-        -------
-
         """
         self._handle_construction_orders()
 
@@ -215,9 +207,9 @@ class BuildingManager(Manager, IManagerMediator):
         """
         dead_tags_to_remove: set[int] = set()
         tags_to_remove: set[int] = set()
-        structures_dict: dict[UnitTypeId, Units] = (
-            self.manager_mediator.get_own_structures_dict
-        )
+        structures_dict: dict[
+            UnitTypeId, Units
+        ] = self.manager_mediator.get_own_structures_dict
 
         building_spots: set[Point2] = set()
 
@@ -340,9 +332,9 @@ class BuildingManager(Manager, IManagerMediator):
                         if available_geysers := self.ai.vespene_geyser.filter(
                             lambda g: not existing_gas_buildings.closer_than(5.0, g)
                         ):
-                            self.building_tracker[worker_tag][TARGET] = (
-                                available_geysers.closest_to(self.ai.start_location)
-                            )
+                            self.building_tracker[worker_tag][
+                                TARGET
+                            ] = available_geysers.closest_to(self.ai.start_location)
                             continue
                     else:
                         # this to fix the occasional bug where despite build gas action
@@ -366,11 +358,11 @@ class BuildingManager(Manager, IManagerMediator):
                         if self.ai.race == Race.Zerg:
                             tags_to_remove.add(worker_tag)
                         else:
-                            self.building_tracker[worker_tag][TARGET] = (
-                                self.manager_mediator.request_building_placement(
-                                    base_location=self.ai.start_location,
-                                    structure_type=structure_id,
-                                )
+                            self.building_tracker[worker_tag][
+                                TARGET
+                            ] = self.manager_mediator.request_building_placement(
+                                base_location=self.ai.start_location,
+                                structure_type=structure_id,
                             )
                         continue
 
@@ -605,8 +597,8 @@ class BuildingManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        building
-        pos
+        building : UnitTypeId
+        pos : Point2
 
         Returns
         -------

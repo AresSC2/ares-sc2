@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -31,7 +32,7 @@ class MedivacHeal(CombatIndividualBehavior):
     grid: np.ndarray
     keep_safe: bool = True
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if self.unit.type_id != UnitTypeId.MEDIVAC:
             return False
 

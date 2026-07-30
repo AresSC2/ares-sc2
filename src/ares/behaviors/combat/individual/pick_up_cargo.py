@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -49,7 +50,7 @@ class PickUpCargo(CombatIndividualBehavior):
     pickup_targets: list[Unit] | Units
     cargo_switch_to_role: UnitRole | None = None
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         # no action executed
         if not self.pickup_targets or self.unit.type_id not in PICKUP_RANGE:
             # just ensure tags inside are assigned correctly

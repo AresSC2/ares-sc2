@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -16,6 +17,8 @@ from ares.managers.manager_mediator import ManagerMediator
 class ExpansionController(MacroBehavior):
     """Manage expanding.
 
+    Examples
+    --------
     Example:
     ```py
     from ares.behaviors.macro import ExpansionController
@@ -25,16 +28,21 @@ class ExpansionController(MacroBehavior):
     )
     ```
 
-    Attributes:
-        to_count: The target base count.
-        can_afford_check: Check if we can afford expansion. Setting this to False
-            will allow the worker to move to a location ready to build the expansion.
-            Defaults to True.
-        check_location_is_safe: Check if we don't knowingly expand at a dangerous
-            location. Defaults to True.
-        max_pending: Maximum pending townhalls at any time. Defaults to 1.
-        prioritize: Will return True for this behavior if we can't afford expansion.
-            Default is False
+    Attributes
+    ----------
+    to_count : int
+        The target base count.
+    can_afford_check : bool = True
+        Check if we can afford expansion. Setting this to False
+        will allow the worker to move to a location ready to build
+        the expansion.
+    check_location_is_safe : bool = True
+        Check if we don't knowingly expand at a dangerous
+        location.
+    max_pending : int = 1
+        Maximum pending townhalls at any time.
+    prioritize : bool = False
+        Will return True for this behavior if we can't afford expansion.
     """
 
     to_count: int
@@ -43,7 +51,7 @@ class ExpansionController(MacroBehavior):
     max_pending: int = 1
     prioritize: bool = False
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         # already have enough / or enough pending
         if (
             len([th for th in ai.townhalls if th.is_ready])
@@ -68,7 +76,7 @@ class ExpansionController(MacroBehavior):
         return False
 
     def _get_next_expansion_location(
-        self, ai: "AresBot", mediator: ManagerMediator
+        self, ai: AresBot, mediator: ManagerMediator
     ) -> Point2 | None:
         grid: np.ndarray = mediator.get_ground_grid
         for el in mediator.get_own_expansions:

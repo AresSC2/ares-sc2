@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -27,7 +28,7 @@ class RavenAutoTurret(CombatIndividualBehavior):
     unit: Unit
     all_close_enemy: list[Unit]
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if AbilityId.BUILDAUTOTURRET_AUTOTURRET not in self.unit.abilities:
             return False
 

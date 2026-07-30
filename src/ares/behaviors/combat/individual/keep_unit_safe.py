@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -38,7 +39,7 @@ class KeepUnitSafe(CombatIndividualBehavior):
     unit: Unit
     grid: np.ndarray
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         # no action executed
         if mediator.is_position_safe(grid=self.grid, position=self.unit.position):
             return False

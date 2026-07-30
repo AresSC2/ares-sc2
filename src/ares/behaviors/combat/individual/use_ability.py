@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -44,7 +45,7 @@ class UseAbility(CombatIndividualBehavior):
     target: Point2 | Unit | None = None
 
     def execute(
-        self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
+        self, ai: AresBot, config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
         if self.ability not in self.unit.abilities:
             return False

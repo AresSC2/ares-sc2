@@ -5,6 +5,7 @@ Starts as a random race and speed mines with 12 workers.
 
 """
 
+from __future__ import annotations
 import random
 import sys
 from os import path

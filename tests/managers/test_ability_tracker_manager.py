@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pathlib import Path
 
 import pytest
@@ -36,9 +37,9 @@ class TestAbilityTrackerManager:
             unit_tag=unit_tag,
         )
         # assert
-        unit_to_ability_dict: dict[int, dict[AbilityId, int]] = (
-            ability_tracker_manager.unit_to_ability_dict
-        )
+        unit_to_ability_dict: dict[
+            int, dict[AbilityId, int]
+        ] = ability_tracker_manager.unit_to_ability_dict
 
         # unit present in ability tracker
         assert unit_tag in unit_to_ability_dict

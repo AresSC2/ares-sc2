@@ -1,5 +1,7 @@
 """Base class for Managers."""
 
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Any
 

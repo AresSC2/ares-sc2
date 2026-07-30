@@ -1,6 +1,6 @@
 """The core of the bot."""
 
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from sc2.data import Race, Result
@@ -42,7 +42,7 @@ class Hub:
 
     def __init__(
         self,
-        config: Dict,
+        ai: AresBot,
         config: dict,
         manager_mediator: ManagerMediator,
         data_manager: DataManager = None,
@@ -95,7 +95,7 @@ class Hub:
             Additional custom managers
 
         """
-        self.ai: "AresBot" = ai
+        self.ai: AresBot = ai
         self.debug: bool = config[DEBUG]
         self.config: dict = config
         self.manager_mediator: ManagerMediator = manager_mediator

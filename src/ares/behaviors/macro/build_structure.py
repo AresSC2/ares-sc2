@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -95,7 +96,7 @@ class BuildStructure(MacroBehavior):
     reaper_wall: bool = False
     find_alternative: bool = True
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if self.structure_id not in STRUCTURE_TO_BUILDING_SIZE:
             logger.error(
                 f"Invalid structure type passed to `BuildStructure`: "
@@ -161,7 +162,7 @@ class BuildStructure(MacroBehavior):
                 return True
         return False
 
-    def _enough_existing(self, ai: "AresBot", mediator: ManagerMediator) -> bool:
+    def _enough_existing(self, ai: AresBot, mediator: ManagerMediator) -> bool:
         existing_structures = mediator.get_own_structures_dict[self.structure_id]
         num_existing: int = len(
             [s for s in existing_structures if s.is_ready]

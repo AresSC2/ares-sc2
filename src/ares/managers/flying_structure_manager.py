@@ -1,6 +1,6 @@
 """Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
-from typing import TYPE_CHECKING, Dict, Optional
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to_squared
@@ -26,7 +26,7 @@ class FlyingStructureManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        config: Dict,
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -34,11 +34,11 @@ class FlyingStructureManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
 
         Returns
@@ -72,11 +72,11 @@ class FlyingStructureManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        receiver :
+        receiver : ManagerName
             This Manager.
-        request :
+        request : ManagerRequestType
             What kind of request is being made
-        reason :
+        reason : str = None
             Why the reason is being made
         kwargs :
             Additional keyword args if needed for the specific request, as determined

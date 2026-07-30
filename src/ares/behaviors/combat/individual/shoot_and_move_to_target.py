@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -55,7 +56,7 @@ class ShootAndMoveToTarget(CombatIndividualBehavior):
     dist_to_target: float = 4.0
     attack_destructables: bool = True
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if ShootTargetInRange(self.unit, self.enemy_units).execute(
             ai, config, mediator
         ):

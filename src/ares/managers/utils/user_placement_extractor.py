@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from sc2.data import Race
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
 class UserPlacementExtractor:
     """Handles extraction and parsing of user-defined building placements from YAML."""
 
-    def __init__(self, ai: "AresBot", user_placements: dict):
+    def __init__(self, ai: AresBot, user_placements: dict):
         self.ai = ai
         self.user_placements = user_placements
 

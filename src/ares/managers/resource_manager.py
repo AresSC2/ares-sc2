@@ -1,5 +1,6 @@
 """Anything to do with resource management and collection."""
 
+from __future__ import annotations
 import math
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
@@ -43,7 +44,7 @@ class ResourceManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        config: Dict,
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -51,16 +52,12 @@ class ResourceManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-
         """
         super(ResourceManager, self).__init__(ai, config, mediator)
         self.manager_requests_dict = {
@@ -128,11 +125,7 @@ class ResourceManager(Manager, IManagerMediator):
         self.initial_worker_split: bool = True
 
     def set_worker_per_gas(self, amount: int) -> None:
-        """Sets how many workers to be assigned to each gas building
-
-        Returns
-        -------
-        """
+        """Sets how many workers to be assigned to each gas building"""
         self.workers_per_gas = amount
 
     @property_cache_once_per_frame
@@ -943,8 +936,12 @@ class ResourceManager(Manager, IManagerMediator):
 
         """
         if self.ai.state.game_loop == 6720:
-            print(f"{self.ai.time_formatted} Mined a total of {int(self.ai.minerals)}\
-                 minerals")
+            print(
+                f"{self.ai.time_formatted} Mined a total of {int(self.ai.minerals)}\
+                 minerals"
+            )
 
-            print(f"{self.ai.time_formatted} Mined a total of\
-                 {int(self.ai.state.score.collected_vespene)} vespene")
+            print(
+                f"{self.ai.time_formatted} Mined a total of\
+                 {int(self.ai.state.score.collected_vespene)} vespene"
+            )

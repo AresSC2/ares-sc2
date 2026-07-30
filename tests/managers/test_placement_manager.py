@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pathlib import Path
 
 import pytest
@@ -26,9 +27,9 @@ class TestPlacementManager:
         """
         placement_manager: PlacementManager = bot.manager_hub.placement_manager
         if len(bot.expansion_locations_list) >= 2:
-            placements_dict: dict[Point2, dict[BuildingSize, dict]] = (
-                placement_manager.placements_dict
-            )
+            placements_dict: dict[
+                Point2, dict[BuildingSize, dict]
+            ] = placement_manager.placements_dict
             for el, placements in placements_dict.items():
                 assert len(placements[BuildingSize.TWO_BY_TWO]) >= 1
                 assert len(placements[BuildingSize.THREE_BY_THREE]) >= 0
@@ -39,9 +40,9 @@ class TestPlacementManager:
         """
         placement_manager: PlacementManager = bot.manager_hub.placement_manager
         if len(bot.expansion_locations_list) >= 2:
-            placements_dict: dict[Point2, dict[BuildingSize, dict]] = (
-                placement_manager.placements_dict
-            )
+            placements_dict: dict[
+                Point2, dict[BuildingSize, dict]
+            ] = placement_manager.placements_dict
             for el, placements in placements_dict.items():
                 if el == bot.start_location:
                     assert len(placements[BuildingSize.THREE_BY_THREE]) >= 13

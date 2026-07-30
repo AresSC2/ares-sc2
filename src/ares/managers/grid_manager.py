@@ -110,8 +110,7 @@ class GridManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
-        config: Dict,
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:

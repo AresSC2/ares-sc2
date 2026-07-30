@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Protocol, Union
+from __future__ import annotations
+from typing import TYPE_CHECKING, Protocol
 
 from cython_extensions import cy_distance_to_squared
 from sc2.ids.ability_id import AbilityId
@@ -15,16 +16,22 @@ if TYPE_CHECKING:
 class CombatGroupBehavior(Behavior, Protocol):
     """Interface that all group combat behaviors should adhere to."""
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         """Execute the implemented behavior.
 
-        Parameters:
-            ai (AresBot): AresBot instance
-            config (dict): Dictionary with the data from the configuration file.
-            mediator (ManagerMediator): Mediator instance
+        Parameters
+        ----------
+        ai : AresBot
+            AresBot instance.
+        config : dict
+            Dictionary with the data from the configuration file.
+        mediator : ManagerMediator
+            Mediator instance.
 
-        Returns:
-            bool: CombatGroupBehavior carried out an action.
+        Returns
+        -------
+        bool
+            CombatGroupBehavior carried out an action.
         """
         ...
 

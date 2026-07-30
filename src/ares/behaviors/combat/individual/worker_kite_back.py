@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -55,7 +56,7 @@ class WorkerKiteBack(CombatIndividualBehavior):
     should_attack: bool = True
 
     def execute(
-        self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
+        self, ai: AresBot, config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
         unit = self.unit
         target = self.target

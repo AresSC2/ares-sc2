@@ -761,7 +761,7 @@ FLYING_IGNORE: frozenset[UnitTypeId] = ({
     UnitTypeId.PHOENIX,
 })
 
-GAS_BUILDINGS = frozenset[UnitTypeId] = ({
+GAS_BUILDINGS: frozenset[UnitTypeId] = ({
     UnitTypeId.ASSIMILATOR,
     UnitTypeId.EXTRACTOR,
     UnitTypeId.REFINERY,
@@ -869,7 +869,7 @@ WORKER_TYPES: frozenset[UnitTypeId] = ({
     UnitTypeId.SCV
 })
 
-ALL_WORKER_TYPES: frozenset[UnitTypeId] = frozenset({
+ALL_WORKER_TYPES: frozenset[UnitTypeId] = ({
     UnitTypeId.DRONE,
     UnitTypeId.PROBE,
     UnitTypeId.SCV,

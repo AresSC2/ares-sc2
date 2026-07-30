@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import TYPE_CHECKING, Protocol
 
 from ares.behaviors.behavior import Behavior
@@ -10,19 +11,24 @@ if TYPE_CHECKING:
 class MacroBehavior(Behavior, Protocol):
     """Interface that all macro behaviors should adhere to."""
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         """Execute the implemented behavior.
 
         Compared to CombatBehavior a MacroBehavior may be a larger isolated task.
         No need to return anything for a macro behavior.
 
-        Args:
-            ai: Bot object that will be running the game.
-            config: Dictionary with the data from the configuration file.
-            mediator: ManagerMediator used for getting information from other managers.
+        Parameters
+        ----------
+        ai : AresBot
+            Bot object that will be running the game.
+        config : dict
+            Dictionary with the data from the configuration file.
+        mediator : ManagerMediator
+            ManagerMediator used for getting information from other managers.
 
-        Returns:
-            bool: MacroBehavior carried out an action.
-
+        Returns
+        -------
+        bool
+            MacroBehavior carried out an action.
         """
         ...

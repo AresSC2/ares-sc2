@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -71,7 +72,7 @@ class PathGroupToTarget(CombatGroupBehavior):
     danger_threshold: float = 5.0
     prevent_duplicate: bool = True
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         assert isinstance(
             self.start, Point2
         ), f"{self.start} should be `Point2`, got {type(self.start)}"

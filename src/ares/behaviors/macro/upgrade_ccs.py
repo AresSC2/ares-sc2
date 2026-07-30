@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -42,7 +43,7 @@ class UpgradeCCs(MacroBehavior):
     to: UnitTypeId
     prioritize: bool = False
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         ccs: list[Unit] = [
             th
             for th in mediator.get_own_structures_dict[UnitTypeId.COMMANDCENTER]

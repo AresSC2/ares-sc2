@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -43,7 +44,7 @@ class ShootTargetInRange(CombatIndividualBehavior):
     extra_range: float = 0.0
 
     def execute(
-        self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
+        self, ai: AresBot, config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
         if not self.targets:
             return False

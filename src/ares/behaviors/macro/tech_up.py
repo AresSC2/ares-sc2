@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -52,7 +53,7 @@ class TechUp(MacroBehavior):
     base_location: Point2
     ignore_existing_techlabs: bool = False
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         assert isinstance(
             self.desired_tech, (UpgradeId, UnitTypeId)
         ), f"Wrong type provided for `desired_tech`, got {type(self.desired_tech)}"
@@ -188,7 +189,7 @@ class TechUp(MacroBehavior):
 
     def _adding_techlab(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         base_location: Point2,
         researched_from_id: UnitTypeId,
         tech_required: list[UnitTypeId],
@@ -261,7 +262,7 @@ class TechUp(MacroBehavior):
                 return True
         return False
 
-    def _upgrade_zerg_townhall(self, structure_type: UnitTypeId, ai: "AresBot") -> bool:
+    def _upgrade_zerg_townhall(self, structure_type: UnitTypeId, ai: AresBot) -> bool:
         structures_dict = ai.mediator.get_own_structures_dict
         if (
             not ai.can_afford(structure_type)

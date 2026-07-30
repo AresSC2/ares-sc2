@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -38,7 +39,7 @@ class RestorePower(MacroBehavior):
     ```
     """
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if structures_no_power := [
             s
             for s in ai.structures
@@ -89,7 +90,7 @@ class RestorePower(MacroBehavior):
 
     @staticmethod
     def _restoring_power(
-        structure: Unit, ai: "AresBot", config: dict, mediator: ManagerMediator
+        structure: Unit, ai: AresBot, config: dict, mediator: ManagerMediator
     ) -> bool:
         """Given an unpowered structure, find a pylon position.
 

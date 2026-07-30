@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Coroutine, DefaultDict, Optional, Union
+from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Coroutine
 
@@ -22,7 +22,7 @@ class WarpInManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -30,11 +30,11 @@ class WarpInManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
         super(WarpInManager, self).__init__(ai, config, mediator)
@@ -119,9 +119,9 @@ class WarpInManager(Manager, IManagerMediator):
         if not self.requested_warp_ins:
             return
 
-        own_structures_dict: dict[UnitTypeId, list[Unit]] = (
-            self.manager_mediator.get_own_structures_dict
-        )
+        own_structures_dict: dict[
+            UnitTypeId, list[Unit]
+        ] = self.manager_mediator.get_own_structures_dict
         pylons: list[Unit] = [
             s for s in own_structures_dict[UnitTypeId.PYLON] if s.is_ready
         ]

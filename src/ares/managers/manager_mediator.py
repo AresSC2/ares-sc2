@@ -297,7 +297,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     def get_closest_creep_tile(self, **kwargs) -> None | Point2:
-        """Get closest creep tile to `pos`
+        """Get the closest creep tile to pos
 
         WARNING: May return `None` if no creep tiles observed.
 
@@ -1236,30 +1236,41 @@ class ManagerMediator(IManagerMediator):
     def find_path_next_point(self, **kwargs) -> Point2:
         """Find the next point in a path.
 
-        Parameters:
-            start (Point2): Start point of the path.
-            target (Point2): Desired end point of the path.
-            grid (np.ndarray): The grid that should be used for pathing.
-            sensitivity (int, optional): Amount of points that should be
-                skipped in the full path between tiles that are returned.
-                Default value is 5.
-            smoothing (bool, optional): Optional path smoothing where nodes are
-                removed if it's possible to jump ahead some tiles in
-                a straight line with a lower cost.
-                Default value is False.
-            sense_danger (bool, optional): Check to see if there are any
-                dangerous tiles near the starting point. If this is True and
-                there are no dangerous tiles near the starting point,
-                the pathing query is skipped and the target is returned.
-                Default value is True.
-            danger_distance (float, optional): How far away from the
-                start to look for danger.
-                Default value is 20.
-            danger_threshold (float, optional): Minimum value for a tile
-                to be considered dangerous.
-                Default value is 5.
+        Parameters
+        ----------
+        start : Point2
+            Start point of the path.
+        target : Point2
+            Desired end point of the path.
+        grid : np.ndarray
+            The grid that should be used for pathing.
+        sensitivity : int | None
+            Amount of points that should be
+            skipped in the full path between tiles that are returned.
+            Default value is 5.
+        smoothing : bool | None
+            Optional path smoothing where nodes are
+            removed if it's possible to jump ahead some tiles in
+            a straight line with a lower cost.
+            Default value is False.
+        sense_danger : bool | None
+            Check to see if there are any
+            dangerous tiles near the starting point. If this is True and
+            there are no dangerous tiles near the starting point,
+            the pathing query is skipped and the target is returned.
+            Default value is True.
+        danger_distance : float | None
+            How far away from the
+            start to look for danger.
+            Default value is 20.
+        danger_threshold : float | None
+            Minimum value for a tile
+            to be considered dangerous.
+            Default value is 5.
 
-        Returns:
+        Returns
+        -------
+        Point2
             The next point in the path from the start to the target which may be the
             same as the target if it's safe.
         """
@@ -1272,31 +1283,37 @@ class ManagerMediator(IManagerMediator):
     ) -> tuple[Point2 | None, Point2 | None, list[int] | None]:
         """Find the next point in a path including via nyduses.
 
-        Parameters:
-            start (Point2): Start point of the path.
-            target (Point2): Desired end point of the path.
-            grid (np.ndarray): The grid that should be used for pathing.
-            sensitivity (int, optional): Amount of points that should be
-                skipped in the full path between tiles that are returned.
-                Default value is 5.
-            smoothing (bool, optional): Optional path smoothing where nodes are
-                removed if it's possible to jump ahead some tiles in
-                a straight line with a lower cost.
-                Default value is False.
-            sense_danger (bool, optional): Check to see if there are any
-                dangerous tiles near the starting point. If this is True and
-                there are no dangerous tiles near the starting point,
-                the pathing query is skipped and the target is returned.
-                Default value is True.
-            danger_distance (float, optional): How far away from the
-                start to look for danger.
-                Default value is 20.
-            danger_threshold (float, optional): Minimum value for a tile
-                to be considered dangerous.
-                Default value is 5.
+        Parameters
+        ----------
+        start : Point2
+            Start point of the path.
+        target : Point2
+            Desired end point of the path.
+        grid : np.ndarray
+            The grid that should be used for pathing.
+        sensitivity : int = 5
+            Amount of points that should be
+            skipped in the full path between tiles that are returned.
+        smoothing : bool = False
+            Optional path smoothing where nodes are
+            removed if it's possible to jump ahead some tiles in
+            a straight line with a lower cost.
+        sense_danger : bool = True
+            Check to see if there are any
+            dangerous tiles near the starting point. If this is True and
+            there are no dangerous tiles near the starting point,
+            the pathing query is skipped and the target is returned.
+        danger_distance : float = 20
+            How far away from the
+            start to look for danger.
+        danger_threshold : float = 15
+            Minimum value for a tile
+            to be considered dangerous.
 
-        Returns:
-            Tuple of (next_point, nydus_next_point, nydus_points)
+        Returns
+        -------
+        tuple :
+            tuple of (next_point, nydus_next_point, nydus_points).
         """
         return self.manager_request(
             ManagerName.PATH_MANAGER, ManagerRequestType.NYDUS_PATH_NEXT_POINT, **kwargs
@@ -1771,35 +1788,47 @@ class ManagerMediator(IManagerMediator):
 
         PlacementManager
 
-        Parameters:
-            base_location (Point2): The general area where the placement should be near.
-                This should be an expansion location.
-            structure_type (UnitTypeId): Structure type requested.
-            first_pylon (bool, optional): Try to take designated
-                first pylon if available.
-                Default value is False.
-            static_defence (bool, optional): Try to take designated
-                static defence placements if available.
-                Default value is False.
-            wall (bool, optional): Request a wall structure placement.
-                Will find alternative if no wall placements available.
-                Default value is False.
-            find_alternative (bool, optional): If no placements available
-                at base_location, find an alternative at a nearby base.
-                Default value is True.
-            reserve_placement (bool, optional): Reserve this booking for a
-                while, so another customer doesn't request it.
-                Default value is True.
-            within_psionic_matrix (bool, optional): Protoss specific -> calculated
-                position have power?
-                Default value is False.
-            pylon_build_progress (float, optional): Only relevant
-                if `within_psionic_matrix = True`.
-                Default value is 1.0.
-            closest_to (Point2, optional): Find placement at base closest to this.
+        Parameters
+        ----------
+        base_location : Point2
+            The general area where the placement should be near.
+            This should be an expansion location.
+        structure_type : UnitTypeId
+            Structure type requested.
+        first_pylon : bool, optional
+            Try to take designated
+            first pylon if available.
+            Default value is False.
+        static_defence : bool, optional
+            Try to take designated
+            static defence placements if available.
+            Default value is False.
+        wall : bool, optional
+            Request a wall structure placement.
+            Will find alternative if no wall placements available.
+            Default value is False.
+        find_alternative : bool, optional
+            If no placements available
+            at base_location, find an alternative at a nearby base.
+            Default value is True.
+        reserve_placement : bool, optional
+            Reserve this booking for a
+            while, so another customer doesn't request it.
+            Default value is True.
+        within_psionic_matrix : bool, optional
+            Protoss specific -> calculated
+            position have power?
+            Default value is False.
+        pylon_build_progress : float, optional
+            Only relevant
+            if `within_psionic_matrix = True`.
+            Default value is 1.0.
+        closest_to : Point2, optional
+            Find placement at base closest to this.
 
-
-        Returns:
+        Returns
+        -------
+        Point2 | None
             Indicating if structure can be placed at given position.
         """
         return self.manager_request(
@@ -1980,11 +2009,16 @@ class ManagerMediator(IManagerMediator):
 
         TerrainManager
 
-        Parameters:
-            worker_tag (int): The worker attempting to build the structure.
-            position (Point2): Where the structure is attempting to be placed.
+        Parameters
+        ----------
+        worker_tag : int
+            The worker attempting to build the structure.
+        position : Point2
+            Where the structure is attempting to be placed.
 
-        Returns:
+        Returns
+        -------
+        Point2 | None
             The position that's blocked by an enemy unit.
         """
         return self.manager_request(
@@ -2473,22 +2507,24 @@ class ManagerMediator(IManagerMediator):
 
         UnitMemoryManager
 
-        Parameters:
-            start_points (List[Union[Unit, Tuple[float, float]]]):
-                List of `Unit`s or positions to search for units from.
-            distances (Union[float, List[float]]): How far away from each point to
-                query. Must broadcast to the length of `start_points`.
-            query_tree (UnitTreeQueryType): Which KDTree should be queried.
-            return_as_dict (bool, optional): Sets whether the returned units in range
-                should be a dictionary or list. Default is False.
+        Parameters
+        ----------
+        start_points : list[Unit | tuple[float, float]]
+            `list` of `Unit`s or positions to search for units from.
+        distances : float | list[float]
+            How far away from each point to query. Must broadcast to the length
+            of `start_points`.
+        query_tree : UnitTreeQueryType
+            Which KDTree should be queried.
+        return_as_dict : bool = False
+            Sets whether the returned units in range should be a dictionary or list.
 
-
-        Returns:
-            Union[Dict[Union[int, Tuple[float, float]], Units], List[Units]]:
-                Returns the units in range of each start point as a `dict` where the key
-                is the unit tag or position and the value is the `Units` in range or a
-                `list` of `Units`.
-
+        Returns
+        -------
+        dict[int | tuple[float, float], Units] | list[Units]
+            Returns the units in range of each start point as a `dict` where the key
+            is the unit tag or position and the value is the `Units` in range or a
+            `list` of `Units`.
         """
         return self.manager_request(
             ManagerName.UNIT_MEMORY_MANAGER,

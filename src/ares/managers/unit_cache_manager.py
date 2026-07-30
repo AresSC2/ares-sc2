@@ -1,5 +1,6 @@
 """Cache armies for better and faster tracking."""
 
+from __future__ import annotations
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any
 
@@ -37,7 +38,7 @@ class UnitCacheManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        config: Dict,
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -45,16 +46,12 @@ class UnitCacheManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-
         """
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {

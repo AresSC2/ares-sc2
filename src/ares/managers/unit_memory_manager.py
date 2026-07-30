@@ -1,5 +1,6 @@
 """Manager for keeping track of enemy last known positions."""
 
+from __future__ import annotations
 from collections import deque
 from typing import TYPE_CHECKING, Any, Deque
 
@@ -613,7 +614,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Set[int] :
+        unit_tags_in_range_list : set[int]
             Set of tags of our units that are in range of a detector. This doesn't take
             our unit's radius into account, only the radius of the detector.
         """

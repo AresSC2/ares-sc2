@@ -1,3 +1,4 @@
+from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable
 
@@ -82,7 +83,7 @@ class Mining(MacroBehavior):
     locked_action_tags: dict[int, float] = field(default_factory=dict)
     weight_safety_limit: float = 12.0
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         workers: Units = mediator.get_units_from_role(
             role=UnitRole.GATHERING,
             unit_type=ai.worker_type,
@@ -94,16 +95,16 @@ class Mining(MacroBehavior):
         health_perc: float = self.flee_at_health_perc
         avoidance_grid: np.ndarray = mediator.get_ground_avoidance_grid
         grid: np.ndarray = mediator.get_ground_grid
-        mineral_patch_to_list_of_workers: dict[int, set[int]] = (
-            mediator.get_mineral_patch_to_list_of_workers
-        )
+        mineral_patch_to_list_of_workers: dict[
+            int, set[int]
+        ] = mediator.get_mineral_patch_to_list_of_workers
         path_find: Callable = mediator.find_path_next_point
         pos_safe: Callable = mediator.is_position_safe
         th_dist_factor: float = config[MINING][TOWNHALL_DISTANCE_FACTOR]
         worker_to_geyser_dict: dict[int, int] = mediator.get_worker_to_vespene_dict
-        worker_to_mineral_patch_dict: dict[int, int] = (
-            mediator.get_worker_to_mineral_patch_dict
-        )
+        worker_to_mineral_patch_dict: dict[
+            int, int
+        ] = mediator.get_worker_to_mineral_patch_dict
         worker_to_th: dict[int, int] = mediator.get_worker_tag_to_townhall_tag
         # for each mineral tag, get the position in front of the mineral
         min_target: dict[int, Point2] = mediator.get_mineral_target_dict
@@ -256,7 +257,7 @@ class Mining(MacroBehavior):
             mediator.find_closest_safe_spot(from_pos=worker.position, grid=grid)
         )
 
-    def _do_standard_mining(self, ai: "AresBot", worker: Unit, resource: Unit) -> None:
+    def _do_standard_mining(self, ai: AresBot, worker: Unit, resource: Unit) -> None:
         worker_tag: int = worker.tag
         # prevent spam clicking workers on patch to reduce APM
         if worker_tag in self.locked_action_tags:
@@ -297,7 +298,7 @@ class Mining(MacroBehavior):
 
     def _long_distance_mining(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         mediator: ManagerMediator,
         grid: np.ndarray,
         worker: Unit,
@@ -428,7 +429,7 @@ class Mining(MacroBehavior):
         Gather command and letting the SC2 engine manage the worker.
 
         Parameters:
-            ai: Main AresBot object
+            ai: AresBot
             distance_to_townhall_factor: Multiplier used for finding the target
                 of the Move command when returning resources.
             target: Mineral field or Townhall that the worker should be
@@ -479,12 +480,12 @@ class Mining(MacroBehavior):
 
     @staticmethod
     def _safe_long_distance_mineral_fields(
-        ai: "AresBot", mediator: ManagerMediator
+        ai: AresBot, mediator: ManagerMediator
     ) -> list[Unit]:
         """Find mineral fields for long distance miners.
 
         Parameters:
-            ai: Main AresBot object
+            ai: AresBot
             mediator: Manager mediator to interact with the managers
 
         Returns:
@@ -511,7 +512,7 @@ class Mining(MacroBehavior):
 
     @staticmethod
     def _worker_attacking_enemy(
-        ai: "AresBot", dist_to_resource: float, worker: Unit
+        ai: AresBot, dist_to_resource: float, worker: Unit
     ) -> bool:
         if not worker.is_collecting or dist_to_resource > 1.0:
             if enemies := cy_in_attack_range(worker, ai.enemy_units):
