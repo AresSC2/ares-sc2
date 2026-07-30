@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_center, cy_in_attack_range, cy_sorted_by_distance_to
 from sc2.ids.ability_id import AbilityId
@@ -30,8 +30,8 @@ class StutterGroupForward(CombatGroupBehavior):
     group: list[Unit]
     group_tags: set[int]
     group_position: Point2
-    target: Union[Point2, Unit]
-    enemies: Union[Units, list[Unit]]
+    target: Point2 | Unit
+    enemies: list[Unit] | Units
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if len(self.group) == 0:

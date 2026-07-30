@@ -5,12 +5,10 @@ detectors will not be in range if they use these values.
 
 """
 
-from typing import Dict, Union
-
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId
 
-DETECTOR_RANGES: Dict[Union[EffectId, UnitTypeId], float] = {
+DETECTOR_RANGES: dict[EffectId | UnitTypeId, float] = {
     # technically it's their range + radius + 1 (for safety)
     # Protoss
     UnitTypeId.OBSERVER: 11 + 0.5 + 1,

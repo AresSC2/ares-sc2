@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to
 from sc2.ids.ability_id import AbilityId
@@ -29,7 +29,7 @@ class UseTransfuse(CombatIndividualBehavior):
     """
 
     unit: Unit
-    targets: Union[list[Unit], Units]
+    targets: list[Unit] | Units
     extra_range: float = 0.0
 
     def execute(

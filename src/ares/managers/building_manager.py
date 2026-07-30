@@ -1,17 +1,7 @@
 """Handle the construction of buildings."""
 
 from collections import defaultdict
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Coroutine,
-    DefaultDict,
-    Dict,
-    List,
-    Optional,
-    Set,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Coroutine
 
 from cython_extensions import (
     cy_center,
@@ -59,17 +49,16 @@ class BuildingManager(Manager, IManagerMediator):
 
     Attributes
     ----------
-    blocked_expansion_locations : Set[Point2]
+    blocked_expansion_locations : set[Point2]
         Which expansion locations are blocked and not considered for expanding
-    building_tracker : Dict[int, Dict[str, Union[Point2, Unit, UnitTypeId], float]
+    building_tracker : dict[int, dict[str, Point2 | Unit | UnitTypeId, float]
         Tracks the worker tag to:
             UnitTypeId of the building to be built
             Point2 of where the building is to be placed
             In-game time when the order started
             Why the building is being built
-    building_counter : DefaultDict[UnitTypeId, int]
+    building_counter : defaultdict[UnitTypeId, int]
         Tracks the type of building in the tracker and how many are present
-
     """
 
     BUILDING_WORKER_TIMEOUT: float = 120.0
@@ -78,6 +67,7 @@ class BuildingManager(Manager, IManagerMediator):
         self,
         ai: "AresBot",
         config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -112,13 +102,13 @@ class BuildingManager(Manager, IManagerMediator):
             ),
         }
 
-        self.building_tracker: Dict[
-            int, Dict[str, Union[Point2, Unit, UnitTypeId], float]
+        self.building_tracker: dict[
+            int, dict[str, Point2 | Unit | UnitTypeId, float]
         ] = {}
-        self.building_counter: DefaultDict[UnitTypeId, int] = defaultdict(int)
+        self.building_counter: defaultdict[UnitTypeId, int] = defaultdict(int)
         # remember for each expansion attempt, otherwise we lose memory
         # should be cleared after expanding
-        self.blocked_expansion_locations: Set[Point2] = set()
+        self.blocked_expansion_locations: set[Point2] = set()
 
     def manager_request(
         self,
@@ -126,7 +116,7 @@ class BuildingManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs,
-    ) -> Optional[Union[Dict, DefaultDict, Coroutine[Any, Any, bool]]]:
+    ) -> dict | defaultdict | Coroutine[Any, Any, bool] | None:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -143,9 +133,8 @@ class BuildingManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Union[Dict, DefaultDict, Coroutine[Any, Any, bool]]] :
+        dict | defaultdict | Coroutine[Any, Any, bool] | None :
             Everything that could possibly be returned from the Manager fits in there
-
         """
         return self.manager_requests_dict[request](kwargs)
 
@@ -252,7 +241,7 @@ class BuildingManager(Manager, IManagerMediator):
                 tags_to_remove.add(worker_tag)
                 continue
 
-            target: Union[Point2, Unit] = self.building_tracker[worker_tag][TARGET]
+            target: Point2 | Unit = self.building_tracker[worker_tag][TARGET]
             worker = self.ai.unit_tag_dict.get(worker_tag, None)
 
             if not worker:
@@ -277,7 +266,7 @@ class BuildingManager(Manager, IManagerMediator):
             building_spots.add(target)
             distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
             # if terran, check for unfinished structure
-            existing_unfinished_structure: Optional[Unit] = None
+            existing_unfinished_structure: Unit | None = None
             if self.ai.race == Race.Terran and structure_id in structures_dict:
                 if existing_unfinished_structures := [
                     s
@@ -321,7 +310,7 @@ class BuildingManager(Manager, IManagerMediator):
                     continue
 
             if cy_distance_to(worker.position, target.position) > distance:
-                order_target: Union[int, Point2, None] = worker.order_target
+                order_target: int | Point2 | None = worker.order_target
                 point: Point2 = self.manager_mediator.find_path_next_point(
                     start=worker.position,
                     target=target.position,
@@ -399,7 +388,7 @@ class BuildingManager(Manager, IManagerMediator):
                 self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
 
         for tag in dead_tags_to_remove:
-            position: Optional[Point2] = self.building_tracker[tag][TARGET]
+            position: Point2 | None = self.building_tracker[tag][TARGET]
             # some how there is no position
             # removing will allow this to be readded if required
             if not position:
@@ -431,7 +420,7 @@ class BuildingManager(Manager, IManagerMediator):
         Returns
         -------
         list[Point2] :
-            List of all target positions/units from the building tracker.
+            `list` of all target positions/units from the building tracker.
         """
         return [
             (
@@ -481,7 +470,7 @@ class BuildingManager(Manager, IManagerMediator):
             self.manager_mediator.assign_role(tag=tag, role=UnitRole.GATHERING)
 
     async def construct_gas(
-        self, max_building: int = 1, geyser: Optional[Unit] = None
+        self, max_building: int = 1, geyser: Unit | None = None
     ) -> None:
         """Build a gas building.
 
@@ -495,7 +484,7 @@ class BuildingManager(Manager, IManagerMediator):
         geyser :
             The geyser to build the gas building on
         """
-        pending_geysers: List[Unit] = [
+        pending_geysers: list[Unit] = [
             self.building_tracker[tag][TARGET]
             for tag in self.building_tracker
             if self.building_tracker[tag][ID] == self.ai.gas_type
@@ -507,7 +496,7 @@ class BuildingManager(Manager, IManagerMediator):
         if len(pending_geysers) + len(building_gases) >= max_building:
             return
 
-        target_geyser: Optional[Unit] = None
+        target_geyser: Unit | None = None
 
         if geyser:
             target_geyser = geyser
@@ -606,7 +595,7 @@ class BuildingManager(Manager, IManagerMediator):
 
     async def find_valid_position(
         self, building: UnitTypeId, pos: Point2
-    ) -> Union[Point2, Coroutine[Any, Any, Optional[Point2]]]:
+    ) -> Point2 | Coroutine[Any, Any, Point2 | None]:
         """Make sure multiple workers aren't trying to build in the same position.
 
         Notes
@@ -621,7 +610,7 @@ class BuildingManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Union[Point2, Coroutine[Any, Any, Optional[Point2]]] :
+        Point2 | Coroutine[Any, Any, Point2 | None] :
             Either a Point2 that's a valid placement or a position in the main base.
 
         """
@@ -640,7 +629,7 @@ class BuildingManager(Manager, IManagerMediator):
         self,
         worker: Unit,
         structure_type: UnitTypeId,
-        pos: Union[Point2, Unit],
+        pos: Point2 | Unit,
         assign_role: bool = True,
         building_purpose: BuildingPurpose = BuildingPurpose.NORMAL_BUILDING,
     ) -> bool:

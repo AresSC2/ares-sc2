@@ -2,7 +2,7 @@
 
 import math
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, DefaultDict, Dict, List, Optional, Set
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from cython_extensions import (
@@ -43,8 +43,8 @@ class ResourceManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
         config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -104,22 +104,22 @@ class ResourceManager(Manager, IManagerMediator):
         self.cached_townhalls: Units = Units([], self.ai)
 
         self.workers_per_gas: int = 3
-        self.worker_to_mineral_patch_dict: Dict[int, int] = {}
-        self.mineral_patch_to_list_of_workers: Dict[int, Set[int]] = {}
+        self.worker_to_mineral_patch_dict: dict[int, int] = {}
+        self.mineral_patch_to_list_of_workers: dict[int, set[int]] = {}
 
-        self.worker_to_geyser_dict: Dict[int, int] = {}
-        self.geyser_to_list_of_workers: Dict[int, Set[int]] = {}
+        self.worker_to_geyser_dict: dict[int, int] = {}
+        self.geyser_to_list_of_workers: dict[int, set[int]] = {}
 
-        self.mineral_tag_to_mineral: Dict[int, Unit] = {}
-        self.mineral_object_to_worker_units_object: DefaultDict[Unit, List[Unit]] = (
-            defaultdict(list)
-        )
+        self.mineral_tag_to_mineral: dict[int, Unit] = {}
+        self.mineral_object_to_worker_units_object: defaultdict[
+            Unit, list[Unit]
+        ] = defaultdict(list)
         # keep track of how many mineral patches we have available
         self.num_available_min_patches: int = 0
         # mineral targets are positions just before the mineral (for speed mining)
-        self.mineral_target_dict: Dict[Point2, Point2] = {}
+        self.mineral_target_dict: dict[Point2, Point2] = {}
         # store which townhall the worker is closest to
-        self.worker_tag_to_townhall_tag: Dict[int, int] = {}
+        self.worker_tag_to_townhall_tag: dict[int, int] = {}
         if not self.ai.arcade_mode:
             self._calculate_mineral_targets()
 
@@ -326,7 +326,7 @@ class ResourceManager(Manager, IManagerMediator):
         only_select_persistent_builder: bool = False,
         min_health_perc: float = 0.0,
         min_shield_perc: float = 0.0,
-    ) -> Optional[Unit]:
+    ) -> Unit | None:
         """Select a worker.
 
         This way we can select one assigned to a far mineral patch.
@@ -355,7 +355,7 @@ class ResourceManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Unit] :
+        Unit | None :
             Selected worker, if available.
 
         """
@@ -528,7 +528,7 @@ class ResourceManager(Manager, IManagerMediator):
                 continue
 
             # Assign worker closest to the gas building
-            worker: Optional[Unit] = self.select_worker(gas.position, force_close=True)
+            worker: Unit | None = self.select_worker(gas.position, force_close=True)
 
             if not worker or worker.tag in self.geyser_to_list_of_workers:
                 continue
@@ -796,8 +796,8 @@ class ResourceManager(Manager, IManagerMediator):
             }
 
     def _create_resource_to_worker_object_dict(
-        self, resource_dict: Dict[int, Unit], resource_type: str
-    ) -> Dict[Unit, Units]:
+        self, resource_dict: dict[int, Unit], resource_type: str
+    ) -> dict[Unit, Units]:
         """Create dictionary where
 
         The key is a mineral field or gas building and tag the value is a Units of
@@ -812,19 +812,19 @@ class ResourceManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Dict[Unit, Units] :
+        dict[Unit, Units] :
             Resource Unit to Units of Workers mining it
 
         """
-        resource_to_workers: DefaultDict[Unit, List[Unit]] = defaultdict(list)
+        resource_to_workers: defaultdict[Unit, list[Unit]] = defaultdict(list)
         if resource_type == MINERAL:
-            worker_to_resource: Dict[int, int] = self.worker_to_mineral_patch_dict
+            worker_to_resource: dict[int, int] = self.worker_to_mineral_patch_dict
         else:
-            worker_to_resource: Dict[int, int] = self.worker_to_geyser_dict
+            worker_to_resource: dict[int, int] = self.worker_to_geyser_dict
         for worker in self.ai.workers:
             if worker.tag in worker_to_resource:
                 resource_tag: int = worker_to_resource[worker.tag]
-                resource_object: Optional[Unit] = resource_dict.get(resource_tag, None)
+                resource_object: Unit | None = resource_dict.get(resource_tag, None)
                 if resource_object is None:
                     if resource_type == MINERAL:
                         self._remove_mineral_field(resource_tag)
@@ -895,7 +895,7 @@ class ResourceManager(Manager, IManagerMediator):
 
         Returns
         -------
-        List[Point2] :
+        list[Point2] :
             The intersection points of the circles.
 
         """

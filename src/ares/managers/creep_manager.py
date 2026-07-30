@@ -88,7 +88,7 @@ class CreepManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Union[BotMode, List[BotMode]]] :
+        BotMode | list[BotMode] | None :
             Either one of the ability dictionaries is being returned or a function that
             returns None was called from a different manager (please don't do that).
 
@@ -475,7 +475,7 @@ class CreepManager(Manager, IManagerMediator):
         return pos
 
     def _get_overlord_creep_spotter_positions(
-        self, overlords: Units | list[Unit], target_pos: Point2
+        self, overlords: list[Unit] | Units , target_pos: Point2
     ) -> dict[int, Point2]:
         """Find optimal positions for overlords to provide vision for creep spread.
 

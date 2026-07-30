@@ -3,16 +3,7 @@ import time
 from collections import defaultdict
 from itertools import product
 from os import getcwd, path
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Coroutine,
-    DefaultDict,
-    FrozenSet,
-    Optional,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, Callable, Coroutine
 
 import numpy as np
 from cython_extensions import (
@@ -163,7 +154,7 @@ class PlacementManager(Manager, IManagerMediator):
         )
 
         self._user_placements: dict = config_parser.parse()
-        self._gatekeeper_positions: DefaultDict[Point2, list[Point2]] = defaultdict(
+        self._gatekeeper_positions: defaultdict[Point2, list[Point2]] = defaultdict(
             list
         )
 
@@ -173,7 +164,7 @@ class PlacementManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs,
-    ) -> Optional[Union[dict, DefaultDict, Coroutine[Any, Any, bool]]]:
+    ) -> dict | defaultdict | Coroutine[Any, Any, bool] | None:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -190,7 +181,7 @@ class PlacementManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Union[Dict, DefaultDict, Coroutine[Any, Any, bool]]] :
+        dict | defaultdict | Coroutine[Any, Any, bool] | None :
             Everything that could possibly be returned from the Manager fits in there
 
         """
@@ -319,7 +310,7 @@ class PlacementManager(Manager, IManagerMediator):
         reserve_placement: bool = True,
         within_psionic_matrix: bool = False,
         pylon_build_progress: float = 1.0,
-        closest_to: Optional[Point2] = None,
+        closest_to: Point2 | None = None,
         supply_depot: bool = False,
         production: bool = False,
         upgrade_structure: bool = False,
@@ -327,7 +318,7 @@ class PlacementManager(Manager, IManagerMediator):
         sensor_tower: bool = False,
         bunker: bool = False,
         reaper_wall: bool = False,
-    ) -> Optional[Point2]:
+    ) -> Point2 | None:
         """Given a base location and building size find an available placement."""
         assert (
             self.ai.race != Race.Zerg
@@ -554,7 +545,7 @@ class PlacementManager(Manager, IManagerMediator):
                     **placement_flags,
                 )
 
-        first_pylon_pos: Optional[Point2] = None
+        first_pylon_pos: Point2 | None = None
 
         for building, positions in building_location_info.items():
             if building in {
@@ -739,7 +730,7 @@ class PlacementManager(Manager, IManagerMediator):
         base_location: Point2,
         pylon_build_progress: float,
         closest_to: Point2,
-    ) -> Optional[Point2]:
+    ) -> Point2 | None:
         pylons = self.manager_mediator.get_own_structures_dict[UnitTypeId.PYLON]
         # first we check for ready pylons
         if available := [
@@ -1287,7 +1278,7 @@ class PlacementManager(Manager, IManagerMediator):
         The pylon position
         """
         pylon_pos: Point2 = self.ai.main_base_ramp.protoss_wall_pylon
-        buildings: FrozenSet[Point2] = self.ai.main_base_ramp.protoss_wall_buildings
+        buildings: frozenset[Point2] = self.ai.main_base_ramp.protoss_wall_buildings
 
         self._add_placement_position(
             BuildingSize.TWO_BY_TWO, el, pylon_pos, wall=True, production_pylon=True

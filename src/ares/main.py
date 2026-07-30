@@ -1,7 +1,6 @@
 import sys
 from collections import defaultdict
 from os import getcwd, path
-from typing import DefaultDict, Dict, List, Optional, Set, Tuple, Union
 
 import yaml
 from cython_extensions import cy_towards, cy_unit_pending
@@ -66,7 +65,7 @@ class AresBot(CustomBotAI):
 
     behavior_executioner: BehaviorExecutioner  # executes behaviors on each step
     build_order_runner: BuildOrderRunner  # execute exact build order from config
-    cost_dict: Dict[UnitTypeId, Cost]  #: UnitTypeId to cost for faster lookup later
+    cost_dict: dict[UnitTypeId, Cost]  #: UnitTypeId to cost for faster lookup later
 
     NYDUSES: set[UnitTypeId] = {UnitTypeId.NYDUSCANAL, UnitTypeId.NYDUSNETWORK}
     UNIT_TYPES_NOT_IN_SLIM: set[UnitTypeId] = {
@@ -81,7 +80,7 @@ class AresBot(CustomBotAI):
         UnitTypeId.CREEPTUMORQUEEN,
     }
 
-    def __init__(self, game_step_override: Optional[int] = None):  # pragma: no cover
+    def __init__(self, game_step_override: int | None = None):  # pragma: no cover
         """Load config and set up necessary attributes.
 
         Parameters
@@ -112,7 +111,7 @@ class AresBot(CustomBotAI):
 
         self.config = config_parser.parse()
 
-        self.game_step_override: Optional[int] = game_step_override
+        self.game_step_override: int | None = game_step_override
         self.unit_tag_dict: dict[int, Unit] = {}
         self.chat_debug = None
         self.forcefield_to_bile_dict: dict[Point2, int] = {}
@@ -120,8 +119,8 @@ class AresBot(CustomBotAI):
 
         # track adept shades as we only add them towards shade completion (160 frames)
         # Key: tag of shade Value: frame shade commenced (+32 if no adept owner found)
-        self.adept_shades: DefaultDict[int, Dict] = defaultdict(dict)
-        self.adept_tags_with_shades_assigned: Set[int] = set()
+        self.adept_shades: defaultdict[int, dict] = defaultdict(dict)
+        self.adept_tags_with_shades_assigned: set[int] = set()
         # we skip python-sc2 iterations in realtime, so we keep track of our own one
         self.actual_iteration: int = 0
         self.WORKER_TYPES = WORKER_TYPES | {UnitTypeId.DRONEBURROWED}
@@ -129,7 +128,7 @@ class AresBot(CustomBotAI):
         self.num_larva_left: int = 0
 
         self._same_order_actions: list[
-            tuple[AbilityId, set[int], Optional[Union[Unit, Point2]]]
+            tuple[AbilityId, set[int], Point2 | Unit | None]
         ] = []
         self._drop_unload_actions: list[tuple[int, int]] = []
         self._archon_morph_actions: list[list] = []
@@ -141,17 +140,17 @@ class AresBot(CustomBotAI):
     def give_same_action(
         self,
         order: AbilityId,
-        unit_tags: Union[List[int], set[int]],
-        target: Optional[Union[Point2, int]] = None,
+        unit_tags: list[int] | set[int],
+        target: int | Point2 | None = None,
     ) -> None:
         self._same_order_actions.append((order, unit_tags, target))
 
     def do_unload_container(self, container_tag: int, index: int = 0) -> None:
         self._drop_unload_actions.append((container_tag, index))
 
-    def calculate_cost(self, item_id: Union[UnitTypeId, UpgradeId, AbilityId]) -> Cost:
+    def calculate_cost(self, item_id: AbilityId| UnitTypeId | UpgradeId) -> (Cost):
         if isinstance(item_id, UnitTypeId):
-            cost_dict: Dict[UnitTypeId, Cost] = getattr(self, "cost_dict", COST_DICT)
+            cost_dict: dict[UnitTypeId, Cost] = getattr(self, "cost_dict", COST_DICT)
             if item_id in cost_dict:
                 return cost_dict[item_id]
 
@@ -193,8 +192,8 @@ class AresBot(CustomBotAI):
         update_managers: bool = hasattr(self, "manager_hub")
         self._reset_variables()
         # there's going to be a lot of appending, so form Units at the end
-        batteries_list: List[Unit] = []
-        cannons_list: List[Unit] = []
+        batteries_list: list[Unit] = []
+        cannons_list: list[Unit] = []
         enemy_vs_ground_static_defense_list = []
         self._clear_adept_shades()
 
@@ -355,7 +354,7 @@ class AresBot(CustomBotAI):
 
             self.chat_debug = ChatDebug(self)
 
-        self.cost_dict: Dict[UnitTypeId, Cost] = COST_DICT
+        self.cost_dict: dict[UnitTypeId, Cost] = COST_DICT
 
     def register_managers(self) -> None:
         """Register standard and custom managers.
@@ -565,13 +564,13 @@ class AresBot(CustomBotAI):
 
     def _add_enemy_unit(
         self,
-        batteries_list: List[Unit],
-        cannons_list: List[Unit],
-        enemy_vs_ground_static_defense_list: List[Unit],
+        batteries_list: list[Unit],
+        cannons_list: list[Unit],
+        enemy_vs_ground_static_defense_list: list[Unit],
         unit_obj: Unit,
         update_managers: bool,
         unit_id: UnitTypeId,
-    ) -> Tuple[List, List, List]:
+    ) -> tuple[list, list, list]:
         """Add a given enemy unit to the appropriate objects
 
         Parameters
@@ -721,8 +720,8 @@ class AresBot(CustomBotAI):
         None
         """
         current_frame: int = self.state.game_loop
-        shade_owner_tags_to_remove: List[int] = []
-        keys_to_remove: List[int] = []
+        shade_owner_tags_to_remove: list[int] = []
+        keys_to_remove: list[int] = []
         for shade_tag, item in self.adept_shades.items():
             frame_shade_started: int = item[SHADE_COMMENCED]
             adept_owner: int = item[SHADE_OWNER]
@@ -825,12 +824,12 @@ class AresBot(CustomBotAI):
         self.all_gas_buildings = Units([], self)
         self.eggs: Units = Units([], self)
         self.unit_tag_dict = {}
-        self.overcharged_battery: Optional[Unit] = None
+        self.overcharged_battery: Unit | None = None
         self.nyduses = Units([], self)
-        self.enemy_detectors: List[Unit] = []
+        self.enemy_detectors: list[Unit] = []
         self.enemy_vs_ground_static_defense: Units = Units([], self)
-        self.friendly_parasitic_bomb_positions: List[Point2] = []
-        self.enemy_parasitic_bomb_positions: List[Point2] = []
+        self.friendly_parasitic_bomb_positions: list[Point2] = []
+        self.enemy_parasitic_bomb_positions: list[Point2] = []
 
         self._drop_unload_actions = []
         self._same_order_actions = []
@@ -908,7 +907,7 @@ class AresBot(CustomBotAI):
             Use to prevent selecting idle build structures that
             have already got a pending order this frame.
             Key: Unit that should get order, value: what UnitTypeId to build
-        ignored_build_from_tags : Set[int]
+        ignored_build_from_tags : set[int]
             Pass in if you don't want certain build structures selected.
 
         Returns
@@ -938,7 +937,7 @@ class AresBot(CustomBotAI):
             if structure_type == UnitTypeId.LARVA:
                 using_larva = True
 
-            build_from: Union[Units, list[Unit]] = build_from_dict[structure_type]
+            build_from: list[Unit] | Units = build_from_dict[structure_type]
             # only add if warpgate is off cooldown
             if structure_type == UnitTypeId.WARPGATE:
                 build_from = [

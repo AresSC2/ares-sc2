@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
 import numpy as np
 from cython_extensions.units_utils import cy_sorted_by_distance_to
@@ -78,7 +78,7 @@ class Mining(MacroBehavior):
     vespene_boost: bool = False
     workers_per_gas: int = 3
     self_defence_active: bool = True
-    safe_long_distance_mineral_fields: Optional[Units] = None
+    safe_long_distance_mineral_fields: Units | None = None
     locked_action_tags: dict[int, float] = field(default_factory=dict)
     weight_safety_limit: float = 12.0
 
@@ -107,7 +107,7 @@ class Mining(MacroBehavior):
         worker_to_th: dict[int, int] = mediator.get_worker_tag_to_townhall_tag
         # for each mineral tag, get the position in front of the mineral
         min_target: dict[int, Point2] = mediator.get_mineral_target_dict
-        main_enemy_ground_threats: Optional[Units] = None
+        main_enemy_ground_threats: Units | None = None
         race: Race = ai.race
         if self.self_defence_active:
             main_enemy_ground_threats = mediator.get_main_ground_threats_near_townhall
@@ -115,8 +115,8 @@ class Mining(MacroBehavior):
         for worker in workers:
             worker_position: Point2 = worker.position
             worker_tag: int = worker.tag
-            resource: Optional[Unit] = None
-            resource_position: Optional[Point2] = None
+            resource: Unit | None = None
+            resource_position: Point2 | None = None
             resource_tag: int = -1
 
             assigned_mineral_patch: bool = worker_tag in worker_to_mineral_patch_dict
@@ -340,7 +340,7 @@ class Mining(MacroBehavior):
                 self._safe_long_distance_mineral_fields(ai, mediator)
             )
 
-        target_mineral: Optional[Unit] = None
+        target_mineral: Unit | None = None
 
         # on route to a far mineral patch
         if (

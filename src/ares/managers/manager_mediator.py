@@ -3,10 +3,6 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
     DefaultDict,
     Dict,
     Optional,
@@ -14,6 +10,7 @@ from typing import (
     Tuple,
     Union,
 )
+from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
 from map_analyzer import MapData
@@ -38,7 +35,7 @@ class IManagerMediator(metaclass=ABCMeta):
     """
 
     # each manager has a dict linking the request type to a callable action
-    manager_requests_dict: Dict[ManagerRequestType, Callable]
+    manager_requests_dict: dict[ManagerRequestType, Callable]
 
     @abstractmethod
     def manager_request(
@@ -73,13 +70,13 @@ class ManagerMediator(IManagerMediator):
     """
 
     def __init__(self) -> None:
-        self.managers: Dict[str, "Manager"] = {}  # noqa
+        self.managers: dict[str, "Manager"] = {}  # noqa
 
     def add_managers(self, managers: list["Manager"]) -> None:  # noqa
         """Generate manager dictionary.
 
         Parameters:
-            managers: List of all Managers capable of handling ManagerRequests.
+            managers: `list` of all Managers capable of handling ManagerRequests.
         """
         for manager in managers:
             self.managers[str(type(manager).__name__)] = manager
@@ -203,13 +200,13 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_building_counter(self) -> DefaultDict[UnitTypeId, int]:
+    def get_building_counter(self) -> defaultdict[UnitTypeId, int]:
         """Get a dictionary containing the number of each type of building in progress.
 
         BuildingManager.
 
         Returns:
-            DefaultDict[UnitTypeId, int]:
+            defaultdict[UnitTypeId, int]:
                 Number of each type of UnitTypeId
                 currently being tracked for building.
         """
@@ -220,13 +217,13 @@ class ManagerMediator(IManagerMediator):
     @property
     def get_building_tracker_dict(
         self,
-    ) -> dict[int, dict[str, Union[Point2, Unit, UnitTypeId, float]]]:
+    ) -> dict[int, dict[str, float | Point2 | Unit | UnitTypeId]]:
         """Get the building tracker dictionary.
 
         Building Manager.
 
         Returns:
-            dict[int, dict[str, Union[Point2, Unit, UnitTypeId, float]]]:
+            dict[int, dict[str, float | Point2 | Unit | UnitTypeId]]:
                 Tracks the worker tag to details such as the UnitTypeId of the
                 building, the Point2 location for placement, the in-game
                 time when the order started, and the purpose of the building.
@@ -1014,7 +1011,7 @@ class ManagerMediator(IManagerMediator):
     @property
     def get_nydus_travellers_dict(
         self, **kwargs
-    ) -> dict[int, dict[str, Union[int, Point2, UnitTypeId]]]:
+    ) -> dict[int, dict[str, int | Point2 | UnitTypeId]]:
         """Get the nydus travellers dictionary.
 
         NydusManager
@@ -1090,7 +1087,7 @@ class ManagerMediator(IManagerMediator):
     """
 
     @property
-    def get_mineral_patch_to_list_of_workers(self) -> Dict[int, Set[int]]:
+    def get_mineral_patch_to_list_of_workers(self) -> dict[int, set[int]]:
         """Get a dictionary containing mineral tag to worker tags
 
         Resource Manager
@@ -1215,7 +1212,7 @@ class ManagerMediator(IManagerMediator):
             grid (np.ndarray): The grid that should be used for pathing.
 
         Returns:
-            List of points composing the path.
+            `list` of points composing the path.
         """
         return self.manager_request(
             ManagerName.PATH_MANAGER,
@@ -1324,7 +1321,7 @@ class ManagerMediator(IManagerMediator):
                 the full path between tiles that are returned.
 
         Returns:
-            List of points composing the path.
+            `list` of points composing the path.
         """
         return self.manager_request(
             ManagerName.PATH_MANAGER, ManagerRequestType.FIND_RAW_PATH, **kwargs
@@ -1472,7 +1469,7 @@ class ManagerMediator(IManagerMediator):
         ```
 
         Returns:
-            List of the center point of forcefields.
+            `list` of the center point of forcefields.
 
         """
         return self.manager_request(
@@ -1738,7 +1735,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_pvz_nat_gatekeeping_pos(self, **kwargs) -> Union[Point2, None]:
+    def get_pvz_nat_gatekeeping_pos(self, **kwargs) -> Point2 | None:
         """Get the gatekeeper position in a PvZ natural wall if available.
 
         WARNING: This can return `None` so your code should account for this.
@@ -1775,7 +1772,7 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
-    def request_building_placement(self, **kwargs) -> Optional[Point2]:
+    def request_building_placement(self, **kwargs) -> Point2 | None:
         """Request a building placement from the precalculated building formation.
 
         PlacementManager
@@ -1824,7 +1821,7 @@ class ManagerMediator(IManagerMediator):
 
         Parameters:
             unit_type (UnitTypeId): The unit we want to warp in.
-            target (Optional[Point2]): If provided, attempt to find
+            target (Point2 | None): If provided, attempt to find
                 spot closest to this location.
         """
         return self.manager_request(
@@ -1871,7 +1868,7 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
-    def select_worker(self, **kwargs) -> Optional[Unit]:
+    def select_worker(self, **kwargs) -> Unit | None :
         """Select a worker via the ResourceManager.
 
         This way we can select one assigned to a far mineral patch.
@@ -1984,7 +1981,7 @@ class ManagerMediator(IManagerMediator):
     TerrainManager
     """
 
-    def building_position_blocked_by_burrowed_unit(self, **kwargs) -> Optional[Point2]:
+    def building_position_blocked_by_burrowed_unit(self, **kwargs) -> Point2 | None:
         """See if the building position is blocked by a burrowed unit.
 
         TerrainManager
@@ -2054,13 +2051,13 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_expansions(self) -> list[Tuple[Point2, float]]:
+    def get_enemy_expansions(self) -> list[tuple[Point2, float]]:
         """Get the expansions, as ordered from the enemy's point of view.
 
         TerrainManager
 
         Returns:
-            list[Tuple[Point2, float]]:
+            list[tuple[Point2, float]]:
                 The first element is the
                 location of the base. The second element is the pathing
                 distance from the enemy main base.
@@ -2136,7 +2133,7 @@ class ManagerMediator(IManagerMediator):
                 distance to the start point.
 
         Returns:
-            Tuple[int, List[Tuple[int, int]]]:
+            tuple[int, list[tuple[int, int]]]:
                 First element is the number of valid points.
                 Second element is the list of all valid points.
         """
@@ -2207,7 +2204,7 @@ class ManagerMediator(IManagerMediator):
         TerrainManager
 
         Returns:
-            List of Overlord hiding spots.
+            `list` of Overlord hiding spots.
 
         """
         return self.manager_request(
@@ -2216,13 +2213,13 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_expansions(self) -> list[Tuple[Point2, float]]:
+    def get_own_expansions(self) -> list[tuple[Point2, float]]:
         """Get the expansions.
 
         TerrainManager
 
         Returns:
-            List[Tuple[Point2, float]]: List of Tuples where
+            list[tuple[Point2, float]]: `list` of `tuple`s where
                 The first element is the location of the base.
                 The second element is the pathing distance from our main base.
         """
@@ -2250,7 +2247,7 @@ class ManagerMediator(IManagerMediator):
         TerrainManager
 
         Returns:
-            List of build positions that are blocked by a burrowed enemy unit.
+            `list` of build positions that are blocked by a burrowed enemy unit.
 
         """
         return self.manager_request(
@@ -2289,7 +2286,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_enemy_army_dict(self) -> DefaultDict[UnitTypeId, list[Unit]]:
+    def get_enemy_army_dict(self) -> defaultdict[UnitTypeId, list[Unit]]:
         """Get the dictionary of enemy army unit types to the units themselves.
 
         UnitCacheManager
@@ -2304,7 +2301,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_old_own_army_dict(self) -> Dict[UnitTypeId, list[Unit]]:
+    def get_old_own_army_dict(self) -> dict[UnitTypeId, list[Unit]]:
         """Get the previous iteration's `own_army` dict.
 
         UnitCacheManager
@@ -2330,7 +2327,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_army_dict(self) -> Dict[UnitTypeId, list[Unit]]:
+    def get_own_army_dict(self) -> dict[UnitTypeId, list[Unit]]:
         """Get the dictionary of own army unit types to the units themselves.
 
         UnitCacheManager
@@ -2343,7 +2340,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_own_structures_dict(self) -> DefaultDict[UnitTypeId, list[Unit]]:
+    def get_own_structures_dict(self) -> defaultdict[UnitTypeId, list[Unit]]:
         """Get the dictionary of own structure types to the units themselves.
 
         UnitCacheManager
@@ -2477,7 +2474,7 @@ class ManagerMediator(IManagerMediator):
 
     def get_units_in_range(
         self, **kwargs
-    ) -> Union[Dict[Union[int, Tuple[float, float]], Units], list[Units]]:
+    ) -> dict[int | tuple[float, float], Units] | list[Units]:
         """Get units in range of other units or points.
 
         UnitMemoryManager
@@ -2554,14 +2551,14 @@ class ManagerMediator(IManagerMediator):
         )
 
     def batch_assign_role(self, **kwargs) -> None:
-        """Assign a given role to a List of unit tags.
+        """Assign a given role to a list of unit tags.
 
         Nothing more than a for loop, provided for convenience.
 
         UnitRoleManager
 
         Parameters:
-            tags (Set[int]): Tags of the units to assign to a role.
+            tags (set[int]): Tags of the units to assign to a role.
             role (UnitRole): The role the units should be assigned to.
         """
         return self.manager_request(
@@ -2588,8 +2585,8 @@ class ManagerMediator(IManagerMediator):
         UnitRoleManager
 
         Parameters:
-            roles (Set[UnitRole]): Roles to get units from.
-            excluded (Set[UnitTypeId]): Unit types that should not be included.
+            roles (set[UnitRole]): Roles to get units from.
+            excluded (set[UnitTypeId]): Unit types that should not be included.
 
         Returns:
             Units matching the role that are not of an excluded type.
@@ -2601,7 +2598,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     @property
-    def get_unit_role_dict(self) -> Dict[UnitRole, Set[int]]:
+    def get_unit_role_dict(self) -> dict[UnitRole, set[int]]:
         """Get the dictionary of `UnitRole` to the set of tags of units with that role.
 
         UnitRoleManager
@@ -2626,7 +2623,7 @@ class ManagerMediator(IManagerMediator):
             role (UnitRole): Role to get units from.
             unit_type (UnitTypeId): Type(s) of units that should be returned.
                 If omitted, all units with the role will be returned.
-            restrict_to (Set[UnitTypeId]): If supplied, only take Units
+            restrict_to (set[UnitTypeId]): If supplied, only take Units
                 with the given role and type if they also exist here.
 
         Returns:
@@ -2644,7 +2641,7 @@ class ManagerMediator(IManagerMediator):
         UnitRoleManager
 
         Parameters:
-            roles (Set[UnitRole]): Roles to get units from.
+            roles (set[UnitRole]): Roles to get units from.
             unit_type (UnitTypeId): Type(s) of units that should be returned.
                 If omitted, all units with the role will be returned.
 

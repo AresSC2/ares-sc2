@@ -1,6 +1,7 @@
 """The core of the bot."""
 
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING
 
 from sc2.data import Race, Result
 from sc2.unit import Unit
@@ -41,8 +42,8 @@ class Hub:
 
     def __init__(
         self,
-        ai: "AresBot",
         config: Dict,
+        config: dict,
         manager_mediator: ManagerMediator,
         data_manager: DataManager = None,
         enemy_to_base_manager: EnemyToBaseManager = None,
@@ -56,7 +57,7 @@ class Hub:
         terrain_manager: TerrainManager = None,
         resource_manager: ResourceManager = None,
         building_manager: BuildingManager = None,
-        additional_managers: Optional[List["Manager"]] = None,
+        additional_managers: list["Manager"] | None = None,
     ) -> None:
         """Initialise Manager objects and set update priority.
 
@@ -96,7 +97,7 @@ class Hub:
         """
         self.ai: "AresBot" = ai
         self.debug: bool = config[DEBUG]
-        self.config: Dict = config
+        self.config: dict = config
         self.manager_mediator: ManagerMediator = manager_mediator
         self._is_zerg: bool = ai.race == Race.Zerg
 
@@ -251,7 +252,7 @@ class Hub:
         # self.building_manager.remove_unit(unit_tag)
         self.nydus_manager.remove_destroyed_nydus(unit_tag)
 
-    def on_game_end(self, result: Union[Result, str]) -> None:
+    def on_game_end(self, result: str | Result) -> None:
         """Store data from the completed game.
 
         Parameters

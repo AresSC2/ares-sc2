@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
@@ -24,7 +24,7 @@ class UseAbility(CombatIndividualBehavior):
     from sc2.ids.ability_id import AbilityId
 
     unit: Unit
-    target: Union[Unit, Point2]
+    target: Point2 | Unit
     self.register_behavior(
         UseAbility(
             AbilityId.FUNGALGROWTH_FUNGALGROWTH, unit, target
@@ -41,7 +41,7 @@ class UseAbility(CombatIndividualBehavior):
 
     ability: AbilityId
     unit: Unit
-    target: Optional[Union[Point2, Unit]] = None
+    target: Point2 | Unit | None = None
 
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs

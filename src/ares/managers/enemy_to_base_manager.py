@@ -1,6 +1,5 @@
 from collections import defaultdict
 from enum import Enum, auto
-from typing import DefaultDict, Union
 
 from cython_extensions import cy_closest_to
 from sc2.unit import Unit
@@ -74,12 +73,12 @@ class EnemyToBaseManager(Manager, IManagerMediator):
         }
 
         # key:townhall tag, value: Enemy ground units near that base
-        self.ground_enemy_near_bases: DefaultDict[
+        self.ground_enemy_near_bases: defaultdict[
             int,
             set[int],
         ] = defaultdict(set)
         # key:townhall tag, value: Enemy flying units near that base
-        self.flying_enemy_near_bases: DefaultDict[
+        self.flying_enemy_near_bases: defaultdict[
             int,
             set[int],
         ] = defaultdict(set)
@@ -108,7 +107,7 @@ class EnemyToBaseManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs,
-    ) -> Union[dict, int, Units]:
+    ) -> dict | int | Units:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -125,7 +124,7 @@ class EnemyToBaseManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Union[dict, int, Units] :
+        int | dict | Units :
             Types that can be returned from mediator requests via this manager.
 
         """

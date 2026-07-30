@@ -5,6 +5,7 @@ operations.
 """
 
 from typing import TYPE_CHECKING, Any, Dict, List, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from cython_extensions import cy_point_below_value
@@ -39,8 +40,8 @@ class PathManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
-        config: Dict,
+        ai: AresBot,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -64,7 +65,7 @@ class PathManager(Manager, IManagerMediator):
         ]
         self.whole_map_tree: KDTree = KDTree(self.whole_map)
         # vague attempt at not recalculating np.argwhere for danger tiles
-        self.calculated_danger_tiles: list[dict[str, Union[np.ndarray, int]]] = []
+        self.calculated_danger_tiles: list[dict[str, int | np.ndarray]] = []
 
         self.manager_requests_dict = {
             ManagerRequestType.FIND_LOW_PRIORITY_PATH: lambda kwargs: (
@@ -192,7 +193,7 @@ class PathManager(Manager, IManagerMediator):
 
     def find_low_priority_path(
         self, start: Point2, target: Point2, grid: np.ndarray
-    ) -> List[Point2]:
+    ) -> list[Point2]:
         """Find several points in a path.
 
         This way a unit can queue them up all at once for performance reasons.
@@ -215,10 +216,10 @@ class PathManager(Manager, IManagerMediator):
 
         Returns
         -------
-        List[Point2] :
-            List of points composing the path.
+        list[Point2] :
+            `list` of points composing the path.
         """
-        result: List[Point2] = self.map_data.pathfind(
+        result: list[Point2] = self.map_data.pathfind(
             start, target, grid, sensitivity=4
         )
 
@@ -227,7 +228,7 @@ class PathManager(Manager, IManagerMediator):
 
         idx = np.round(np.linspace(0, len(result) - 1, 8, dtype="int"))
 
-        path: List[Point2] = [result[i] for i in idx]
+        path: list[Point2] = [result[i] for i in idx]
         path.append(target)
         return path
 
@@ -312,7 +313,7 @@ class PathManager(Manager, IManagerMediator):
             else:
                 return target
 
-        path: List[Point2] = self.map_data.pathfind(
+        path: list[Point2] = self.map_data.pathfind(
             start, target, grid, sensitivity=sensitivity, smoothing=smoothing
         )
         if not path or len(path) == 0:
@@ -350,7 +351,7 @@ class PathManager(Manager, IManagerMediator):
 
     def raw_pathfind(
         self, start: Point2, target: Point2, grid: np.ndarray, sensitivity: int
-    ) -> List[Point2]:
+    ) -> list[Point2]:
         """Used for finding a full path, mostly for distance checks.
 
         Parameters

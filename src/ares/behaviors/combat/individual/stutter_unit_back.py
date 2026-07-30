@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_attack_ready
@@ -40,7 +40,7 @@ class StutterUnitBack(CombatIndividualBehavior):
     unit: Unit
     target: Unit
     kite_via_pathing: bool = True
-    grid: Optional[np.ndarray] = None
+    grid: np.ndarray | None = None
 
     def execute(
         self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs

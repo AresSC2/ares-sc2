@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to
 from sc2.position import Point2
@@ -34,7 +34,7 @@ class AMove(CombatIndividualBehavior):
     """
 
     unit: Unit
-    target: Union[Point2, Unit]
+    target: Point2 | Unit
     success_at_distance: float = 7.0
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:

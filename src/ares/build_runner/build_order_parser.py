@@ -85,7 +85,7 @@ class BuildOrderParser:
 
         Returns:
         --------
-        Dict
+        dict
             A dictionary of `BuildOrderStep` objects representing the recognized
             build order commands.
         """

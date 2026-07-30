@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from enum import Enum, auto
-from typing import List, Set
 
 from sc2.data import Race
 from sc2.ids.ability_id import AbilityId
@@ -118,7 +117,7 @@ WIN: str = "Win"
 ADD_SHADES_ON_FRAME: int = (
     120  #: The frame at which point Adept Shades are treated as units
 )
-BANNED_PHRASES: List[str] = [
+BANNED_PHRASES: list[str] = [
     "COCOON",
     "EGG",
     "CHANGELING",
@@ -146,15 +145,15 @@ LIGHTSHADE: str = "LIGHTSHADE"
 MAX_SNAPSHOTS_PER_UNIT: int = 10
 
 # chat debug
-COOLDOWN: Set[str] = {"COOLDOWN"}
-CREATE: Set[str] = {"CREATE", "MAKE"}
-FOOD: Set[str] = {"FOOD", "SUPPLY"}
-GOD: Set[str] = {"GOD"}
-KILL: Set[str] = {"DESTROY", "KILL"}
-RESOURCES: Set[str] = {"RESOURCES", "MONEY"}
-SHOW_MAP: Set[str] = {"REVEAL", "SHOW", "SHOW-MAP"}
-TECH_TREE: Set[str] = {"TECH", "TECH-TREE"}
-UPGRADES: Set[str] = {"UPGRADES"}
+COOLDOWN: set[str] = {"COOLDOWN"}
+CREATE: set[str] = {"CREATE", "MAKE"}
+FOOD: set[str] = {"FOOD", "SUPPLY"}
+GOD: set[str] = {"GOD"}
+KILL: set[str] = {"DESTROY", "KILL"}
+RESOURCES: set[str] = {"RESOURCES", "MONEY"}
+SHOW_MAP: set[str] = {"REVEAL", "SHOW", "SHOW-MAP"}
+TECH_TREE: set[str] = {"TECH", "TECH-TREE"}
+UPGRADES: set[str] = {"UPGRADES"}
 
 # Enums:
 
@@ -571,7 +570,7 @@ class WallOffDetection(Enum):
     DISTANCE = 3.5
 
 
-# Sets:
+# sets:
 
 REACTOR_TRAIN_ABILITIES: list[AbilityId] = [
     AbilityId.BARRACKSTRAIN_MARINE,
@@ -592,7 +591,7 @@ ADD_ONS: dict[UnitTypeId, UnitTypeId] = {
     UnitTypeId.STARPORTTECHLAB: UnitTypeId.STARPORT,
 }
 
-ALL_PRODUCTION_STRUCTURES: Set[UnitTypeId] = {
+ALL_PRODUCTION_STRUCTURES: frozenset[UnitTypeId] = ({
     UnitTypeId.BARRACKS,
     UnitTypeId.FACTORY,
     UnitTypeId.STARPORT,
@@ -600,9 +599,9 @@ ALL_PRODUCTION_STRUCTURES: Set[UnitTypeId] = {
     UnitTypeId.WARPGATE,
     UnitTypeId.ROBOTICSFACILITY,
     UnitTypeId.STARGATE,
-}
+})
 
-ALL_STRUCTURES: Set[UnitTypeId] = {
+ALL_STRUCTURES: frozenset[UnitTypeId] = ({
     UnitTypeId.ARMORY,
     UnitTypeId.ASSIMILATOR,
     UnitTypeId.ASSIMILATORRICH,
@@ -686,9 +685,9 @@ ALL_STRUCTURES: Set[UnitTypeId] = {
     UnitTypeId.TWILIGHTCOUNCIL,
     UnitTypeId.ULTRALISKCAVERN,
     UnitTypeId.WARPGATE,
-}
+})
 
-BURROWED_ALIAS: Set[UnitTypeId] = {
+BURROWED_ALIAS: frozenset[UnitTypeId] = ({
     UnitTypeId.BANELINGBURROWED,
     UnitTypeId.CREEPTUMORBURROWED,
     UnitTypeId.DRONEBURROWED,
@@ -703,33 +702,33 @@ BURROWED_ALIAS: Set[UnitTypeId] = {
     UnitTypeId.ULTRALISKBURROWED,
     UnitTypeId.WIDOWMINEBURROWED,
     UnitTypeId.ZERGLINGBURROWED,
-}
+})
 
-CHANGELING_TYPES: Set[UnitTypeId] = {
+CHANGELING_TYPES: frozenset[UnitTypeId] =({
     UnitTypeId.CHANGELING,
     UnitTypeId.CHANGELINGZERGLING,
     UnitTypeId.CHANGELINGZERGLINGWINGS,
     UnitTypeId.CHANGELINGMARINE,
     UnitTypeId.CHANGELINGMARINESHIELD,
     UnitTypeId.CHANGELINGZEALOT,
-}
+})
 
-COMMON_UNIT_IGNORE_TYPES: set[UnitTypeId] = {
+COMMON_UNIT_IGNORE_TYPES: frozenset[UnitTypeId] = ({
     UnitTypeId.EGG,
     UnitTypeId.LARVA,
     UnitTypeId.CREEPTUMORBURROWED,
     UnitTypeId.CREEPTUMORQUEEN,
     UnitTypeId.CREEPTUMOR,
     UnitTypeId.MULE,
-}
+})
 
-CREEP_TUMOR_TYPES: Set[UnitTypeId] = {
+CREEP_TUMOR_TYPES: frozenset[UnitTypeId] = ({
     UnitTypeId.CREEPTUMOR,
     UnitTypeId.CREEPTUMORQUEEN,
     UnitTypeId.CREEPTUMORBURROWED,
-}
+})
 
-DETECTORS: Set[UnitTypeId | EffectId] = {
+DETECTORS: frozenset[UnitTypeId | EffectId] = ({
     UnitTypeId.OBSERVER,
     UnitTypeId.OBSERVERSIEGEMODE,
     UnitTypeId.PHOTONCANNON,
@@ -739,18 +738,18 @@ DETECTORS: Set[UnitTypeId | EffectId] = {
     UnitTypeId.OVERSEER,
     UnitTypeId.OVERSEERSIEGEMODE,
     UnitTypeId.SPORECRAWLER,
-}
+})
 
-DROP_ROLES: set[UnitRole] = {
+DROP_ROLES: frozenset[UnitRole] = ({
     UnitRole.DROP_SHIP,
     UnitRole.DROP_UNITS_TO_LOAD,
     UnitRole.DROP_UNITS_ATTACKING,
-}
+})
 
-EGG_BUTTON_NAMES: Set[str] = {"Drone", "Overlord"}
+EGG_BUTTON_NAMES: frozenset[str] = ({"Drone", "Overlord"})
 
 # we ignore these when detecting if an expansion location is blocked
-FLYING_IGNORE: Set[UnitTypeId] = {
+FLYING_IGNORE: frozenset[UnitTypeId] = ({
     UnitTypeId.OBSERVER,
     UnitTypeId.OVERLORD,
     UnitTypeId.OVERSEER,
@@ -760,28 +759,28 @@ FLYING_IGNORE: Set[UnitTypeId] = {
     UnitTypeId.FACTORYFLYING,
     UnitTypeId.STARPORTFLYING,
     UnitTypeId.PHOENIX,
-}
+})
 
-GAS_BUILDINGS = {
+GAS_BUILDINGS = frozenset[UnitTypeId] = ({
     UnitTypeId.ASSIMILATOR,
     UnitTypeId.EXTRACTOR,
     UnitTypeId.REFINERY,
     UnitTypeId.ASSIMILATORRICH,
     UnitTypeId.EXTRACTORRICH,
     UnitTypeId.REFINERYRICH,
-}
+})
 
-GATEWAY_UNITS: set[UnitTypeId] = {
+GATEWAY_UNITS: frozenset[UnitTypeId] = ({
     UnitTypeId.ZEALOT,
     UnitTypeId.ADEPT,
     UnitTypeId.STALKER,
     UnitTypeId.DARKTEMPLAR,
     UnitTypeId.HIGHTEMPLAR,
     UnitTypeId.SENTRY,
-}
+})
 
 # These are not really rocks, but end up in the destructible collection
-IGNORE_DESTRUCTABLES: Set[UnitTypeId] = {
+IGNORE_DESTRUCTABLES: set[UnitTypeId] = {
     UnitTypeId.INHIBITORZONESMALL,
     UnitTypeId.INHIBITORZONEFLYINGLARGE,
     UnitTypeId.INHIBITORZONEFLYINGMEDIUM,
@@ -797,7 +796,7 @@ IGNORE_DESTRUCTABLES: Set[UnitTypeId] = {
     UnitTypeId.CLEANINGBOT,
 }
 
-IGNORE_IN_COST_DICT: Set[UnitTypeId] = {
+IGNORE_IN_COST_DICT: frozenset[UnitTypeId] = ({
     UnitTypeId.BROODLING,
     UnitTypeId.INTERCEPTOR,
     UnitTypeId.LARVA,
@@ -811,24 +810,24 @@ IGNORE_IN_COST_DICT: Set[UnitTypeId] = {
     UnitTypeId.REFINERYRICH,
     UnitTypeId.ASSIMILATORRICH,
     UnitTypeId.EXTRACTORRICH,
-}
+})
 
-IGNORED_UNIT_TYPES_MEMORY_MANAGER: Set[UnitTypeId] = set()
+IGNORED_UNIT_TYPES_MEMORY_MANAGER: set[UnitTypeId] = set()
 
 # roles where most of our force is likely to be
-MAIN_COMBAT_ROLES: Set[UnitRole] = {
+MAIN_COMBAT_ROLES: set[UnitRole] = {
     UnitRole.ATTACKING,
     UnitRole.DEFENDING,
 }
 
-TECHLAB_TYPES: set[UnitTypeId] = {
+TECHLAB_TYPES: frozenset[UnitTypeId] = ({
     UnitTypeId.BARRACKSTECHLAB,
     UnitTypeId.FACTORYTECHLAB,
     UnitTypeId.STARPORTTECHLAB,
     UnitTypeId.TECHLAB,
-}
+})
 
-TOWNHALL_TYPES: Set[UnitTypeId] = {
+TOWNHALL_TYPES: frozenset[UnitTypeId] = ({
     UnitTypeId.HATCHERY,
     UnitTypeId.LAIR,
     UnitTypeId.HIVE,
@@ -838,9 +837,9 @@ TOWNHALL_TYPES: Set[UnitTypeId] = {
     UnitTypeId.ORBITALCOMMANDFLYING,
     UnitTypeId.PLANETARYFORTRESS,
     UnitTypeId.NEXUS,
-}
+})
 
-TOWNHALL_TYPES_NO_PF: Set[UnitTypeId] = {
+TOWNHALL_TYPES_NO_PF: frozenset[UnitTypeId] = ({
     UnitTypeId.HATCHERY,
     UnitTypeId.LAIR,
     UnitTypeId.HIVE,
@@ -849,9 +848,9 @@ TOWNHALL_TYPES_NO_PF: Set[UnitTypeId] = {
     UnitTypeId.ORBITALCOMMAND,
     UnitTypeId.ORBITALCOMMANDFLYING,
     UnitTypeId.NEXUS,
-}
+})
 
-UNITS_TO_AVOID_TYPES: Set[UnitTypeId] = {
+UNITS_TO_AVOID_TYPES: set[UnitTypeId] = ({
     UnitTypeId.CREEPTUMOR,
     UnitTypeId.CREEPTUMORBURROWED,
     UnitTypeId.CREEPTUMORQUEEN,
@@ -859,18 +858,24 @@ UNITS_TO_AVOID_TYPES: Set[UnitTypeId] = {
     UnitTypeId.INFESTORBURROWED,
     UnitTypeId.ROACHBURROWED,
     UnitTypeId.SPORECRAWLER,
-}
+})
 
-UNITS_TO_IGNORE: Set[UnitTypeId] = set()
-UNIT_TYPES_WITH_NO_ROLE: Set[UnitTypeId] = set()
-ALL_WORKER_TYPES: Set[UnitTypeId] = {
+UNITS_TO_IGNORE: set[UnitTypeId] = set()
+UNIT_TYPES_WITH_NO_ROLE: set[UnitTypeId] = set()
+
+WORKER_TYPES: frozenset[UnitTypeId] = ({
     UnitTypeId.DRONE,
-    UnitTypeId.DRONEBURROWED,
-    UnitTypeId.MULE,
+    UnitTypeId.PROBE,
+    UnitTypeId.SCV
+})
+
+ALL_WORKER_TYPES: frozenset[UnitTypeId] = frozenset({
+    UnitTypeId.DRONE,
     UnitTypeId.PROBE,
     UnitTypeId.SCV,
-}
-WORKER_TYPES: Set[UnitTypeId] = {UnitTypeId.DRONE, UnitTypeId.PROBE, UnitTypeId.SCV}
+    UnitTypeId.DRONEBURROWED,
+    UnitTypeId.MULE,
+})
 
 RACE_SUPPLY: dict[Race, UnitTypeId] = {
     Race.Protoss: UnitTypeId.PYLON,
@@ -878,7 +883,7 @@ RACE_SUPPLY: dict[Race, UnitTypeId] = {
     Race.Zerg: UnitTypeId.OVERLORD,
 }
 
-REQUIRE_POWER_STRUCTURE_TYPES: set[UnitTypeId] = {
+REQUIRE_POWER_STRUCTURE_TYPES: frozenset[UnitTypeId] = ({
     UnitTypeId.PHOTONCANNON,
     UnitTypeId.SHIELDBATTERY,
     UnitTypeId.GATEWAY,
@@ -892,48 +897,48 @@ REQUIRE_POWER_STRUCTURE_TYPES: set[UnitTypeId] = {
     UnitTypeId.FLEETBEACON,
     UnitTypeId.TWILIGHTCOUNCIL,
     UnitTypeId.DARKSHRINE,
-}
+})
 
-LOSS_EMPHATIC_OR_WORSE: Set[EngagementResult] = {EngagementResult.LOSS_EMPHATIC}
+LOSS_EMPHATIC_OR_WORSE: set[EngagementResult] = {EngagementResult.LOSS_EMPHATIC}
 
-LOSS_OVERWHELMING_OR_WORSE: Set[EngagementResult] = LOSS_EMPHATIC_OR_WORSE | {
+LOSS_OVERWHELMING_OR_WORSE: set[EngagementResult] = LOSS_EMPHATIC_OR_WORSE | {
     EngagementResult.LOSS_OVERWHELMING
 }
 
-LOSS_DECISIVE_OR_WORSE: Set[EngagementResult] = LOSS_OVERWHELMING_OR_WORSE | {
+LOSS_DECISIVE_OR_WORSE: set[EngagementResult] = LOSS_OVERWHELMING_OR_WORSE | {
     EngagementResult.LOSS_DECISIVE
 }
 
-LOSS_CLOSE_OR_WORSE: Set[EngagementResult] = LOSS_DECISIVE_OR_WORSE | {
+LOSS_CLOSE_OR_WORSE: set[EngagementResult] = LOSS_DECISIVE_OR_WORSE | {
     EngagementResult.LOSS_CLOSE
 }
 
-LOSS_MARGINAL_OR_WORSE: Set[EngagementResult] = LOSS_CLOSE_OR_WORSE | {
+LOSS_MARGINAL_OR_WORSE: set[EngagementResult] = LOSS_CLOSE_OR_WORSE | {
     EngagementResult.LOSS_MARGINAL
 }
 
-VICTORY_EMPHATIC_OR_BETTER: Set[EngagementResult] = {EngagementResult.VICTORY_EMPHATIC}
+VICTORY_EMPHATIC_OR_BETTER: set[EngagementResult] = {EngagementResult.VICTORY_EMPHATIC}
 
-VICTORY_OVERWHELMING_OR_BETTER: Set[EngagementResult] = VICTORY_EMPHATIC_OR_BETTER | {
+VICTORY_OVERWHELMING_OR_BETTER: set[EngagementResult] = VICTORY_EMPHATIC_OR_BETTER | {
     EngagementResult.VICTORY_OVERWHELMING
 }
 
-VICTORY_DECISIVE_OR_BETTER: Set[EngagementResult] = VICTORY_OVERWHELMING_OR_BETTER | {
+VICTORY_DECISIVE_OR_BETTER: set[EngagementResult] = VICTORY_OVERWHELMING_OR_BETTER | {
     EngagementResult.VICTORY_DECISIVE
 }
 
-VICTORY_CLOSE_OR_BETTER: Set[EngagementResult] = VICTORY_DECISIVE_OR_BETTER | {
+VICTORY_CLOSE_OR_BETTER: set[EngagementResult] = VICTORY_DECISIVE_OR_BETTER | {
     EngagementResult.VICTORY_CLOSE
 }
 
-VICTORY_MARGINAL_OR_BETTER: Set[EngagementResult] = VICTORY_CLOSE_OR_BETTER | {
+VICTORY_MARGINAL_OR_BETTER: set[EngagementResult] = VICTORY_CLOSE_OR_BETTER | {
     EngagementResult.VICTORY_MARGINAL
 }
 
-TIE_OR_BETTER: Set[EngagementResult] = VICTORY_MARGINAL_OR_BETTER | {
+TIE_OR_BETTER: set[EngagementResult] = VICTORY_MARGINAL_OR_BETTER | {
     EngagementResult.TIE
 }
 
-LOSS_MARGINAL_OR_BETTER: Set[EngagementResult] = TIE_OR_BETTER | {
+LOSS_MARGINAL_OR_BETTER: set[EngagementResult] = TIE_OR_BETTER | {
     EngagementResult.LOSS_MARGINAL
 }

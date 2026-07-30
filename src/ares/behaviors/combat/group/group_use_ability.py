@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
@@ -42,7 +42,7 @@ class GroupUseAbility(CombatGroupBehavior):
     ability: AbilityId
     group: list[Unit]
     group_tags: set[int]
-    target: Union[Point2, Unit, None]
+    target: Point2 | Unit | None
     sync_command: bool = True
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:

@@ -1,6 +1,7 @@
 """Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
 from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to_squared
 from sc2.ids.ability_id import AbilityId
@@ -25,8 +26,8 @@ class FlyingStructureManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
         config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -66,7 +67,7 @@ class FlyingStructureManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs
-    ) -> Optional[Dict]:
+    ) -> dict | None:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -83,7 +84,7 @@ class FlyingStructureManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Dict] :
+        dict | None :
             Either one of the ability dictionaries is being returned or a function that
             returns None was called from a different manager (please don't do that).
 
@@ -134,7 +135,7 @@ class FlyingStructureManager(Manager, IManagerMediator):
         for structure_tag, info in self._flying_structure_tracker.items():
             target: Point2 = info["destination"]
             should_land: bool = info["should_land"]
-            structure: Optional[Unit] = self.ai.unit_tag_dict.get(structure_tag, None)
+            structure: Unit | None = self.ai.unit_tag_dict.get(structure_tag, None)
             if not structure:
                 tags_to_remove.append(structure_tag)
                 continue

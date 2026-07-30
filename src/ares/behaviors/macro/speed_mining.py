@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_closest_to, cy_distance_to_squared, cy_towards
 from loguru import logger
@@ -47,11 +47,11 @@ class SpeedMining(CombatIndividualBehavior):
     """
 
     worker: Unit
-    target: Union[Point2, Unit]
+    target: Point2 | Unit
     worker_position: Point2
     resource_target_pos: Point2
     distance_to_townhall_factor: float = 1.08
-    townhall: Optional[Unit] = None
+    townhall: Unit | None = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if not ai.townhalls:

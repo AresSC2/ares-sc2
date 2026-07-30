@@ -55,7 +55,7 @@ class ProductionController(MacroBehavior):
             with a priority integer for unit emphasis.
         base_location: The location where production should be built.
         add_production_at_bank: When the bank reaches this size, calculate what
-            extra production would be useful. Tuple where the first value is
+            extra production would be useful. `tuple` where the first value is
             minerals and the second is vespene. Defaults to `(300, 300)`.
         alpha: Controls how much production to add when the bank is higher than
             `add_production_at_bank`. Defaults to `0.9`.

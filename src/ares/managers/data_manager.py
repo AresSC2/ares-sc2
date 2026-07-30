@@ -4,7 +4,6 @@ import json
 import os
 from collections import defaultdict, deque
 from os import path
-from typing import Dict, List, Optional, Union
 
 from loguru import logger
 from sc2.data import Result
@@ -38,16 +37,16 @@ class DataManager(Manager, IManagerMediator):
 
     Attributes
     ----------
-    manager_requests_dict : Dict[ManagerRequestType, Callable[[Any]]
+    manager_requests_dict : dict[ManagerRequestType, Callable[[Any]]
         A dictionary of functions that can be requested by other managers.
     chosen_opening : str
         The chosen opening strategy for the current match.
-    build_cycle : List[str]
+    build_cycle : list[str]
         A list of available build strategies for the bot.
     found_build : bool
         A boolean flag indicating if the opponent's build strategy from the previous
         game was found in the build cycle.
-    opponent_history : List
+    opponent_history : list
         A list containing the bot's previous match history against the current opponent.
     file_path : str
         The file path of the json file containing the opponent's match history.
@@ -62,7 +61,7 @@ class DataManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs,
-    ) -> Optional[Union[str, list[str]]]:
+    ) -> str | list[str] | None:
         Fetch information from this Manager so another Manager can use it.
 
     initialise(self) -> None:
@@ -74,17 +73,17 @@ class DataManager(Manager, IManagerMediator):
     _choose_opening(self) -> None:
         Choose the opening strategy for the bot based on the opponent's previous game.
 
-    _get_build_cycle(self) -> List[str]:
+    _get_build_cycle(self) -> list[str]:
         Get the list of available build strategies for the bot.
 
     _get_opponent_data(self, _opponent_id: str) -> None:
         Load the opponent's match history from a json file.
 
-    store_opponent_data(self, result: Union[Result, str]) -> None:
+    store_opponent_data(self, result: Result | str) -> None:
         Save the result of the current match to the opponent's match history.
     """
 
-    def __init__(self, ai, config: Dict, mediator: ManagerMediator) -> None:
+    def __init__(self, ai, config: dict, mediator: ManagerMediator) -> None:
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
             ManagerRequestType.GET_CHOSEN_OPENING: lambda kwargs: self.chosen_opening
@@ -108,7 +107,7 @@ class DataManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs,
-    ) -> Optional[Union[str, list[str]]]:
+    ) -> str | list[str] | None:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -125,7 +124,7 @@ class DataManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Union[BotMode, List[BotMode]]] :
+        BotMode | list[BotMode] | None :
             Either one of the ability dictionaries is being returned or a function that
             returns None was called from a different manager (please don't do that).
 
@@ -268,13 +267,13 @@ class DataManager(Manager, IManagerMediator):
         logger.info("All builds have invalid winrate, using cycle logic")
         self._choose_opening_cycle()
 
-    def _get_build_cycle(self) -> List[str]:
+    def _get_build_cycle(self) -> list[str]:
         if self.config[DEBUG]:
             opponent_id: str = TEST_OPPONENT_ID
         else:
             opponent_id: str = self.ai.opponent_id
 
-        build_cycle: List[str] = []
+        build_cycle: list[str] = []
         if BUILD_CHOICES in self.config:
             # get a build cycle from config depending on ai arena opponent id
             if opponent_id in self.config[BUILD_CHOICES]:
@@ -302,7 +301,7 @@ class DataManager(Manager, IManagerMediator):
                 }
             ]
 
-    def store_opponent_data(self, result: Union[Result, str]) -> None:
+    def store_opponent_data(self, result: Result | str) -> None:
         # only write results once
         if self.data_saved:
             return
