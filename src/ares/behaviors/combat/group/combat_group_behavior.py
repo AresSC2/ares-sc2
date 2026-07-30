@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, Protocol
 
 from cython_extensions import cy_distance_to_squared

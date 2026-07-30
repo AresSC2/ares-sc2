@@ -1,6 +1,7 @@
 """Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
 from __future__ import annotations
+
 import uuid
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any

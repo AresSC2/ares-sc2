@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from collections import defaultdict, deque
 from typing import TYPE_CHECKING, Any
 

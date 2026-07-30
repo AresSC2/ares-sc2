@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, Protocol
 
 from ares.behaviors.behavior import Behavior

@@ -1,5 +1,7 @@
 """Extension of sc2.BotAI to add custom functions."""
 
+from __future__ import annotations
+
 import argparse
 
 import numpy as np

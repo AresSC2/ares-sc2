@@ -1,6 +1,7 @@
 """Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from sc2.ids.ability_id import AbilityId
@@ -19,14 +20,13 @@ if TYPE_CHECKING:
 class AbilityTrackerManager(Manager, IManagerMediator):
     """Manager to handle manually tracking abilities of units.
 
-    Attributes
-    ----------
-    ability_frame_cd_dict : dict
-        Dictionary with the cooldown of
-        usable abilities for faster lookup.
-    unit_to_ability_dict : dict
-        Dictionary of the unit tag to a
-        dictionary of each Ability and when it was last used.
+    Attributes:
+        ability_frame_cd_dict: Dictionary with the cooldown of
+            usable abilities for faster lookup.
+        unit_to_ability_dict: Dictionary of the unit tag to a
+            dictionary of each Ability and when it was last used.
+
+
     """
 
     def __init__(
@@ -39,12 +39,16 @@ class AbilityTrackerManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai : AresBot
+        ai :
             Bot object that will be running the game
-        config : dict
+        config :
             Dictionary with the data from the configuration file
-        mediator : ManagerMediator
+        mediator :
             ManagerMediator used for getting information from other managers.
+
+        Returns
+        -------
+
         """
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
@@ -69,7 +73,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> dict | None:
         """Fetch information from this Manager so another Manager can use it.
 
@@ -242,6 +246,10 @@ class AbilityTrackerManager(Manager, IManagerMediator):
             The AbilityId that was used.
         unit_tag :
             The tag of the Unit that used the ability
+
+        Returns
+        -------
+
         """
         current_frame: int = self.ai.state.game_loop
         if unit_tag in self.unit_to_ability_dict:

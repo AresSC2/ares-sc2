@@ -1,6 +1,7 @@
 """Anything to do with resource management and collection."""
 
 from __future__ import annotations
+
 import math
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any

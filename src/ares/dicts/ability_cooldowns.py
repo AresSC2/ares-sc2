@@ -1,5 +1,7 @@
 """Ability base cooldowns."""
 
+from __future__ import annotations
+
 from sc2.ids.ability_id import AbilityId
 
 # in frames

@@ -1,6 +1,7 @@
 """Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to_squared
@@ -66,7 +67,7 @@ class FlyingStructureManager(Manager, IManagerMediator):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> dict | None:
         """Fetch information from this Manager so another Manager can use it.
 

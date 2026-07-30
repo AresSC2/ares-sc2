@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -172,7 +173,7 @@ class BuildStructure(MacroBehavior):
     def _enough_existing_at_this_base(self, mediator: ManagerMediator) -> bool:
         placement_dict: dict = mediator.get_placements_dict
         size: BuildingSize = STRUCTURE_TO_BUILDING_SIZE[self.structure_id]
-        potential_placements: dict[Point2:dict] = placement_dict[self.base_location][
+        potential_placements: dict[Point2, dict] = placement_dict[self.base_location][
             size
         ]
         taken: list[Point2] = [

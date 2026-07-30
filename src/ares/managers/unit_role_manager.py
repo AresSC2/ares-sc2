@@ -1,6 +1,7 @@
 """Manage assigning/removing of roles and getting units by role."""
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from sc2.ids.unit_typeid import UnitTypeId

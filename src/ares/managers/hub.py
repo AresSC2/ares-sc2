@@ -1,6 +1,7 @@
 """The core of the bot."""
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from sc2.data import Race, Result

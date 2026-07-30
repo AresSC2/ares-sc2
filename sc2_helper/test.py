@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from time import perf_counter_ns
 
 from sc2 import BotAI, Difficulty, Race, UnitTypeId, maps, run_game

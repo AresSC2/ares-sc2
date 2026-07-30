@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import random
 import sys
 from os.path import abspath, dirname, join

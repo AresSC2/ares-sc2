@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -19,7 +20,7 @@ from ares.managers.manager_mediator import ManagerMediator
 if TYPE_CHECKING:
     from ares import AresBot
 
-BUILD_TECHLAB_FROM: dict[UnitTypeId:UnitTypeId] = {
+BUILD_TECHLAB_FROM: dict[UnitTypeId, UnitTypeId] = {
     UnitTypeId.BARRACKSTECHLAB: UnitTypeId.BARRACKS,
     UnitTypeId.FACTORYTECHLAB: UnitTypeId.FACTORY,
     UnitTypeId.STARPORTTECHLAB: UnitTypeId.STARPORT,
