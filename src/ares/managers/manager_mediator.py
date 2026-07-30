@@ -3,13 +3,7 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-    DefaultDict,
-    Dict,
-    Optional,
-    Set,
-    Tuple,
-    Union,
-)
+from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Callable
 
 import numpy as np
