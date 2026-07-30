@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 import numpy as np
-from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 
 if TYPE_CHECKING:
@@ -80,7 +79,7 @@ class ExpansionController(MacroBehavior):
                 )
                 or ai.location_is_blocked(mediator, location)
                 or not mediator.can_place_structure(
-                    position=location, structure_type=UnitTypeId.COMMANDCENTER
+                    position=location, structure_type=ai.base_townhall_type
                 )
             ):
                 continue

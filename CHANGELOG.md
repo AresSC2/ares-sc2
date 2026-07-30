@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.11.1 (2026-07-30)
+
+### Fix
+
+* Replace `UnitTypeId.COMMANDCENTER` with `ai.base_townhall_type` in expansion checks ([`a408234`](https://github.com/AresSC2/ares-sc2/commit/a408234f6cfeb09c36b43b8afc1762b2e3e58842))
+
 ## v3.11.0 (2026-07-29)
 
 ### Feature
