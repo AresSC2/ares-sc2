@@ -18,8 +18,6 @@ from ares.managers.manager_mediator import ManagerMediator
 class ExpansionController(MacroBehavior):
     """Manage expanding.
 
-    Examples
-    --------
     Example:
     ```py
     from ares.behaviors.macro import ExpansionController

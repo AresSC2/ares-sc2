@@ -66,7 +66,7 @@ class Manager(metaclass=ABCMeta):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """To be implemented by managers that inherit from IManagerMediator interface.
 
