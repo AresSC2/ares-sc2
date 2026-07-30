@@ -33,31 +33,26 @@ if TYPE_CHECKING:
 class UseAOEAbility(CombatIndividualBehavior):
     """Attempt to use AOE ability for a unit.
 
-    Attributes
-    ----------
-    unit : Unit
-        The unit that potentially has an AOE ability.
-    ability_id : AbilityId
-        Ability we want to use.
-    targets : Units
-        The targets we want to hit.
-    min_targets : int
-        Minimum targets to hit with spell.
-    avoid_own_flying : bool = False
-        Avoid own flying with this spell?
-    avoid_own_ground : bool = False
-        Avoid own ground with this spell?
-    bonus_tags : set[int] = None
-        Give more emphasize on this unit tags.
-        For example, perhaps a ravager can do corrosive bile
-        Provide enemy tags that are currently fungaled?
-        Default is empty `set`.
-    recalculate : bool = False
-        If unit is already using ability, should
-        we recalculate this behavior?
-        WARNING: could have performance impact.
-    stack_same_spell : bool = False
-        Stack spell in same position?
+    Attributes:
+        unit: The unit that potentially has an AOE ability.
+        ability_id: Ability we want to use.
+        targets: The targets we want to hit.
+        min_targets: Minimum targets to hit with spell.
+        avoid_own_flying: Avoid own flying with this spell?
+            Default is False.
+        avoid_own_ground: Avoid own ground with this spell?
+            Default is False.
+        bonus_tags: Give more emphasize on this unit tags.
+            For example, perhaps a ravager can do corrosive bile
+            Provide enemy tags that are currently fungaled?
+            Default is empty `Set`
+        recalculate: If unit is already using ability, should
+            we recalculate this behavior?
+            WARNING: could have performance impact
+            Default is False.
+        stack_same_spell: Stack spell in same position?
+            Default is False.
+
     """
 
     unit: Unit

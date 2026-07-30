@@ -22,27 +22,23 @@ if TYPE_CHECKING:
 @dataclass
 class AutoUseAOEAbility(CombatIndividualBehavior):
     """Pass in a unit and it will find an AOE to use
-    and cast it.
+        and cast it.
 
-    Attributes
-    ----------
-    unit : Unit
-        The unit that potentially has an AOE ability.
-    targets : Units
-        The targets we want to hit.
-    min_targets : int
-        Minimum targets to hit with spell.
-    bonus_tags : set[int] = None
-        Give more emphasize on this unit tags.
-        For example, perhaps a ravager can do corrosive bile
-        Provide enemy tags that are currently fungaled?
-        Default is empty `set`.
-    recalculate : bool = False
-        If unit is already using ability, should
-        we recalculate this behavior?
-        WARNING: could have performance impact.
-    stack_same_spell : bool = False
-        Stack spell in same position?
+    Attributes:
+        unit: The unit that potentially has an AOE ability.
+        targets: The targets we want to hit.
+        min_targets: Minimum targets to hit with spell.
+        bonus_tags: Give more emphasize on this unit tags.
+            For example, perhaps a ravager can do corrosive bile
+            Provide enemy tags that are currently fungaled?
+            Default is empty `Set`
+        recalculate: If unit is already using ability, should
+            we recalculate this behavior?
+            WARNING: could have performance impact
+            Default is False.
+        stack_same_spell: Stack spell in same position?
+            Default is False.
+
     """
 
     unit: Unit

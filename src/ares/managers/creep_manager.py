@@ -477,7 +477,7 @@ class CreepManager(Manager, IManagerMediator):
         return pos
 
     def _get_overlord_creep_spotter_positions(
-        self, overlords: list[Unit] | Units , target_pos: Point2
+        self, overlords: list[Unit] | Units, target_pos: Point2
     ) -> dict[int, Point2]:
         """Find optimal positions for overlords to provide vision for creep spread.
 

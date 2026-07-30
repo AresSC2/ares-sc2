@@ -130,7 +130,7 @@ class IntelManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Any :
+        Optional[Union[Dict, DefaultDict, Coroutine[Any, Any, bool]]] :
             Everything that could possibly be returned from the Manager fits in there
         """
         if self.ai.arcade_mode:

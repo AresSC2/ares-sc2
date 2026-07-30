@@ -921,7 +921,7 @@ ALL_WORKER_TYPES: frozenset[UnitTypeId] = frozenset(
     }
 )
 
-RACE_SUPPLY: dict[Race, UnitTypeId] = {
+RACE_SUPPLY: dict[Race.ValueType, UnitTypeId] = {
     Race.Protoss: UnitTypeId.PYLON,
     Race.Terran: UnitTypeId.SUPPLYDEPOT,
     Race.Zerg: UnitTypeId.OVERLORD,

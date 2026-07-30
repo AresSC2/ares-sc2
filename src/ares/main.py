@@ -150,7 +150,7 @@ class AresBot(CustomBotAI):
     def do_unload_container(self, container_tag: int, index: int = 0) -> None:
         self._drop_unload_actions.append((container_tag, index))
 
-    def calculate_cost(self, item_id: AbilityId| UnitTypeId | UpgradeId) -> (Cost):
+    def calculate_cost(self, item_id: AbilityId | UnitTypeId | UpgradeId) -> (Cost):
         if isinstance(item_id, UnitTypeId):
             cost_dict: dict[UnitTypeId, Cost] = getattr(self, "cost_dict", COST_DICT)
             if item_id in cost_dict:
