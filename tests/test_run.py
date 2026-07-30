@@ -10,7 +10,6 @@ import sys
 from os import path
 from os.path import abspath, dirname
 from pathlib import Path
-from typing import List
 
 import yaml
 
@@ -64,13 +63,13 @@ def main():
     bot1 = Bot(race, TestBot(), bot_name)
 
     # Local game
-    map_list: List[str] = [
+    map_list: list[str] = [
         p.name.replace(f".{MAP_FILE_EXT}", "")
         for p in Path(MAPS_PATH).glob(f"*.{MAP_FILE_EXT}")
         if p.is_file()
     ]
     # alternative example code if finding the map path is problematic
-    # map_list: List[str] = [
+    # map_list: list[str] = [
     #     "BerlingradAIE",
     #     "InsideAndOutAIE",
     #     "MoondanceAIE",

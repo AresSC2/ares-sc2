@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to_squared, cy_sorted_by_distance_to
 from sc2.data import Race
@@ -39,7 +39,7 @@ class GasBuildingController(MacroBehavior):
 
     to_count: int
     max_pending: int = 1
-    closest_to: Optional[Point2] = None
+    closest_to: Point2 | None = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         num_gas: int

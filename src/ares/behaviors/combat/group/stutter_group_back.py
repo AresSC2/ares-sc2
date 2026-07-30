@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared, cy_sorted_by_distance_to
@@ -43,7 +43,7 @@ class StutterGroupBack(CombatGroupBehavior):
     group: list[Unit]
     group_tags: set[int]
     group_position: Point2
-    target: Union[Point2, Unit]
+    target: Point2 | Unit
     grid: np.ndarray
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:

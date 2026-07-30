@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_sorted_by_distance_to
 from sc2.ids.ability_id import AbilityId
@@ -32,7 +32,7 @@ class AMoveGroup(CombatGroupBehavior):
 
     group: list[Unit]
     group_tags: set[int]
-    target: Union[Point2, Unit]
+    target: Point2 | Unit
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if len(self.group) == 0:

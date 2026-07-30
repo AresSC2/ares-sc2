@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_closer_than
 from sc2.data import Race
@@ -41,7 +41,7 @@ class AutoUseAOEAbility(CombatIndividualBehavior):
 
     unit: Unit
     targets: list[Unit]
-    bonus_tags: Optional[set] = field(default_factory=set)
+    bonus_tags: set | None = field(default_factory=set)
     recalculate: bool = False
     stack_same_spell: bool = False
 

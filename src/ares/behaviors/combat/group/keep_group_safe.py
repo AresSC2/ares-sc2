@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from sc2.unit import Unit
@@ -34,7 +34,7 @@ class KeepGroupSafe(CombatGroupBehavior):
     """
 
     group: list[Unit]
-    close_enemy: Union[Units, list[Unit]]
+    close_enemy: list[Unit] | Units
     grid: np.ndarray
     attack_in_range_enemy: bool = True
 

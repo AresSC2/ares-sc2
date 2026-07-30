@@ -1,7 +1,7 @@
 """Base class for Managers."""
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any
 
 from sc2.units import Units
 
@@ -28,7 +28,7 @@ class Manager(metaclass=ABCMeta):
 
     """
 
-    def __init__(self, ai: "AresBot", config: Dict, mediator: ManagerMediator) -> None:
+    def __init__(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> None:
         """Set up the manager.
 
         Parameters
@@ -46,7 +46,7 @@ class Manager(metaclass=ABCMeta):
         """
         super().__init__()
         self.ai: AresBot = ai
-        self.config: Dict = config
+        self.config: dict = config
         self.manager_mediator: ManagerMediator = mediator
         self.empty_units: Units = Units([], self.ai)
 

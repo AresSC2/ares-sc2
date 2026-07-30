@@ -85,7 +85,7 @@ class BuildOrderParser:
 
         Returns:
         --------
-        Dict
+        dict
             A dictionary of `BuildOrderStep` objects representing the recognized
             build order commands.
         """
@@ -494,9 +494,9 @@ class BuildOrderParser:
                 # look behind natural
                 elif order_target == BuildOrderTargetOptions.NAT:
                     location: Point2 = self._get_target(order_target)
-                    behind_min_line_points: list[Point2] = (
-                        self.ai.mediator.get_behind_mineral_positions(th_pos=location)
-                    )
+                    behind_min_line_points: list[
+                        Point2
+                    ] = self.ai.mediator.get_behind_mineral_positions(th_pos=location)
                     for point in behind_min_line_points:
                         target_positions.append(point)
                 # otherwise just go to location
@@ -557,8 +557,10 @@ class BuildOrderParser:
         try:
             supply: int = int(commands[0])
         except ValueError:
-            logger.warning(f"""{raw_step} should begin with an integer supply count,
-                found {commands[0]}, setting supply target to 0""")
+            logger.warning(
+                f"""{raw_step} should begin with an integer supply count,
+                found {commands[0]}, setting supply target to 0"""
+            )
             supply: int = 0
 
         # this is the main command of a build order step (worker, gas, expand etc.)

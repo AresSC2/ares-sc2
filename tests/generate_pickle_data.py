@@ -9,7 +9,6 @@ import os
 import pickle
 import sys
 from os.path import abspath, dirname
-from typing import Optional
 
 from loguru import logger
 from s2clientprotocol import sc2api_pb2 as sc_pb
@@ -29,7 +28,7 @@ from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 
 class ExporterBot(AresBot):
-    def __init__(self, game_step_override: Optional[int] = None):
+    def __init__(self, game_step_override: int | None = None):
         super().__init__(game_step_override)
         self.map_name: str = None
 

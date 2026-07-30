@@ -4,12 +4,10 @@ Includes some offset, plus opinions on Planetary Fortresses.
 
 """
 
-from typing import Dict
-
 from sc2.ids.unit_typeid import UnitTypeId
 
 # value is the range plus some offset
-ENEMY_VS_GROUND_STATIC_DEFENSE_TYPES: Dict[UnitTypeId, int] = {
+ENEMY_VS_GROUND_STATIC_DEFENSE_TYPES: dict[UnitTypeId, int] = {
     # Protoss
     UnitTypeId.PHOTONCANNON: 7 + 1,
     # Terran

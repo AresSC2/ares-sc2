@@ -1,5 +1,3 @@
-from typing import List
-
 from .sc2_helper import circles_intersect as r_circles_intersect
 from .sc2_helper import find_points_inside_circle as r_find_points_inside_circle
 
@@ -17,5 +15,5 @@ def circles_intersect(
 
 def find_points_inside_circle(
     point, radius: float, map_height: int, map_width: int
-) -> List[(int, int)]:
+) -> list[(int, int)]:
     return r_find_points_inside_circle(point, radius, map_height, map_width)

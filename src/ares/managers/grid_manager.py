@@ -6,7 +6,7 @@ cost calculations, and influence management.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from map_analyzer import MapData
@@ -111,7 +111,7 @@ class GridManager(Manager, IManagerMediator):
     def __init__(
         self,
         ai: "AresBot",
-        config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -195,14 +195,14 @@ class GridManager(Manager, IManagerMediator):
             default_weight=200
         )
 
-        self.forcefield_positions: List[Point2] = []
+        self.forcefield_positions: list[Point2] = []
         # biles / nukes
-        self.delayed_effects: Dict[int, int] = {}
+        self.delayed_effects: dict[int, int] = {}
 
         # track biles, since they disappear from the observation right before they land
         # key is position, value is the frame the bile was first seen (50 frames total)
-        self.biles_dict: Dict[Point2, int] = {}
-        self.storms_dict: Dict[Point2, int] = {}
+        self.biles_dict: dict[Point2, int] = {}
+        self.storms_dict: dict[Point2, int] = {}
 
     async def update(self, iteration: int) -> None:
         """Keep track of everything.
@@ -330,9 +330,9 @@ class GridManager(Manager, IManagerMediator):
         pos: Point2,
         weight: float,
         unit_range: float,
-        grids: List[np.ndarray],
+        grids: list[np.ndarray],
         initial_default_weights: int = 0,
-    ) -> List[np.ndarray]:
+    ) -> list[np.ndarray]:
         """Add values to multiple grids at once.
 
         Costs can also be considered "influence", mostly used to add enemies to a grid.
@@ -353,7 +353,7 @@ class GridManager(Manager, IManagerMediator):
 
         Returns
         -------
-        List[np.ndarray] :
+        list[np.ndarray] :
             The updated grids.
         """
         return self.map_data.add_cost_to_multiple_grids(
@@ -425,13 +425,13 @@ class GridManager(Manager, IManagerMediator):
 
     def _add_effects(self) -> None:
         """Add effects influence to map."""
-        effect_values: Dict = self.config[PATHING][EFFECTS]
+        effect_values: dict = self.config[PATHING][EFFECTS]
         effects_buffer = self.config[PATHING][EFFECTS_RANGE_BUFFER]
 
         self._process_game_effects(effect_values, effects_buffer)
         self._process_parasitic_bombs(effect_values, effects_buffer)
 
-    def _process_game_effects(self, effect_values: Dict, effects_buffer: float) -> None:
+    def _process_game_effects(self, effect_values: dict, effects_buffer: float) -> None:
         """Process all game effects and add their influence."""
         effect_handlers = {
             EffectId.BLINDINGCLOUDCP: self._handle_blinding_cloud,
@@ -455,14 +455,14 @@ class GridManager(Manager, IManagerMediator):
                 effect_handlers[effect.id](effect, effect_values, effects_buffer)
 
     def _process_parasitic_bombs(
-        self, effect_values: Dict, effects_buffer: float
+        self, effect_values: dict, effects_buffer: float
     ) -> None:
         """Process parasitic bomb effects."""
         for position in self.ai.enemy_parasitic_bomb_positions:
             self._handle_parasitic_bomb(position, effect_values, effects_buffer)
 
     def _handle_blinding_cloud(
-        self, effect, effect_values: Dict, effects_buffer: float
+        self, effect, effect_values: dict, effects_buffer: float
     ) -> None:
         """Handle blinding cloud effect."""
         grids = [
@@ -478,7 +478,7 @@ class GridManager(Manager, IManagerMediator):
         )
 
     def _handle_kd8_charge(
-        self, effect, effect_values: Dict, effects_buffer: float
+        self, effect, effect_values: dict, effects_buffer: float
     ) -> None:
         """Handle KD8 charge effect."""
         grids = [self.climber_grid, self.ground_grid]
@@ -490,7 +490,7 @@ class GridManager(Manager, IManagerMediator):
         )
 
     def _handle_liberator_siege(
-        self, effect, effect_values: Dict, effects_buffer: float
+        self, effect, effect_values: dict, effects_buffer: float
     ) -> None:
         """Handle liberator siege effect."""
         grids = [self.climber_grid, self.ground_grid]
@@ -502,7 +502,7 @@ class GridManager(Manager, IManagerMediator):
         )
 
     def _handle_lurker_spines(
-        self, effect, effect_values: Dict, effects_buffer: float
+        self, effect, effect_values: dict, effects_buffer: float
     ) -> None:
         """Handle lurker spines effect."""
         grids = [
@@ -518,14 +518,14 @@ class GridManager(Manager, IManagerMediator):
                 grids,
             )
 
-    def _handle_nuke(self, effect, effect_values: Dict, effects_buffer: float) -> None:
+    def _handle_nuke(self, effect, effect_values: dict, effects_buffer: float) -> None:
         """Handle nuke effect."""
         self._add_delayed_effect(
             position=Point2.center(effect.positions),
             effect_dict=self.storms_dict,
         )
 
-    def _handle_storm(self, effect, effect_values: Dict, effects_buffer: float) -> None:
+    def _handle_storm(self, effect, effect_values: dict, effects_buffer: float) -> None:
         """Handle psi storm effect."""
         grids = [
             self.air_grid,
@@ -544,7 +544,7 @@ class GridManager(Manager, IManagerMediator):
         )
 
     def _handle_corrosive_bile(
-        self, effect, effect_values: Dict, effects_buffer: float
+        self, effect, effect_values: dict, effects_buffer: float
     ) -> None:
         """Handle corrosive bile effect."""
         self._add_delayed_effect(
@@ -553,7 +553,7 @@ class GridManager(Manager, IManagerMediator):
         )
 
     def _handle_forcefield(
-        self, effect, effect_values: Dict, effects_buffer: float
+        self, effect, effect_values: dict, effects_buffer: float
     ) -> None:
         """Handle forcefield effect."""
         self.forcefield_positions.append(effect.positions.pop())
@@ -561,7 +561,7 @@ class GridManager(Manager, IManagerMediator):
     def _handle_parasitic_bomb(
         self,
         position: Point2,
-        effect_values: Dict,
+        effect_values: dict,
         effects_buffer: float,
     ) -> None:
         """Handle parasitic bomb effect."""
@@ -959,7 +959,7 @@ class GridManager(Manager, IManagerMediator):
             How long the effect lasts.
         """
         current_frame: int = self.ai.state.game_loop
-        keys_to_remove: List[Point2] = []
+        keys_to_remove: list[Point2] = []
 
         for position, frame_commenced in effect_dict.items():
             if current_frame - frame_commenced > effect_duration:
@@ -972,7 +972,7 @@ class GridManager(Manager, IManagerMediator):
         self,
         cost: float,
         radius: float,
-        effect_dict: Dict,
+        effect_dict: dict,
         react_on_frame: int,
     ) -> None:
         """Add the costs of the delayed effects to the grids.

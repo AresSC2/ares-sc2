@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from sc2.position import Point2
@@ -30,7 +30,7 @@ class PickUpAndDropCargo(CombatIndividualBehavior):
 
     unit: Unit # medivac for example
     grid: np.ndarray = self.mediator.get_ground_grid
-    pickup_targets: Union[Units, list[Unit]] = self.workers
+    pickup_targets: Units | list[Unit] = self.workers
     self.register_behavior(
         PickUpAndDropCargo(unit, grid, pickup_targets, self.ai.game_info.map_center)
     )
@@ -54,9 +54,9 @@ class PickUpAndDropCargo(CombatIndividualBehavior):
 
     unit: Unit
     grid: np.ndarray
-    pickup_targets: Union[Units, list[Unit]]
+    pickup_targets: list[Unit] | Units
     target: Point2
-    cargo_switch_to_role: Optional[UnitRole] = None
+    cargo_switch_to_role: UnitRole | None = None
     should_drop_units: bool = True
     keep_dropship_safe: bool = True
     success_at_distance: float = 2.0

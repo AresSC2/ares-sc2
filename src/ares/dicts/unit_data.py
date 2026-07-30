@@ -1,13 +1,11 @@
 """Mineral, gas, supply, and army values for units."""
 
-from typing import Dict
-
 from sc2.ids.unit_typeid import UnitTypeId
 
 # army_value = (((minerals / 0.9) + gas) * supply) / 50
 # with some edits where appropriate
 # Zerg building data includes Drone cost
-UNIT_DATA: Dict[UnitTypeId, Dict] = {
+UNIT_DATA: dict[UnitTypeId, dict] = {
     # these first 2 entries are rich vespene buildings?
     # on patch 5.0.14 AIE maps
     UnitTypeId.SIEGETANKMENGSKACGLUESCREENDUMMY: {

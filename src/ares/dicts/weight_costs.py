@@ -5,12 +5,10 @@ values are taken from the API for some units.
 
 """
 
-from typing import Dict
-
 from sc2.ids.unit_typeid import UnitTypeId
 
 # Zerg building data includes Drone cost
-WEIGHT_COSTS: Dict[UnitTypeId, Dict] = {
+WEIGHT_COSTS: dict[UnitTypeId, dict] = {
     UnitTypeId.ADEPT: {"AirCost": 0, "GroundCost": 9, "AirRange": 0, "GroundRange": 5},
     UnitTypeId.ADEPTPHASESHIFT: {
         "AirCost": 0,

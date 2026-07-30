@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to_squared
 from sc2.data import Race
@@ -28,7 +28,7 @@ class GhostSnipe(CombatIndividualBehavior):
     """
 
     unit: Unit
-    close_enemy: Union[list[Unit], Units]
+    close_enemy: list[Unit] | Units
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         if (
@@ -49,9 +49,9 @@ class GhostSnipe(CombatIndividualBehavior):
 
     def get_snipe_target(
         self, ai: "AresBot", ghosts: list[Unit], units: Units
-    ) -> Optional[Unit]:
+    ) -> Unit | None:
         max_value: float = 0.0
-        target: Optional[Unit] = None
+        target: Unit | None = None
 
         for unit in units:
             if (

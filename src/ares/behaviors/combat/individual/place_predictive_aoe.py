@@ -1,6 +1,6 @@
 import math
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to
 from sc2.ids.ability_id import AbilityId
@@ -36,7 +36,7 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
     """
 
     unit: Unit
-    path: List[Point2]
+    path: list[Point2]
     enemy_center_unit: Unit
     aoe_ability: AbilityId
     ability_delay: int
@@ -85,8 +85,8 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
         current_position: Point2,
         current_target: Point2,
         distance_per_step: float,
-        next_target: Optional[Point2] = None,
-    ) -> Tuple[Point2, bool]:
+        next_target: Point2 | None = None,
+    ) -> tuple[Point2, bool]:
         """Calculate where a unit will be on the next step.
 
         Assumes knowledge of the unit's current position, target position, and that the
@@ -108,7 +108,7 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
 
         Returns
         -------
-        Tuple[Point2, bool] :
+        tuple[Point2, bool] :
             Point2 is where the unit will be
             bool is whether the unit reached `current_target` in this step
 
@@ -141,24 +141,24 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
         )
 
     def _get_unit_real_path(
-        self, unit_path: List[Point2], unit_speed: float
-    ) -> List[Point2]:
+        self, unit_path: list[Point2], unit_speed: float
+    ) -> list[Point2]:
         """Find the location of the unit at each game step given its path.
 
         Parameters
         ----------
-        unit_path: List[Point2]
+        unit_path: list[Point2]
             Where the unit is being told to move.
         unit_speed: float
             How far the unit moves each game step.
 
         Returns
         -------
-        List[Point2] :
+        list[Point2] :
             Where the unit will be at each game iteration.
 
         """
-        real_path: List[Point2] = [unit_path[0]]
+        real_path: list[Point2] = [unit_path[0]]
         curr_target_idx: int = 1
         # 100 should be overkill, but I'm really just trying to avoid a `while` loop
         for step in range(100):
@@ -186,13 +186,13 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
         return real_path
 
     def _get_chasing_unit_path(
-        self, target_unit_path: List[Point2], start_position: Point2, unit_speed: float
-    ) -> Tuple[List[Point2], bool]:
+        self, target_unit_path: list[Point2], start_position: Point2, unit_speed: float
+    ) -> tuple[list[Point2], bool]:
         """Calculate the path the chasing unit will take to catch the target unit.
 
         Arguments
         ---------
-        target_unit_path: List[Point2]
+        target_unit_path: list[Point2]
             Where the target unit is going to be at each game iteration.
         start_position: Point2
             Where the chasing unit is starting from.
@@ -201,14 +201,13 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
 
         Returns
         -------
-        Tuple[List[Point2], bool] :
-            List[Point2] is the chasing unit's path
+        tuple[list[Point2], bool] :
+            list[Point2] is the chasing unit's path
             bool is whether the chasing unit caught the target unit
-
         """
         reached_target: bool = False
 
-        unit_path: List[Point2] = [start_position]
+        unit_path: list[Point2] = [start_position]
         target_idx = 0
 
         for i in range(100):

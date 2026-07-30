@@ -88,7 +88,7 @@ class CreepManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Union[BotMode, List[BotMode]]] :
+        BotMode | list[BotMode] | None :
             Either one of the ability dictionaries is being returned or a function that
             returns None was called from a different manager (please don't do that).
 
@@ -161,9 +161,9 @@ class CreepManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def existing_tumor_positions_or_order_targets(self) -> list[Point2]:
-        own_structures_dict: dict[UnitTypeId, Units] = (
-            self.manager_mediator.get_own_structures_dict
-        )
+        own_structures_dict: dict[
+            UnitTypeId, Units
+        ] = self.manager_mediator.get_own_structures_dict
         positions: list[Point2] = [
             u.position
             for creep_tumor_type in CREEP_TUMOR_TYPES
@@ -332,11 +332,11 @@ class CreepManager(Manager, IManagerMediator):
                         ):
                             too_close = True
 
-                        own_ths: list[Unit] = (
-                            self.manager_mediator.get_own_structures_dict[
-                                UnitTypeId.HATCHERY
-                            ]
-                        )
+                        own_ths: list[
+                            Unit
+                        ] = self.manager_mediator.get_own_structures_dict[
+                            UnitTypeId.HATCHERY
+                        ]
                         # can act a bit weird near pending hatchery, avoid it
                         if not all(
                             cy_distance_to_squared(creep_pos, townhall.position)
@@ -475,7 +475,7 @@ class CreepManager(Manager, IManagerMediator):
         return pos
 
     def _get_overlord_creep_spotter_positions(
-        self, overlords: Units | list[Unit], target_pos: Point2
+        self, overlords: list[Unit] | Units, target_pos: Point2
     ) -> dict[int, Point2]:
         """Find optimal positions for overlords to provide vision for creep spread.
 
