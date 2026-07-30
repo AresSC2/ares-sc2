@@ -1,8 +1,7 @@
-"""Cache armies for better and faster tracking.
+"""Cache armies for better and faster tracking."""
 
-"""
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Dict, List, Set, Union
+from typing import TYPE_CHECKING, Any
 
 from cython_extensions import cy_unit_pending
 from sc2.data import Race
@@ -39,7 +38,7 @@ class UnitCacheManager(Manager, IManagerMediator):
     def __init__(
         self,
         ai: "AresBot",
-        config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -87,8 +86,8 @@ class UnitCacheManager(Manager, IManagerMediator):
         self.enemy_army: Units = Units([], ai)
         self.enemy_workers: Units = Units([], ai)
         self.own_army: Units = Units([], ai)
-        self.enemy_army_tags: Set[int] = set()
-        self.enemy_worker_tags: Set[int] = set()
+        self.enemy_army_tags: set[int] = set()
+        self.enemy_worker_tags: set[int] = set()
         # keep a dict of units for fast lookup
         # caution: this is for bookkeeping only,
         # don't use distance checks here for example
@@ -97,11 +96,11 @@ class UnitCacheManager(Manager, IManagerMediator):
         # used for assigning roles to locusts, may not be useful
         self.old_own_army: defaultdict[UnitTypeId, list] = defaultdict(list)
         self.own_structures_dict: defaultdict[UnitTypeId, list] = defaultdict(list)
-        self.own_structure_tags: Set = set()
+        self.own_structure_tags: set = set()
         # keep track of units that get removed, so they can be deleted from memory units
         self.removed_units: Units = Units([], ai)
         # keep track of unit tags we want to remove, so we can do it in one operation
-        self.enemy_tags_to_remove: Set[int] = set()
+        self.enemy_tags_to_remove: set[int] = set()
         self.enemy_army_units_to_add: Units = Units([], ai)
 
     def manager_request(
@@ -144,8 +143,8 @@ class UnitCacheManager(Manager, IManagerMediator):
 
         """
         self.removed_units: Units = Units([], self.ai)
-        self.enemy_army_tags: Set[int] = self.enemy_army.tags
-        self.enemy_worker_tags: Set[int] = self.enemy_workers.tags
+        self.enemy_army_tags: set[int] = self.enemy_army.tags
+        self.enemy_worker_tags: set[int] = self.enemy_workers.tags
 
     @property
     def enemy_army_value(self) -> int:
@@ -392,7 +391,7 @@ class UnitCacheManager(Manager, IManagerMediator):
 
         self.own_structures_dict[unit.type_id].append(unit)
 
-    def get_units_from_tags(self, tags: Union[List[int], Set[int]]) -> List[Unit]:
+    def get_units_from_tags(self, tags: list[int] | set[int]) -> list[Unit]:
         """Get a `list` of `Unit` objects corresponding to the given tags.
 
         Parameters
@@ -404,7 +403,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         -------
 
         """
-        retrieved_tags: List[Unit] = []
+        retrieved_tags: list[Unit] = []
         for tag in tags:
             if tag in self.ai.unit_tag_dict:
                 unit = self.ai.unit_tag_dict[tag]

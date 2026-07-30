@@ -1,5 +1,5 @@
 from collections import defaultdict, deque
-from typing import TYPE_CHECKING, Any, DefaultDict, Union
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from cython_extensions.geometry import cy_distance_to_squared, cy_towards
@@ -62,9 +62,7 @@ class NydusManager(Manager, IManagerMediator):
 
         # key is tag of travelling unit,
         # value is dictionary of tags of ENTRY/EXIT nodes and UnitTypeId
-        self._nydus_travellers: dict[
-            int, dict[str, Union[int, Point2, UnitTypeId]]
-        ] = {}
+        self._nydus_travellers: dict[int, dict[str, int | Point2 | UnitTypeId]] = {}
         self._nydus_tags_with_actions: set[int] = set()
         # if unit just left nydus, it will be banned from nydus travel for a bit
         self._units_banned_from_travelling: dict[int, float] = {}
@@ -264,7 +262,7 @@ class NydusManager(Manager, IManagerMediator):
         min_base_distance: float = 15.0,
         max_nydus_distance: float = 25.0,
         max_cost: int = 20,
-    ) -> Union[None, Point2]:
+    ) -> Point2 | None:
         """
         Find a Nydus position with pathing cost less than max_cost in
         a region containing the given point, at least
@@ -386,7 +384,7 @@ class NydusManager(Manager, IManagerMediator):
 
         # arrange the order units get out
         passengers: set[int] = nyduses[0].passengers_tags
-        exit_queue: DefaultDict[int, deque[int]] = defaultdict(deque)
+        exit_queue: defaultdict[int, deque[int]] = defaultdict(deque)
         for traveller_tag in passengers:
             if traveller_tag in self._nydus_travellers:
                 if self._nydus_travellers[traveller_tag][UNIT_TYPE] == UnitTypeId.QUEEN:

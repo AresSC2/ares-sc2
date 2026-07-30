@@ -1,8 +1,6 @@
-"""Extension of sc2.BotAI to add custom functions.
+"""Extension of sc2.BotAI to add custom functions."""
 
-"""
 import argparse
-from typing import List, Optional, Tuple, Union
 
 import numpy as np
 from cython_extensions import cy_closer_than, cy_distance_to_squared
@@ -144,7 +142,7 @@ class CustomBotAI(BotAI):
         )
 
     @staticmethod
-    def get_total_supply(units: Union[Units, list[Unit]]) -> int:
+    def get_total_supply(units: Units | list[Unit]) -> int:
         """Get total supply of units.
 
         Parameters
@@ -217,8 +215,8 @@ class CustomBotAI(BotAI):
         return False
 
     def split_ground_fliers(
-        self, units: Union[Units, list[Unit]], return_as_lists: bool = False
-    ) -> Union[Tuple[Units, Units], Tuple[list, list]]:
+        self, units: Units | list[Unit], return_as_lists: bool = False
+    ) -> tuple[Units | Units, tuple[list, list]]:
         """Split units into ground units and flying units.
 
         Parameters
@@ -228,8 +226,8 @@ class CustomBotAI(BotAI):
         return_as_lists :
         Returns
         -------
-        Tuple[Units, Units] :
-            Tuple where the first element is the ground units present in `Units` and
+        tuple[Units, Units] :
+            `tuple` where the first element is the ground units present in `Units` and
             the second element is the flying units present in `Units`
 
         """
@@ -291,8 +289,8 @@ class CustomBotAI(BotAI):
     async def _give_units_same_order(
         self,
         order: AbilityId,
-        unit_tags: Union[List[int], set[int]],
-        target: Optional[Union[Point2, Unit, int]] = None,
+        unit_tags: list[int] | set[int],
+        target: int | Point2 | Unit | None = None,
     ) -> None:  # pragma: no cover
         """
         Give units corresponding to the given tags the same order.
@@ -521,7 +519,7 @@ class CustomBotAI(BotAI):
         grid: np.ndarray,
         lower_threshold: float,
         upper_threshold: float,
-        color: Tuple[int, int, int],
+        color: tuple[int, int, int],
         size: int,
     ) -> None:
         height: float = self.get_terrain_z_height(self.game_info.map_center)

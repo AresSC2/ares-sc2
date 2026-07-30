@@ -1,9 +1,8 @@
-"""Handle manual tracking of abilities until python-sc2 PR #163 is merged.
+"""Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
-"""
 import uuid
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from cython_extensions import cy_center, cy_distance_to_squared
 from sc2.ids.unit_typeid import UnitTypeId
@@ -33,7 +32,7 @@ class UnitSquad:
     squad_position : Point2
         The position where this group is situated.
     squad_units : list[Unit]
-        List of units for this group. Ideally this should
+        `list` of `Unit`s for this group. Ideally this should
         be updated with fresh Unit objects every step/frame.
     tags : set[int]
         Tags of all units that belong to this squad.
@@ -114,7 +113,7 @@ class SquadManager(Manager, IManagerMediator):
 
         self._assigned_unit_tags: set[int] = set()
         # self._squads: dict[UnitRole, list[UnitSquad]] = defaultdict(list)
-        # key -> UnitRole, value -> Dict[key -> squad_id, value -> tags, squad object]
+        # key -> UnitRole, value -> dict[key -> squad_id, value -> tags, squad object]
         self._squads_dict: dict[UnitRole, dict[str, Any]] = {
             role: {} for role in UnitRole
         }
@@ -191,7 +190,7 @@ class SquadManager(Manager, IManagerMediator):
         self,
         role: UnitRole,
         squad_radius: float = 6.0,
-        unit_type: Optional[Union[UnitTypeId, set[UnitTypeId]]] = None,
+        unit_type: UnitTypeId | set[UnitTypeId] | None = None,
     ) -> list[UnitSquad]:
         """
         The main entry point to this manager. Since we do not want

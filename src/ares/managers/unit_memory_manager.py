@@ -1,8 +1,7 @@
-"""Manager for keeping track of enemy last known positions.
+"""Manager for keeping track of enemy last known positions."""
 
-"""
 from collections import deque
-from typing import TYPE_CHECKING, Any, Deque, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Deque
 
 import numpy as np
 from cython_extensions import cy_distance_to
@@ -39,7 +38,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
     def __init__(
         self,
         ai: "AresBot",
-        config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -78,13 +77,13 @@ class UnitMemoryManager(Manager, IManagerMediator):
         # Dictionary of units that we remember the position of. Keyed by unit tag.
         # Deque is used so that new snapshots are added to the left, and old ones are
         # removed from the right.
-        self._memory_units_by_tag: Dict[int, Deque[Unit]] = {}
+        self._memory_units_by_tag: dict[int, Deque[Unit]] = {}
 
         # Dictionary of units that we know of, but which are longer present at the
         # location last seen. Keyed by unit tag
-        self._archive_units_by_tag: Dict[int, Deque[Unit]] = {}
+        self._archive_units_by_tag: dict[int, Deque[Unit]] = {}
         self._tags_destroyed: set[int] = set()
-        self.unit_dict: Dict[int, Deque[Unit]] = {}
+        self.unit_dict: dict[int, Deque[Unit]] = {}
 
         # remove units from memory after <time_in_seconds> based on air or ground
         self.expire_air: int = 30
@@ -95,10 +94,10 @@ class UnitMemoryManager(Manager, IManagerMediator):
         self.all_enemies: Units = self.ai.all_enemy_units
         self.enemy_ground: Units = Units([], self.ai)
         self.enemy_fliers: Units = Units([], self.ai)
-        self.enemy_tree: Optional[KDTree] = None
-        self.own_tree: Optional[KDTree] = None
-        self.enemy_ground_tree: Optional[KDTree] = None
-        self.enemy_air_tree: Optional[KDTree] = None
+        self.enemy_tree: KDTree | None = None
+        self.own_tree: KDTree | None = None
+        self.enemy_ground_tree: KDTree | None = None
+        self.enemy_air_tree: KDTree | None = None
 
         # empty units, so we don't have to generate it ten billion times
         self.empty_units: Units = Units([], self.ai)
@@ -106,19 +105,18 @@ class UnitMemoryManager(Manager, IManagerMediator):
     @property_cache_once_per_frame
     def enemy_detectors_and_ranges(
         self,
-    ) -> Tuple[List[Union[Point2, List[float]]], List[float]]:
+    ) -> tuple[list[Point2 | list[float]], list[float]]:
         """Cached unit positions and ranges for enemy detector.
 
         Returns
         -------
-        Tuple[List[Union[Point2, List[float]]], List[float]] :
+        tuple[list[Point2 | list[float]], list[float]] :
             First element is a `list` of detector positions.
             Second element is a `list` of detector ranges.
-
         """
         # get the positions and ranges
-        enemy_detector_position: List[Union[Point2, List[float]]] = []
-        enemy_detector_range: List[float] = []
+        enemy_detector_position: list[Point2 | list[float]] = []
+        enemy_detector_range: list[float] = []
 
         for effect in self.ai.state.effects:
             if effect.id in DETECTOR_RANGES:
@@ -170,7 +168,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         -------
 
         """
-        memory_tags_to_remove: List[int] = []
+        memory_tags_to_remove: list[int] = []
         removed_unit_tags: set[int] = self.manager_mediator.manager_request(
             ManagerName.UNIT_CACHE_MANAGER, ManagerRequestType.GET_REMOVED_UNITS
         ).tags
@@ -183,7 +181,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
                 continue
 
             snap = self.get_latest_snapshot(unit_tag)
-            points: List[Point2] = [
+            points: list[Point2] = [
                 Point2((int(snap.position.x), int(snap.position.y))),
                 Point2((int(snap.position.x + 1), int(snap.position.y))),
                 Point2((int(snap.position.x), int(snap.position.y + 1))),
@@ -374,7 +372,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
             return snap.age > self.expire_air
         return snap.age > self.expire_ground
 
-    def clear_unit_cache(self, memory_tags_to_remove: List[int], unit_tag: int) -> None:
+    def clear_unit_cache(self, memory_tags_to_remove: list[int], unit_tag: int) -> None:
         """Clear the cache of the unit and archive it.
 
         Parameters
@@ -405,8 +403,8 @@ class UnitMemoryManager(Manager, IManagerMediator):
         self.enemy_ground_tree = self._create_tree(self.enemy_ground)
 
     @staticmethod
-    def _create_tree(units: Units) -> Optional[KDTree]:
-        unit_position_list: List[List[float]] = [
+    def _create_tree(units: Units) -> KDTree | None:
+        unit_position_list: list[list[float]] = [
             [unit.position.x, unit.position.y] for unit in units
         ]
         if unit_position_list:
@@ -416,11 +414,11 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
     def units_in_range(
         self,
-        start_points: List[Union[Unit, Tuple[float, float]]],
-        distances: Union[float, List[float]],
+        start_points: list[Unit | tuple[float, float] | Point2],
+        distances: float | list[float],
         query_tree: UnitTreeQueryType,
         return_as_dict: bool = False,
-    ) -> Union[Dict[Union[Point2, int], Units], List[Units]]:
+    ) -> dict[int | Point2, Units] | list[Units]:
         """Get units within range of each `Unit` or `Point2` in `start_points`.
 
         Notes
@@ -429,9 +427,9 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        start_points: List[Union[Unit, Tuple[float, float]]]
-            List of `Unit`s or positions to search for units from.
-        distances: Union[float, List[float]]
+        start_points: list[Unit | tuple[float, float]]
+            `list` of `Unit`s or positions to search for units from.
+        distances: float | list[float]
             How far away from each point to query.
         query_tree: UnitTreeQueryType
             Which KDTree should be queried.
@@ -440,7 +438,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Union[Dict[Union[int, Tuple[float, float]], Units], List[Units]] :
+        dict[int | Point2, Units] | list[Units] :
             Returns the units in range of each start point as a `dict` where the key
             is the unit tag or position and the value is the `Units` in range or a
             `list` of `Units`.
@@ -451,7 +449,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         if tree is None:
             in_range_list = [self.empty_units for _ in range(len(start_points))]
         else:
-            in_range_list: List[Units] = []
+            in_range_list: list[Units] = []
             if start_points:
                 positions = [
                     u.position if isinstance(u, Unit) else u for u in start_points
@@ -465,9 +463,11 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         return (
             {
-                start_points[idx].tag
-                if isinstance(start_points[idx], Unit)
-                else start_points[idx]: in_range_list[idx]
+                (
+                    start_points[idx].tag
+                    if isinstance(start_points[idx], Unit)
+                    else start_points[idx]
+                ): in_range_list[idx]
                 for idx in range(len(start_points))
             }
             if return_as_dict
@@ -476,7 +476,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
     def _get_tree_and_unit_container(
         self, requested_query_type: UnitTreeQueryType
-    ) -> Tuple[KDTree, Units]:
+    ) -> tuple[KDTree, Units]:
         """Get the trees and unit containers based on query type.
 
         Parameters
@@ -486,7 +486,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Tuple[KDTree, Units] :
+        tuple[KDTree, Units] :
             First element is the KDTree to query.
             Second element is the units that make up that KDTree.
 
@@ -503,8 +503,8 @@ class UnitMemoryManager(Manager, IManagerMediator):
             raise ValueError(f"Unsupported query type: {requested_query_type}")
 
     def any_enemies_in_range(
-        self, positions: Union[List[Point2], List[List[float]]], radius: float
-    ) -> List[bool]:
+        self, positions: list[Point2] | list[list[float]], radius: float
+    ) -> list[bool]:
         """Check if any enemies are in range of a list of points.
 
         Parameters
@@ -516,7 +516,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         Returns
         -------
-        List[bool] :
+        list[bool] :
             True or False for each point in the list depending on if any enemy
             units are present within radius.
 
@@ -616,14 +616,13 @@ class UnitMemoryManager(Manager, IManagerMediator):
         Set[int] :
             Set of tags of our units that are in range of a detector. This doesn't take
             our unit's radius into account, only the radius of the detector.
-
         """
         # skip if we don't have units
         if self.own_tree is None:
             return set()
 
         # need to get a set eventually, but lists are faster to add to
-        unit_tags_in_range_list: List[int] = []
+        unit_tags_in_range_list: list[int] = []
 
         # get the positions and ranges
         enemy_detector_position, enemy_detector_range = self.enemy_detectors_and_ranges

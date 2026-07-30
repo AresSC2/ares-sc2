@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Protocol, Union
+from typing import TYPE_CHECKING, Protocol
 
 from cython_extensions import cy_distance_to_squared
 from sc2.ids.ability_id import AbilityId
@@ -31,7 +31,7 @@ class CombatGroupBehavior(Behavior, Protocol):
     def duplicate_or_similar_order(
         self,
         unit: Unit,
-        target: Union[Point2, Unit],
+        target: Point2 | Unit,
         order_type: AbilityId,
         distance_check_squared: float = 2.0,
     ) -> bool:

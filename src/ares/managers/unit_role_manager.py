@@ -1,7 +1,6 @@
-"""Manage assigning/removing of roles and getting units by role.
+"""Manage assigning/removing of roles and getting units by role."""
 
-"""
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
+from typing import TYPE_CHECKING, Any
 
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
@@ -27,9 +26,9 @@ class UnitRoleManager(Manager, IManagerMediator):
     themselves.
     """
 
-    LOCUSTS: Set[UnitTypeId] = {UnitTypeId.LOCUSTMP, UnitTypeId.LOCUSTMPFLYING}
-    SQUAD_ROLES: Set[UnitRole] = {UnitRole.ATTACKING}
-    ZERG_STATIC_DEFENCE: Set[UnitTypeId] = {
+    LOCUSTS: set[UnitTypeId] = {UnitTypeId.LOCUSTMP, UnitTypeId.LOCUSTMPFLYING}
+    SQUAD_ROLES: set[UnitRole] = {UnitRole.ATTACKING}
+    ZERG_STATIC_DEFENCE: set[UnitTypeId] = {
         UnitTypeId.SPINECRAWLER,
         UnitTypeId.SPORECRAWLER,
     }
@@ -37,7 +36,7 @@ class UnitRoleManager(Manager, IManagerMediator):
     def __init__(
         self,
         ai: "AresBot",
-        config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -56,10 +55,10 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         """
         super(UnitRoleManager, self).__init__(ai, config, mediator)
-        self.unit_role_dict: Dict[str, Set[int]] = {
+        self.unit_role_dict: dict[str, set[int]] = {
             role.name: set() for role in UnitRole
         }
-        self.tag_to_role_dict: Dict[int, str] = {}
+        self.tag_to_role_dict: dict[int, str] = {}
         self.manager_requests_dict = {
             ManagerRequestType.ASSIGN_ROLE: lambda kwargs: self.assign_role(**kwargs),
             ManagerRequestType.BATCH_ASSIGN_ROLE: lambda kwargs: self.batch_assign_role(
@@ -78,7 +77,7 @@ class UnitRoleManager(Manager, IManagerMediator):
             ),
             ManagerRequestType.SWITCH_ROLES: lambda kwargs: self.switch_roles(**kwargs),
         }
-        self.all_assigned_tags: Set[int] = set()
+        self.all_assigned_tags: set[int] = set()
 
     def manager_request(
         self,
@@ -144,7 +143,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         -------
 
         """
-        assigned_tags_list: List[int] = []
+        assigned_tags_list: list[int] = []
         for role in self.unit_role_dict:
             assigned_tags_list += self.unit_role_dict[role]
         self.all_assigned_tags = set(assigned_tags_list)
@@ -195,10 +194,8 @@ class UnitRoleManager(Manager, IManagerMediator):
         if remove_from_squad:
             self.manager_mediator.remove_tag_from_squads(tag=tag)
 
-    def batch_assign_role(
-        self, tags: Union[List[int], Set[int]], role: UnitRole
-    ) -> None:
-        """Assign a given role to a List of unit tags.
+    def batch_assign_role(self, tags: list[int] | set[int], role: UnitRole) -> None:
+        """Assign a given role to a `list` of unit tags.
 
         Notes
         -----
@@ -234,8 +231,8 @@ class UnitRoleManager(Manager, IManagerMediator):
             if tag in self.unit_role_dict[role]:
                 self.unit_role_dict[role].remove(tag)
 
-    def batch_clear_role(self, tags: Set[int]) -> None:
-        """Clear the roles of a given List of unit tags.
+    def batch_clear_role(self, tags: set[int]) -> None:
+        """Clear the roles of a given `set` of unit tags.
 
         Notes
         -----
@@ -256,8 +253,8 @@ class UnitRoleManager(Manager, IManagerMediator):
     def get_units_from_role(
         self,
         role: UnitRole,
-        unit_type: Optional[Union[UnitTypeId, Set[UnitTypeId]]] = None,
-        restrict_to: Optional[Units] = None,
+        unit_type: UnitTypeId | set[UnitTypeId] | None = None,
+        restrict_to: Units | None = None,
     ) -> Units:
         """Get a Units object containing units with a given role.
 
@@ -293,7 +290,7 @@ class UnitRoleManager(Manager, IManagerMediator):
             else:
                 # will crash if not an iterable but we should be careful with typing
                 # anyway
-                retrieved_units: List[Unit] = []
+                retrieved_units: list[Unit] = []
                 for type_id in unit_type:
                     retrieved_units.extend(
                         self.get_single_type_from_single_role(
@@ -304,12 +301,12 @@ class UnitRoleManager(Manager, IManagerMediator):
         else:
             # get every unit with the role
             if restrict_to:
-                tags_to_get: Set[int] = (
+                tags_to_get: set[int] = (
                     self.unit_role_dict[role.name] & restrict_to.tags
                 )
             else:
-                tags_to_get: Set[int] = self.unit_role_dict[role.name]
-            # get the List[Unit] from UnitCacheManager and return as Units
+                tags_to_get: set[int] = self.unit_role_dict[role.name]
+            # get the list[Unit] from UnitCacheManager and return as Units
             return Units(
                 self.manager_mediator.manager_request(
                     ManagerName.UNIT_CACHE_MANAGER,
@@ -321,8 +318,8 @@ class UnitRoleManager(Manager, IManagerMediator):
 
     def get_units_from_roles(
         self,
-        roles: Set[UnitRole],
-        unit_type: Union[None, UnitTypeId, Set[UnitTypeId]] = None,
+        roles: set[UnitRole],
+        unit_type: UnitTypeId | set[UnitTypeId] | None = None,
     ) -> Units:
         """Get the units matching `unit_type` from the given roles.
 
@@ -362,7 +359,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         self.batch_assign_role(self.get_units_from_role(from_role).tags, to_role)
 
     def get_all_from_roles_except(
-        self, roles: Set[UnitRole], excluded: Set[UnitTypeId]
+        self, roles: set[UnitRole], excluded: set[UnitTypeId]
     ) -> Units:
         """Get all units from the given roles except for unit types in excluded.
 
@@ -379,21 +376,21 @@ class UnitRoleManager(Manager, IManagerMediator):
             Units matching the role that are not of an excluded type.
 
         """
-        role_tags: List[int] = []
-        valid_tags: List[int] = []
+        role_tags: list[int] = []
+        valid_tags: list[int] = []
         # get a list of the tags of the units in the given roles
         for role in roles:
             role_tags.extend(self.unit_role_dict[role.name])
         # convert to a set for faster lookup
-        role_set: Set[int] = set(role_tags)
-        own_army_dict: Dict = self.manager_mediator.manager_request(
+        role_set: set[int] = set(role_tags)
+        own_army_dict: dict = self.manager_mediator.manager_request(
             ManagerName.UNIT_CACHE_MANAGER, ManagerRequestType.GET_CACHED_OWN_ARMY_DICT
         )
         # get the tags of all units that aren't of the excluded types
         for unit_type in own_army_dict:
             if unit_type not in excluded:
                 valid_tags.extend(own_army_dict[unit_type].tags)
-        shared_tags: List[int] = [tag for tag in valid_tags if tag in role_set]
+        shared_tags: list[int] = [tag for tag in valid_tags if tag in role_set]
         return Units(
             self.manager_mediator.manager_request(
                 ManagerName.UNIT_CACHE_MANAGER,
@@ -404,8 +401,8 @@ class UnitRoleManager(Manager, IManagerMediator):
         )
 
     def get_single_type_from_single_role(
-        self, unit_type: UnitTypeId, role: UnitRole, restrict_to: Optional[Units] = None
-    ) -> List[Unit]:
+        self, unit_type: UnitTypeId, role: UnitRole, restrict_to: Units | None = None
+    ) -> list[Unit]:
         """Get all units of a given type that have a specified role.
 
         If restrict_to is Units, this will only get the units of the specified type and
@@ -423,7 +420,7 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         Returns
         -------
-        List[Unit] :
+        list[Unit] :
             Units matching the given type with the given role.
 
         """
@@ -441,7 +438,7 @@ class UnitRoleManager(Manager, IManagerMediator):
             shared_tags: set[int] = (
                 unit_with_role_tags & units_of_type_tags & restrict_to.tags
             )
-        # get the List[Unit] from UnitCacheManager
+        # get the list[Unit] from UnitCacheManager
         return self.manager_mediator.manager_request(
             ManagerName.UNIT_CACHE_MANAGER,
             ManagerRequestType.GET_UNITS_FROM_TAGS,

@@ -85,7 +85,7 @@ class BuildOrderParser:
 
         Returns:
         --------
-        Dict
+        dict
             A dictionary of `BuildOrderStep` objects representing the recognized
             build order commands.
         """
@@ -117,9 +117,11 @@ class BuildOrderParser:
             ),
             BuildOrderOptions.GAS: lambda: BuildOrderStep(
                 command=self.ai.gas_type,
-                start_condition=lambda: self.ai.minerals >= 0
-                if self.ai.race == Race.Zerg
-                else self.ai.minerals >= 50,
+                start_condition=lambda: (
+                    self.ai.minerals >= 0
+                    if self.ai.race == Race.Zerg
+                    else self.ai.minerals >= 50
+                ),
                 end_condition=lambda: self.ai.structures.filter(
                     lambda s: 0.00001 <= s.build_progress < 0.05
                     and s.type_id == self.ai.gas_type
@@ -140,15 +142,19 @@ class BuildOrderParser:
             ),
             BuildOrderOptions.SUPPLY: lambda: BuildOrderStep(
                 command=self.ai.supply_type,
-                start_condition=lambda: self.ai.can_afford(self.ai.supply_type)
-                if self.ai.race == Race.Zerg
-                else self.ai.minerals >= 25,
-                end_condition=lambda: True
-                if self.ai.race == Race.Zerg
-                else (
-                    self.ai.structures.filter(
-                        lambda s: 0.00001 <= s.build_progress < 0.05
-                        and s.type_id == self.ai.supply_type
+                start_condition=lambda: (
+                    self.ai.can_afford(self.ai.supply_type)
+                    if self.ai.race == Race.Zerg
+                    else self.ai.minerals >= 25
+                ),
+                end_condition=lambda: (
+                    True
+                    if self.ai.race == Race.Zerg
+                    else (
+                        self.ai.structures.filter(
+                            lambda s: 0.00001 <= s.build_progress < 0.05
+                            and s.type_id == self.ai.supply_type
+                        )
                     )
                 ),
             ),
@@ -252,9 +258,11 @@ class BuildOrderParser:
                 else UnitTypeId.HATCHERY
             )
             return lambda: BuildOrderStep(
-                command=AbilityId.UPGRADETOLAIR_LAIR
-                if structure_id == UnitTypeId.LAIR
-                else AbilityId.UPGRADETOHIVE_HIVE,
+                command=(
+                    AbilityId.UPGRADETOLAIR_LAIR
+                    if structure_id == UnitTypeId.LAIR
+                    else AbilityId.UPGRADETOHIVE_HIVE
+                ),
                 start_condition=lambda: self.ai.townhalls.filter(
                     lambda th: th.is_ready and th.is_idle and th.type_id == upgrade_from
                 )

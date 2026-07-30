@@ -1,12 +1,9 @@
-"""Ability base cooldowns.
-
-"""
-from typing import Dict
+"""Ability base cooldowns."""
 
 from sc2.ids.ability_id import AbilityId
 
 # in frames
-ABILITY_FRAME_COOL_DOWN: Dict = {
+ABILITY_FRAME_COOL_DOWN: dict = {
     # Protoss
     AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT: int(22.4 * 11) + 6,
     AbilityId.BEHAVIOR_PULSARBEAMON: int(22.4 * 4) + 6,

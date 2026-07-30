@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Union
+from typing import TYPE_CHECKING
 
 from loguru import logger
 from sc2.dicts.unit_trained_from import UNIT_TRAINED_FROM
@@ -48,7 +48,7 @@ class TechUp(MacroBehavior):
 
     """
 
-    desired_tech: Union[UpgradeId, UnitTypeId]
+    desired_tech: UpgradeId | UnitTypeId
     base_location: Point2
     ignore_existing_techlabs: bool = False
 
@@ -192,7 +192,7 @@ class TechUp(MacroBehavior):
         base_location: Point2,
         researched_from_id: UnitTypeId,
         tech_required: list[UnitTypeId],
-        desired_tech: Union[UnitTypeId, UpgradeId],
+        desired_tech: UnitTypeId | UpgradeId,
         ignore_existing_techlabs: bool = False,
     ) -> bool:
         """

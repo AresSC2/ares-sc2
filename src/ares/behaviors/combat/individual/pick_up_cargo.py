@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_closest_to, cy_distance_to
@@ -31,7 +31,7 @@ class PickUpCargo(CombatIndividualBehavior):
 
     unit: Unit # medivac for example
     grid: np.ndarray = self.mediator.get_ground_grid
-    pickup_targets: Union[Units, list[Unit]] = self.workers
+    pickup_targets: Units | list[Unit] = self.workers
     self.register_behavior(PickUpCargo(unit, grid, pickup_targets))
     ```
 
@@ -46,8 +46,8 @@ class PickUpCargo(CombatIndividualBehavior):
 
     unit: Unit
     grid: np.ndarray
-    pickup_targets: Union[Units, list[Unit]]
-    cargo_switch_to_role: Optional[UnitRole] = None
+    pickup_targets: list[Unit] | Units
+    cargo_switch_to_role: UnitRole | None = None
 
     def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
         # no action executed

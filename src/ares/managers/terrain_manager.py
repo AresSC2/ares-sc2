@@ -1,8 +1,7 @@
-"""Calculations involving terrain.
+"""Calculations involving terrain."""
 
-"""
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from cython_extensions import cy_flood_fill_grid, cy_towards
@@ -47,7 +46,7 @@ class TerrainManager(Manager, IManagerMediator):
 
     CANT_BUILD_LOCATION_INVALID: int = 44
     cached_pathing_grid: np.ndarray
-    choke_points: Set[Point2]
+    choke_points: set[Point2]
     current_siege_point: Point2
     current_siege_target: Point2
     map_data: MapData
@@ -55,7 +54,7 @@ class TerrainManager(Manager, IManagerMediator):
     def __init__(
         self,
         ai: "AresBot",
-        config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -114,16 +113,16 @@ class TerrainManager(Manager, IManagerMediator):
         }
 
         self.debug: bool = self.config[DEBUG]
-        self.own_expansions: List[Tuple[Point2, float]] = []
-        self.enemy_expansions: List[Tuple[Point2, float]] = []
-        self.positions_blocked_by_enemy_burrowed_units: List[Point2] = []
+        self.own_expansions: list[tuple[Point2, float]] = []
+        self.enemy_expansions: list[tuple[Point2, float]] = []
+        self.positions_blocked_by_enemy_burrowed_units: list[Point2] = []
 
         self.initial_pathing_grid: np.ndarray = (
             self.ai.game_info.pathing_grid.data_numpy.copy()
         )
 
         # needed a place to track spines until the spine positioning manager is done
-        self.base_defense_spine_positions: Dict[Point2, int] = {}
+        self.base_defense_spine_positions: dict[Point2, int] = {}
 
     def initialise(self) -> None:
         """Calculate expansion locations from own and enemy perspective.
@@ -142,7 +141,7 @@ class TerrainManager(Manager, IManagerMediator):
             )
 
         self.map_data = self.manager_mediator.get_map_data_object
-        self.choke_points: Set[Point2] = set(
+        self.choke_points: set[Point2] = set(
             [point for ch in self.map_data.map_chokes for point in ch.points]
         )
 
@@ -307,13 +306,13 @@ class TerrainManager(Manager, IManagerMediator):
         return False
 
     @cached_property
-    def ol_spots(self) -> List[Point2]:
+    def ol_spots(self) -> list[Point2]:
         """High ground Overlord hiding spots.
 
         Returns
         -------
-        List[Point2] :
-            List of Overlord hiding spots.
+        list[Point2] :
+            `list` of Overlord hiding spots.
 
         """
         return [Point2(tuple_spot) for tuple_spot in self.map_data.overlord_spots]
@@ -480,7 +479,7 @@ class TerrainManager(Manager, IManagerMediator):
 
     def building_position_blocked_by_burrowed_unit(
         self, worker_tag: int, position: Point2
-    ) -> Optional[Point2]:
+    ) -> Point2 | None:
         """See if the building position is blocked by a burrowed unit.
 
         Parameters
@@ -492,7 +491,7 @@ class TerrainManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Point2] :
+        Point2 | None :
             The position that's blocked by an enemy unit.
 
         """
@@ -518,7 +517,7 @@ class TerrainManager(Manager, IManagerMediator):
 
     def _calculate_expansion_path_distances(
         self, from_pos: Point2
-    ) -> List[Tuple[Point2, float]]:
+    ) -> list[tuple[Point2, float]]:
         """Calculates pathing distances to all expansions on the map
         from a given map position, returns list of expansions in order
         of pathing distance from from_pos
@@ -531,13 +530,13 @@ class TerrainManager(Manager, IManagerMediator):
 
         Returns
         -------
-        expansion_distances : List[Tuple[Point2, float]]
-            List of Tuples where
+        expansion_distances : list[tuple[Point2, float]]
+            list of tuples where
                 The first element is the location of the base.
                 The second element is the pathing distance from `from_pos`.
 
         """
-        expansion_distances: List[Tuple[Point2, float]] = []
+        expansion_distances: list[tuple[Point2, float]] = []
         grid: np.ndarray = self.manager_mediator.get_ground_grid
         for el in self.ai.expansion_locations_list:
             if from_pos.distance_to(el) < self.ai.EXPANSION_GAP_THRESHOLD:
@@ -552,7 +551,7 @@ class TerrainManager(Manager, IManagerMediator):
         expansion_distances = sorted(expansion_distances, key=lambda x: x[1])
         return expansion_distances
 
-    def get_behind_mineral_positions(self, th_pos: Point2) -> List[Point2]:
+    def get_behind_mineral_positions(self, th_pos: Point2) -> list[Point2]:
         """Finds 3 spots behind the mineral line
 
         Notes
@@ -566,12 +565,12 @@ class TerrainManager(Manager, IManagerMediator):
 
         Returns
         -------
-        List[Point2] :
+        list[Point2] :
             Points behind the mineral line of the designated base.
 
         """
-        positions: List[Point2] = []
-        possible_behind_mineral_positions: List[Point2] = []
+        positions: list[Point2] = []
+        possible_behind_mineral_positions: list[Point2] = []
 
         all_mf: Units = self.ai.mineral_field.closer_than(10, th_pos)
 
@@ -592,14 +591,14 @@ class TerrainManager(Manager, IManagerMediator):
 
         return positions
 
-    def get_base_to_choke_information(self) -> Dict[Point2, Dict[ChokeArea, int]]:
+    def get_base_to_choke_information(self) -> dict[Point2, dict[ChokeArea, int]]:
         """Get pathing distance from each base to every choke point on the map.
 
         VisionBlockerArea chokes are currently ignored.
 
         Returns
         -------
-        Dict[Point2, Dict[ChokeArea, int]] :
+        dict[Point2, dict[ChokeArea, int]] :
             Key is the base location
             Value is a dictionary where the key is the choke point and the value is the
                 length of the path to that choke point.
@@ -630,7 +629,7 @@ class TerrainManager(Manager, IManagerMediator):
         -------
 
         """
-        _positions_blocked_by_enemy_burrowed_units: List[Point2] = []
+        _positions_blocked_by_enemy_burrowed_units: list[Point2] = []
         for position in self.positions_blocked_by_enemy_burrowed_units:
             detectors: Units = self.manager_mediator.get_units_in_range(
                 start_points=[position], distance=7, query_tree=UnitTreeQueryType.AllOwn

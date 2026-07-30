@@ -1,7 +1,6 @@
-"""Handle manual tracking of abilities until python-sc2 PR #163 is merged.
+"""Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
-"""
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import TYPE_CHECKING
 
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId
@@ -31,7 +30,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
     def __init__(
         self,
         ai: "AresBot",
-        config: Dict,
+        config: dict,
         mediator: ManagerMediator,
     ) -> None:
         """Set up the manager.
@@ -62,10 +61,10 @@ class AbilityTrackerManager(Manager, IManagerMediator):
             ),
         }
         # make a copy, so we don't mess with anything when updating Medivac cds
-        self.ability_frame_cd_dict: Dict[
+        self.ability_frame_cd_dict: dict[
             AbilityId, int
         ] = ABILITY_FRAME_COOL_DOWN.copy()
-        self.unit_to_ability_dict: Dict[int, Dict[AbilityId, int]] = {}
+        self.unit_to_ability_dict: dict[int, dict[AbilityId, int]] = {}
 
     def manager_request(
         self,
@@ -73,7 +72,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs
-    ) -> Optional[Dict]:
+    ) -> dict | None:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -90,7 +89,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Dict] :
+        dict | None :
             Either one of the ability dictionaries is being returned or a function that
             returns None was called from a different manager (please don't do that).
 

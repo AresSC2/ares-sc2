@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from .sc2_helper import CombatPredictor, CombatSettings
 
 
@@ -112,7 +110,7 @@ class CombatSimulator:
 
     def predict_engage(
         self, own_units, enemy_units, optimistic: bool = False, defender_player: int = 0
-    ) -> Tuple[bool, float]:
+    ) -> tuple[bool, float]:
         """
         Predict an engagement between two sets of units and returns a tuple containing Winner(True if own_units won)
         and winner's units' health left after engagement.

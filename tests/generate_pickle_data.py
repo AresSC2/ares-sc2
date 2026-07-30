@@ -3,12 +3,12 @@ This "bot" will loop over several available ladder maps and generate the pickle 
 Thanks to burny's `python-sc2` where most of this logic was taken from.
 TODO: Make this pickle `ares` specific stuff (manager hub?) so we can run tests.
 """
+
 import lzma
 import os
 import pickle
 import sys
 from os.path import abspath, dirname
-from typing import Optional
 
 from loguru import logger
 from s2clientprotocol import sc2api_pb2 as sc_pb
@@ -28,7 +28,7 @@ from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 
 
 class ExporterBot(AresBot):
-    def __init__(self, game_step_override: Optional[int] = None):
+    def __init__(self, game_step_override: int | None = None):
         super().__init__(game_step_override)
         self.map_name: str = None
 

@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Coroutine, DefaultDict, Optional, Union
+from collections import defaultdict
+from typing import TYPE_CHECKING, Any, Coroutine
 
 from cython_extensions.geometry import cy_distance_to_squared
 from loguru import logger
@@ -52,7 +53,7 @@ class WarpInManager(Manager, IManagerMediator):
         request: ManagerRequestType,
         reason: str = None,
         **kwargs,
-    ) -> Optional[Union[dict, DefaultDict, Coroutine[Any, Any, bool]]]:
+    ) -> dict | defaultdict | Coroutine[Any, Any, bool] | None:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -69,7 +70,7 @@ class WarpInManager(Manager, IManagerMediator):
 
         Returns
         -------
-        Optional[Union[Dict, DefaultDict, Coroutine[Any, Any, bool]]] :
+        dict | defaultdict | Coroutine[Any, Any, bool] | None :
             Everything that could possibly be returned from the Manager fits in there
 
         """
@@ -90,7 +91,7 @@ class WarpInManager(Manager, IManagerMediator):
         self.requested_warp_ins = []
 
     def request_warp_in(
-        self, build_from: UnitTypeId, unit_type: UnitTypeId, target: Optional[Point2]
+        self, build_from: UnitTypeId, unit_type: UnitTypeId, target: Point2 | None
     ) -> None:
         """
         Get a warp in spot closest to target

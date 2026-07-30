@@ -1,10 +1,8 @@
-from typing import Dict
-
 import numpy as np
 from sc2.ids.unit_typeid import UnitTypeId
 
 # movement turn rate
-TURN_RATE: Dict[UnitTypeId, float] = {
+TURN_RATE: dict[UnitTypeId, float] = {
     UnitTypeId.BALL: 720.0,
     UnitTypeId.COLOSSUS: np.inf,
     UnitTypeId.INFESTORTERRAN: 999.8437,

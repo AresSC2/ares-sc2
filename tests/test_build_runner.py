@@ -2,7 +2,6 @@
 TODO: Work out how to test the build runner properly
 """
 
-
 from pathlib import Path
 
 import pytest

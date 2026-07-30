@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import (
@@ -59,7 +59,7 @@ class UseAOEAbility(CombatIndividualBehavior):
     min_targets: int
     avoid_own_flying: bool = False
     avoid_own_ground: bool = False
-    bonus_tags: Optional[set] = field(default_factory=set)
+    bonus_tags: set | None = field(default_factory=set)
     recalculate: bool = False
     stack_same_spell: bool = False
 
