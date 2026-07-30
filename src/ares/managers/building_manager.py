@@ -1,5 +1,7 @@
 """Handle the construction of buildings."""
 
+from __future__ import annotations
+
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Coroutine
 
@@ -65,7 +67,7 @@ class BuildingManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -73,16 +75,12 @@ class BuildingManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-
         """
         super(BuildingManager, self).__init__(ai, config, mediator)
 
@@ -144,10 +142,6 @@ class BuildingManager(Manager, IManagerMediator):
         ----------
         iteration :
             The current game iteration.
-
-        Returns
-        -------
-
         """
         self._handle_construction_orders()
 
@@ -604,8 +598,8 @@ class BuildingManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        building
-        pos
+        building : UnitTypeId
+        pos : Point2
 
         Returns
         -------

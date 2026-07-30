@@ -1,5 +1,7 @@
 """Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
+from __future__ import annotations
+
 import uuid
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
@@ -81,7 +83,7 @@ class SquadManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -89,16 +91,12 @@ class SquadManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-
         """
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {

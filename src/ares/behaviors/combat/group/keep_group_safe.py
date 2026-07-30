@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -38,7 +40,7 @@ class KeepGroupSafe(CombatGroupBehavior):
     grid: np.ndarray
     attack_in_range_enemy: bool = True
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if len(self.group) == 0:
             return False
 

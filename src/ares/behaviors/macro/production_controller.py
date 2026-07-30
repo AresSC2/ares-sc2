@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -81,7 +83,7 @@ class ProductionController(MacroBehavior):
     should_repower_structures: bool = True
     max_production_structures: int = 12
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         # no need for anything else if zerg
         if ai.race == Race.Zerg:
             logger.warning(
@@ -231,7 +233,7 @@ class ProductionController(MacroBehavior):
 
     def _building_production_due_to_bank(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         unit_type_id: UnitTypeId,
         collection_rate_minerals: int,
         collection_rate_vespene: int,
@@ -285,7 +287,7 @@ class ProductionController(MacroBehavior):
         return False
 
     def is_flying_production(
-        self, ai: "AresBot", flying_structures: dict, train_from: set[UnitTypeId]
+        self, ai: AresBot, flying_structures: dict, train_from: set[UnitTypeId]
     ) -> bool:
         if ai.race == Race.Terran:
             prod_flying: bool = False
@@ -307,7 +309,7 @@ class ProductionController(MacroBehavior):
         return False
 
     def _add_techlab_to_existing(
-        self, ai: "AresBot", unit_type_id: UnitTypeId, researched_from_id
+        self, ai: AresBot, unit_type_id: UnitTypeId, researched_from_id
     ) -> bool:
         structures_dict: dict = ai.mediator.get_own_structures_dict
         build_techlab_from: UnitTypeId = BUILD_TECHLAB_FROM[researched_from_id]

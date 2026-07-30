@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -45,7 +47,7 @@ class GroupUseAbility(CombatGroupBehavior):
     target: Point2 | Unit | None
     sync_command: bool = True
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if len(self.group) == 0:
             return False
         issue_command: bool

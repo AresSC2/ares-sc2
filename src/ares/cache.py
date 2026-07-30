@@ -1,4 +1,5 @@
 """Tools for caching attribute values."""
+from __future__ import annotations
 
 from functools import wraps
 

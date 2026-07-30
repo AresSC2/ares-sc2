@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -52,7 +54,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
     remain_sieged: bool = False
     force_unsiege: bool = False
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         type_id: UnitTypeId = self.unit.type_id
         if type_id not in TANK_TYPES:
             return False

@@ -1,5 +1,7 @@
 """Base class for Managers."""
 
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Any
 
@@ -28,7 +30,7 @@ class Manager(metaclass=ABCMeta):
 
     """
 
-    def __init__(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> None:
+    def __init__(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> None:
         """Set up the manager.
 
         Parameters
@@ -64,7 +66,7 @@ class Manager(metaclass=ABCMeta):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> Any:
         """To be implemented by managers that inherit from IManagerMediator interface.
 

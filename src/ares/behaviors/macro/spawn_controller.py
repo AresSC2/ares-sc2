@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from math import isclose
 from typing import TYPE_CHECKING
@@ -77,7 +79,7 @@ class SpawnController(MacroBehavior):
     __excluded_structure_tags: set[int] = field(default_factory=set)
     __supply_available: float = 0.0
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         # allow gateways to morph before issuing commands
         if UpgradeId.WARPGATERESEARCH in ai.state.upgrades and [
             g
@@ -235,7 +237,7 @@ class SpawnController(MacroBehavior):
 
     def _add_to_build_dict(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         type_id: UnitTypeId,
         base_unit: list[Unit],
         amount: int,
@@ -270,7 +272,7 @@ class SpawnController(MacroBehavior):
 
     @staticmethod
     def _calculate_build_amount(
-        ai: "AresBot",
+        ai: AresBot,
         unit_type: UnitTypeId,
         base_units: list[Unit],
         supply_left: float,
@@ -305,14 +307,14 @@ class SpawnController(MacroBehavior):
         return amount, supply_cost, cost
 
     @staticmethod
-    def _can_afford(ai: "AresBot", unit_type_id: UnitTypeId) -> bool:
+    def _can_afford(ai: AresBot, unit_type_id: UnitTypeId) -> bool:
         if unit_type_id == UnitTypeId.ARCHON:
             return True
         return ai.can_afford(unit_type_id)
 
     @staticmethod
     def _handle_archon_morph(
-        ai: "AresBot", build_structures: list[Unit], mediator: ManagerMediator
+        ai: AresBot, build_structures: list[Unit], mediator: ManagerMediator
     ) -> None:
         unit_role_dict: dict[UnitRole, set] = mediator.get_unit_role_dict
         build_structures = [
@@ -326,7 +328,7 @@ class SpawnController(MacroBehavior):
         templar: list[Unit] = build_structures[:2]
         ai.request_archon_morph(templar)
 
-    def _morph_units(self, ai: "AresBot", mediator: ManagerMediator) -> bool:
+    def _morph_units(self, ai: AresBot, mediator: ManagerMediator) -> bool:
         did_action: bool = False
         for unit, value in self.__build_dict.items():
             did_action = True

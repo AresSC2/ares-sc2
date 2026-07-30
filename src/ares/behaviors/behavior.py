@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Protocol
 
 from ares.managers.manager_mediator import ManagerMediator
@@ -9,7 +11,7 @@ if TYPE_CHECKING:
 class Behavior(Protocol):
     """Interface that all behaviors should adhere to."""
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         """Execute the implemented behavior.
 
         Parameters:
@@ -20,6 +22,5 @@ class Behavior(Protocol):
         Returns:
             bool: Return value depends on combat/macros behavior interfaces.
             See those interfaces for more info.
-
         """
         ...

@@ -5,6 +5,8 @@ detectors will not be in range if they use these values.
 
 """
 
+from __future__ import annotations
+
 from sc2.ids.effect_id import EffectId
 from sc2.ids.unit_typeid import UnitTypeId
 

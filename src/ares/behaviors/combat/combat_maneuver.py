@@ -96,7 +96,7 @@ class CombatManeuver(Behavior):
         """
         self.micros.append(behavior)
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         for order in self.micros:
             if order.execute(ai, config, mediator):
                 # executed an action

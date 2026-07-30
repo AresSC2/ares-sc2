@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from cython_extensions import cy_distance_to_squared, cy_towards
@@ -80,7 +82,7 @@ class BuildOrderRunner:
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         chosen_opening: str,
         config: dict,
         mediator: ManagerMediator,

@@ -28,7 +28,7 @@ class IManagerMediator(metaclass=ABCMeta):
     pass the execution to other components (managers).
     """
 
-    # each manager has a `dict` linking the request type to a callable action
+    # each manager has a dict linking the request type to a callable action
     manager_requests_dict: dict[ManagerRequestType, Callable]
 
     @abstractmethod
@@ -297,7 +297,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     def get_closest_creep_tile(self, **kwargs) -> None | Point2:
-        """Get closest creep tile to `pos`
+        """Get the closest creep tile to pos
 
         WARNING: May return `None` if no creep tiles observed.
 

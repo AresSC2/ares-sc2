@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Protocol
 
 from ares.behaviors.behavior import Behavior
@@ -10,7 +12,7 @@ if TYPE_CHECKING:
 class MacroBehavior(Behavior, Protocol):
     """Interface that all macro behaviors should adhere to."""
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         """Execute the implemented behavior.
 
         Compared to CombatBehavior a MacroBehavior may be a larger isolated task.

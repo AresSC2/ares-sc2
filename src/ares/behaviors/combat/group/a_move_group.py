@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -34,7 +36,7 @@ class AMoveGroup(CombatGroupBehavior):
     group_tags: set[int]
     target: Point2 | Unit
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if len(self.group) == 0:
             return False
 

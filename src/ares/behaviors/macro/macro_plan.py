@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -45,7 +47,7 @@ class MacroPlan(Behavior):
     def add(self, behavior: MacroBehavior) -> None:
         self.macros.append(behavior)
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         for macro in self.macros:
             if macro.execute(ai, config, mediator):
                 # executed a macro behavior

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -26,8 +28,7 @@ class UpgradeController(MacroBehavior):
     currently researchable this behavior will automatically
     make the tech buildings required.
 
-
-    Example:
+    Examples
     ```py
     from ares.behaviors.macro import UpgradeController
     from sc2.ids.upgrade_id import UpgradeId
@@ -61,7 +62,7 @@ class UpgradeController(MacroBehavior):
     auto_tech_up_enabled: bool = True
     prioritize: bool = False
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         for upgrade in self.upgrade_list:
             if ai.pending_or_complete_upgrade(upgrade):
                 continue

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -41,7 +43,7 @@ class AutoSupply(MacroBehavior):
     return_true_if_supply_required: bool = True
     closest_to: Point2 | None = None
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if self._num_supply_required(ai, mediator) > 0:
             supply_type: UnitTypeId = RACE_SUPPLY[ai.race]
             if ai.race == Race.Zerg:
@@ -58,7 +60,7 @@ class AutoSupply(MacroBehavior):
         return False
 
     @staticmethod
-    def _num_supply_required(ai: "AresBot", mediator: ManagerMediator) -> int:
+    def _num_supply_required(ai: AresBot, mediator: ManagerMediator) -> int:
         """
         TODO: Improve on this initial version
             Should calculate based on townhalls for Zerg only?

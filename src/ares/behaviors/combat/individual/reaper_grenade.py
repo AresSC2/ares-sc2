@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -56,7 +58,7 @@ class ReaperGrenade(CombatIndividualBehavior):
     place_predictive: bool = True
     reaper_grenade_range: float = 5.0
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if (
             not self.enemy_units
             or AbilityId.KD8CHARGE_KD8CHARGE not in self.unit.abilities

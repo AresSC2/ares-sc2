@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import numpy as np
 from sc2.ids.unit_typeid import UnitTypeId
 

@@ -1,5 +1,7 @@
 """Handle manual tracking of abilities until python-sc2 PR #163 is merged."""
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 from sc2.ids.ability_id import AbilityId
@@ -29,7 +31,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -71,7 +73,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         receiver: ManagerName,
         request: ManagerRequestType,
         reason: str = None,
-        **kwargs
+        **kwargs,
     ) -> dict | None:
         """Fetch information from this Manager so another Manager can use it.
 

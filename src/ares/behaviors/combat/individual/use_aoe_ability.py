@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -63,7 +65,7 @@ class UseAOEAbility(CombatIndividualBehavior):
     recalculate: bool = False
     stack_same_spell: bool = False
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if self.ability_id not in AOE_ABILITY_SPELLS_INFO:
             logger.warning(
                 f"You're trying to use {self.ability_id} with `UseAOEAbility`, "
@@ -112,7 +114,7 @@ class UseAOEAbility(CombatIndividualBehavior):
         return False
 
     def _can_cast(
-        self, ai: "AresBot", mediator: ManagerMediator, position: Point2, radius: float
+        self, ai: AresBot, mediator: ManagerMediator, position: Point2, radius: float
     ) -> bool:
         can_cast: bool = (
             len(cy_closer_than(self.targets, radius, position)) >= self.min_targets

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -43,7 +45,7 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
     reaper_grenade_range: float = 5.0
 
     def execute(
-        self, ai: "AresBot", config: dict, mediator: ManagerMediator, **kwargs
+        self, ai: AresBot, config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
         if self.aoe_ability in self.unit.abilities:
             # try to fire the ability if we find a position
@@ -55,7 +57,7 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
         # no position found or the ability isn't ready
         return False
 
-    def _calculate_target_position(self, ai: "AresBot") -> Point2:
+    def _calculate_target_position(self, ai: AresBot) -> Point2:
         """Calculate where we want to put the AoE.
 
         Returns

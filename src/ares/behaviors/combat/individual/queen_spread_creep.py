@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -41,7 +43,7 @@ class QueenSpreadCreep(CombatIndividualBehavior):
     cancel_if_close_enemy: bool = True
     pre_move_queen_to_tumor: bool = True
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         spreading: bool = self.unit.is_using_ability(AbilityId.BUILD_CREEPTUMOR)
 
         grid: np.ndarray = mediator.get_ground_grid

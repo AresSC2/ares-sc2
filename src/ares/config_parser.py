@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import sys
 from dataclasses import dataclass
 from os import path
@@ -29,7 +31,7 @@ class ConfigParser:
 
         Returns
         -------
-        Dict :
+        dict :
             Internal parsed config.yml by default, or the merged internal and
             users config files.
         """
@@ -81,7 +83,7 @@ class ConfigParser:
 
         Returns
         -------
-        Dict :
+        dict :
             A single config dictionary where user values override default values.
         """
         """Recursively merge override dictionary into default dictionary."""

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -8,6 +10,7 @@ from sc2.units import Units
 
 if TYPE_CHECKING:
     from ares import AresBot
+
 from ares.behaviors.macro.macro_behavior import MacroBehavior
 from ares.managers.manager_mediator import ManagerMediator
 
@@ -41,7 +44,7 @@ class GasBuildingController(MacroBehavior):
     max_pending: int = 1
     closest_to: Point2 | None = None
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         num_gas: int
         if ai.race == Race.Terran:
             num_gas = ai.not_started_but_in_building_tracker(ai.gas_type) + len(
