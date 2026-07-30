@@ -1280,7 +1280,9 @@ class PlacementManager(Manager, IManagerMediator):
         The pylon position
         """
         pylon_pos: Point2 = self.ai.main_base_ramp.protoss_wall_pylon
-        buildings: frozenset[Point2] = self.ai.main_base_ramp.protoss_wall_buildings
+        buildings: frozenset[Point2] = frozenset(
+            self.ai.main_base_ramp.protoss_wall_buildings
+        )
 
         self._add_placement_position(
             BuildingSize.TWO_BY_TWO, el, pylon_pos, wall=True, production_pylon=True

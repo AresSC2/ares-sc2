@@ -572,6 +572,15 @@ class WallOffDetection(Enum):
 
 # sets:
 
+REACTOR_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.BARRACKSREACTOR,
+        UnitTypeId.FACTORYREACTOR,
+        UnitTypeId.STARPORTREACTOR,
+        UnitTypeId.REACTOR,
+    }
+)
+
 REACTOR_TRAIN_ABILITIES: list[AbilityId] = [
     AbilityId.BARRACKSTRAIN_MARINE,
     AbilityId.BARRACKSTRAIN_REAPER,
@@ -582,6 +591,15 @@ REACTOR_TRAIN_ABILITIES: list[AbilityId] = [
     AbilityId.STARPORTTRAIN_LIBERATOR,
 ]
 
+TECHLAB_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.BARRACKSTECHLAB,
+        UnitTypeId.FACTORYTECHLAB,
+        UnitTypeId.STARPORTTECHLAB,
+        UnitTypeId.TECHLAB,
+    }
+)
+
 ADD_ONS: dict[UnitTypeId, UnitTypeId] = {
     UnitTypeId.BARRACKSREACTOR: UnitTypeId.BARRACKS,
     UnitTypeId.FACTORYREACTOR: UnitTypeId.FACTORY,
@@ -591,193 +609,215 @@ ADD_ONS: dict[UnitTypeId, UnitTypeId] = {
     UnitTypeId.STARPORTTECHLAB: UnitTypeId.STARPORT,
 }
 
-ALL_PRODUCTION_STRUCTURES: frozenset[UnitTypeId] = ({
-    UnitTypeId.BARRACKS,
-    UnitTypeId.FACTORY,
-    UnitTypeId.STARPORT,
-    UnitTypeId.GATEWAY,
-    UnitTypeId.WARPGATE,
-    UnitTypeId.ROBOTICSFACILITY,
-    UnitTypeId.STARGATE,
-})
+ALL_PRODUCTION_STRUCTURES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.BARRACKS,
+        UnitTypeId.FACTORY,
+        UnitTypeId.STARPORT,
+        UnitTypeId.GATEWAY,
+        UnitTypeId.WARPGATE,
+        UnitTypeId.ROBOTICSFACILITY,
+        UnitTypeId.STARGATE,
+    }
+)
 
-ALL_STRUCTURES: frozenset[UnitTypeId] = ({
-    UnitTypeId.ARMORY,
-    UnitTypeId.ASSIMILATOR,
-    UnitTypeId.ASSIMILATORRICH,
-    UnitTypeId.AUTOTURRET,
-    UnitTypeId.BANELINGNEST,
-    UnitTypeId.BARRACKS,
-    UnitTypeId.BARRACKSFLYING,
-    UnitTypeId.BARRACKSREACTOR,
-    UnitTypeId.BARRACKSTECHLAB,
-    UnitTypeId.BUNKER,
-    UnitTypeId.BYPASSARMORDRONE,
-    UnitTypeId.COMMANDCENTER,
-    UnitTypeId.COMMANDCENTERFLYING,
-    UnitTypeId.CREEPTUMOR,
-    UnitTypeId.CREEPTUMORBURROWED,
-    UnitTypeId.CREEPTUMORQUEEN,
-    UnitTypeId.CYBERNETICSCORE,
-    UnitTypeId.DARKSHRINE,
-    UnitTypeId.ELSECARO_COLONIST_HUT,
-    UnitTypeId.ENGINEERINGBAY,
-    UnitTypeId.EVOLUTIONCHAMBER,
-    UnitTypeId.EXTRACTOR,
-    UnitTypeId.EXTRACTORRICH,
-    UnitTypeId.FACTORY,
-    UnitTypeId.FACTORYFLYING,
-    UnitTypeId.FACTORYREACTOR,
-    UnitTypeId.FACTORYTECHLAB,
-    UnitTypeId.FLEETBEACON,
-    UnitTypeId.FORGE,
-    UnitTypeId.FUSIONCORE,
-    UnitTypeId.GATEWAY,
-    UnitTypeId.GHOSTACADEMY,
-    UnitTypeId.GREATERSPIRE,
-    UnitTypeId.HATCHERY,
-    UnitTypeId.HIVE,
-    UnitTypeId.HYDRALISKDEN,
-    UnitTypeId.INFESTATIONPIT,
-    UnitTypeId.LAIR,
-    UnitTypeId.LURKERDENMP,
-    UnitTypeId.MEDIVACMENGSKACGLUESCREENDUMMY,
-    UnitTypeId.MISSILETURRET,
-    UnitTypeId.NEXUS,
-    UnitTypeId.NYDUSCANAL,
-    UnitTypeId.NYDUSCANALATTACKER,
-    UnitTypeId.NYDUSCANALCREEPER,
-    UnitTypeId.NYDUSNETWORK,
-    UnitTypeId.ORACLESTASISTRAP,
-    UnitTypeId.ORBITALCOMMAND,
-    UnitTypeId.ORBITALCOMMANDFLYING,
-    UnitTypeId.PHOTONCANNON,
-    UnitTypeId.PLANETARYFORTRESS,
-    UnitTypeId.POINTDEFENSEDRONE,
-    UnitTypeId.PYLON,
-    UnitTypeId.PYLONOVERCHARGED,
-    UnitTypeId.RAVENREPAIRDRONE,
-    UnitTypeId.REACTOR,
-    UnitTypeId.REFINERY,
-    UnitTypeId.REFINERYRICH,
-    UnitTypeId.RESOURCEBLOCKER,
-    UnitTypeId.ROACHWARREN,
-    UnitTypeId.ROBOTICSBAY,
-    UnitTypeId.ROBOTICSFACILITY,
-    UnitTypeId.SENSORTOWER,
-    UnitTypeId.SHIELDBATTERY,
-    UnitTypeId.SIEGETANKMENGSKACGLUESCREENDUMMY,
-    UnitTypeId.SPAWNINGPOOL,
-    UnitTypeId.SPINECRAWLER,
-    UnitTypeId.SPINECRAWLERUPROOTED,
-    UnitTypeId.SPIRE,
-    UnitTypeId.SPORECRAWLER,
-    UnitTypeId.SPORECRAWLERUPROOTED,
-    UnitTypeId.STARGATE,
-    UnitTypeId.STARPORT,
-    UnitTypeId.STARPORTFLYING,
-    UnitTypeId.STARPORTREACTOR,
-    UnitTypeId.STARPORTTECHLAB,
-    UnitTypeId.SUPPLYDEPOT,
-    UnitTypeId.SUPPLYDEPOTLOWERED,
-    UnitTypeId.TECHLAB,
-    UnitTypeId.TEMPLARARCHIVE,
-    UnitTypeId.TWILIGHTCOUNCIL,
-    UnitTypeId.ULTRALISKCAVERN,
-    UnitTypeId.WARPGATE,
-})
+ALL_STRUCTURES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.ARMORY,
+        UnitTypeId.ASSIMILATOR,
+        UnitTypeId.ASSIMILATORRICH,
+        UnitTypeId.AUTOTURRET,
+        UnitTypeId.BANELINGNEST,
+        UnitTypeId.BARRACKS,
+        UnitTypeId.BARRACKSFLYING,
+        UnitTypeId.BARRACKSREACTOR,
+        UnitTypeId.BARRACKSTECHLAB,
+        UnitTypeId.BUNKER,
+        UnitTypeId.BYPASSARMORDRONE,
+        UnitTypeId.COMMANDCENTER,
+        UnitTypeId.COMMANDCENTERFLYING,
+        UnitTypeId.CREEPTUMOR,
+        UnitTypeId.CREEPTUMORBURROWED,
+        UnitTypeId.CREEPTUMORQUEEN,
+        UnitTypeId.CYBERNETICSCORE,
+        UnitTypeId.DARKSHRINE,
+        UnitTypeId.ELSECARO_COLONIST_HUT,
+        UnitTypeId.ENGINEERINGBAY,
+        UnitTypeId.EVOLUTIONCHAMBER,
+        UnitTypeId.EXTRACTOR,
+        UnitTypeId.EXTRACTORRICH,
+        UnitTypeId.FACTORY,
+        UnitTypeId.FACTORYFLYING,
+        UnitTypeId.FACTORYREACTOR,
+        UnitTypeId.FACTORYTECHLAB,
+        UnitTypeId.FLEETBEACON,
+        UnitTypeId.FORGE,
+        UnitTypeId.FUSIONCORE,
+        UnitTypeId.GATEWAY,
+        UnitTypeId.GHOSTACADEMY,
+        UnitTypeId.GREATERSPIRE,
+        UnitTypeId.HATCHERY,
+        UnitTypeId.HIVE,
+        UnitTypeId.HYDRALISKDEN,
+        UnitTypeId.INFESTATIONPIT,
+        UnitTypeId.LAIR,
+        UnitTypeId.LURKERDENMP,
+        UnitTypeId.MEDIVACMENGSKACGLUESCREENDUMMY,
+        UnitTypeId.MISSILETURRET,
+        UnitTypeId.NEXUS,
+        UnitTypeId.NYDUSCANAL,
+        UnitTypeId.NYDUSCANALATTACKER,
+        UnitTypeId.NYDUSCANALCREEPER,
+        UnitTypeId.NYDUSNETWORK,
+        UnitTypeId.ORACLESTASISTRAP,
+        UnitTypeId.ORBITALCOMMAND,
+        UnitTypeId.ORBITALCOMMANDFLYING,
+        UnitTypeId.PHOTONCANNON,
+        UnitTypeId.PLANETARYFORTRESS,
+        UnitTypeId.POINTDEFENSEDRONE,
+        UnitTypeId.PYLON,
+        UnitTypeId.PYLONOVERCHARGED,
+        UnitTypeId.RAVENREPAIRDRONE,
+        UnitTypeId.REACTOR,
+        UnitTypeId.REFINERY,
+        UnitTypeId.REFINERYRICH,
+        UnitTypeId.RESOURCEBLOCKER,
+        UnitTypeId.ROACHWARREN,
+        UnitTypeId.ROBOTICSBAY,
+        UnitTypeId.ROBOTICSFACILITY,
+        UnitTypeId.SENSORTOWER,
+        UnitTypeId.SHIELDBATTERY,
+        UnitTypeId.SIEGETANKMENGSKACGLUESCREENDUMMY,
+        UnitTypeId.SPAWNINGPOOL,
+        UnitTypeId.SPINECRAWLER,
+        UnitTypeId.SPINECRAWLERUPROOTED,
+        UnitTypeId.SPIRE,
+        UnitTypeId.SPORECRAWLER,
+        UnitTypeId.SPORECRAWLERUPROOTED,
+        UnitTypeId.STARGATE,
+        UnitTypeId.STARPORT,
+        UnitTypeId.STARPORTFLYING,
+        UnitTypeId.STARPORTREACTOR,
+        UnitTypeId.STARPORTTECHLAB,
+        UnitTypeId.SUPPLYDEPOT,
+        UnitTypeId.SUPPLYDEPOTLOWERED,
+        UnitTypeId.TECHLAB,
+        UnitTypeId.TEMPLARARCHIVE,
+        UnitTypeId.TWILIGHTCOUNCIL,
+        UnitTypeId.ULTRALISKCAVERN,
+        UnitTypeId.WARPGATE,
+    }
+)
 
-BURROWED_ALIAS: frozenset[UnitTypeId] = ({
-    UnitTypeId.BANELINGBURROWED,
-    UnitTypeId.CREEPTUMORBURROWED,
-    UnitTypeId.DRONEBURROWED,
-    UnitTypeId.HYDRALISKBURROWED,
-    UnitTypeId.INFESTORBURROWED,
-    UnitTypeId.INFESTORTERRANBURROWED,
-    UnitTypeId.LURKERMPBURROWED,
-    UnitTypeId.QUEENBURROWED,
-    UnitTypeId.RAVAGERBURROWED,
-    UnitTypeId.ROACHBURROWED,
-    UnitTypeId.SWARMHOSTBURROWEDMP,
-    UnitTypeId.ULTRALISKBURROWED,
-    UnitTypeId.WIDOWMINEBURROWED,
-    UnitTypeId.ZERGLINGBURROWED,
-})
+BURROWED_ALIAS: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.BANELINGBURROWED,
+        UnitTypeId.CREEPTUMORBURROWED,
+        UnitTypeId.DRONEBURROWED,
+        UnitTypeId.HYDRALISKBURROWED,
+        UnitTypeId.INFESTORBURROWED,
+        UnitTypeId.INFESTORTERRANBURROWED,
+        UnitTypeId.LURKERMPBURROWED,
+        UnitTypeId.QUEENBURROWED,
+        UnitTypeId.RAVAGERBURROWED,
+        UnitTypeId.ROACHBURROWED,
+        UnitTypeId.SWARMHOSTBURROWEDMP,
+        UnitTypeId.ULTRALISKBURROWED,
+        UnitTypeId.WIDOWMINEBURROWED,
+        UnitTypeId.ZERGLINGBURROWED,
+    }
+)
 
-CHANGELING_TYPES: frozenset[UnitTypeId] =({
-    UnitTypeId.CHANGELING,
-    UnitTypeId.CHANGELINGZERGLING,
-    UnitTypeId.CHANGELINGZERGLINGWINGS,
-    UnitTypeId.CHANGELINGMARINE,
-    UnitTypeId.CHANGELINGMARINESHIELD,
-    UnitTypeId.CHANGELINGZEALOT,
-})
+CHANGELING_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.CHANGELING,
+        UnitTypeId.CHANGELINGZERGLING,
+        UnitTypeId.CHANGELINGZERGLINGWINGS,
+        UnitTypeId.CHANGELINGMARINE,
+        UnitTypeId.CHANGELINGMARINESHIELD,
+        UnitTypeId.CHANGELINGZEALOT,
+    }
+)
 
-COMMON_UNIT_IGNORE_TYPES: frozenset[UnitTypeId] = ({
-    UnitTypeId.EGG,
-    UnitTypeId.LARVA,
-    UnitTypeId.CREEPTUMORBURROWED,
-    UnitTypeId.CREEPTUMORQUEEN,
-    UnitTypeId.CREEPTUMOR,
-    UnitTypeId.MULE,
-})
+COMMON_UNIT_IGNORE_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.EGG,
+        UnitTypeId.LARVA,
+        UnitTypeId.CREEPTUMORBURROWED,
+        UnitTypeId.CREEPTUMORQUEEN,
+        UnitTypeId.CREEPTUMOR,
+        UnitTypeId.MULE,
+    }
+)
 
-CREEP_TUMOR_TYPES: frozenset[UnitTypeId] = ({
-    UnitTypeId.CREEPTUMOR,
-    UnitTypeId.CREEPTUMORQUEEN,
-    UnitTypeId.CREEPTUMORBURROWED,
-})
+CREEP_TUMOR_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.CREEPTUMOR,
+        UnitTypeId.CREEPTUMORQUEEN,
+        UnitTypeId.CREEPTUMORBURROWED,
+    }
+)
 
-DETECTORS: frozenset[UnitTypeId | EffectId] = ({
-    UnitTypeId.OBSERVER,
-    UnitTypeId.OBSERVERSIEGEMODE,
-    UnitTypeId.PHOTONCANNON,
-    UnitTypeId.RAVEN,
-    UnitTypeId.MISSILETURRET,
-    EffectId.SCANNERSWEEP,
-    UnitTypeId.OVERSEER,
-    UnitTypeId.OVERSEERSIEGEMODE,
-    UnitTypeId.SPORECRAWLER,
-})
+DETECTORS: frozenset[UnitTypeId | EffectId] = frozenset(
+    {
+        UnitTypeId.OBSERVER,
+        UnitTypeId.OBSERVERSIEGEMODE,
+        UnitTypeId.PHOTONCANNON,
+        UnitTypeId.RAVEN,
+        UnitTypeId.MISSILETURRET,
+        EffectId.SCANNERSWEEP,
+        UnitTypeId.OVERSEER,
+        UnitTypeId.OVERSEERSIEGEMODE,
+        UnitTypeId.SPORECRAWLER,
+    }
+)
 
-DROP_ROLES: frozenset[UnitRole] = ({
-    UnitRole.DROP_SHIP,
-    UnitRole.DROP_UNITS_TO_LOAD,
-    UnitRole.DROP_UNITS_ATTACKING,
-})
+DROP_ROLES: frozenset[UnitRole] = frozenset(
+    {
+        UnitRole.DROP_SHIP,
+        UnitRole.DROP_UNITS_TO_LOAD,
+        UnitRole.DROP_UNITS_ATTACKING,
+    }
+)
 
-EGG_BUTTON_NAMES: frozenset[str] = ({"Drone", "Overlord"})
+EGG_BUTTON_NAMES: frozenset[str] = frozenset({"Drone", "Overlord"})
 
 # we ignore these when detecting if an expansion location is blocked
-FLYING_IGNORE: frozenset[UnitTypeId] = ({
-    UnitTypeId.OBSERVER,
-    UnitTypeId.OVERLORD,
-    UnitTypeId.OVERSEER,
-    UnitTypeId.BARRACKSFLYING,
-    UnitTypeId.COMMANDCENTERFLYING,
-    UnitTypeId.ORBITALCOMMANDFLYING,
-    UnitTypeId.FACTORYFLYING,
-    UnitTypeId.STARPORTFLYING,
-    UnitTypeId.PHOENIX,
-})
+FLYING_IGNORE: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.OBSERVER,
+        UnitTypeId.OVERLORD,
+        UnitTypeId.OVERSEER,
+        UnitTypeId.BARRACKSFLYING,
+        UnitTypeId.COMMANDCENTERFLYING,
+        UnitTypeId.ORBITALCOMMANDFLYING,
+        UnitTypeId.FACTORYFLYING,
+        UnitTypeId.STARPORTFLYING,
+        UnitTypeId.PHOENIX,
+    }
+)
 
-GAS_BUILDINGS: frozenset[UnitTypeId] = ({
-    UnitTypeId.ASSIMILATOR,
-    UnitTypeId.EXTRACTOR,
-    UnitTypeId.REFINERY,
-    UnitTypeId.ASSIMILATORRICH,
-    UnitTypeId.EXTRACTORRICH,
-    UnitTypeId.REFINERYRICH,
-})
+GAS_BUILDINGS: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.ASSIMILATOR,
+        UnitTypeId.EXTRACTOR,
+        UnitTypeId.REFINERY,
+        UnitTypeId.ASSIMILATORRICH,
+        UnitTypeId.EXTRACTORRICH,
+        UnitTypeId.REFINERYRICH,
+    }
+)
 
-GATEWAY_UNITS: frozenset[UnitTypeId] = ({
-    UnitTypeId.ZEALOT,
-    UnitTypeId.ADEPT,
-    UnitTypeId.STALKER,
-    UnitTypeId.DARKTEMPLAR,
-    UnitTypeId.HIGHTEMPLAR,
-    UnitTypeId.SENTRY,
-})
+GATEWAY_UNITS: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.ZEALOT,
+        UnitTypeId.ADEPT,
+        UnitTypeId.STALKER,
+        UnitTypeId.DARKTEMPLAR,
+        UnitTypeId.HIGHTEMPLAR,
+        UnitTypeId.SENTRY,
+    }
+)
 
 # These are not really rocks, but end up in the destructible collection
 IGNORE_DESTRUCTABLES: set[UnitTypeId] = {
@@ -796,21 +836,23 @@ IGNORE_DESTRUCTABLES: set[UnitTypeId] = {
     UnitTypeId.CLEANINGBOT,
 }
 
-IGNORE_IN_COST_DICT: frozenset[UnitTypeId] = ({
-    UnitTypeId.BROODLING,
-    UnitTypeId.INTERCEPTOR,
-    UnitTypeId.LARVA,
-    UnitTypeId.LOCUSTMP,
-    UnitTypeId.LOCUSTMPFLYING,
-    UnitTypeId.MULE,
-    UnitTypeId.POINTDEFENSEDRONE,
-    UnitTypeId.INFESTEDTERRANSEGG,
-    UnitTypeId.INFESTEDTERRAN,
-    UnitTypeId.INFESTORBURROWED,
-    UnitTypeId.REFINERYRICH,
-    UnitTypeId.ASSIMILATORRICH,
-    UnitTypeId.EXTRACTORRICH,
-})
+IGNORE_IN_COST_DICT: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.BROODLING,
+        UnitTypeId.INTERCEPTOR,
+        UnitTypeId.LARVA,
+        UnitTypeId.LOCUSTMP,
+        UnitTypeId.LOCUSTMPFLYING,
+        UnitTypeId.MULE,
+        UnitTypeId.POINTDEFENSEDRONE,
+        UnitTypeId.INFESTEDTERRANSEGG,
+        UnitTypeId.INFESTEDTERRAN,
+        UnitTypeId.INFESTORBURROWED,
+        UnitTypeId.REFINERYRICH,
+        UnitTypeId.ASSIMILATORRICH,
+        UnitTypeId.EXTRACTORRICH,
+    }
+)
 
 IGNORED_UNIT_TYPES_MEMORY_MANAGER: set[UnitTypeId] = set()
 
@@ -820,35 +862,33 @@ MAIN_COMBAT_ROLES: set[UnitRole] = {
     UnitRole.DEFENDING,
 }
 
-TECHLAB_TYPES: frozenset[UnitTypeId] = ({
-    UnitTypeId.BARRACKSTECHLAB,
-    UnitTypeId.FACTORYTECHLAB,
-    UnitTypeId.STARPORTTECHLAB,
-    UnitTypeId.TECHLAB,
-})
 
-TOWNHALL_TYPES: frozenset[UnitTypeId] = ({
-    UnitTypeId.HATCHERY,
-    UnitTypeId.LAIR,
-    UnitTypeId.HIVE,
-    UnitTypeId.COMMANDCENTER,
-    UnitTypeId.COMMANDCENTERFLYING,
-    UnitTypeId.ORBITALCOMMAND,
-    UnitTypeId.ORBITALCOMMANDFLYING,
-    UnitTypeId.PLANETARYFORTRESS,
-    UnitTypeId.NEXUS,
-})
+TOWNHALL_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.HATCHERY,
+        UnitTypeId.LAIR,
+        UnitTypeId.HIVE,
+        UnitTypeId.COMMANDCENTER,
+        UnitTypeId.COMMANDCENTERFLYING,
+        UnitTypeId.ORBITALCOMMAND,
+        UnitTypeId.ORBITALCOMMANDFLYING,
+        UnitTypeId.PLANETARYFORTRESS,
+        UnitTypeId.NEXUS,
+    }
+)
 
-TOWNHALL_TYPES_NO_PF: frozenset[UnitTypeId] = ({
-    UnitTypeId.HATCHERY,
-    UnitTypeId.LAIR,
-    UnitTypeId.HIVE,
-    UnitTypeId.COMMANDCENTER,
-    UnitTypeId.COMMANDCENTERFLYING,
-    UnitTypeId.ORBITALCOMMAND,
-    UnitTypeId.ORBITALCOMMANDFLYING,
-    UnitTypeId.NEXUS,
-})
+TOWNHALL_TYPES_NO_PF: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.HATCHERY,
+        UnitTypeId.LAIR,
+        UnitTypeId.HIVE,
+        UnitTypeId.COMMANDCENTER,
+        UnitTypeId.COMMANDCENTERFLYING,
+        UnitTypeId.ORBITALCOMMAND,
+        UnitTypeId.ORBITALCOMMANDFLYING,
+        UnitTypeId.NEXUS,
+    }
+)
 
 UNITS_TO_AVOID_TYPES: set[UnitTypeId] = ({
     UnitTypeId.CREEPTUMOR,
@@ -863,19 +903,23 @@ UNITS_TO_AVOID_TYPES: set[UnitTypeId] = ({
 UNITS_TO_IGNORE: set[UnitTypeId] = set()
 UNIT_TYPES_WITH_NO_ROLE: set[UnitTypeId] = set()
 
-WORKER_TYPES: frozenset[UnitTypeId] = ({
-    UnitTypeId.DRONE,
-    UnitTypeId.PROBE,
-    UnitTypeId.SCV
-})
+WORKER_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.DRONE,
+        UnitTypeId.PROBE,
+        UnitTypeId.SCV,
+    }
+)
 
-ALL_WORKER_TYPES: frozenset[UnitTypeId] = ({
-    UnitTypeId.DRONE,
-    UnitTypeId.PROBE,
-    UnitTypeId.SCV,
-    UnitTypeId.DRONEBURROWED,
-    UnitTypeId.MULE,
-})
+ALL_WORKER_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.DRONE,
+        UnitTypeId.PROBE,
+        UnitTypeId.SCV,
+        UnitTypeId.DRONEBURROWED,
+        UnitTypeId.MULE,
+    }
+)
 
 RACE_SUPPLY: dict[Race, UnitTypeId] = {
     Race.Protoss: UnitTypeId.PYLON,
@@ -883,21 +927,23 @@ RACE_SUPPLY: dict[Race, UnitTypeId] = {
     Race.Zerg: UnitTypeId.OVERLORD,
 }
 
-REQUIRE_POWER_STRUCTURE_TYPES: frozenset[UnitTypeId] = ({
-    UnitTypeId.PHOTONCANNON,
-    UnitTypeId.SHIELDBATTERY,
-    UnitTypeId.GATEWAY,
-    UnitTypeId.WARPGATE,
-    UnitTypeId.ROBOTICSFACILITY,
-    UnitTypeId.ROBOTICSBAY,
-    UnitTypeId.STARGATE,
-    UnitTypeId.CYBERNETICSCORE,
-    UnitTypeId.FORGE,
-    UnitTypeId.TEMPLARARCHIVE,
-    UnitTypeId.FLEETBEACON,
-    UnitTypeId.TWILIGHTCOUNCIL,
-    UnitTypeId.DARKSHRINE,
-})
+REQUIRE_POWER_STRUCTURE_TYPES: frozenset[UnitTypeId] = frozenset(
+    {
+        UnitTypeId.PHOTONCANNON,
+        UnitTypeId.SHIELDBATTERY,
+        UnitTypeId.GATEWAY,
+        UnitTypeId.WARPGATE,
+        UnitTypeId.ROBOTICSFACILITY,
+        UnitTypeId.ROBOTICSBAY,
+        UnitTypeId.STARGATE,
+        UnitTypeId.CYBERNETICSCORE,
+        UnitTypeId.FORGE,
+        UnitTypeId.TEMPLARARCHIVE,
+        UnitTypeId.FLEETBEACON,
+        UnitTypeId.TWILIGHTCOUNCIL,
+        UnitTypeId.DARKSHRINE,
+    }
+)
 
 LOSS_EMPHATIC_OR_WORSE: set[EngagementResult] = {EngagementResult.LOSS_EMPHATIC}
 
