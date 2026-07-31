@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -46,7 +48,7 @@ class StutterGroupBack(CombatGroupBehavior):
     target: Point2 | Unit
     grid: np.ndarray
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if len(self.group) == 0:
             return False
 
@@ -96,7 +98,7 @@ class StutterGroupBack(CombatGroupBehavior):
 
         return True
 
-    def _calculate_retreat_position(self, ai: "AresBot") -> Point2:
+    def _calculate_retreat_position(self, ai: AresBot) -> Point2:
         """Search 8 directions for somewhere to retreat to."""
         distance = len(self.group) * 1.5
 

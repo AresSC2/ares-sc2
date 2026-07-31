@@ -1,5 +1,7 @@
 """Manage assigning/removing of roles and getting units by role."""
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from sc2.ids.unit_typeid import UnitTypeId
@@ -35,7 +37,7 @@ class UnitRoleManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -43,16 +45,12 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-
         """
         super(UnitRoleManager, self).__init__(ai, config, mediator)
         self.unit_role_dict: dict[str, set[int]] = {
@@ -203,14 +201,10 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        tags :
+        tags : list[int] | set[int]
             Tags of the units to assign to a role.
-        role :
+        role : UnitRole
             The role the units should be assigned to.
-
-        Returns
-        -------
-
         """
         for tag in tags:
             self.assign_role(tag, role)
@@ -240,12 +234,8 @@ class UnitRoleManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        tags :
+        tags : set[int]
             Tags of the units to clear the roles of.
-
-        Returns
-        -------
-
         """
         for tag in tags:
             self.clear_role(tag)

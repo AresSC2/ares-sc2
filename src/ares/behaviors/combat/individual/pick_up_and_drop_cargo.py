@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -61,7 +63,7 @@ class PickUpAndDropCargo(CombatIndividualBehavior):
     keep_dropship_safe: bool = True
     success_at_distance: float = 2.0
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         # check for units to pick up.
         if PickUpCargo(
             unit=self.unit,

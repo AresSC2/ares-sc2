@@ -1,5 +1,7 @@
 """Mineral, gas, supply, and army values for units."""
 
+from __future__ import annotations
+
 from sc2.ids.unit_typeid import UnitTypeId
 
 # army_value = (((minerals / 0.9) + gas) * supply) / 50

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -37,7 +39,7 @@ class AMove(CombatIndividualBehavior):
     target: Point2 | Unit
     success_at_distance: float = 7.0
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if (
             self.success_at_distance > 0
             and cy_distance_to(self.unit.position, self.target.position)

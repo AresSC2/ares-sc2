@@ -4,6 +4,8 @@ Thanks to burny's `python-sc2` where most of this logic was taken from.
 TODO: Make this pickle `ares` specific stuff (manager hub?) so we can run tests.
 """
 
+from __future__ import annotations
+
 import lzma
 import os
 import pickle

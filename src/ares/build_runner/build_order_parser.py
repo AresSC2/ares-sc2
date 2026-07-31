@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Callable
@@ -43,7 +45,7 @@ class BuildOrderParser:
         parse: Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
     """
 
-    ai: "AresBot"
+    ai: AresBot
     build_order_step_dict: dict | None = None
 
     def __post_init__(self) -> None:
@@ -174,14 +176,13 @@ class BuildOrderParser:
 
     def _generate_addon_build_step(self, commands) -> Callable:
         # Non-standard attribute format to bypass PyCharm docstring completion quirks.
-        """
-        Generates a callable build step for executing an
+        """Generates a callable build step for executing an
         `AddonSwap` command in the build runner.
 
         The `AddonSwap` command allows structures to exchange addon components.
         This function validates the provided command arguments to ensure they
-        represent valid structure types
-        before creating a lambda build step for execution.
+        represent valid structure types before creating a lambda build step for
+        execution.
 
         Args:
             commands (list[str]): List of command parameters.

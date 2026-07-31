@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Callable
 
@@ -82,7 +84,7 @@ class Mining(MacroBehavior):
     locked_action_tags: dict[int, float] = field(default_factory=dict)
     weight_safety_limit: float = 12.0
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         workers: Units = mediator.get_units_from_role(
             role=UnitRole.GATHERING,
             unit_type=ai.worker_type,
@@ -256,7 +258,7 @@ class Mining(MacroBehavior):
             mediator.find_closest_safe_spot(from_pos=worker.position, grid=grid)
         )
 
-    def _do_standard_mining(self, ai: "AresBot", worker: Unit, resource: Unit) -> None:
+    def _do_standard_mining(self, ai: AresBot, worker: Unit, resource: Unit) -> None:
         worker_tag: int = worker.tag
         # prevent spam clicking workers on patch to reduce APM
         if worker_tag in self.locked_action_tags:
@@ -297,7 +299,7 @@ class Mining(MacroBehavior):
 
     def _long_distance_mining(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         mediator: ManagerMediator,
         grid: np.ndarray,
         worker: Unit,
@@ -428,7 +430,7 @@ class Mining(MacroBehavior):
         Gather command and letting the SC2 engine manage the worker.
 
         Parameters:
-            ai: Main AresBot object
+            ai: AresBot
             distance_to_townhall_factor: Multiplier used for finding the target
                 of the Move command when returning resources.
             target: Mineral field or Townhall that the worker should be
@@ -479,12 +481,12 @@ class Mining(MacroBehavior):
 
     @staticmethod
     def _safe_long_distance_mineral_fields(
-        ai: "AresBot", mediator: ManagerMediator
+        ai: AresBot, mediator: ManagerMediator
     ) -> list[Unit]:
         """Find mineral fields for long distance miners.
 
         Parameters:
-            ai: Main AresBot object
+            ai: AresBot
             mediator: Manager mediator to interact with the managers
 
         Returns:
@@ -511,7 +513,7 @@ class Mining(MacroBehavior):
 
     @staticmethod
     def _worker_attacking_enemy(
-        ai: "AresBot", dist_to_resource: float, worker: Unit
+        ai: AresBot, dist_to_resource: float, worker: Unit
     ) -> bool:
         if not worker.is_collecting or dist_to_resource > 1.0:
             if enemies := cy_in_attack_range(worker, ai.enemy_units):

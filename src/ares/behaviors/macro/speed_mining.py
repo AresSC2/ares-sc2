@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -53,7 +55,7 @@ class SpeedMining(CombatIndividualBehavior):
     distance_to_townhall_factor: float = 1.08
     townhall: Unit | None = None
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if not ai.townhalls:
             logger.warning(
                 f"{ai.time_formatted} Attempting to speed mine with no townhalls"

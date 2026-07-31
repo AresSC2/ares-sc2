@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 MOCK_CONFIG: dict = {
     "UseData": False,
     "Debug": False,

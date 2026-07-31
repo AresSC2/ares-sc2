@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -38,7 +40,7 @@ class DropCargo(CombatIndividualBehavior):
     unit: Unit
     target: Point2
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         # TODO: Expand logic as needed, initial working version.
         # no action executed
         if self.unit.cargo_used == 0 or not cy_in_pathing_grid_ma(

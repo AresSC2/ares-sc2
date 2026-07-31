@@ -1,5 +1,7 @@
 """Calculations involving terrain."""
 
+from __future__ import annotations
+
 from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
@@ -53,24 +55,20 @@ class TerrainManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
-        """Set up the manager.
+        """Sets up the manager.
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
-
-        Returns
-        -------
-
         """
         super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
@@ -407,15 +405,15 @@ class TerrainManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        start_point :
+        start_point : Point2
             Start flood fill outwards from this point.
-        max_dist :
+        max_dist : int = 25
             Distance from start point before finishing the algorithm.
 
         Returns
         -------
         set :
-            Set of points (as tuples) that are filled in
+            `set` of points (as `tuples`) that are filled in.
         """
         all_points = cy_flood_fill_grid(
             start_point=start_point.rounded,

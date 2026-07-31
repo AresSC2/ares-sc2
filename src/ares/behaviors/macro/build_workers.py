@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -32,7 +34,7 @@ class BuildWorkers(MacroBehavior):
 
     to_count: int
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         worker_type: UnitTypeId = ai.worker_type
         if (
             ai.can_afford(worker_type)

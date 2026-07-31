@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import math
 import time
 from collections import defaultdict
@@ -87,7 +89,7 @@ class PlacementManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -95,11 +97,11 @@ class PlacementManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
         super(PlacementManager, self).__init__(ai, config, mediator)
@@ -1278,7 +1280,9 @@ class PlacementManager(Manager, IManagerMediator):
         The pylon position
         """
         pylon_pos: Point2 = self.ai.main_base_ramp.protoss_wall_pylon
-        buildings: frozenset[Point2] = self.ai.main_base_ramp.protoss_wall_buildings
+        buildings: frozenset[Point2] = frozenset(
+            self.ai.main_base_ramp.protoss_wall_buildings
+        )
 
         self._add_placement_position(
             BuildingSize.TWO_BY_TWO, el, pylon_pos, wall=True, production_pylon=True

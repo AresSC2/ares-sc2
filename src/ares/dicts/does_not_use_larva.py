@@ -1,5 +1,7 @@
 """Zerg units that do not use Larva."""
 
+from __future__ import annotations
+
 from sc2.ids.unit_typeid import UnitTypeId
 
 # key is the unit to build, value is the unit it builds from

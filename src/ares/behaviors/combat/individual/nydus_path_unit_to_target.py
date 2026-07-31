@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -51,7 +53,7 @@ class NydusPathUnitToTarget(CombatIndividualBehavior):
     smoothing: bool = False
     exit_nydus_max_influence: float = 10.0
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         distance_to_target: float = cy_distance_to(self.unit.position, self.target)
         # no action executed
         if distance_to_target < self.success_at_distance:

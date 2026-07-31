@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -66,7 +68,7 @@ class MoveToSafeTarget(CombatIndividualBehavior):
     danger_threshold: float = 5.0
     radius: float = 12.0
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if cy_distance_to(self.unit.position, self.target) <= self.success_at_distance:
             return False
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 from cython_extensions import cy_distance_to_squared
@@ -24,7 +26,7 @@ if TYPE_CHECKING:
 class IntelManager(Manager, IManagerMediator):
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -130,7 +132,6 @@ class IntelManager(Manager, IManagerMediator):
         -------
         Optional[Union[Dict, DefaultDict, Coroutine[Any, Any, bool]]] :
             Everything that could possibly be returned from the Manager fits in there
-
         """
         if self.ai.arcade_mode:
             logger.warning(

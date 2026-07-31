@@ -4,6 +4,8 @@ This manager handles path finding and coordinates with GridManager for grid-rela
 operations.
 """
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
@@ -39,7 +41,7 @@ class PathManager(Manager, IManagerMediator):
 
     def __init__(
         self,
-        ai: "AresBot",
+        ai: AresBot,
         config: dict,
         mediator: ManagerMediator,
     ) -> None:
@@ -47,11 +49,11 @@ class PathManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        ai :
+        ai : AresBot
             Bot object that will be running the game
-        config :
+        config : dict
             Dictionary with the data from the configuration file
-        mediator :
+        mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
         super().__init__(ai, config, mediator)
@@ -246,25 +248,25 @@ class PathManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        start :
+        start : Point2
             Start point of the path.
-        target :
+        target : Point2
             Desired end point of the path.
-        grid :
+        grid : np.ndarray
             The grid that should be used for pathing.
-        sensitivity :
+        sensitivity : int = 5
             Amount of points that should be skipped in the full path between tiles that
             are returned.
-        smoothing :
+        smoothing : bool = False
             Optional path smoothing where nodes are removed if it's possible to jump
             ahead some tiles in a straight line with a lower cost.
-        sense_danger :
+        sense_danger : bool = False
             Check to see if there are any dangerous tiles near the starting point. If
             this is True and there are no dangerous tiles near the starting point, the
             pathing query is skipped and the target is returned.
-        danger_distance :
+        danger_distance : int = 20.0,
             How far away from the start to look for danger.
-        danger_threshold :
+        danger_threshold : float = 5.0
             Minimum value for a tile to be considered dangerous.
 
         Returns
@@ -367,8 +369,8 @@ class PathManager(Manager, IManagerMediator):
 
         Returns
         -------
-        List[Point2] :
-            List of points composing the path
+        list[Point2] :
+            `list` of points composing the path
         """
         return self.map_data.pathfind(start, target, grid, sensitivity=sensitivity)
 

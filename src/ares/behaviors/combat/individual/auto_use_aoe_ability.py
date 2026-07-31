@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -45,7 +47,7 @@ class AutoUseAOEAbility(CombatIndividualBehavior):
     recalculate: bool = False
     stack_same_spell: bool = False
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         _abilities: set[AbilityId] = self.unit.abilities
         for ability in AOE_ABILITY_SPELLS_INFO:
             if ability not in _abilities:

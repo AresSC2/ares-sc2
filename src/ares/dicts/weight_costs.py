@@ -5,6 +5,8 @@ values are taken from the API for some units.
 
 """
 
+from __future__ import annotations
+
 from sc2.ids.unit_typeid import UnitTypeId
 
 # Zerg building data includes Drone cost

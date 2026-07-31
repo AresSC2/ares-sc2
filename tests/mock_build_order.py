@@ -1,5 +1,7 @@
 # this is how ares would read if from the yml file
 # PLEASE DON'T EDIT THIS!
+from __future__ import annotations
+
 MOCK_BUILD_ORDER: list[str] = [
     "14 supply @ ramp",
     "16 barracks @ ramp",

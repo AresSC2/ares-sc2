@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import random
 from typing import Any
 
@@ -482,13 +484,15 @@ class CreepManager(Manager, IManagerMediator):
         This function finds the edge of creep and distributes
         overlord positions evenly around it.
 
-        Parameters:
-            overlords : Units | list[Unit]
-                The overlords that will be positioned for creep vision
+        Parameters
+        ----------
+        overlords : list[Unit] | Units
+            The overlords that will be positioned for creep vision.
 
-        Returns:
-            dict[int: Point2]
-                Dictionary mapping overlord tag to position where it should move
+        Returns
+        -------
+        dict[int: Point2]
+            Dictionary mapping overlord tag to position where it should move.
         """
         if not overlords:
             return {}

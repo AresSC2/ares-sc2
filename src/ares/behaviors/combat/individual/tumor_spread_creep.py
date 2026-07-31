@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -43,7 +45,7 @@ class TumorSpreadCreep(CombatIndividualBehavior):
     unit: Unit
     target: Point2
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if AbilityId.BUILD_CREEPTUMOR_TUMOR not in self.unit.abilities:
             return False
 

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from sc2.ids.unit_typeid import UnitTypeId
 
 UNIT_TECH_REQUIREMENT: dict[UnitTypeId, list[UnitTypeId]] = dict(

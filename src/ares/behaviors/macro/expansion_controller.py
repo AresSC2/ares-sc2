@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -42,7 +44,7 @@ class ExpansionController(MacroBehavior):
     max_pending: int = 1
     prioritize: bool = False
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         # already have enough / or enough pending
         if (
             len([th for th in ai.townhalls if th.is_ready])
@@ -67,7 +69,7 @@ class ExpansionController(MacroBehavior):
         return False
 
     def _get_next_expansion_location(
-        self, ai: "AresBot", mediator: ManagerMediator
+        self, ai: AresBot, mediator: ManagerMediator
     ) -> Point2 | None:
         grid: np.ndarray = mediator.get_ground_grid
         for el in mediator.get_own_expansions:

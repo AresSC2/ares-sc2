@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .sc2_helper import CombatPredictor, CombatSettings
 
 

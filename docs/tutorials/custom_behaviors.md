@@ -55,7 +55,7 @@ As long as our behavior class follows the `CombatIndividualBehavior` Protocol, w
 our existing `offensive_attack` `CombatManeuver`. 
 - `CombatIndividualBehavior` Protocol says we should implement an `execute` method with the following signature:
 
-`def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:`
+`def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:`
 
 Notice this method should return a `booleon`, this should return `True` if this implemented
 `CombatIndividualBehavior` carried out an action, and `False` otherwise.
@@ -65,6 +65,8 @@ With this is mind let's implement a `SiegeTankDecision` custom behavior, you cou
 
 ```python
 # siege_tank_decision.py`
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -93,7 +95,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
 
     unit: Unit
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         unit_pos: Point2 = self.unit.position
         type_id: UnitTypeId = self.unit.type_id
         

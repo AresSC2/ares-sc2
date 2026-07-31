@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -50,7 +52,7 @@ class AddonSwap(MacroBehavior):
     addon_required: UnitTypeId
     precise_addon_structure_id: UnitTypeId | None = None
 
-    def execute(self, ai: "AresBot", config: dict, mediator: ManagerMediator) -> bool:
+    def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         assert ai.race == Race.Terran, "Can only swap addons with Terran."
         # check if user provided a precise addon into addon_required
         if self.addon_required not in ADDON_TYPES:
