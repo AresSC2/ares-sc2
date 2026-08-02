@@ -77,3 +77,6 @@ be a good next step.
 
 <b>Familiar to bot development and `python-sc2`?</b> Converting your existing bot to `ares-sc2` should be
 seamless in most instances, check out the migration guide.
+
+## SC2 Dictionary
+Be sure to add the sc2ai_dictionary.dic to your IDE to prevent spell check warnings for common SC2 terms.
