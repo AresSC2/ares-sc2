@@ -1,0 +1,138 @@
+UseData: True
+BuildSelection: WinrateBased
+# For each Race / Opponent ID choose a build selection
+BuildChoices:
+    # test_123 is active if Debug: True (set via a `config.yml` file)
+    test_123:
+        BotName: Test
+        Cycle:
+            - BroRush
+            - OneBaseMuta
+            - RavagerRush
+            - LingDroneRush
+            - Ultras
+
+    Protoss:
+        BotName: ProtossRace
+        Cycle:
+            - BroRush
+            - OneBaseMuta
+            - RavagerRush
+            - LingDroneRush
+            - Ultras
+
+    Random:
+        BotName: RandomRace
+        Cycle:
+            - BroRush
+            - OneBaseMuta
+            - RavagerRush
+            - LingDroneRush
+            - Ultras
+
+    Terran:
+        BotName: TerranRace
+        Cycle:
+            - BroRush
+            - OneBaseMuta
+            - RavagerRush
+            - LingDroneRush
+            - Ultras
+
+    Zerg:
+        BotName: ZergRace
+        Cycle:
+            - BroRush
+            - OneBaseMuta
+            - RavagerRush
+            - LingDroneRush
+            - Ultras
+
+Builds:
+    BroRush:
+        ConstantWorkerProductionTill: 0
+        OpeningBuildOrder:
+            - 12 drone
+            - 13 drone
+            - 14 spawningpool
+            - 13 gas
+            - 12 drone
+            - 13 drone
+            - 14 overlord
+            - 14 drone
+            - 15 roachwarren
+            - 14 queen
+            - 14 drone
+            - 15 drone
+            - 15 overlord
+
+    LingDroneRush:
+        ConstantWorkerProductionTill: 0
+        OpeningBuildOrder:
+            - 12 spawningpool
+            - 11 drone *3
+            - 12 overlord
+
+    OneBaseMuta:
+        ConstantWorkerProductionTill: 0
+        OpeningBuildOrder:
+            - 12 gas
+            - 11 drone
+            - 12 spawningpool
+            - 11 drone
+            - 12 drone
+            - 13 drone
+            - 14 overlord
+            - 14 gas
+            - 13 drone
+            - 12 lair
+            - 12 drone *5
+            - 12 drone
+            - 12 spire
+            - 12 queen
+            - 12 spinecrawler
+            - 12 drone
+            - 12 overlord *2
+
+    ProxyHatch:
+        ConstantWorkerProductionTill: 0
+        OpeningBuildOrder:
+            - 12 drone
+            - 13 overlord
+            - 13 drone *3
+
+    RavagerRush:
+        ConstantWorkerProductionTill: 0
+        OpeningBuildOrder:
+            - 12 drone *2
+            - 14 spawningpool
+            - 13 drone
+            - 14 gas
+            - 13 drone
+            - 14 overlord
+            - 14 gas
+            - 13 drone *2
+            - 14 roachwarren
+            - 14 drone
+            - 14 overlord
+            - 14 roach *4
+
+    Ultras:
+        ConstantWorkerProductionTill: 0
+        OpeningBuildOrder:
+            - 12 drone
+            - 13 overlord
+            - 13 drone *4
+            - 16 expand
+            - 15 drone *2
+            - 14 expand
+            - 14 drone *2
+            - 13 spawningpool
+            - 14 drone *4
+            - 14 overlord
+            - 14 drone *2
+            - 14 queen *2
+            - 14 drone *2
+            - 14 queen
+
+

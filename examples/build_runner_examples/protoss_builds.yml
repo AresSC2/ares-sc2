@@ -1,0 +1,179 @@
+UseData: True
+# How should we choose a build? Cycle is the only option for now
+BuildSelection: WinrateBased
+# For each Race / Opponent ID choose a build selection
+BuildChoices:
+    # test_123 is active if Debug: True (set via a `config.yml` file)
+    test_123:
+        BotName: Test
+        Cycle:
+            - AdeptOracle
+            - AggressiveStalker
+            - BasicOpener
+            - OneBaseTempests
+            - PhoenixEconomic
+
+    Protoss:
+        BotName: ProtossRace
+        Cycle:
+            - AdeptOracle
+            - AggressiveStalker
+            - BasicOpener
+            - OneBaseTempests
+            - PhoenixEconomic
+
+    Random:
+        BotName: RandomRace
+        Cycle:
+            - AdeptOracle
+            - AggressiveStalker
+            - BasicOpener
+            - OneBaseTempests
+            - PhoenixEconomic
+
+    Terran:
+        BotName: TerranRace
+        Cycle:
+            - AdeptOracle
+            - AggressiveStalker
+            - BasicOpener
+            - OneBaseTempests
+            - PhoenixEconomic
+
+    Zerg:
+        BotName: ZergRace
+        Cycle:
+            - AdeptOracle
+            - AggressiveStalker
+            - BasicOpener
+            - OneBaseTempests
+            - PhoenixEconomic
+
+Builds:
+    AdeptOracle:
+        ConstantWorkerProductionTill: 22
+        AutoSupplyAtSupply: 23
+        OpeningBuildOrder:
+            - 13 pylon @ ramp
+            - 14 chrono @ nexus
+            - 15 gate @ ramp
+            - 17 gas
+            - 15 worker_scout:
+                [ nat, enemy_nat, enemy_spawn, enemy_nat ]
+            - 18 gate @ ramp
+            - 18 pylon
+            - 18 core @ ramp
+            - 18 gas
+            - 18 chrono @ nexus
+            - 20 adept *2
+            - 22 stargate @ ramp
+            - 22 stalker
+            - 22 adept
+            - 22 oracle
+            - 22 chrono @ stargate
+            - 21 warpgateresearch
+            - 22 nexus
+            - 22 chrono @ core
+
+    AggressiveStalker:
+        ConstantWorkerProductionTill: 23
+        AutoSupplyAtSupply: 24
+        OpeningBuildOrder:
+            - 14 pylon @ ramp
+            - 15 gate @ ramp
+            - 15 chrono @ nexus
+            - 17 gas
+            - 18 gate @ ramp
+            - 19 pylon
+            - 20 core @ ramp
+            - 20 gas
+            - 20 stalker *2
+            - 20 chrono @ gateway
+            - 20 warpgateresearch
+            - 20 chrono @ gateway
+            - 20 stalker *2
+            - 20 expand
+            - 20 roboticsfacility
+
+
+    BasicOpener:
+        ConstantWorkerProductionTill: 0
+        AutoSupplyAtSupply: 100
+        OpeningBuildOrder:
+            - 12 probe
+            - 13 pylon @ ramp
+            - 13 probe
+            - 14 gate @ ramp
+            - 14 probe
+            - 14 worker_scout:
+                [third, fourth, enemy_nat, enemy_spawn]
+            - 14 chrono @ nexus
+            - 14 probe *2
+            - 17 gas
+            - 16 probe *2
+            - 18 core @ ramp
+            - 18 probe
+            - 19 nexus
+            - 19 pylon
+            - 18 probe
+            - 18 adept
+            - 18 chrono @ gateway
+
+    OneBaseTempests:
+        ConstantWorkerProductionTill: 22
+        AutoSupplyAtSupply: 22
+        OpeningBuildOrder:
+            - 14 pylon @ ramp
+            - 15 forge @ ramp
+            - 15 chrono @ nexus
+            - 17 gateway @ ramp
+            - 17 gas
+            - 16 photoncannon @ ramp *2
+            - 16 gas
+            - 16 pylon
+            - 16 core
+            - 16 photoncannon @ ramp
+            - 16 pylon
+            - 16 stargate
+            - 16 shieldbattery @ ramp
+            - 16 photoncannon @ ramp
+            - 16 fleetbeacon
+            - 16 photoncannon
+            - 16 pylon *2
+            - 16 tempest
+            - 16 chrono @ stargate
+            - 16 tempestgroundattackupgrade
+            - 16 photoncannon
+            - 16 shieldbattery
+
+    PhoenixEconomic:
+        ConstantWorkerProductionTill: 50
+        AutoSupplyAtSupply: 44
+        OpeningBuildOrder:
+            - 14 pylon @ ramp
+            - 15 gate @ ramp
+            - 15 chrono @ nexus
+            - 17 gas
+            - 15 worker_scout:
+                [ nat, third, fourth, fifth, enemy_nat, enemy_spawn, enemy_nat ]
+            - 20 core @ ramp
+            - 19 pylon
+            - 19 nexus
+            - 21 adept
+            - 21 chrono @ gateway
+            - 21 gas
+            - 20 adept
+            - 20 chrono @ gateway
+            - 20 stargate
+            - 20 warpgateresearch
+            - 20 stalker
+            - 20 pylon @ nat
+            - 20 phoenix
+            - 20 chrono @ stargate
+            - 20 gateway
+            - 20 pylon
+            - 20 phoenix
+            - 20 chrono @ stargate
+            - 20 phoenix
+            - 20 roboticsfacility
+            - 20 nexus

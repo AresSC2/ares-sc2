@@ -1,0 +1,196 @@
+# Save the game opening and result to disk?
+# Setting to `True` allows Ares to select a new opening after defeat
+UseData: True
+# How should we choose a build? Cycle is the only option for now
+BuildSelection: WinrateBased # Cycle
+MinGamesWinrateBased: 3
+# For each Race / Opponent ID choose a build selection
+BuildChoices:
+    # test_123 is active if Debug: True (set via a `config.yml` file)
+    test_123:
+        BotName: Test
+        Cycle:
+            - FastCC
+            - ThreeRax
+            - OneOneOneStandard
+            - OneOneOneMineDrop
+            - ReaperOpening
+            - TwoOneOne
+
+    Protoss:
+        BotName: ProtossRace
+        Cycle:
+            - FastCC
+            - ThreeRax
+            - OneOneOneStandard
+            - OneOneOneMineDrop
+            - ReaperOpening
+            - TwoOneOne
+    Random:
+        BotName: RandomRace
+        Cycle:
+            - FastCC
+            - ThreeRax
+            - OneOneOneStandard
+            - OneOneOneMineDrop
+            - ReaperOpening
+            - TwoOneOne
+
+    Terran:
+        BotName: TerranRace
+        Cycle:
+            - FastCC
+            - ThreeRax
+            - OneOneOneStandard
+            - OneOneOneMineDrop
+            - ReaperOpening
+            - TwoOneOne
+
+    Zerg:
+        BotName: ZergRace
+        Cycle:
+            - FastCC
+            - ThreeRax
+            - OneOneOneStandard
+            - OneOneOneMineDrop
+            - ReaperOpening
+            - TwoOneOne
+
+Builds:
+    FastCC:
+        AutoSupplyAtSupply: 31
+        ConstantWorkerProductionTill: 68
+        OpeningBuildOrder:
+            # - 14 supply @ ramp
+            - 17 expand
+            - 18 barracks @ ramp
+            - 18 gas
+            - 19 supply @ ramp
+            - 19 reaper
+            - 19 orbital
+            - 19 orbital
+            - 19 expand
+            - 19 gas
+            - 19 marine
+            - 19 factory
+            - 19 barracks
+
+    ThreeRax:
+        AutoSupplyAtSupply: 31
+        ConstantWorkerProductionTill: 41
+        OpeningBuildOrder:
+            - 14 supply @ ramp
+            - 15 worker_scout
+            - 16 barracks @ ramp
+            - 16 gas
+            - 0 orbital
+            - 0 barracksreactor
+            - 18 expand
+            - 18 supply @ ramp
+            - 19 marine *2
+            - 20 barracks
+            - 21 reaper *2
+            - 22 barracks
+            - 22 gas
+            - 22 marine *2
+            - 23 barrackstechlab
+            - 23 orbital
+            - 23 barrackstechlab
+            - 23 stimpack
+            - 23 shieldwall
+            - 23 gas
+
+    OneOneOneStandard:
+        ConstantWorkerProductionTill: 42
+        PersistentWorker: False
+        OpeningBuildOrder:
+            - 13 supply @ ramp
+            - 15 barracks @ ramp
+            - 15 gas
+            - 16 gas
+            - 0 reaper
+            - 0 orbital
+            - 18 factory @ ramp
+            - 0 marine
+            - 19 supply @ ramp
+            - 20 hellion
+            - 20 starport
+            - 20 barracksreactor
+            - 20 supply
+            - 20 factorytechlab
+            - 20 siegetank
+            - 20 starporttechlab
+            - 20 banshee
+            - 20 bansheecloak
+
+    OneOneOneMineDrop:
+        AutoSupplyAtSupply: 28
+        ConstantWorkerProductionTill: 42
+        OpeningBuildOrder:
+            - 14 supply @ ramp
+            - 16 barracks @ ramp
+            - 16 gas
+            - 0 orbital
+            - 0 reaper
+            - 19 expand
+            - 20 supply @ ramp
+            - 20 factory @ ramp
+            - 21 marine
+            - 23 barracksreactor
+            - 23 barracks
+            - 22 gas
+            - 24 starport
+            - 25 widowmine
+            - 25 orbital
+            - 27 widowmine
+            - 29 medivac
+            - 29 factorytechlab
+
+    ReaperOpening:
+        ConstantWorkerProductionTill: 22
+        PersistentWorker: True
+        OpeningBuildOrder:
+            - 14 supply @ ramp
+            - 16 barracks @ ramp
+            - 16 gas
+            - 16 barracks
+            - 16 supply @ ramp
+            - 0 reaper
+            - 0 orbital
+            - 0 reaper *2
+
+    TwoOneOne:
+        AutoSupplyAtSupply: 30
+        ConstantWorkerProductionTill: 66
+        OpeningBuildOrder:
+            - 14 supply @ ramp
+            - 15 gas
+            - 16 barracks @ ramp *2
+            - 14 worker_scout:
+                [ third, fourth, fifth, third, fourth ]
+            - 0 orbital
+            - 0 reaper
+            - 0 gas
+            - 0 supply @ ramp
+            - 0 reaper
+            - 0 factory
+            - 0 marine
+            - 0 barracksreactor
+            - 0 marine *2
+            - 0 supply
+            - 0 starport
+            - 0 supply
+            - 0 addonswap factory barracksreactor
+            - 0 marine
+            - 0 hellion *2
+            - 0 marine *2
+            - 0 starporttechlab
+            - 0 hellion *2
+            - 0 marine *2
+            - 0 bansheecloak
+            - 0 banshee
+            - 0 hellion *2
+            - 0 marine *2
+            - 0 banshee
+            - 0 addonswap barracks factoryreactor
+

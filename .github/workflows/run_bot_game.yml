@@ -41,3 +41,46 @@ jobs:
         docker exec -i app1 bash -c "tree"
         docker exec -i app1 bash -c "poetry run python ./tests/travis_test_script.py ./tests/test_bots/${{ matrix.opponents }}"
         docker rm -f app1
+
+  run_build_runner_bots:
+    name: Run build runner (${{ matrix.race }})
+
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - race: Terran
+            builds_file: examples/build_runner_examples/terran_builds.yml
+          - race: Protoss
+            builds_file: examples/build_runner_examples/protoss_builds.yml
+          - race: Zerg
+            builds_file: examples/build_runner_examples/zerg_builds.yml
+
+    steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Print directories and files
+      run: |
+        sudo apt-get install tree
+        tree
+    - name: Load and build docker image
+      run: |
+        docker build -t test_image -f tests/Dockerfile-runbot .
+
+    - name: Run build runner bot
+      run: |
+        docker run -it -d --name app1 \
+          -e BUILD_RUNNER_RACE=${{ matrix.race }} \
+          -e BUILD_RUNNER_BUILDS_FILE=${{ matrix.builds_file }} \
+          test_image
+        docker exec -i app1 bash -c "tree"
+        docker exec -i app1 bash -c "poetry run python ./tests/travis_test_script.py ./tests/test_bots/build_runner_bot.py"
+        docker rm -f app1
