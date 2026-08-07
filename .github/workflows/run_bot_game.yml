@@ -43,7 +43,7 @@ jobs:
         docker rm -f app1
 
   run_build_runner_bots:
-    name: Run build runner (${{ matrix.race }})
+    name: Run build runner test (${{ matrix.race }})
 
     runs-on: ubuntu-latest
     timeout-minutes: 30
