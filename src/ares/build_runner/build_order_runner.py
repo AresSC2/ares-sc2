@@ -189,6 +189,8 @@ class BuildOrderRunner:
     def switch_opening(self, opening_name: str, remove_completed: bool = True) -> None:
         if self._chosen_opening != opening_name:
             self._chosen_opening = opening_name
+            # a new opening has not been completed yet
+            self._opening_build_completed = False
             self.configure_opening_from_yml_file(
                 self.config, opening_name, remove_completed=remove_completed
             )

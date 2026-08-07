@@ -846,6 +846,17 @@ class PlacementManager(Manager, IManagerMediator):
         assert (
             base_location in self.placements_dict
         ), f"{base_location} not in placements dict"
+
+        if (
+            size not in self.placements_dict[base_location]
+            or building_pos not in self.placements_dict[base_location][size]
+        ):
+            logger.warning(
+                f"No {size} placement {building_pos} present in "
+                f"placement bookkeeping for base {base_location}"
+            )
+            return
+
         self.placements_dict[base_location][size][building_pos]["available"] = True
         self.placements_dict[base_location][size][building_pos]["building_tag"] = 0
         self.placements_dict[base_location][size][building_pos][
