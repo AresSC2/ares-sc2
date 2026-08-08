@@ -50,6 +50,29 @@ BuildChoices:
             - PhoenixEconomic
 
 Builds:
+    BasicOpener:
+        ConstantWorkerProductionTill: 0
+        AutoSupplyAtSupply: 100
+        OpeningBuildOrder:
+            - 12 probe
+            - 13 pylon @ ramp
+            - 13 probe
+            - 14 gate @ ramp
+            - 14 probe
+            - 14 worker_scout:
+                [ third, fourth, enemy_nat, enemy_spawn ]
+            - 14 chrono @ nexus
+            - 14 probe *2
+            - 17 gas
+            - 16 probe *2
+            - 18 core @ ramp
+            - 18 probe
+            - 19 nexus
+            - 19 pylon
+            - 18 probe
+            - 18 adept
+            - 18 chrono @ gateway
+
     AdeptOracle:
         ConstantWorkerProductionTill: 22
         AutoSupplyAtSupply: 23
@@ -94,30 +117,6 @@ Builds:
             - 20 stalker *2
             - 20 expand
             - 20 roboticsfacility
-
-
-    BasicOpener:
-        ConstantWorkerProductionTill: 0
-        AutoSupplyAtSupply: 100
-        OpeningBuildOrder:
-            - 12 probe
-            - 13 pylon @ ramp
-            - 13 probe
-            - 14 gate @ ramp
-            - 14 probe
-            - 14 worker_scout:
-                [third, fourth, enemy_nat, enemy_spawn]
-            - 14 chrono @ nexus
-            - 14 probe *2
-            - 17 gas
-            - 16 probe *2
-            - 18 core @ ramp
-            - 18 probe
-            - 19 nexus
-            - 19 pylon
-            - 18 probe
-            - 18 adept
-            - 18 chrono @ gateway
 
     OneBaseTempests:
         ConstantWorkerProductionTill: 22

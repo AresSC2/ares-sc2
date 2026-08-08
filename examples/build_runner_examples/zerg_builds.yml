@@ -49,6 +49,27 @@ BuildChoices:
             - Ultras
 
 Builds:
+    OneBaseMuta:
+        ConstantWorkerProductionTill: 0
+        OpeningBuildOrder:
+            - 12 gas
+            - 11 drone
+            - 12 spawningpool
+            - 11 drone
+            - 12 drone
+            - 13 drone
+            - 14 overlord
+            - 14 gas
+            - 13 drone
+            - 12 lair
+            - 12 drone *5
+            - 12 drone
+            - 12 spire
+            - 12 queen
+            - 12 spinecrawler
+            - 12 drone
+            - 12 overlord *2
+
     BroRush:
         ConstantWorkerProductionTill: 0
         OpeningBuildOrder:
@@ -72,27 +93,6 @@ Builds:
             - 12 spawningpool
             - 11 drone *3
             - 12 overlord
-
-    OneBaseMuta:
-        ConstantWorkerProductionTill: 0
-        OpeningBuildOrder:
-            - 12 gas
-            - 11 drone
-            - 12 spawningpool
-            - 11 drone
-            - 12 drone
-            - 13 drone
-            - 14 overlord
-            - 14 gas
-            - 13 drone
-            - 12 lair
-            - 12 drone *5
-            - 12 drone
-            - 12 spire
-            - 12 queen
-            - 12 spinecrawler
-            - 12 drone
-            - 12 overlord *2
 
     ProxyHatch:
         ConstantWorkerProductionTill: 0

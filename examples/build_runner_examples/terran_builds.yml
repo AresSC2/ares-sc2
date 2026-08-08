@@ -15,7 +15,6 @@ BuildChoices:
             - OneOneOneStandard
             - OneOneOneMineDrop
             - ReaperOpening
-            - TwoOneOne
 
     Protoss:
         BotName: ProtossRace
@@ -25,7 +24,7 @@ BuildChoices:
             - OneOneOneStandard
             - OneOneOneMineDrop
             - ReaperOpening
-            - TwoOneOne
+
     Random:
         BotName: RandomRace
         Cycle:
@@ -34,7 +33,6 @@ BuildChoices:
             - OneOneOneStandard
             - OneOneOneMineDrop
             - ReaperOpening
-            - TwoOneOne
 
     Terran:
         BotName: TerranRace
@@ -44,7 +42,6 @@ BuildChoices:
             - OneOneOneStandard
             - OneOneOneMineDrop
             - ReaperOpening
-            - TwoOneOne
 
     Zerg:
         BotName: ZergRace
@@ -54,14 +51,13 @@ BuildChoices:
             - OneOneOneStandard
             - OneOneOneMineDrop
             - ReaperOpening
-            - TwoOneOne
 
 Builds:
     FastCC:
         AutoSupplyAtSupply: 31
         ConstantWorkerProductionTill: 68
         OpeningBuildOrder:
-            # - 14 supply @ ramp
+            - 14 supply @ ramp
             - 17 expand
             - 18 barracks @ ramp
             - 18 gas
@@ -158,39 +154,3 @@ Builds:
             - 0 reaper
             - 0 orbital
             - 0 reaper *2
-
-    TwoOneOne:
-        AutoSupplyAtSupply: 30
-        ConstantWorkerProductionTill: 66
-        OpeningBuildOrder:
-            - 14 supply @ ramp
-            - 15 gas
-            - 16 barracks @ ramp *2
-            - 14 worker_scout:
-                [ third, fourth, fifth, third, fourth ]
-            - 0 orbital
-            - 0 reaper
-            - 0 gas
-            - 0 supply @ ramp
-            - 0 reaper
-            - 0 factory
-            - 0 marine
-            - 0 barracksreactor
-            - 0 marine *2
-            - 0 supply
-            - 0 starport
-            - 0 supply
-            - 0 addonswap factory barracksreactor
-            - 0 marine
-            - 0 hellion *2
-            - 0 marine *2
-            - 0 starporttechlab
-            - 0 hellion *2
-            - 0 marine *2
-            - 0 bansheecloak
-            - 0 banshee
-            - 0 hellion *2
-            - 0 marine *2
-            - 0 banshee
-            - 0 addonswap barracks factoryreactor
-

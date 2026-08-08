@@ -32,7 +32,7 @@ from ares import AresBot
 from ares.behaviors.macro import Mining
 from ares.consts import ALL_STRUCTURES, BUILDS
 
-DEFAULT_BUILD_RUNNER_RACE: str = "Terran"
+DEFAULT_BUILD_RUNNER_RACE: str = "Protoss"
 
 
 def _configured_build_runner_race() -> Race:
@@ -91,6 +91,7 @@ STRUCTURE_FAMILIES: dict[UnitTypeId, tuple[UnitTypeId, ...]] = {
     ),
     UnitTypeId.EXTRACTOR: (UnitTypeId.EXTRACTOR, UnitTypeId.EXTRACTORRICH),
     UnitTypeId.REFINERY: (UnitTypeId.REFINERY, UnitTypeId.REFINERYRICH),
+    UnitTypeId.GATEWAY: (UnitTypeId.GATEWAY, UnitTypeId.WARPGATE)
 }
 
 # terran units that transform into other unit types
@@ -375,7 +376,7 @@ class BuildRunnerBot(AresBot):
         sieged Siege Tank satisfies a `SIEGETANK` requirement.
         """
         present: int = 0
-        present += cy_unit_pending(self, unit_type)
+        present += int(self.already_pending(unit_type))
         for member in _family_members(unit_type, UNIT_FAMILIES):
             present += len(self.mediator.get_own_army_dict[member])
         return present
