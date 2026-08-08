@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v3.12.0 (2026-08-08)
+
+### Feature
+
+* Add build runner examples for Zerg, Terran, and Protoss, and workflow updates ([`57cb4e9`](https://github.com/AresSC2/ares-sc2/commit/57cb4e9eee11b9a231f51d4dbe5a39020c428680))
+
+### Fix
+
+* Already pending finds pending adept ([`b553e64`](https://github.com/AresSC2/ares-sc2/commit/b553e64c8194b375003998931dfe992ba872010b))
+* Update unit costs in `cost_dict` ([`11707fc`](https://github.com/AresSC2/ares-sc2/commit/11707fca3f9ce4349e2b208009da3d2464856564))
+* Add safety checks for placement bookkeeping and reset opening build status ([`c987e78`](https://github.com/AresSC2/ares-sc2/commit/c987e783886d9b0a84379a46f1f2dd0d5f813b8d))
+
 ## v3.11.1 (2026-07-30)
 
 ### Fix
