@@ -91,7 +91,7 @@ STRUCTURE_FAMILIES: dict[UnitTypeId, tuple[UnitTypeId, ...]] = {
     ),
     UnitTypeId.EXTRACTOR: (UnitTypeId.EXTRACTOR, UnitTypeId.EXTRACTORRICH),
     UnitTypeId.REFINERY: (UnitTypeId.REFINERY, UnitTypeId.REFINERYRICH),
-    UnitTypeId.GATEWAY: (UnitTypeId.GATEWAY, UnitTypeId.WARPGATE)
+    UnitTypeId.GATEWAY: (UnitTypeId.GATEWAY, UnitTypeId.WARPGATE),
 }
 
 # terran units that transform into other unit types
