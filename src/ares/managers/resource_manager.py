@@ -851,11 +851,11 @@ class ResourceManager(Manager, IManagerMediator):
             for mf2 in close:
                 if mf2.tag != mf.tag:
                     points = self._get_intersections(
-                        mf.position.x,
-                        mf.position.y,
+                        mf.position[0],
+                        mf.position[1],
                         mining_radius,
-                        mf2.position.x,
-                        mf2.position.y,
+                        mf2.position[0],
+                        mf2.position[1],
                         mining_radius,
                     )
                     if len(points) == 2:

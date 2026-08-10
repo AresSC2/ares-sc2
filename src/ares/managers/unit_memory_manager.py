@@ -183,11 +183,13 @@ class UnitMemoryManager(Manager, IManagerMediator):
                 continue
 
             snap = self.get_latest_snapshot(unit_tag)
+            pos_x: int = int(snap.position[0])
+            pos_y: int = int(snap.position[1])
             points: list[Point2] = [
-                Point2((int(snap.position.x), int(snap.position.y))),
-                Point2((int(snap.position.x + 1), int(snap.position.y))),
-                Point2((int(snap.position.x), int(snap.position.y + 1))),
-                Point2((int(snap.position.x + 1), int(snap.position.y + 1))),
+                Point2((pos_x, pos_y)),
+                Point2((pos_x + 1, pos_y)),
+                Point2((pos_x, pos_y + 1)),
+                Point2((pos_x + 1, pos_y + 1)),
             ]
 
             visible: bool = True
@@ -407,7 +409,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
     @staticmethod
     def _create_tree(units: Units) -> KDTree | None:
         unit_position_list: list[list[float]] = [
-            [unit.position.x, unit.position.y] for unit in units
+            [unit.position[0], unit.position[1]] for unit in units
         ]
         if unit_position_list:
             return KDTree(unit_position_list)

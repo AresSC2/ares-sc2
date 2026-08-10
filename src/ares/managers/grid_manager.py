@@ -317,7 +317,7 @@ class GridManager(Manager, IManagerMediator):
             The updated grid.
         """
         grid = self.map_data.add_cost(
-            position=(int(pos.x), int(pos.y)),
+            position=(int(pos[0]), int(pos[1])),
             radius=unit_range,
             grid=grid,
             weight=int(weight) * self.config[PATHING][COST_MULTIPLIER],
@@ -357,7 +357,7 @@ class GridManager(Manager, IManagerMediator):
             The updated grids.
         """
         return self.map_data.add_cost_to_multiple_grids(
-            position=(int(pos.x), int(pos.y)),
+            position=(int(pos[0]), int(pos[1])),
             radius=unit_range,
             grids=grids,
             weight=int(weight) * self.config[PATHING][COST_MULTIPLIER],
