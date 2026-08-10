@@ -527,6 +527,14 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
+    @property
+    def should_calculate_tumor_spread(self) -> bool:
+        """Check whether the expensive tumor spread search should run this frame."""
+        return self.manager_request(
+            ManagerName.CREEP_MANAGER,
+            ManagerRequestType.SHOULD_CALCULATE_TUMOR_SPREAD,
+        )
+
     """
     EnemyToBaseManager
     """

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+from functools import cached_property
 from typing import Any
 
 import numpy as np
@@ -34,7 +35,7 @@ class CreepManager(Manager, IManagerMediator):
     def __init__(self, ai, config: dict, mediator: ManagerMediator) -> None:
         super().__init__(ai, config, mediator)
         self._creep_coverage: float = 0.0
-        self._overlord_spotter_dict: dict[int:Point2] = {}
+        self._overlord_spotter_dict: dict[int, Point2] = {}
         self._setup_overlord_spotter_dict: bool = False
         # Cache for queen edge positions when ability not available
         self._queen_edge_position_cache: dict[int, dict] = {}
@@ -64,6 +65,9 @@ class CreepManager(Manager, IManagerMediator):
             ),
             ManagerRequestType.GET_TUMOR_INFLUENCE_LOWEST_COST_POSITION: (
                 lambda kwargs: self._get_tumor_influence_lowest_cost_position(**kwargs)
+            ),
+            ManagerRequestType.SHOULD_CALCULATE_TUMOR_SPREAD: (
+                lambda kwargs: self.should_calculate_tumor_spread
             ),
         }
 
@@ -624,6 +628,23 @@ class CreepManager(Manager, IManagerMediator):
                 return candidate_pos
 
         return None
+
+    def _tumor_spread_interval(self) -> int:
+        """Return how often tumor spread logic should run, in frames."""
+        coverage = self._creep_coverage
+
+        if coverage < 40.0:
+            return 0
+
+        return int(coverage / 2)
+
+    @property_cache_once_per_frame
+    def should_calculate_tumor_spread(self) -> bool:
+        """Gate expensive tumor-spread searches based on creep coverage."""
+        interval = self._tumor_spread_interval()
+        if interval <= 0:
+            return True
+        return self.ai.state.game_loop % interval == 0
 
     def _position_blocks_expansion(self, position: Point2) -> bool:
         """Will the creep tumor block expansion"""
