@@ -67,6 +67,10 @@ class PathManager(Manager, IManagerMediator):
         self.whole_map_tree: KDTree = KDTree(self.whole_map)
         # vague attempt at not recalculating np.argwhere for danger tiles
         self.calculated_danger_tiles: list[dict[str, int | np.ndarray]] = []
+        self.nydus_path_cache: dict[
+            tuple[float, float, float, float],
+            tuple[float, tuple[Point2 | None, Point2 | None, list[int] | None]],
+        ] = {}
 
         self.manager_requests_dict = {
             ManagerRequestType.FIND_LOW_PRIORITY_PATH: lambda kwargs: (
@@ -135,6 +139,17 @@ class PathManager(Manager, IManagerMediator):
         """
         if iteration % 4 == 0:
             self.calculated_danger_tiles = []
+
+        # clear items from nydus pathing cache roughly
+        # every 2 seconds
+        now: int = self.ai.state.game_loop
+        expired_keys = [
+            key
+            for key, (cached_at, _) in self.nydus_path_cache.items()
+            if now - cached_at > 44
+        ]
+        for key in expired_keys:
+            self.nydus_path_cache.pop(key, None)
 
     def find_closest_safe_spot(
         self, from_pos: Point2, grid: np.ndarray, radius: int = 11
@@ -220,7 +235,7 @@ class PathManager(Manager, IManagerMediator):
         list[Point2] :
             `list` of points composing the path.
         """
-        result: list[Point2] = self.map_data.pathfind(
+        result: list[Point2] | None = self.map_data.pathfind(
             start, target, grid, sensitivity=4
         )
 
@@ -241,7 +256,7 @@ class PathManager(Manager, IManagerMediator):
         sensitivity: int = 5,
         smoothing: bool = False,
         sense_danger: bool = True,
-        danger_distance: int = 20.0,
+        danger_distance: float = 20.0,
         danger_threshold: float = 5.0,
     ) -> Point2:
         """Find the next point in a path.
@@ -264,7 +279,7 @@ class PathManager(Manager, IManagerMediator):
             Check to see if there are any dangerous tiles near the starting point. If
             this is True and there are no dangerous tiles near the starting point, the
             pathing query is skipped and the target is returned.
-        danger_distance : int = 20.0,
+        danger_distance : float = 20.0,
             How far away from the start to look for danger.
         danger_threshold : float = 5.0
             Minimum value for a tile to be considered dangerous.
@@ -314,7 +329,7 @@ class PathManager(Manager, IManagerMediator):
             else:
                 return target
 
-        path: list[Point2] = self.map_data.pathfind(
+        path: list[Point2] | None = self.map_data.pathfind(
             start, target, grid, sensitivity=sensitivity, smoothing=smoothing
         )
         if not path or len(path) == 0:
@@ -332,7 +347,13 @@ class PathManager(Manager, IManagerMediator):
         smoothing: bool = False,
     ) -> tuple[Point2 | None, Point2 | None, list[int] | None]:
         """Use Nydus pathfinding."""
+        cache_key = (start[0], start[1], target[0], target[1])
+        cached_result = self.nydus_path_cache.get(cache_key)
+        if cached_result:
+            return cached_result[1]
+
         next_point, exit_towards = None, None
+
         result = self.map_data.pathfind_with_nyduses(
             start, target, grid, large, smoothing, sensitivity
         )
@@ -348,11 +369,13 @@ class PathManager(Manager, IManagerMediator):
                 next_point = paths[0][0]
                 if len(paths) == 2:
                     exit_towards = paths[1][1]
-        return next_point, exit_towards, nydus_tags
+        result_tuple = (next_point, exit_towards, nydus_tags)
+        self.nydus_path_cache[cache_key] = (self.ai.state.game_loop, result_tuple)
+        return result_tuple
 
     def raw_pathfind(
         self, start: Point2, target: Point2, grid: np.ndarray, sensitivity: int
-    ) -> list[Point2]:
+    ) -> list[Point2] | None:
         """Used for finding a full path, mostly for distance checks.
 
         Parameters
@@ -369,7 +392,7 @@ class PathManager(Manager, IManagerMediator):
 
         Returns
         -------
-        list[Point2] :
+        list[Point2] | None :
             `list` of points composing the path
         """
         return self.map_data.pathfind(start, target, grid, sensitivity=sensitivity)
