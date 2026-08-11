@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import random
+from functools import cached_property
 from typing import Any
 
 import numpy as np
@@ -34,7 +35,7 @@ class CreepManager(Manager, IManagerMediator):
     def __init__(self, ai, config: dict, mediator: ManagerMediator) -> None:
         super().__init__(ai, config, mediator)
         self._creep_coverage: float = 0.0
-        self._overlord_spotter_dict: dict[int:Point2] = {}
+        self._overlord_spotter_dict: dict[int, Point2] = {}
         self._setup_overlord_spotter_dict: bool = False
         # Cache for queen edge positions when ability not available
         self._queen_edge_position_cache: dict[int, dict] = {}
@@ -64,6 +65,9 @@ class CreepManager(Manager, IManagerMediator):
             ),
             ManagerRequestType.GET_TUMOR_INFLUENCE_LOWEST_COST_POSITION: (
                 lambda kwargs: self._get_tumor_influence_lowest_cost_position(**kwargs)
+            ),
+            ManagerRequestType.SHOULD_CALCULATE_TUMOR_SPREAD: (
+                lambda kwargs: self.should_calculate_tumor_spread
             ),
         }
 
@@ -133,8 +137,8 @@ class CreepManager(Manager, IManagerMediator):
 
                 for townhall in own_townhalls:
                     # Calculate squared distances to this townhall
-                    distances_squared = (edge_coords_x - townhall.position.x) ** 2 + (
-                        edge_coords_y - townhall.position.y
+                    distances_squared = (edge_coords_x - townhall.position[0]) ** 2 + (
+                        edge_coords_y - townhall.position[1]
                     ) ** 2
                     # Mark edges within 2.5 distance as invalid
                     townhall_distance_mask &= distances_squared >= 6.25  # 2.5^2
@@ -253,7 +257,7 @@ class CreepManager(Manager, IManagerMediator):
 
         # Calculate squared distances efficiently with NumPy broadcasting
         # Note: position is (x,y), but creep_tiles are stored as (y,x)
-        squared_distances = (tiles[:, 0] - pos.y) ** 2 + (tiles[:, 1] - pos.x) ** 2
+        squared_distances = (tiles[:, 0] - pos[1]) ** 2 + (tiles[:, 1] - pos[0]) ** 2
 
         # Find the index of the minimum distance
         min_index = np.argmin(squared_distances)
@@ -312,9 +316,10 @@ class CreepManager(Manager, IManagerMediator):
             start=from_pos, target=to_pos, grid=grid, sensitivity=12
         ):
             grid: np.ndarray = self.manager_mediator.get_ground_grid
+            creep_grid = self.get_creep_grid
             min_separation_squared = min_separation**2
             for point in path:
-                if not cy_has_creep(self.get_creep_grid, point) and (
+                if not cy_has_creep(creep_grid, point) and (
                     creep_pos := self._get_closest_creep_tile(pos=point)
                 ):
                     distance: float = cy_distance_to(from_pos, creep_pos)
@@ -323,7 +328,10 @@ class CreepManager(Manager, IManagerMediator):
                     if (
                         max_distance > distance > min_distance
                         and self._valid_creep_placement(
-                            creep_pos, grid=grid, visible_check=False
+                            creep_pos,
+                            grid=grid,
+                            visible_check=False,
+                            creep_grid=creep_grid,
                         )
                     ):
                         too_close = False
@@ -429,20 +437,32 @@ class CreepManager(Manager, IManagerMediator):
         if len(edge_x) == 0:
             return None
 
+        creep_grid = self.get_creep_grid
+        expansion_block_mask = self._expansion_block_mask
+        grid: np.ndarray = self.manager_mediator.get_ground_grid
+
         # Calculate distances from the search position
-        distances = np.sqrt((edge_x - position.x) ** 2 + (edge_y - position.y) ** 2)
+        distances = np.sqrt((edge_x - position[0]) ** 2 + (edge_y - position[1]) ** 2)
 
         # Filter to only edges within search radius
         within_radius = distances <= search_radius
         if not np.any(within_radius):
             return None
 
-        valid_edges = []
-        grid: np.ndarray = self.manager_mediator.get_ground_grid
+        within_x = edge_x[within_radius]
+        within_y = edge_y[within_radius]
+        valid_mask = creep_grid[within_y, within_x] > 0.0
+        valid_mask &= ~expansion_block_mask[within_y, within_x]
 
-        for i, (x, y) in enumerate(zip(edge_x[within_radius], edge_y[within_radius])):
+        valid_edges = []
+        for i, (x, y) in enumerate(zip(within_x[valid_mask], within_y[valid_mask])):
             edge_pos = Point2((float(x), float(y)))
-            if not self._valid_creep_placement(edge_pos, grid):
+            if not self._valid_creep_placement(
+                edge_pos,
+                grid,
+                creep_grid=creep_grid,
+                expansion_block_mask=expansion_block_mask,
+            ):
                 continue
 
             # Check if far enough from all existing tumors
@@ -503,7 +523,9 @@ class CreepManager(Manager, IManagerMediator):
             return {}
 
         # Calculate distances in numpy
-        distances = np.sqrt((edge_x - target_pos.x) ** 2 + (edge_y - target_pos.y) ** 2)
+        distances = np.sqrt(
+            (edge_x - target_pos[0]) ** 2 + (edge_y - target_pos[1]) ** 2
+        )
 
         num_to_keep = len(edge_x) - 1
         closest_indices = np.argpartition(distances, num_to_keep)[:num_to_keep]
@@ -569,8 +591,8 @@ class CreepManager(Manager, IManagerMediator):
             map_width, map_height = self.ai.game_info.map_size
             final_position = Point2(
                 (
-                    max(1, min(map_width - 1, final_position.x)),
-                    max(1, min(map_height - 1, final_position.y)),
+                    max(1, min(map_width - 1, final_position[0])),
+                    max(1, min(map_height - 1, final_position[1])),
                 )
             )
 
@@ -610,6 +632,7 @@ class CreepManager(Manager, IManagerMediator):
             key=lambda spot: cy_distance_to_squared(spot, position),
         )
         grid: np.ndarray = self.manager_mediator.get_ground_grid
+        creep_grid = self.get_creep_grid
 
         # Test candidates starting from furthest (lowest cost areas)
         for candidate in reversed(candidates):
@@ -620,23 +643,58 @@ class CreepManager(Manager, IManagerMediator):
                 continue
 
             # Additional validation for creep placement
-            if self._valid_creep_placement(candidate_pos, grid):
+            if self._valid_creep_placement(candidate_pos, grid, creep_grid=creep_grid):
                 return candidate_pos
 
         return None
 
+    def _tumor_spread_interval(self) -> int:
+        """Return how often tumor spread logic should run, in frames."""
+        coverage = self._creep_coverage
+
+        if coverage < 40.0:
+            return 0
+
+        return int(coverage / 2)
+
+    @property_cache_once_per_frame
+    def should_calculate_tumor_spread(self) -> bool:
+        """Gate expensive tumor-spread searches based on creep coverage."""
+        interval = self._tumor_spread_interval()
+        if interval <= 0:
+            return True
+        return self.ai.state.game_loop % interval == 0
+
     def _position_blocks_expansion(self, position: Point2) -> bool:
         """Will the creep tumor block expansion"""
-        for expansion in self.ai.expansion_locations_list:
-            if cy_distance_to_squared(position, expansion) < 25.0:
-                return True
+        mask: np.ndarray = self._expansion_block_mask
+        x: int = int(position[0])
+        y: int = int(position[1])
+        if 0 <= y < mask.shape[0] and 0 <= x < mask.shape[1]:
+            return bool(mask[y, x])
         return False
 
+    @cached_property
+    def _expansion_block_mask(self) -> np.ndarray:
+        """Tiles within 5 distance of an expansion location, indexed [y][x]."""
+        map_width, map_height = self.ai.game_info.map_size
+        ys, xs = np.ogrid[:map_height, :map_width]
+        mask: np.ndarray = np.zeros((map_height, map_width), dtype=bool)
+        for expansion in self.ai.expansion_locations_list:
+            dist_sq = (xs + 0.5 - expansion[0]) ** 2 + (ys + 0.5 - expansion[1]) ** 2
+            mask |= dist_sq < 25.0
+        return mask
+
     def _valid_creep_placement(
-        self, position: Point2, grid: np.ndarray, visible_check: bool = False
+        self,
+        position: Point2,
+        grid: np.ndarray,
+        visible_check: bool = False,
+        creep_grid: np.ndarray | None = None,
+        expansion_block_mask: np.ndarray | None = None,
     ) -> bool:
-        origin_x: int = int(round(position.x))
-        origin_y: int = int(round(position.y))
+        origin_x: int = int(round(position[0]))
+        origin_y: int = int(round(position[1]))
 
         map_width, map_height = self.ai.game_info.map_size
         if (
@@ -647,17 +705,31 @@ class CreepManager(Manager, IManagerMediator):
         ):
             return False
 
-        visible: bool = False
-        if not visible_check or (visible_check and self.ai.is_visible(position)):
-            visible = True
+        if visible_check and not self.ai.is_visible(position):
+            return False
 
-        return (
-            visible
-            and cy_has_creep(self.get_creep_grid, position)
-            and not self._position_blocks_expansion(position)
-            and self.manager_mediator.is_position_safe(grid=grid, position=position)
-            and cy_in_pathing_grid_ma(grid, position)
-        )
+        if creep_grid is None:
+            creep_grid = self.get_creep_grid
+
+        if not cy_has_creep(creep_grid, position):
+            return False
+
+        if expansion_block_mask is None:
+            expansion_block_mask = self._expansion_block_mask
+
+        block_x: int = int(position[0])
+        block_y: int = int(position[1])
+        if (
+            0 <= block_y < expansion_block_mask.shape[0]
+            and 0 <= block_x < expansion_block_mask.shape[1]
+            and bool(expansion_block_mask[block_y, block_x])
+        ):
+            return False
+
+        if not cy_in_pathing_grid_ma(grid, position):
+            return False
+
+        return self.manager_mediator.is_position_safe(grid=grid, position=position)
 
     def _get_random_creep_position(
         self, position: Point2, max_attempts: int = 20
@@ -675,6 +747,7 @@ class CreepManager(Manager, IManagerMediator):
                 Random creep position.
         """
         grid: np.ndarray = self.manager_mediator.get_ground_grid
+        creep_grid = self.get_creep_grid
         for _ in range(max_attempts):
             # Generate random angle and distance
             angle = random.uniform(0, 2 * np.pi)
@@ -684,21 +757,25 @@ class CreepManager(Manager, IManagerMediator):
 
             candidate_pos = Point2(
                 (
-                    position.x + distance * np.cos(angle),
-                    position.y + distance * np.sin(angle),
+                    position[0] + distance * np.cos(angle),
+                    position[1] + distance * np.sin(angle),
                 )
             )
 
+            cand_pos_x: int = candidate_pos[0]
+            cand_pos_y: int = candidate_pos[1]
             # Check bounds
             if (
-                candidate_pos.x < 1
-                or candidate_pos.x >= self.ai.game_info.map_size[0] - 1
-                or candidate_pos.y < 1
-                or candidate_pos.y >= self.ai.game_info.map_size[1] - 1
+                cand_pos_x < 1
+                or cand_pos_x >= self.ai.game_info.map_size[0] - 1
+                or cand_pos_y < 1
+                or cand_pos_y >= self.ai.game_info.map_size[1] - 1
             ):
                 continue
 
-            if self._valid_creep_placement(candidate_pos, grid=grid):
+            if self._valid_creep_placement(
+                candidate_pos, grid=grid, creep_grid=creep_grid
+            ):
                 return candidate_pos
 
         return None

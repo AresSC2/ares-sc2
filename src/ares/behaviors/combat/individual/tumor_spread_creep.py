@@ -22,9 +22,7 @@ class TumorSpreadCreep(CombatIndividualBehavior):
 
     1. Try to spread directly to creep edge if within range
 
-    2. If no edges in range, spread in direction furthest from existing tumors
-
-    3. If all else fails, spread to random position within range
+    2. If 1 fails, spread to random position within range
 
     Example:
     ```py
@@ -46,6 +44,8 @@ class TumorSpreadCreep(CombatIndividualBehavior):
     target: Point2
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
+        if not mediator.should_calculate_tumor_spread:
+            return False
         if AbilityId.BUILD_CREEPTUMOR_TUMOR not in self.unit.abilities:
             return False
 

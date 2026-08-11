@@ -307,6 +307,7 @@ class ManagerRequestType(str, Enum):
     GET_TUMOR_INFLUENCE_LOWEST_COST_POSITION = (
         "GET_TUMOR_INFLUENCE_LOWEST_COST_POSITION"
     )
+    SHOULD_CALCULATE_TUMOR_SPREAD = "SHOULD_CALCULATE_TUMOR_SPREAD"
 
     # DataManager
     GET_CHOSEN_OPENING = "GET_CHOSEN_OPENING"
@@ -480,6 +481,10 @@ class ManagerName(str, Enum):
     UNIT_MEMORY_MANAGER = "UnitMemoryManager"
     UNIT_ROLE_MANAGER = "UnitRoleManager"
     WARP_IN_MANAGER = "WarpInManager"
+
+
+class MapName(str, Enum):
+    LEY_LINES_AIE = "Ley Lines AIE"
 
 
 class UnitRole(str, Enum):

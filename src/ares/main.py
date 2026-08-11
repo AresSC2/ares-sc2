@@ -46,6 +46,7 @@ from ares.consts import (
     TECHLAB_TYPES,
     USE_DATA,
     WORKER_TYPES,
+    MapName,
     UnitRole,
     UnitTreeQueryType,
 )
@@ -136,6 +137,7 @@ class AresBot(CustomBotAI):
         self._archon_morph_actions: list[list] = []
         self._requested_zerg_placements: list[tuple] = []
         self.transfused_tags: set[int] = set()
+        self._seen_tags: set[int] = set()
 
         self.arcade_mode: bool = False
 
@@ -232,6 +234,7 @@ class AresBot(CustomBotAI):
                 base_build=self.base_build,
             )
             tag: int = unit_obj.tag
+            self._seen_tags.add(tag)
 
             if unit_obj.type_id in ALL_GAS:
                 self.all_gas_buildings.append(unit_obj)
@@ -313,6 +316,8 @@ class AresBot(CustomBotAI):
             )
         else:
             self.base_townhall_type = UnitTypeId.HATCHERY
+
+        self._fix_broken_exp_locations()
 
     async def on_start(self) -> None:  # pragma: no cover
         """Set up game step, managers, and information that requires game data
@@ -838,6 +843,7 @@ class AresBot(CustomBotAI):
         self._archon_morph_actions = []
         self._requested_zerg_placements = []
         self.transfused_tags = set()
+        self._seen_tags = set()
 
     def _should_add_unit(self, unit: RawUnit) -> bool:
         """Whether the given unit should be tracked.
@@ -881,7 +887,7 @@ class AresBot(CustomBotAI):
         self.manager_hub.unit_cache_manager.update_enemy_army()
 
         for unit in self.manager_hub.unit_memory_manager.ghost_units.tags_not_in(
-            self.all_units.tags
+            self._seen_tags
         ):
             unit.distance_calculation_index = index
             self.all_units.append(unit)
@@ -922,11 +928,13 @@ class AresBot(CustomBotAI):
         if build_dict is None:
             build_dict = {}
 
-        structures_dict: dict[UnitTypeId:Units] = self.mediator.get_own_structures_dict
-        own_army_dict: dict[UnitTypeId:Units] = self.mediator.get_own_army_dict
-        build_from_dict: dict[UnitTypeId:Units] = structures_dict
+        structures_dict: dict[
+            UnitTypeId, list[Unit]
+        ] = self.mediator.get_own_structures_dict
+        own_army_dict: dict[UnitTypeId, list[Unit]] = self.mediator.get_own_army_dict
+        build_from_dict: dict[UnitTypeId, list[Unit]] = structures_dict
         if self.race != Race.Terran:
-            build_from_dict: dict[UnitTypeId:Units] = {
+            build_from_dict: dict[UnitTypeId, list[Unit]] = {
                 **structures_dict,
                 **own_army_dict,
             }
@@ -1117,3 +1125,21 @@ class AresBot(CustomBotAI):
                     structure_type=unit_type,
                     pos=pos,
                 )
+
+    def _fix_broken_exp_locations(self):
+        map_name: MapName | None = MapName.__members__.get(
+            self.game_info.map_name.upper().replace(" ", "_")
+        )
+        if map_name:
+            broken_expansions: list[Point2] = []
+            fixed_locations: list[Point2] = []
+            if map_name == MapName.LEY_LINES_AIE:
+                broken_expansions = [Point2((94.5, 66.5)), Point2((103.5, 107.5))]
+                fixed_locations = [Point2((93.5, 66.5)), Point2((104.5, 107.5))]
+
+            for el in broken_expansions:
+                if el in self._expansion_positions_list:
+                    self._expansion_positions_list.remove(el)
+
+            for el in fixed_locations:
+                self._expansion_positions_list.append(el)

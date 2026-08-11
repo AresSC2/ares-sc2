@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from sc2.data import Race, Result
+from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 
 from ares.consts import CREEP_TUMOR_TYPES, DEBUG
@@ -252,6 +253,10 @@ class Hub:
         self.placement_manager.on_building_destroyed(unit_tag)
         # self.building_manager.remove_unit(unit_tag)
         self.nydus_manager.remove_destroyed_nydus(unit_tag)
+        if unit_tag in self.ai._structures_previous_map:
+            unit = self.ai._structures_previous_map[unit_tag]
+            if unit.type_id in {UnitTypeId.NYDUSCANAL, UnitTypeId.NYDUSNETWORK}:
+                self.path_manager.nydus_path_cache.clear()
 
     def on_game_end(self, result: str | Result) -> None:
         """Store data from the completed game.
