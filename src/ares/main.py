@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import sys
 from collections import defaultdict
+from enum import EnumMeta
 from os import getcwd, path
 
 import yaml
@@ -46,6 +47,7 @@ from ares.consts import (
     TECHLAB_TYPES,
     USE_DATA,
     WORKER_TYPES,
+    MapName,
     UnitRole,
     UnitTreeQueryType,
 )
@@ -315,6 +317,8 @@ class AresBot(CustomBotAI):
             )
         else:
             self.base_townhall_type = UnitTypeId.HATCHERY
+
+        self._fix_broken_exp_locations()
 
     async def on_start(self) -> None:  # pragma: no cover
         """Set up game step, managers, and information that requires game data
@@ -1122,3 +1126,21 @@ class AresBot(CustomBotAI):
                     structure_type=unit_type,
                     pos=pos,
                 )
+
+    def _fix_broken_exp_locations(self):
+        map_name: MapName | None = MapName.__members__.get(
+            self.game_info.map_name.upper().replace(" ", "_")
+        )
+        if map_name:
+            broken_expansions: list[Point2] = []
+            fixed_locations: list[Point2] = []
+            if map_name == MapName.LEY_LINES_AIE:
+                broken_expansions = [Point2((94.5, 66.5)), Point2((103.5, 107.5))]
+                fixed_locations = [Point2((93.5, 66.5)), Point2((104.5, 107.5))]
+
+            for el in broken_expansions:
+                if el in self._expansion_positions_list:
+                    self._expansion_positions_list.remove(el)
+
+            for el in fixed_locations:
+                self._expansion_positions_list.append(el)

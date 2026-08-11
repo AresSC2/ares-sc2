@@ -483,6 +483,10 @@ class ManagerName(str, Enum):
     WARP_IN_MANAGER = "WarpInManager"
 
 
+class MapName(str, Enum):
+    LEY_LINES_AIE = "Ley Lines AIE"
+
+
 class UnitRole(str, Enum):
     """Roles for units"""
 
