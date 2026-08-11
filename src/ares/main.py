@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import sys
 from collections import defaultdict
-from enum import EnumMeta
 from os import getcwd, path
 
 import yaml
