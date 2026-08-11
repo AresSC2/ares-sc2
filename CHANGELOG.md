@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v3.12.1 (2026-08-11)
+
+### Fix
+
+* Fix broken expansion locations for Ley Lines AIE ([`6839598`](https://github.com/AresSC2/ares-sc2/commit/6839598ba4cc87566e9268b544ceedc06cf89a24))
+
+### Performance
+
+* Faster x, y retrieval and optimize creep grid operations ([`cd930c6`](https://github.com/AresSC2/ares-sc2/commit/cd930c64052d45f16a55d624acc5749190673d61))
+* Track seen unit tags to prevent duplicate processing ([`add4d86`](https://github.com/AresSC2/ares-sc2/commit/add4d863c86dde12b3346eb6d453fc6e7d5371a4))
+* Add nydus pathing cache with expiration ([`5868582`](https://github.com/AresSC2/ares-sc2/commit/5868582e5e24df2443e973923cb45267a22807fa))
+* Optimize tumor spread logic with cached checks and interval-based gating ([`94e61e7`](https://github.com/AresSC2/ares-sc2/commit/94e61e761b46eaf15b051513380e757faccb70fc))
+
 ## v3.12.0 (2026-08-08)
 
 ### Feature
