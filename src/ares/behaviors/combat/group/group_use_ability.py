@@ -52,9 +52,9 @@ class GroupUseAbility(CombatGroupBehavior):
             return False
         issue_command: bool
         if self.sync_command:
-            issue_command = all([self.ability in u.abilities for u in self.group])
+            issue_command = all(self.ability in u.abilities for u in self.group)
         else:
-            issue_command = any([self.ability in u.abilities for u in self.group])
+            issue_command = any(self.ability in u.abilities for u in self.group)
 
         if not issue_command:
             return False

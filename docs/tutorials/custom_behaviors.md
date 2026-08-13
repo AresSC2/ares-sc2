@@ -20,7 +20,9 @@ from sc2.position import Point2
 
 class MyBot(AresBot):
     MARINE_TANK_TYPES: set[UnitTypeId] = {
-        UnitTypeId.MARINE, UnitTypeId.SIEGETANKSIEGED, UnitTypeId.SIEGETANK
+        UnitTypeId.MARINE,
+        UnitTypeId.SIEGETANKSIEGED,
+        UnitTypeId.SIEGETANK,
     }
 
     def __init__(self, game_step_override=None):
@@ -83,6 +85,7 @@ from sc2.units import Units
 if TYPE_CHECKING:
     from ares import AresBot
 
+
 @dataclass
 class SiegeTankDecision(CombatIndividualBehavior):
     """Decide if a tank should either siege or unsiege.
@@ -98,7 +101,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         unit_pos: Point2 = self.unit.position
         type_id: UnitTypeId = self.unit.type_id
-        
+
         # get near enemy ground
         # ares uses `KDTree` algorithm for faster distance queries
         # let's make use of that
@@ -111,10 +114,13 @@ class SiegeTankDecision(CombatIndividualBehavior):
         if type_id == UnitTypeId.SIEGETANK:
             # if enemies are not too close, and enough ground enemy around then siege
             close_to_tank: list[Unit] = [
-                e for e in near_enemy_ground if cy_distance_to(e.position, unit_pos) < 6.5
+                e
+                for e in near_enemy_ground
+                if cy_distance_to(e.position, unit_pos) < 6.5
             ]
             if len(close_to_tank) == 0 and (
-                (ai.get_total_supply(near_enemy_ground) >= 4.0 and len(near_enemy_ground) > 3)
+                ai.get_total_supply(near_enemy_ground) >= 4.0
+                and len(near_enemy_ground) > 3
             ):
                 self.unit(AbilityId.SIEGEMODE_SIEGEMODE)
                 return True
@@ -124,7 +130,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
             if len(near_enemy_ground) == 0:
                 self.unit(AbilityId.UNSIEGE_UNSIEGE)
                 return True
-        
+
         # no action was carried out
         return False
 ```
@@ -149,7 +155,9 @@ from bot.siege_tank_decision import SiegeTankDecision
 
 class MyBot(AresBot):
     MARINE_TANK_TYPES: set[UnitTypeId] = {
-        UnitTypeId.MARINE, UnitTypeId.SIEGETANKSIEGED, UnitTypeId.SIEGETANK
+        UnitTypeId.MARINE,
+        UnitTypeId.SIEGETANKSIEGED,
+        UnitTypeId.SIEGETANK,
     }
 
     def __init__(self, game_step_override=None):
@@ -167,13 +175,13 @@ class MyBot(AresBot):
         for unit in units:
             # set up a new CombatManeuver for this unit
             offensive_attack: CombatManeuver = CombatManeuver()
-            
+
             # ADD OUR CUSTOM SIEGE BEHAVIOR HERE
             # Maneuvers should be set up so that higher priority tasks are added first.
-            # If this returns False for a tank, then the 
+            # If this returns False for a tank, then the
             # AMove behavior will try to execute an action instead
             offensive_attack.add(SiegeTankDecision(unit))
-            
+
             # add AMove to this maneuver
             # AMove always returns True so should typically be added at the end
             offensive_attack.add(AMove(unit, target))

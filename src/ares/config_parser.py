@@ -42,13 +42,13 @@ class ConfigParser:
             self.user_config_location, self.config_file_name
         )
         if path.isfile(internal_config_path):
-            with open(internal_config_path, "r") as config_file:
+            with open(internal_config_path) as config_file:
                 internal_config: dict = yaml.safe_load(config_file)
         else:
             internal_config: dict = {}
 
         if path.isfile(user_config_path):
-            with open(user_config_path, "r") as config_file:
+            with open(user_config_path) as config_file:
                 user_config: dict = yaml.safe_load(config_file)
         # if no user config, fine to return internal_config here
         else:

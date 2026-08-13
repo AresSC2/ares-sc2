@@ -59,12 +59,13 @@ class ExpansionController(MacroBehavior):
         ):
             return False
 
-        if location := self._get_next_expansion_location(ai, mediator):
-            if worker := mediator.select_worker(target_position=location):
-                mediator.build_with_specific_worker(
-                    worker=worker, structure_type=ai.base_townhall_type, pos=location
-                )
-                return True
+        if (location := self._get_next_expansion_location(ai, mediator)) and (
+            worker := mediator.select_worker(target_position=location)
+        ):
+            mediator.build_with_specific_worker(
+                worker=worker, structure_type=ai.base_townhall_type, pos=location
+            )
+            return True
 
         return False
 

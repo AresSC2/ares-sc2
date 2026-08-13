@@ -40,10 +40,10 @@ class TestBot(AresBot):
     __test__ = False
 
     async def on_start(self) -> None:
-        await super(TestBot, self).on_start()
+        await super().on_start()
 
     async def on_step(self, iteration: int) -> None:
-        await super(TestBot, self).on_step(iteration)
+        await super().on_step(iteration)
         self.register_behavior(Mining())
 
 

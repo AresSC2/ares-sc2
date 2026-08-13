@@ -91,9 +91,9 @@ class SpawnController(MacroBehavior):
         self.__supply_available = ai.supply_left
 
         army_comp_dict: dict = self.army_composition_dict
-        assert isinstance(
-            army_comp_dict, dict
-        ), f"self.army_composition_dict should be dict type, got {type(army_comp_dict)}"
+        assert isinstance(army_comp_dict, dict), (
+            f"self.army_composition_dict should be dict type, got {type(army_comp_dict)}"
+        )
 
         # get the current standing army based on the army comp dict
         # note we don't consider units outside the army comp dict
@@ -110,7 +110,7 @@ class SpawnController(MacroBehavior):
         tech_ready_for: list[UnitTypeId] = []
         # iterate through desired army comp starting with the highest priority unit
         for unit_type_id, army_comp_info in sorted(
-            army_comp_dict.items(), key=lambda x: x[1].get("priority", int(0))
+            army_comp_dict.items(), key=lambda x: x[1].get("priority", 0)
         ):
             assert isinstance(unit_type_id, UnitTypeId), (
                 f"army_composition_dict expects UnitTypeId type as keys, "
@@ -229,9 +229,9 @@ class SpawnController(MacroBehavior):
             )
 
         if check_proportion and not self.freeflow_mode:
-            assert isclose(
-                proportion_sum, 1.0
-            ), f"The army comp proportions should equal 1.0, got {proportion_sum}"
+            assert isclose(proportion_sum, 1.0), (
+                f"The army comp proportions should equal 1.0, got {proportion_sum}"
+            )
 
         return self._morph_units(ai, mediator)
 

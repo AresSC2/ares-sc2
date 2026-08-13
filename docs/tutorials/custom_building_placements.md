@@ -230,7 +230,9 @@ The system is flexible enough to handle multiple gatekeepers though. You can ret
 internal dictionary `ares` uses:
 ```python
 # key is expansion location, value is list of gatekeepers
-gatekeeper_positions: dict[Point2, list[Point2]] = self.mediator.get_gatekeeper_positions
+gatekeeper_positions: dict[Point2, list[Point2]] = (
+    self.mediator.get_gatekeeper_positions
+)
 ```
 
 
@@ -313,7 +315,7 @@ self.register_behavior(
         base_location=self.mediator.get_own_nat,
         structure_id=UnitTypeId.GATEWAY,
         wall=True,
-        to_count_per_base=2
+        to_count_per_base=2,
     )
 )
 self.register_behavior(
@@ -321,7 +323,7 @@ self.register_behavior(
         base_location=self.mediator.get_own_nat,
         structure_id=UnitTypeId.CYBERNETICSCORE,
         wall=True,
-        to_count_per_base=1
+        to_count_per_base=1,
     )
 )
 
@@ -342,7 +344,7 @@ self.register_behavior(
         base_location=self.mediator.get_defensive_third,
         structure_id=UnitTypeId.MISSILETURRET,
         missile_turret=True,
-        to_count_per_base=3
+        to_count_per_base=3,
     )
 )
 ```
@@ -357,11 +359,11 @@ Get the first pylon placement without reserving placement in the building tracke
 from sc2.ids.unit_typeid import UnitTypeId
 
 if placement := mediator.request_building_placement(
-        base_location=self.mediator.get_own_nat,
-        structure_type=UnitTypeId.PYLON,
-        first_pylon=self.first_pylon,
-        reserve_placement=False
-    ):
+    base_location=self.mediator.get_own_nat,
+    structure_type=UnitTypeId.PYLON,
+    first_pylon=self.first_pylon,
+    reserve_placement=False,
+):
     pass
 ```
 
@@ -371,20 +373,24 @@ Work directly with the raw data, example here gets the natural wall placements.
 from ares.consts import BuildingSize
 from sc2.position import Point2
 
-placements_dict: dict[Point2, dict[BuildingSize, dict]] = self.mediator.get_placements_dict
-natural_placements: dict[BuildingSize, dict] = placements_dict[self.mediator.get_own_nat]
+placements_dict: dict[Point2, dict[BuildingSize, dict]] = (
+    self.mediator.get_placements_dict
+)
+natural_placements: dict[BuildingSize, dict] = placements_dict[
+    self.mediator.get_own_nat
+]
 
 two_by_twos_at_wall: list[Point2] = [
-            placement
-            for placement in natural_placements[BuildingSize.TWO_BY_TWO]
-            if natural_placements[BuildingSize.TWO_BY_TWO][placement]["is_wall"]
-        ]
+    placement
+    for placement in natural_placements[BuildingSize.TWO_BY_TWO]
+    if natural_placements[BuildingSize.TWO_BY_TWO][placement]["is_wall"]
+]
 
 three_by_threes_at_wall: list[Point2] = [
-            placement
-            for placement in natural_placements[BuildingSize.TWO_BY_TWO]
-            if natural_placements[BuildingSize.THREE_BY_THREE][placement]["is_wall"]
-        ]
+    placement
+    for placement in natural_placements[BuildingSize.TWO_BY_TWO]
+    if natural_placements[BuildingSize.THREE_BY_THREE][placement]["is_wall"]
+]
 ```
 
 Get all production placements in the main base:
@@ -393,13 +399,15 @@ Get all production placements in the main base:
 from ares.consts import BuildingSize
 from sc2.position import Point2
 
-placements_dict: dict[Point2, dict[BuildingSize, dict]] = self.mediator.get_placements_dict
+placements_dict: dict[Point2, dict[BuildingSize, dict]] = (
+    self.mediator.get_placements_dict
+)
 main_base_placements: dict[BuildingSize, dict] = placements_dict[self.start_location]
 
 production_placements: list[Point2] = [
-            placement
-            for placement in main_base_placements[BuildingSize.THREE_BY_THREE]
-            if natural_placements[BuildingSize.THREE_BY_THREE][placement]["production"]
-        ]
+    placement
+    for placement in main_base_placements[BuildingSize.THREE_BY_THREE]
+    if natural_placements[BuildingSize.THREE_BY_THREE][placement]["production"]
+]
 ```
 

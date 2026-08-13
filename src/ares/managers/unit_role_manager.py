@@ -52,7 +52,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
-        super(UnitRoleManager, self).__init__(ai, config, mediator)
+        super().__init__(ai, config, mediator)
         self.unit_role_dict: dict[str, set[int]] = {
             role.name: set() for role in UnitRole
         }
@@ -162,9 +162,8 @@ class UnitRoleManager(Manager, IManagerMediator):
         """
         if type_id in UNIT_TYPES_WITH_NO_ROLE:
             return
-        if tag not in self.all_assigned_tags:
-            if type_id == self.ai.worker_type:
-                self.assign_role(tag, UnitRole.GATHERING)
+        if tag not in self.all_assigned_tags and type_id == self.ai.worker_type:
+            self.assign_role(tag, UnitRole.GATHERING)
 
     def assign_role(
         self, tag: int, role: UnitRole, remove_from_squad: bool = True

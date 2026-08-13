@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from map_analyzer import MapData
@@ -1938,7 +1939,7 @@ class ManagerMediator(IManagerMediator):
             **kwargs,
         )
 
-    def get_squads(self, **kwargs) -> list["UnitSquad"]:
+    def get_squads(self, **kwargs) -> list[UnitSquad]:
         """Given a unit role, get the updated squads.
 
         SquadManager

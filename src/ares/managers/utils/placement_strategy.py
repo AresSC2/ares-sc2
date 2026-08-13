@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared
@@ -44,12 +45,12 @@ class BasePlacementStrategy:
 
     def __init__(
         self,
-        placement_manager: "PlacementManager",
+        placement_manager: PlacementManager,
         request: PlacementRequest,
         structure_type: UnitTypeId,
         building_size: BuildingSize,
     ) -> None:
-        self.placement_manager: "PlacementManager" = placement_manager
+        self.placement_manager: PlacementManager = placement_manager
         self.req: PlacementRequest = request
         self.structure_type = structure_type
         self.building_size = building_size
@@ -88,9 +89,9 @@ class PoweredPlacementStrategy(BasePlacementStrategy):
         two_by_twos: dict = self.placement_manager.placements_dict[building_at_base][
             BuildingSize.TWO_BY_TWO
         ]
-        placements_for_base: dict[
-            Point2, dict
-        ] = self.placement_manager.placements_dict[building_at_base][self.building_size]
+        placements_for_base: dict[Point2, dict] = (
+            self.placement_manager.placements_dict[building_at_base][self.building_size]
+        )
 
         if self.req.reaper_wall:
             available_reaper_wall = self._filter_by_flag(
@@ -176,9 +177,9 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
         available: list[Point2],
         building_at_base: Point2,
     ) -> None | Point2:
-        placements_for_base: dict[
-            Point2, dict
-        ] = self.placement_manager.placements_dict[building_at_base][self.building_size]
+        placements_for_base: dict[Point2, dict] = (
+            self.placement_manager.placements_dict[building_at_base][self.building_size]
+        )
 
         closest_to: Point2 = (
             building_at_base if not self.req.closest_to else self.req.closest_to

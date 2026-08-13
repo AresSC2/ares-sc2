@@ -82,11 +82,10 @@ class PickUpAndDropCargo(CombatIndividualBehavior):
                 success_at_distance=self.success_at_distance,
             ).execute(ai, config, mediator):
                 return True
-            if self.should_drop_units:
-                if DropCargo(unit=self.unit, target=self.unit.position).execute(
-                    ai, config, mediator
-                ):
-                    return True
+            if self.should_drop_units and DropCargo(
+                unit=self.unit, target=self.unit.position
+            ).execute(ai, config, mediator):
+                return True
 
             if self.keep_dropship_safe and KeepUnitSafe(
                 unit=self.unit, grid=self.grid

@@ -34,7 +34,7 @@ class DummyBot(AresBot):
         super().__init__()
 
     async def on_step(self, iteration: int):
-        await super(DummyBot, self).on_step(iteration)
+        await super().on_step(iteration)
         # test out a few behaviors while we are here
         grid: np.ndarray = self.mediator.get_ground_grid
         target: Point2 = self.enemy_start_locations[0]
@@ -55,7 +55,7 @@ class DummyBot(AresBot):
             self.register_behavior(maneuver)
 
     async def on_start(self) -> None:
-        await super(DummyBot, self).on_start()
+        await super().on_start()
 
 
 # Start game

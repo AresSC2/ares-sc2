@@ -46,7 +46,7 @@ if len(sys.argv) > 1:
         if process.returncode is not None and process.returncode != 0:
             # Bot has thrown an error, try again
             print(
-                f"Bot has thrown an error with error code {process.returncode}. This was try {i+1} out of {retries}."
+                f"Bot has thrown an error with error code {process.returncode}. This was try {i + 1} out of {retries}."
             )
             continue
 
@@ -80,8 +80,8 @@ if len(sys.argv) > 1:
         exit(5)
 
     # process.returncode will always return 0 if the game was run successfully or if there was a python error (in this case it returns as defeat)
-    print("Returncode: {}".format(process.returncode))
-    print("Game took {} real time seconds".format(round(time.time() - t0, 1)))
+    print(f"Returncode: {process.returncode}")
+    print(f"Game took {round(time.time() - t0, 1)} real time seconds")
     if process is not None and process.returncode == 0:
         for line in output_as_list:
             # This will throw an error even if a bot is called Traceback

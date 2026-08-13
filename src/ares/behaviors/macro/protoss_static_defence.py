@@ -60,9 +60,7 @@ class ProtossStaticDefence(MacroBehavior):
             return False
 
         base_locations: list[Point2] = [
-            base
-            for base in placements_dict.keys()
-            if base not in self.exclude_base_locations
+            base for base in placements_dict if base not in self.exclude_base_locations
         ]
         if not base_locations:
             return False
@@ -86,41 +84,38 @@ class ProtossStaticDefence(MacroBehavior):
             return False
 
         for base_loc in bases_with_nexus:
-            if self.pylons_per_base > 0:
-                if BuildStructure(
-                    base_location=base_loc,
-                    structure_id=UnitTypeId.PYLON,
-                    max_on_route=self.max_on_route,
-                    to_count_per_base=self.pylons_per_base,
-                    closest_to=base_loc,
-                    find_alternative=False,
-                    production=False,
-                ).execute(ai, config, mediator):
-                    return True
+            if self.pylons_per_base > 0 and BuildStructure(
+                base_location=base_loc,
+                structure_id=UnitTypeId.PYLON,
+                max_on_route=self.max_on_route,
+                to_count_per_base=self.pylons_per_base,
+                closest_to=base_loc,
+                find_alternative=False,
+                production=False,
+            ).execute(ai, config, mediator):
+                return True
 
-            if self.photon_cannons_per_base > 0:
-                if BuildStructure(
-                    base_location=base_loc,
-                    structure_id=UnitTypeId.PHOTONCANNON,
-                    max_on_route=self.max_on_route,
-                    static_defence=True,
-                    to_count_per_base=self.photon_cannons_per_base,
-                    closest_to=base_loc,
-                    find_alternative=False,
-                ).execute(ai, config, mediator):
-                    return True
+            if self.photon_cannons_per_base > 0 and BuildStructure(
+                base_location=base_loc,
+                structure_id=UnitTypeId.PHOTONCANNON,
+                max_on_route=self.max_on_route,
+                static_defence=True,
+                to_count_per_base=self.photon_cannons_per_base,
+                closest_to=base_loc,
+                find_alternative=False,
+            ).execute(ai, config, mediator):
+                return True
 
-            if self.shield_batteries_per_base > 0:
-                if BuildStructure(
-                    base_location=base_loc,
-                    structure_id=UnitTypeId.SHIELDBATTERY,
-                    max_on_route=self.max_on_route,
-                    static_defence=True,
-                    to_count_per_base=self.shield_batteries_per_base,
-                    closest_to=base_loc,
-                    find_alternative=False,
-                ).execute(ai, config, mediator):
-                    return True
+            if self.shield_batteries_per_base > 0 and BuildStructure(
+                base_location=base_loc,
+                structure_id=UnitTypeId.SHIELDBATTERY,
+                max_on_route=self.max_on_route,
+                static_defence=True,
+                to_count_per_base=self.shield_batteries_per_base,
+                closest_to=base_loc,
+                find_alternative=False,
+            ).execute(ai, config, mediator):
+                return True
 
         return False
 
@@ -129,16 +124,20 @@ class ProtossStaticDefence(MacroBehavior):
     ) -> bool:
         tech_location: Point2 = self.tech_base_location or ai.start_location
 
-        if self.photon_cannons_per_base > 0:
-            if ai.tech_requirement_progress(UnitTypeId.PHOTONCANNON) < 1.0:
-                return TechUp(UnitTypeId.PHOTONCANNON, tech_location).execute(
-                    ai, config, mediator
-                )
+        if (
+            self.photon_cannons_per_base > 0
+            and ai.tech_requirement_progress(UnitTypeId.PHOTONCANNON) < 1.0
+        ):
+            return TechUp(UnitTypeId.PHOTONCANNON, tech_location).execute(
+                ai, config, mediator
+            )
 
-        if self.shield_batteries_per_base > 0:
-            if ai.tech_requirement_progress(UnitTypeId.SHIELDBATTERY) < 1.0:
-                return TechUp(UnitTypeId.SHIELDBATTERY, tech_location).execute(
-                    ai, config, mediator
-                )
+        if (
+            self.shield_batteries_per_base > 0
+            and ai.tech_requirement_progress(UnitTypeId.SHIELDBATTERY) < 1.0
+        ):
+            return TechUp(UnitTypeId.SHIELDBATTERY, tech_location).execute(
+                ai, config, mediator
+            )
 
         return False

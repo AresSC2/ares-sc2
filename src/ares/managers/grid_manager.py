@@ -264,7 +264,7 @@ class GridManager(Manager, IManagerMediator):
                         )
                         indices = np.where(grid != threshold)
                         for x, y in zip(
-                            indices[0], indices[1]
+                            indices[0], indices[1], strict=False
                         ):  # Properly zip the x and y coordinates
                             pos: Point3 = Point3((x, y, height))
                             if grid[x, y] == np.inf:

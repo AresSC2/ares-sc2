@@ -55,7 +55,7 @@ class EnemyToBaseManager(Manager, IManagerMediator):
         mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
-        super(EnemyToBaseManager, self).__init__(ai, config, mediator)
+        super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
             ManagerRequestType.GET_FLYING_ENEMY_NEAR_BASES: (
                 lambda kwargs: self.flying_enemy_near_bases

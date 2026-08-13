@@ -35,7 +35,7 @@ class ExporterBot(AresBot):
         self.map_name: str = None
 
     async def on_step(self, iteration):
-        await super(ExporterBot, self).on_step(iteration)
+        await super().on_step(iteration)
         if iteration > 20:
             # file_path = self.get_pickle_file_path()
             # logger.info(f"Saving pickle file to {file_path}.xz")
@@ -77,7 +77,7 @@ class ExporterBot(AresBot):
             print(e)
 
     async def on_start(self):
-        await super(ExporterBot, self).on_start()
+        await super().on_start()
         # Make map visible
         await self.client.debug_show_map()
         await self.client.debug_control_enemy()
@@ -87,7 +87,7 @@ class ExporterBot(AresBot):
         await self.client.debug_create_unit(
             [
                 [valid_unit, 1, self.start_location, 1]
-                for valid_unit in UNIT_TECH_REQUIREMENT.keys()
+                for valid_unit in UNIT_TECH_REQUIREMENT
                 if valid_unit not in ALL_STRUCTURES
             ]
         )
@@ -95,7 +95,7 @@ class ExporterBot(AresBot):
         await self.client.debug_create_unit(
             [
                 [valid_unit, 1, self.enemy_start_locations[0], 2]
-                for valid_unit in UNIT_TECH_REQUIREMENT.keys()
+                for valid_unit in UNIT_TECH_REQUIREMENT
                 if valid_unit not in ALL_STRUCTURES
             ]
         )

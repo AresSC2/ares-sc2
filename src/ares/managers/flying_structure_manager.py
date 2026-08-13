@@ -51,12 +51,12 @@ class FlyingStructureManager(Manager, IManagerMediator):
             ManagerRequestType.GET_FLYING_STRUCTURE_TRACKER: lambda kwargs: (
                 self.flying_structure_tracker
             ),
-            ManagerRequestType.MOVE_STRUCTURE: lambda kwargs: (
-                self.move_structure(**kwargs)
+            ManagerRequestType.MOVE_STRUCTURE: lambda kwargs: self.move_structure(
+                **kwargs
             ),
         }
         # key -> structure_tag, value -> {destination, should_land}
-        self._flying_structure_tracker: dict[int, dict] = dict()
+        self._flying_structure_tracker: dict[int, dict] = {}
 
     @property
     def flying_structure_tracker(self):

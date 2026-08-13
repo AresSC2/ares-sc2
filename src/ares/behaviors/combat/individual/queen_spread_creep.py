@@ -47,9 +47,12 @@ class QueenSpreadCreep(CombatIndividualBehavior):
         spreading: bool = self.unit.is_using_ability(AbilityId.BUILD_CREEPTUMOR)
 
         grid: np.ndarray = mediator.get_ground_grid
-        if spreading and (self.cancel_if_close_enemy or self.pre_move_queen_to_tumor):
-            if KeepUnitSafe(self.unit, grid).execute(ai, config, mediator):
-                return True
+        if (
+            spreading
+            and (self.cancel_if_close_enemy or self.pre_move_queen_to_tumor)
+            and KeepUnitSafe(self.unit, grid).execute(ai, config, mediator)
+        ):
+            return True
 
         # queen already spreading creep, leave alone
         if spreading and not [

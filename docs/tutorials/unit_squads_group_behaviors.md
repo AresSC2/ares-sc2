@@ -26,18 +26,17 @@ from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 from sc2.units import Units
 
+
 class ZergBot(AresBot):
-    def __init__(self, game_step_override = None):
+    def __init__(self, game_step_override=None):
         super().__init__(game_step_override)
-        
+
     async def on_step(self, iteration: int) -> None:
         # retreive all attacking units
-        attackers: Units = self.mediator.get_units_from_role(
-            role=UnitRole.ATTACKING
-        )
+        attackers: Units = self.mediator.get_units_from_role(role=UnitRole.ATTACKING)
 
     async def on_unit_created(self, unit: Unit) -> None:
-        # When a unit is created, 
+        # When a unit is created,
         # assign it to ATTACKING using ares unit role system
         await super(ZergBot, self).on_unit_created(unit)
         type_id: UnitTypeId = unit.type_id
@@ -62,24 +61,23 @@ from sc2.ids.unit_typeid import UnitTypeId
 from sc2.unit import Unit
 from sc2.units import Units
 
+
 class ZergBot(AresBot):
-    def __init__(self, game_step_override = None):
+    def __init__(self, game_step_override=None):
         super().__init__(game_step_override)
-        
+
         self._assigned_roach_hit_squad: bool = False
-        
+
     async def on_step(self, iteration: int) -> None:
         await super(ZergBot, self).on_step(iteration)
         # retreive all attacking units
-        attackers: Units = self.mediator.get_units_from_role(
-            role=UnitRole.ATTACKING
-        )
-        
+        attackers: Units = self.mediator.get_units_from_role(role=UnitRole.ATTACKING)
+
         # retreive the roach hit squad, if one has been assigned
         roach_hit_squad: Units = self.mediator.get_units_from_role(
             role=UnitRole.CONTROL_GROUP_ONE, unit_type=UnitTypeId.ROACH
         )
-        
+
         # At 6 minutes assign all roaches to CONTROL_GROUP_ONE
         # This will remove them from ATTACKING automatically
         if not self._assigned_roach_hit_squad and self.time > 360.0:
@@ -93,7 +91,7 @@ class ZergBot(AresBot):
                 )
 
     async def on_unit_created(self, unit: Unit) -> None:
-        # When a unit is created, 
+        # When a unit is created,
         # assign it to ATTACKING using ares unit role system
         await super(ZergBot, self).on_unit_created(unit)
         type_id: UnitTypeId = unit.type_id
@@ -122,29 +120,27 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
+
 class ZergBot(AresBot):
-    def __init__(self, game_step_override = None):
+    def __init__(self, game_step_override=None):
         super().__init__(game_step_override)
-        
+
         self._assigned_roach_hit_squad: bool = False
-        
+
     async def on_step(self, iteration: int) -> None:
         await super(ZergBot, self).on_step(iteration)
         # retreive all attacking units
-        attackers: Units = self.mediator.get_units_from_role(
-            role=UnitRole.ATTACKING
-        )
-        
+        attackers: Units = self.mediator.get_units_from_role(role=UnitRole.ATTACKING)
+
         # retreive the roach hit squad, if one has been assigned
         roach_hit_squad: Units = self.mediator.get_units_from_role(
             role=UnitRole.CONTROL_GROUP_ONE, unit_type=UnitTypeId.ROACH
         )
-        
+
         self.control_roach_hit_squad(
-            roach_hit_squad=roach_hit_squad, 
-            target=self.enemy_start_locations[0]
+            roach_hit_squad=roach_hit_squad, target=self.enemy_start_locations[0]
         )
-        
+
         # At 6 minutes assign all roaches to CONTROL_GROUP_ONE
         # This will remove them from ATTACKING automatically
         if not self._assigned_roach_hit_squad and self.time > 360.0:
@@ -156,28 +152,24 @@ class ZergBot(AresBot):
                 self.mediator.assign_role(
                     tag=roach.tag, role=UnitRole.CONTROL_GROUP_ONE
                 )
-                
-    def control_roach_hit_squad(
-        self, 
-        roach_hit_squad: Units, 
-        target: Point2
-    ) -> None:
+
+    def control_roach_hit_squad(self, roach_hit_squad: Units, target: Point2) -> None:
         # declare a new group maneuver
         roach_squad_maneuver: CombatManeuver = CombatManeuver()
         # add group behaviors, these can be behaviors provided by ares
         # or create your own custom group behaviors!
         roach_squad_maneuver.add(
-          AMoveGroup(
-            group=roach_hit_squad, 
-            group_tags={r.tag for r in roach_hit_squad}, 
-            target=target
-          )
+            AMoveGroup(
+                group=roach_hit_squad,
+                group_tags={r.tag for r in roach_hit_squad},
+                target=target,
+            )
         )
-        
+
         self.register_behavior(roach_squad_maneuver)
 
     async def on_unit_created(self, unit: Unit) -> None:
-        # When a unit is created, 
+        # When a unit is created,
         # assign it to ATTACKING using ares unit role system
         await super(ZergBot, self).on_unit_created(unit)
         type_id: UnitTypeId = unit.type_id
@@ -212,45 +204,41 @@ from ares.behaviors.combat.group import AMoveGroup, StutterGroupForward
 from ares.consts import UnitTreeQueryType
 
 
-def control_roach_hit_squad(
-        self, 
-        roach_hit_squad: 
-        Units, target: Point2
-    ) -> None:
+def control_roach_hit_squad(self, roach_hit_squad: Units, target: Point2) -> None:
     squad_position: Point2 = Point2(cy_center(roach_hit_squad))
-    
+
     # retreive close enemy to the roach squad
     close_ground_enemy: Units = self.mediator.get_units_in_range(
         start_points=[squad_position],
         distances=15.5,
         query_tree=UnitTreeQueryType.EnemyGround,
     )[0]
-    
+
     # declare a new group maneuver
     roach_squad_maneuver: CombatManeuver = CombatManeuver()
-    
+
     # stutter forward to any ground enemies
-    # as this behavior is added first to the maneuver it 
+    # as this behavior is added first to the maneuver it
     # has the highest priority
     roach_squad_maneuver.add(
-      StutterGroupForward(
-        group=roach_hit_squad,
-        group_tags={u.tag for u in roach_hit_squad},
-        group_position=squad_position,
-        target=target,
-        enemies=close_ground_enemy,
-      )
+        StutterGroupForward(
+            group=roach_hit_squad,
+            group_tags={u.tag for u in roach_hit_squad},
+            group_position=squad_position,
+            target=target,
+            enemies=close_ground_enemy,
+        )
     )
-    
+
     # if StutterGroupForward does not execute, our units will AMove
     roach_squad_maneuver.add(
-      AMoveGroup(
-        group=roach_hit_squad, 
-        group_tags={r.tag for r in roach_hit_squad}, 
-        target=target
-      )
+        AMoveGroup(
+            group=roach_hit_squad,
+            group_tags={r.tag for r in roach_hit_squad},
+            target=target,
+        )
     )
-    
+
     self.register_behavior(roach_squad_maneuver)
 ```
 
@@ -275,12 +263,8 @@ from ares.consts import UnitRole, UnitTreeQueryType
 from ares.managers.squad_manager import UnitSquad
 
 
-def control_roach_hit_squad(
-        self, 
-        roach_hit_squad: Units, 
-        target: Point2
-    ) -> None:
-    
+def control_roach_hit_squad(self, roach_hit_squad: Units, target: Point2) -> None:
+
     squads: list[UnitSquad] = self.mediator.get_squads(
         role=UnitRole.CONTROL_GROUP_ONE, squad_radius=9.0
     )
@@ -288,39 +272,35 @@ def control_roach_hit_squad(
         squad_position: Point2 = squad.squad_position
         units: list[Unit] = squad.squad_units
         squad_tags: set[int] = squad.tags
-        
+
         # retreive close enemy to the roach squad
         close_ground_enemy: Units = self.mediator.get_units_in_range(
             start_points=[squad_position],
             distances=11.5,
             query_tree=UnitTreeQueryType.EnemyGround,
         )[0]
-        
+
         # declare a new group maneuver
         roach_squad_maneuver: CombatManeuver = CombatManeuver()
-        
+
         # stutter forward to any ground enemies
-        # as this behavior is added first to the maneuver it 
+        # as this behavior is added first to the maneuver it
         # has the highest priority
         roach_squad_maneuver.add(
-          StutterGroupForward(
-            group=units,
-            group_tags=squad_tags,
-            group_position=squad_position,
-            target=target,
-            enemies=close_ground_enemy,
-          )
+            StutterGroupForward(
+                group=units,
+                group_tags=squad_tags,
+                group_position=squad_position,
+                target=target,
+                enemies=close_ground_enemy,
+            )
         )
-        
+
         # if StutterGroupForward does not execute, our units will AMove
         roach_squad_maneuver.add(
-          AMoveGroup(
-            group=units, 
-            group_tags=squad_tags, 
-            target=target
-          )
+            AMoveGroup(group=units, group_tags=squad_tags, target=target)
         )
-        
+
         self.register_behavior(roach_squad_maneuver)
 ```
 
@@ -330,11 +310,7 @@ can pass this attributes directly as arguments into group behaviors:
 
 ```python
 squad: UnitSquad
-AMoveGroup(
-    group=squad.squad_units, 
-    group_tags=squad.tags, 
-    target=target
-)
+AMoveGroup(group=squad.squad_units, group_tags=squad.tags, target=target)
 ```
 
 Our final bot looks a bit like this:
@@ -351,29 +327,27 @@ from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
 
+
 class ZergBot(AresBot):
-    def __init__(self, game_step_override = None):
+    def __init__(self, game_step_override=None):
         super().__init__(game_step_override)
-        
+
         self._assigned_roach_hit_squad: bool = False
-        
+
     async def on_step(self, iteration: int) -> None:
         await super(ZergBot, self).on_step(iteration)
         # retreive all attacking units
-        attackers: Units = self.mediator.get_units_from_role(
-            role=UnitRole.ATTACKING
-        )
-        
+        attackers: Units = self.mediator.get_units_from_role(role=UnitRole.ATTACKING)
+
         # retreive the roach hit squad, if one has been assigned
         roach_hit_squad: Units = self.mediator.get_units_from_role(
             role=UnitRole.CONTROL_GROUP_ONE, unit_type=UnitTypeId.ROACH
         )
-        
+
         self.control_roach_hit_squad(
-            roach_hit_squad=roach_hit_squad, 
-            target=self.enemy_start_locations[0]
+            roach_hit_squad=roach_hit_squad, target=self.enemy_start_locations[0]
         )
-        
+
         # At 6 minutes assign all roaches to CONTROL_GROUP_ONE
         # This will remove them from ATTACKING automatically
         if not self._assigned_roach_hit_squad and self.time > 360.0:
@@ -385,13 +359,9 @@ class ZergBot(AresBot):
                 self.mediator.assign_role(
                     tag=roach.tag, role=UnitRole.CONTROL_GROUP_ONE
                 )
-                
-    def control_roach_hit_squad(
-            self, 
-            roach_hit_squad: Units, 
-            target: Point2
-        ) -> None:
-        
+
+    def control_roach_hit_squad(self, roach_hit_squad: Units, target: Point2) -> None:
+
         squads: list[UnitSquad] = self.mediator.get_squads(
             role=UnitRole.CONTROL_GROUP_ONE, squad_radius=9.0
         )
@@ -399,43 +369,39 @@ class ZergBot(AresBot):
             squad_position: Point2 = squad.squad_position
             units: list[Unit] = squad.squad_units
             squad_tags: set[int] = squad.tags
-            
+
             # retreive close enemy to the roach squad
             close_ground_enemy: Units = self.mediator.get_units_in_range(
                 start_points=[squad_position],
                 distances=11.5,
                 query_tree=UnitTreeQueryType.EnemyGround,
             )[0]
-            
+
             # declare a new group maneuver
             roach_squad_maneuver: CombatManeuver = CombatManeuver()
-            
+
             # stutter forward to any ground enemies
-            # as this behavior is added first to the maneuver it 
+            # as this behavior is added first to the maneuver it
             # has the highest priority
             roach_squad_maneuver.add(
-              StutterGroupForward(
-                group=units,
-                group_tags=squad_tags,
-                group_position=squad_position,
-                target=target,
-                enemies=close_ground_enemy,
-              )
+                StutterGroupForward(
+                    group=units,
+                    group_tags=squad_tags,
+                    group_position=squad_position,
+                    target=target,
+                    enemies=close_ground_enemy,
+                )
             )
-            
+
             # if StutterGroupForward does not execute, our units will AMove
             roach_squad_maneuver.add(
-              AMoveGroup(
-                group=units, 
-                group_tags=squad_tags, 
-                target=target
-              )
+                AMoveGroup(group=units, group_tags=squad_tags, target=target)
             )
-            
+
             self.register_behavior(roach_squad_maneuver)
 
     async def on_unit_created(self, unit: Unit) -> None:
-        # When a unit is created, 
+        # When a unit is created,
         # assign it to ATTACKING using ares unit role system
         await super(ZergBot, self).on_unit_created(unit)
         type_id: UnitTypeId = unit.type_id

@@ -61,7 +61,8 @@ Code wise there isn't much to change, `main.py` will need a few changes:
     `python-sc2`:
     ```python
     from sc2.bot_ai import BotAI
-    
+
+
     class MyBot(BotAI):
         pass
     ```
@@ -69,7 +70,8 @@ Code wise there isn't much to change, `main.py` will need a few changes:
     `ares-sc2`:
     ```python
     from ares import AresBot
-    
+
+
     class MyBot(AresBot):
         pass
     ```

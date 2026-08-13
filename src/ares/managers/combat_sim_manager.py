@@ -46,7 +46,7 @@ class CombatSimManager(Manager, IManagerMediator):
         mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
-        super(CombatSimManager, self).__init__(ai, config, mediator)
+        super().__init__(ai, config, mediator)
 
         self.combat_sim: CombatSimulator = CombatSimulator()
 

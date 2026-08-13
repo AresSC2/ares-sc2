@@ -31,10 +31,8 @@ optional = true
 optional = true
 
 [tool.poetry.group.lint.dependencies]
-isort = "^5.11.4"
-black = "^22.12.0"
-flake8 = "^6.0.0"
 mypy = "^0.991"
+ruff = "^0.16.2"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.2.1"
@@ -84,10 +82,31 @@ filterwarnings = [
     'ignore:function ham\(\) is deprecated:DeprecationWarning',
 ]
 
-[tool.isort]
-profile = "black"
-line_length = 88
-known_first_party = ["ares"]
+[tool.ruff]
+line-length = 88
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+]
+ignore = [
+    "B027",
+    "E501",   # line too long (handled by formatter)
+    "E402",
+    "TC001",
+    "TC002",
+    "TC003",
+]
+[tool.ruff.lint.isort]
+known-first-party = ["ares"]
 
 [tool.mypy]
 # 3rd party import
@@ -101,6 +120,8 @@ disallow_any_generics = false
 disallow_subclassing_any = false
 # platform
 python_version = "3.10"
+# resolve ares package under src/ (src layout) without module name conflicts
+explicit_package_bases = true
 # untyped
 disallow_untyped_calls = true
 disallow_untyped_defs = true
@@ -115,6 +136,10 @@ warn_unreachable = true
 pretty = true
 # This file will be removed later
 exclude = "src/ares/example_docstrings.py"
+
+[[tool.mypy.overrides]]
+module = "yaml"
+ignore_missing_imports = true
 
 [tool.semantic_release]
 branch = "main"

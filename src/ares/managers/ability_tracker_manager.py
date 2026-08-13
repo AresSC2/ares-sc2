@@ -63,9 +63,9 @@ class AbilityTrackerManager(Manager, IManagerMediator):
             ),
         }
         # make a copy, so we don't mess with anything when updating Medivac cds
-        self.ability_frame_cd_dict: dict[
-            AbilityId, int
-        ] = ABILITY_FRAME_COOL_DOWN.copy()
+        self.ability_frame_cd_dict: dict[AbilityId, int] = (
+            ABILITY_FRAME_COOL_DOWN.copy()
+        )
         self.unit_to_ability_dict: dict[int, dict[AbilityId, int]] = {}
 
     def manager_request(
@@ -139,11 +139,10 @@ class AbilityTrackerManager(Manager, IManagerMediator):
 
         """
         current_frame: int = self.ai.state.game_loop
-        if tag not in self.unit_to_ability_dict:
-            if unit_type == UnitTypeId.WIDOWMINE:
-                self.unit_to_ability_dict[tag] = {
-                    AbilityId.WIDOWMINEATTACK_WIDOWMINEATTACK: current_frame
-                }
+        if tag not in self.unit_to_ability_dict and unit_type == UnitTypeId.WIDOWMINE:
+            self.unit_to_ability_dict[tag] = {
+                AbilityId.WIDOWMINEATTACK_WIDOWMINEATTACK: current_frame
+            }
             # Protoss
             # if unit_type == UnitTypeId.ADEPT:
             #     self.unit_to_ability_dict[tag] = {

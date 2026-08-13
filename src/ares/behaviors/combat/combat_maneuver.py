@@ -97,9 +97,4 @@ class CombatManeuver(Behavior):
         self.micros.append(behavior)
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
-        for order in self.micros:
-            if order.execute(ai, config, mediator):
-                # executed an action
-                return True
-        # none of the combat micros completed, no actions executed
-        return False
+        return any(order.execute(ai, config, mediator) for order in self.micros)

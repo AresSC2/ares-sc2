@@ -42,10 +42,12 @@ class GhostSnipe(CombatIndividualBehavior):
 
         snipe_ability: AbilityId = AbilityId.EFFECT_GHOSTSNIPE
         ghosts: list[Unit] = mediator.get_own_army_dict[UnitTypeId.GHOST]
-        if snipe_ability in self.unit.abilities:
-            if target := self.get_snipe_target(ai, ghosts, self.close_enemy):
-                self.unit(snipe_ability, target)
-                return True
+        if (
+            snipe_ability in self.unit.abilities
+            and (target := self.get_snipe_target(ai, ghosts, self.close_enemy))
+        ):
+            self.unit(snipe_ability, target)
+            return True
 
         return False
 

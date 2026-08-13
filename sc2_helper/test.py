@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from time import perf_counter_ns
-
 from sc2 import BotAI, Difficulty, Race, UnitTypeId, maps, run_game
 from sc2.player import Bot, Computer
 
-from sc2_helper import CombatPredictor, CombatSettings, test_unit, test_units
+from sc2_helper import CombatPredictor, CombatSettings, test_unit
 
 
-class basic_bot(BotAI):
+class BasicBot(BotAI):
     def __init__(self):
         super().__init__()
 
@@ -59,7 +57,7 @@ if __name__ == "__main__":
     run_game(
         maps.get("DiscoBloodbathLE"),
         [
-            Bot(Race.Terran, basic_bot()),
+            Bot(Race.Terran, BasicBot()),
             Computer(Race.Protoss, Difficulty.CheatInsane),
         ],
         realtime=False,

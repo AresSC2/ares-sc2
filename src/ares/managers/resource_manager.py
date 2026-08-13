@@ -60,7 +60,7 @@ class ResourceManager(Manager, IManagerMediator):
         mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
-        super(ResourceManager, self).__init__(ai, config, mediator)
+        super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
             ManagerRequestType.GET_MINERAL_PATCH_TO_LIST_OF_WORKERS: lambda kwargs: (
                 self.mineral_patch_to_list_of_workers
@@ -89,8 +89,8 @@ class ResourceManager(Manager, IManagerMediator):
             ManagerRequestType.REMOVE_WORKER_FROM_MINERAL: lambda kwargs: (
                 self.remove_worker_from_mineral(**kwargs)
             ),
-            ManagerRequestType.SELECT_WORKER: lambda kwargs: (
-                self.select_worker(**kwargs)
+            ManagerRequestType.SELECT_WORKER: lambda kwargs: self.select_worker(
+                **kwargs
             ),
             ManagerRequestType.SET_WORKERS_PER_GAS: lambda kwargs: (
                 self.set_worker_per_gas(**kwargs)
@@ -109,9 +109,9 @@ class ResourceManager(Manager, IManagerMediator):
         self.geyser_to_list_of_workers: dict[int, set[int]] = {}
 
         self.mineral_tag_to_mineral: dict[int, Unit] = {}
-        self.mineral_object_to_worker_units_object: defaultdict[
-            Unit, list[Unit]
-        ] = defaultdict(list)
+        self.mineral_object_to_worker_units_object: defaultdict[Unit, list[Unit]] = (
+            defaultdict(list)
+        )
         # keep track of how many mineral patches we have available
         self.num_available_min_patches: int = 0
         # mineral targets are positions just before the mineral (for speed mining)
@@ -148,14 +148,19 @@ class ResourceManager(Manager, IManagerMediator):
 
         for townhall in townhalls:
             # we want workers on closest mineral patch first
+            townhall_position = townhall.position
             minerals_sorted: list[Unit] = cy_sorted_by_distance_to(
                 self.ai.mineral_field.filter(
-                    lambda mf: mf.is_visible
-                    and not mf.is_snapshot
-                    and cy_distance_to_squared(mf.position, townhall.position) < 100.0
-                    and len(self.mineral_patch_to_list_of_workers.get(mf.tag, [])) < 2
+                    lambda mf, townhall_position=townhall_position: (
+                        mf.is_visible
+                        and not mf.is_snapshot
+                        and cy_distance_to_squared(mf.position, townhall_position)
+                        < 100.0
+                        and len(self.mineral_patch_to_list_of_workers.get(mf.tag, []))
+                        < 2
+                    )
                 ),
-                townhall.position,
+                townhall_position,
             )
 
             if minerals_sorted:
@@ -181,13 +186,15 @@ class ResourceManager(Manager, IManagerMediator):
             return_as_dict=True,
         )
         return self.available_minerals.filter(
-            lambda mf: units_near_patches[mf.tag]
-            .filter(lambda u: u.tag not in IGNORED_UNIT_TYPES_MEMORY_MANAGER)
-            .amount
-            == 0
-            # `self.available_minerals` checks this but that is cached per frame
-            # so we might have already assigned workers since the frame started
-            and len(self.mineral_patch_to_list_of_workers.get(mf.tag, [])) < 2
+            lambda mf: (
+                units_near_patches[mf.tag]
+                .filter(lambda u: u.tag not in IGNORED_UNIT_TYPES_MEMORY_MANAGER)
+                .amount
+                == 0
+                # `self.available_minerals` checks this but that is cached per frame
+                # so we might have already assigned workers since the frame started
+                and len(self.mineral_patch_to_list_of_workers.get(mf.tag, [])) < 2
+            )
         )
 
     def manager_request(
@@ -368,7 +375,7 @@ class ResourceManager(Manager, IManagerMediator):
                     return worker
 
         if only_select_persistent_builder:
-            return
+            return None
 
         workers: Units = self.manager_mediator.get_units_from_roles(
             roles={UnitRole.GATHERING}, unit_type=self.ai.worker_type
@@ -390,14 +397,18 @@ class ResourceManager(Manager, IManagerMediator):
             return worker
 
         if available_workers := workers.filter(
-            lambda w: w.tag in self.worker_to_mineral_patch_dict
-            and not w.is_carrying_resource
+            lambda w: (
+                w.tag in self.worker_to_mineral_patch_dict
+                and not w.is_carrying_resource
+            )
         ):
             # find townhalls with plenty of mineral patches
             townhalls: list[Unit] = cy_sorted_by_distance_to(
                 self.ai.townhalls.filter(
-                    lambda th: th.is_ready
-                    and self.ai.mineral_field.closer_than(10, th).amount >= 8
+                    lambda th: (
+                        th.is_ready
+                        and self.ai.mineral_field.closer_than(10, th).amount >= 8
+                    )
                 ),
                 target_position,
             )
@@ -412,20 +423,26 @@ class ResourceManager(Manager, IManagerMediator):
             # townhall that way there is a good chance we pick a worker at a far mineral
             # patch
             for townhall in townhalls:
+                townhall_position = townhall.position
                 minerals_sorted_by_distance: list[Unit] = cy_sorted_by_distance_to(
-                    self.ai.mineral_field.closer_than(10, townhall), townhall.position
+                    self.ai.mineral_field.closer_than(10, townhall), townhall_position
                 )
                 for mineral in reversed(minerals_sorted_by_distance):
                     # we have record of the patch, with some worker tags saved
-                    if mineral.tag in self.mineral_patch_to_list_of_workers:
+                    mineral_tag: int = mineral.tag
+                    if mineral_tag in self.mineral_patch_to_list_of_workers:
+                        mineral_worker_tags: set[int] = (
+                            self.mineral_patch_to_list_of_workers[mineral_tag]
+                        )
                         if force_close:
                             if close_workers := available_workers.filter(
-                                lambda w: w.tag
-                                in self.mineral_patch_to_list_of_workers[mineral.tag]
-                                and cy_distance_to_squared(
-                                    w.position, townhall.position
+                                lambda w, mineral_worker_tags=mineral_worker_tags, townhall_position=townhall_position: (
+                                    w.tag in mineral_worker_tags
+                                    and cy_distance_to_squared(
+                                        w.position, townhall_position
+                                    )
+                                    < 100.0
                                 )
-                                < 100.0
                             ):
                                 worker: Unit = cy_closest_to(
                                     target_position, close_workers
@@ -436,10 +453,11 @@ class ResourceManager(Manager, IManagerMediator):
                             # try to get a worker at this patch that is not carrying
                             # resources
                             if _workers := available_workers.filter(
-                                lambda w: w.tag
-                                in self.mineral_patch_to_list_of_workers[mineral.tag]
-                                and not w.is_carrying_resource
-                                and not w.is_collecting
+                                lambda w, mineral_worker_tags=mineral_worker_tags: (
+                                    w.tag in mineral_worker_tags
+                                    and not w.is_carrying_resource
+                                    and not w.is_collecting
+                                )
                             ):
                                 worker: Unit = _workers.first
                                 # make sure to remove worker, so a new one
@@ -451,6 +469,7 @@ class ResourceManager(Manager, IManagerMediator):
             worker: Unit = cy_closest_to(target_position, available_workers)
             self.remove_worker_from_mineral(worker.tag)
             return worker
+        return None
 
     def _assign_workers(self, workers: Units) -> None:
         """Assign workers to mineral patches and gas buildings.
@@ -473,8 +492,10 @@ class ResourceManager(Manager, IManagerMediator):
 
         if self.available_minerals:
             unassigned_workers: Units = workers.filter(
-                lambda u: u.tag not in self.worker_to_geyser_dict
-                and u.tag not in self.worker_to_mineral_patch_dict
+                lambda u: (
+                    u.tag not in self.worker_to_geyser_dict
+                    and u.tag not in self.worker_to_mineral_patch_dict
+                )
             )
             self._assign_workers_to_mineral_patches(
                 self.available_minerals, unassigned_workers
@@ -818,7 +839,7 @@ class ResourceManager(Manager, IManagerMediator):
         for worker in self.ai.workers:
             if worker.tag in worker_to_resource:
                 resource_tag: int = worker_to_resource[worker.tag]
-                resource_object: Unit | None = resource_dict.get(resource_tag, None)
+                resource_object: Unit | None = resource_dict.get(resource_tag)
                 if resource_object is None:
                     if resource_type == MINERAL:
                         self._remove_mineral_field(resource_tag)

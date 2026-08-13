@@ -63,9 +63,7 @@ class UnitCacheManager(Manager, IManagerMediator):
             ManagerRequestType.GET_CACHED_ENEMY_WORKERS: lambda kwargs: (
                 self.enemy_workers
             ),
-            ManagerRequestType.GET_OLD_OWN_ARMY_DICT: lambda kwargs: (
-                self.old_own_army
-            ),
+            ManagerRequestType.GET_OLD_OWN_ARMY_DICT: lambda kwargs: self.old_own_army,
             ManagerRequestType.GET_CACHED_OWN_ARMY: lambda kwargs: self.own_army,
             ManagerRequestType.GET_CACHED_OWN_ARMY_DICT: lambda kwargs: (
                 self.own_army_dict
@@ -190,9 +188,9 @@ class UnitCacheManager(Manager, IManagerMediator):
         # iterate through T/P structures and count pending units
         if self.ai.race != Race.Zerg:
             for s in self.ai.structures.filter(
-                lambda _s: _s.orders
-                and _s.is_ready
-                and _s.type_id not in TOWNHALL_TYPES
+                lambda _s: (
+                    _s.orders and _s.is_ready and _s.type_id not in TOWNHALL_TYPES
+                )
             ):
                 try:
                     order: UnitTypeId = UnitTypeId[

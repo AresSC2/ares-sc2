@@ -152,7 +152,7 @@ class AresBot(CustomBotAI):
     def do_unload_container(self, container_tag: int, index: int = 0) -> None:
         self._drop_unload_actions.append((container_tag, index))
 
-    def calculate_cost(self, item_id: AbilityId | UnitTypeId | UpgradeId) -> (Cost):
+    def calculate_cost(self, item_id: AbilityId | UnitTypeId | UpgradeId) -> Cost:
         if isinstance(item_id, UnitTypeId):
             cost_dict: dict[UnitTypeId, Cost] = getattr(self, "cost_dict", COST_DICT)
             if item_id in cost_dict:
@@ -301,7 +301,7 @@ class AresBot(CustomBotAI):
             self.__user_config_location__, f"{self.race.name.lower()}_builds.yml"
         )
         if path.isfile(__user_build_orders_location__):
-            with open(__user_build_orders_location__, "r") as config_file:
+            with open(__user_build_orders_location__) as config_file:
                 build_order_config: dict = yaml.safe_load(config_file)
                 self.config.update(build_order_config)
 
@@ -411,16 +411,17 @@ class AresBot(CustomBotAI):
             await self.build_order_runner.run_build()
 
         # detect scouts used by the build runner that are finished
-        if self.time < 390.0:
-            if scouts := [
+        if self.time < 390.0 and (
+            scouts := [
                 w
                 for w in self.mediator.get_units_from_role(
                     role=UnitRole.BUILD_RUNNER_SCOUT, unit_type=WORKER_TYPES
                 )
                 if w.is_idle
-            ]:
-                for scout in scouts:
-                    self.mediator.assign_role(tag=scout.tag, role=UnitRole.GATHERING)
+            ]
+        ):
+            for scout in scouts:
+                self.mediator.assign_role(tag=scout.tag, role=UnitRole.GATHERING)
 
         self.actual_iteration += 1
         if self.chat_debug:
@@ -441,7 +442,7 @@ class AresBot(CustomBotAI):
             await self._do_zerg_build_placement(requested_zerg_placement)
         self.manager_hub.grid_manager.reset_grids(self.actual_iteration)
         await self.manager_hub.warp_in_manager.do_warp_ins()
-        return await super(AresBot, self)._after_step()
+        return await super()._after_step()
 
     def register_behavior(self, behavior: Behavior) -> None:
         """Register behavior.
@@ -679,10 +680,13 @@ class AresBot(CustomBotAI):
                 self.own_units_slim.append(unit_obj)
             elif unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
                 self.own_structures_slim.append(unit_obj)
-            if unit_id == UnitTypeId.CREEPTUMORBURROWED:
-                if not unit_obj.is_idle and isinstance(unit_obj.order_target, Point2):
-                    self._used_tumors.add(tag)
-                    return
+            if (
+                unit_id == UnitTypeId.CREEPTUMORBURROWED
+                and not unit_obj.is_idle
+                and isinstance(unit_obj.order_target, Point2)
+            ):
+                self._used_tumors.add(tag)
+                return
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_structure(unit_obj)
             self.structures.append(unit_obj)
@@ -766,8 +770,10 @@ class AresBot(CustomBotAI):
                 UnitTreeQueryType.EnemyGround,
                 return_as_dict=False,
             )[0].filter(
-                lambda u: u.tag not in self.adept_tags_with_shades_assigned
-                and u.type_id == UnitTypeId.ADEPT
+                lambda u: (
+                    u.tag not in self.adept_tags_with_shades_assigned
+                    and u.type_id == UnitTypeId.ADEPT
+                )
             )
             if close_adepts:
                 self.adept_shades[shade_tag][SHADE_OWNER] = close_adepts.closest_to(
@@ -928,9 +934,9 @@ class AresBot(CustomBotAI):
         if build_dict is None:
             build_dict = {}
 
-        structures_dict: dict[
-            UnitTypeId, list[Unit]
-        ] = self.mediator.get_own_structures_dict
+        structures_dict: dict[UnitTypeId, list[Unit]] = (
+            self.mediator.get_own_structures_dict
+        )
         own_army_dict: dict[UnitTypeId, list[Unit]] = self.mediator.get_own_army_dict
         build_from_dict: dict[UnitTypeId, list[Unit]] = structures_dict
         if self.race != Race.Terran:
@@ -1087,7 +1093,7 @@ class AresBot(CustomBotAI):
         """
         num_pending: int = 0
         building_tracker: dict = self.mediator.get_building_tracker_dict
-        for tag, info in building_tracker.items():
+        for tag, _info in building_tracker.items():
             structure_id: UnitTypeId = building_tracker[tag][ID]
             if structure_id != structure_type:
                 continue
@@ -1111,20 +1117,23 @@ class AresBot(CustomBotAI):
         base_location: Point2 = requested_zerg_placement[0]
         unit_type: UnitTypeId = requested_zerg_placement[1]
 
-        if pos := await self.find_placement(
-            unit_type,
-            Point2(cy_towards(base_location, self.game_info.map_center, 6.0)),
-            30,
-        ):
-            if worker := self.mediator.select_worker(
+        if (
+            pos := await self.find_placement(
+                unit_type,
+                Point2(cy_towards(base_location, self.game_info.map_center, 6.0)),
+                30,
+            )
+        ) and (
+            worker := self.mediator.select_worker(
                 target_position=pos,
                 force_close=True,
-            ):
-                self.mediator.build_with_specific_worker(
-                    worker=worker,
-                    structure_type=unit_type,
-                    pos=pos,
-                )
+            )
+        ):
+            self.mediator.build_with_specific_worker(
+                worker=worker,
+                structure_type=unit_type,
+                pos=pos,
+            )
 
     def _fix_broken_exp_locations(self):
         map_name: MapName | None = MapName.__members__.get(

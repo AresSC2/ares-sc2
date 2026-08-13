@@ -302,11 +302,13 @@ class PathManager(Manager, IManagerMediator):
             """
             found = False
             for precalculated in self.calculated_danger_tiles:
-                if precalculated[DANGER_THRESHOLD] == danger_threshold:
-                    if (precalculated[PATHING_GRID] == grid).all():
-                        dangers = precalculated[DANGER_TILES]
-                        found = True
-                        break
+                if (
+                    precalculated[DANGER_THRESHOLD] == danger_threshold
+                    and (precalculated[PATHING_GRID] == grid).all()
+                ):
+                    dangers = precalculated[DANGER_TILES]
+                    found = True
+                    break
             if not found:
                 # find all dangerous cells on the grid
                 dangers = np.argwhere((grid >= danger_threshold) & (grid < np.inf))

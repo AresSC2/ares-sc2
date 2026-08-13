@@ -56,23 +56,23 @@ class AddonSwap(MacroBehavior):
         assert ai.race == Race.Terran, "Can only swap addons with Terran."
         # check if user provided a precise addon into addon_required
         if self.addon_required not in ADDON_TYPES:
-            assert (
-                self.addon_required in ADD_ONS
-            ), f"Invalid addon type: {self.addon_required}"
+            assert self.addon_required in ADD_ONS, (
+                f"Invalid addon type: {self.addon_required}"
+            )
             self.precise_addon_structure_id = self.addon_required
             if self.addon_required in REACTOR_TYPES:
                 self.addon_required = UnitTypeId.REACTOR
             else:
                 self.addon_required = UnitTypeId.TECHLAB
         else:
-            assert (
-                self.addon_required in ADDON_TYPES
-            ), f"`self.addon_required` should be one of {ADDON_TYPES}"
+            assert self.addon_required in ADDON_TYPES, (
+                f"`self.addon_required` should be one of {ADDON_TYPES}"
+            )
 
         if isinstance(self.structure_needing_addon, UnitTypeId):
-            assert (
-                self.structure_needing_addon in ALL_STRUCTURES
-            ), f"structure_needing_addon should be one of {ALL_STRUCTURES}"
+            assert self.structure_needing_addon in ALL_STRUCTURES, (
+                f"structure_needing_addon should be one of {ALL_STRUCTURES}"
+            )
             structures: list[Unit] = [
                 s
                 for s in mediator.get_own_structures_dict[self.structure_needing_addon]

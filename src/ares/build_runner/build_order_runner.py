@@ -122,11 +122,11 @@ class BuildOrderRunner:
         self, config: dict, opening_name: str, remove_completed: bool = False
     ) -> None:
         if BUILDS in self.config:
-            assert isinstance(
-                config[BUILDS], dict
-            ), "Opening builds are not configured correctly in the yml file"
+            assert isinstance(config[BUILDS], dict), (
+                "Opening builds are not configured correctly in the yml file"
+            )
 
-            assert opening_name in config[BUILDS].keys(), (
+            assert opening_name in config[BUILDS], (
                 f"Trying to parse an opening called {opening_name} but "
                 f"I can't find it. Spelling perhaps?"
             )
@@ -400,16 +400,17 @@ class BuildOrderRunner:
                     self.current_step_started = True
 
             elif command == AbilityId.EFFECT_CHRONOBOOST:
-                if chrono_target := self.get_structure(step.target):
-                    if available_nexuses := [
+                if (chrono_target := self.get_structure(step.target)) and (
+                    available_nexuses := [
                         th
                         for th in self.ai.townhalls
                         if th.energy >= 50 and th.is_ready
-                    ]:
-                        available_nexuses[0](
-                            AbilityId.EFFECT_CHRONOBOOSTENERGYCOST, chrono_target
-                        )
-                        self.current_step_started = True
+                    ]
+                ):
+                    available_nexuses[0](
+                        AbilityId.EFFECT_CHRONOBOOSTENERGYCOST, chrono_target
+                    )
+                    self.current_step_started = True
 
             elif command == AbilityId.UPGRADETOHIVE_HIVE:
                 if available_hatch := [
@@ -452,9 +453,9 @@ class BuildOrderRunner:
                     )
                     self.current_step_started = True
             elif command == BuildOrderOptions.OVERLORD_SCOUT:
-                unit_role_dict: dict[
-                    UnitRole, set[int]
-                ] = self.mediator.get_unit_role_dict
+                unit_role_dict: dict[UnitRole, set[int]] = (
+                    self.mediator.get_unit_role_dict
+                )
                 if overlords := [
                     ol
                     for ol in self.mediator.get_own_army_dict[UnitTypeId.OVERLORD]
@@ -485,21 +486,25 @@ class BuildOrderRunner:
                     )
                     and (self.ai.time - self._last_gas_order_time) > 6.0
                 ):
-                    if worker := self.mediator.select_worker(
-                        target_position=self.current_build_position, force_close=True
-                    ):
-                        if next_building_position := await self.get_position(
+                    if (
+                        worker := self.mediator.select_worker(
+                            target_position=self.current_build_position,
+                            force_close=True,
+                        )
+                    ) and (
+                        next_building_position := await self.get_position(
                             step.command, step.target
+                        )
+                    ):
+                        self.current_build_position = next_building_position
+                        if self.mediator.build_with_specific_worker(
+                            worker=worker,
+                            structure_type=command,
+                            pos=self.current_build_position,
+                            assign_role=worker.tag
+                            in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
                         ):
-                            self.current_build_position = next_building_position
-                            if self.mediator.build_with_specific_worker(
-                                worker=worker,
-                                structure_type=command,
-                                pos=self.current_build_position,
-                                assign_role=worker.tag
-                                in self.mediator.get_unit_role_dict[UnitRole.GATHERING],
-                            ):
-                                self._last_gas_order_time = self.ai.time
+                            self._last_gas_order_time = self.ai.time
                 elif command in ADD_ONS and self.ai.can_afford(command):
                     if base_structures := [
                         s
@@ -632,14 +637,16 @@ class BuildOrderRunner:
             ):
                 return pos
         else:
-            if target == BuildOrderTargetOptions.RAMP:
-                if structure_type == self.ai.supply_type:
-                    return list(self.ai.main_base_ramp.corner_depots)[0]
+            if (
+                target == BuildOrderTargetOptions.RAMP
+                and structure_type == self.ai.supply_type
+            ):
+                return list(self.ai.main_base_ramp.corner_depots)[0]
 
-            behind_mineral_line: list[
-                Point2
-            ] = self.mediator.get_behind_mineral_positions(
-                th_pos=self.ai.start_location
+            behind_mineral_line: list[Point2] = (
+                self.mediator.get_behind_mineral_positions(
+                    th_pos=self.ai.start_location
+                )
             )
             build_near: Point2 | None = None
             if structure_type not in {UnitTypeId.SPINECRAWLER, UnitTypeId.SPORECRAWLER}:
@@ -674,27 +681,31 @@ class BuildOrderRunner:
 
         """
         # this block is currently for chrono
-        if isinstance(target, UnitTypeId):
-            if valid_structures := self.ai.structures.filter(
-                lambda s: s.build_progress == 1.0
-                and s.type_id == target
-                and not s.has_buff(BuffId.CHRONOBOOSTENERGYCOST)
-            ):
-                return valid_structures.first
+        if isinstance(target, UnitTypeId) and (
+            valid_structures := self.ai.structures.filter(
+                lambda s: (
+                    s.build_progress == 1.0
+                    and s.type_id == target
+                    and not s.has_buff(BuffId.CHRONOBOOSTENERGYCOST)
+                )
+            )
+        ):
+            return valid_structures.first
 
     def _assign_persistent_worker(self) -> None:
         """Assign a worker that does not get assigned back to gathering."""
         if self.ai.race != Race.Zerg and not self.assigned_persistent_worker:
             pos, time = self._get_position_and_supply_of_first_supply()
-            if self.ai.time >= time:
-                if worker := self.mediator.select_worker(
+            if self.ai.time >= time and (
+                worker := self.mediator.select_worker(
                     target_position=self.ai.start_location
-                ):
-                    self.mediator.assign_role(
-                        tag=worker.tag, role=UnitRole.PERSISTENT_BUILDER
-                    )
-                    self.assigned_persistent_worker = True
-                    worker.move(pos)
+                )
+            ):
+                self.mediator.assign_role(
+                    tag=worker.tag, role=UnitRole.PERSISTENT_BUILDER
+                )
+                self.assigned_persistent_worker = True
+                worker.move(pos)
 
     def _produce_workers(self):
         if (
@@ -825,9 +836,7 @@ class BuildOrderRunner:
                 ]
             )
             >= 2
-            or any(
-                [self.mediator.get_building_counter[gas_type] for gas_type in ALL_GAS]
-            )
+            or any(self.mediator.get_building_counter[gas_type] for gas_type in ALL_GAS)
         ):
             can_assign = False
 
@@ -853,15 +862,16 @@ class BuildOrderRunner:
             ]
             # now check if we should assign workers to geysers
             for geyser in geysers:
-                if geyser.tag not in self._geyser_tag_to_probe_tag:
-                    if worker := self.mediator.select_worker(
+                if geyser.tag not in self._geyser_tag_to_probe_tag and (
+                    worker := self.mediator.select_worker(
                         target_position=geyser.position, force_close=True
-                    ):
-                        self.mediator.assign_role(
-                            tag=worker.tag, role=UnitRole.GAS_STEAL_PREVENTER
-                        )
-                        self._geyser_tag_to_probe_tag[geyser.tag] = worker.tag
-                        worker.move(geyser.position)
+                    )
+                ):
+                    self.mediator.assign_role(
+                        tag=worker.tag, role=UnitRole.GAS_STEAL_PREVENTER
+                    )
+                    self._geyser_tag_to_probe_tag[geyser.tag] = worker.tag
+                    worker.move(geyser.position)
 
         # iterate through our geyser records
         # control the worker / work out if we need to remove
@@ -884,10 +894,11 @@ class BuildOrderRunner:
                     worker = self.ai.unit_tag_dict[assigned_worker_tag]
 
                     # target other enemy worker if it comes in range
-                    if in_range := cy_in_attack_range(worker, enemy_workers):
-                        if cy_attack_ready(self.ai, worker, in_range[0]):
-                            worker.attack(in_range[0])
-                            continue
+                    if (in_range := cy_in_attack_range(worker, enemy_workers)) and (
+                        cy_attack_ready(self.ai, worker, in_range[0])
+                    ):
+                        worker.attack(in_range[0])
+                        continue
 
                     # build order wants a gas, so build it here
                     if self.build_order[

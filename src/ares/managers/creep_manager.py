@@ -167,9 +167,9 @@ class CreepManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def existing_tumor_positions_or_order_targets(self) -> list[Point2]:
-        own_structures_dict: dict[
-            UnitTypeId, Units
-        ] = self.manager_mediator.get_own_structures_dict
+        own_structures_dict: dict[UnitTypeId, Units] = (
+            self.manager_mediator.get_own_structures_dict
+        )
         positions: list[Point2] = [
             u.position
             for creep_tumor_type in CREEP_TUMOR_TYPES
@@ -342,11 +342,11 @@ class CreepManager(Manager, IManagerMediator):
                         ):
                             too_close = True
 
-                        own_ths: list[
-                            Unit
-                        ] = self.manager_mediator.get_own_structures_dict[
-                            UnitTypeId.HATCHERY
-                        ]
+                        own_ths: list[Unit] = (
+                            self.manager_mediator.get_own_structures_dict[
+                                UnitTypeId.HATCHERY
+                            ]
+                        )
                         # can act a bit weird near pending hatchery, avoid it
                         if not all(
                             cy_distance_to_squared(creep_pos, townhall.position)
@@ -419,10 +419,13 @@ class CreepManager(Manager, IManagerMediator):
             The closest edge position, or None if no edges found
         """
         # Handle caching for queens when ability not available
-        if unit_tag is not None and cache_result:
-            if unit_tag in self._queen_edge_position_cache:
-                cache_data = self._queen_edge_position_cache[unit_tag]
-                return cache_data["position"]
+        if (
+            unit_tag is not None
+            and cache_result
+            and unit_tag in self._queen_edge_position_cache
+        ):
+            cache_data = self._queen_edge_position_cache[unit_tag]
+            return cache_data["position"]
 
         # Clear cache for this unit if ability becomes available
         if (
@@ -455,7 +458,9 @@ class CreepManager(Manager, IManagerMediator):
         valid_mask &= ~expansion_block_mask[within_y, within_x]
 
         valid_edges = []
-        for i, (x, y) in enumerate(zip(within_x[valid_mask], within_y[valid_mask])):
+        for i, (x, y) in enumerate(
+            zip(within_x[valid_mask], within_y[valid_mask], strict=False)
+        ):
             edge_pos = Point2((float(x), float(y)))
             if not self._valid_creep_placement(
                 edge_pos,
@@ -542,7 +547,8 @@ class CreepManager(Manager, IManagerMediator):
 
         # Now convert to Point2 objects
         edge_points = [
-            Point2((float(x), float(y))) for x, y in zip(edge_x_sorted, edge_y_sorted)
+            Point2((float(x), float(y)))
+            for x, y in zip(edge_x_sorted, edge_y_sorted, strict=False)
         ]
 
         # Select positions with minimum separation

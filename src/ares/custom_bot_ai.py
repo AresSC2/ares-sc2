@@ -183,16 +183,15 @@ class CustomBotAI(BotAI):
         """
         num_in_tracker: int = 0
         building_tracker: dict = self.mediator.get_building_tracker_dict
-        for tag, info in building_tracker.items():
+        for tag, _info in building_tracker.items():
             structure_id: UnitTypeId = building_tracker[tag][ID]
             if structure_id != structure_type:
                 continue
 
-            if target := building_tracker[tag][TARGET]:
-                if not self.structures.filter(
-                    lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
-                ):
-                    num_in_tracker += 1
+            if (target := building_tracker[tag][TARGET]) and not self.structures.filter(
+                lambda s: cy_distance_to_squared(s.position, target.position) < 1.0
+            ):
+                num_in_tracker += 1
 
         return num_in_tracker
 
@@ -200,7 +199,7 @@ class CustomBotAI(BotAI):
         if upgrade_id in self.state.upgrades:
             return True
 
-        creationAbilityID = self.game_data.upgrades[
+        creation_ability_id = self.game_data.upgrades[
             upgrade_id.value
         ].research_ability.exact_id
 
@@ -211,7 +210,7 @@ class CustomBotAI(BotAI):
 
         for structure in upgrade_from_structures:
             for order in structure.orders:
-                if order.ability.exact_id == creationAbilityID:
+                if order.ability.exact_id == creation_ability_id:
                     return True
 
         return False
@@ -282,7 +281,7 @@ class CustomBotAI(BotAI):
                 )
 
             if not any(
-                [s for s in self.structures if s.type_id in to_check and s.is_ready]
+                s for s in self.structures if s.type_id in to_check and s.is_ready
             ):
                 return False
 
@@ -489,19 +488,15 @@ class CustomBotAI(BotAI):
         if close_enemy:
             return True
 
-        if check_own:
-            if mediator.get_units_in_range(
-                start_points=[position],
-                distances=5.5,
-                query_tree=UnitTreeQueryType.AllOwn,
-            )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
-                return True
-
-        neutral_units = self.destructables + self.watchtowers
-        if cy_closer_than(neutral_units, 5.5, position):
+        if check_own and mediator.get_units_in_range(
+            start_points=[position],
+            distances=5.5,
+            query_tree=UnitTreeQueryType.AllOwn,
+        )[0].filter(lambda u: u.type_id in TOWNHALL_TYPES):
             return True
 
-        return False
+        neutral_units = self.destructables + self.watchtowers
+        return bool(cy_closer_than(neutral_units, 5.5, position))
 
     def building_worker_blocked_by_burrowed_unit(
         self, worker_tag: int, position: Point2
@@ -525,7 +520,9 @@ class CustomBotAI(BotAI):
         size: int,
     ) -> None:
         height: float = self.get_terrain_z_height(self.game_info.map_center)
-        for x, y in zip(*np.where((grid > lower_threshold) & (grid < upper_threshold))):
+        for x, y in zip(
+            *np.where((grid > lower_threshold) & (grid < upper_threshold)), strict=False
+        ):
             pos: Point3 = Point3((x, y, height))
             if grid[x, y] == np.inf:
                 val: int = 9999

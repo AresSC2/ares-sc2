@@ -134,9 +134,12 @@ class DataManager(Manager, IManagerMediator):
         return self.manager_requests_dict[request](kwargs)
 
     def initialise(self) -> None:
-        if BUILD_SELECTION in self.config and self.config[USE_DATA]:
-            if self.config[BUILD_SELECTION] == WINRATE_BASED:
-                self.build_selection_method = WINRATE_BASED
+        if (
+            BUILD_SELECTION in self.config
+            and self.config[USE_DATA]
+            and self.config[BUILD_SELECTION] == WINRATE_BASED
+        ):
+            self.build_selection_method = WINRATE_BASED
         if MIN_GAMES_WINRATE_BASED in self.config:
             self.min_games = self.config[MIN_GAMES_WINRATE_BASED]
 
@@ -197,7 +200,7 @@ class DataManager(Manager, IManagerMediator):
         If there is a winrate tie (including all 0.0), cycle through tied builds.
         """
         # Count games per build
-        build_counts = {build: 0 for build in self.build_cycle}
+        build_counts = dict.fromkeys(self.build_cycle, 0)
         for entry in self.opponent_history:
             build = entry.get(STRATEGY_USED)
             if build in build_counts:
@@ -290,7 +293,7 @@ class DataManager(Manager, IManagerMediator):
 
     def _get_opponent_data(self, _opponent_id: str) -> None:
         if path.isfile(self.file_path):
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 self.opponent_history = json.load(f)
         else:
             # no data, create a dummy version

@@ -22,9 +22,7 @@ reassignment by the Mining task. Here's an example:<br/>
 ```python
 from ares.consts import UnitRole
 
-if worker := self.mediator.select_worker(
-        target_position=self.start_location
-    ):
+if worker := self.mediator.select_worker(target_position=self.start_location):
     self.mediator.assign_role(tag=worker.tag, role=UnitRole.DEFENDING)
 ```
 And to retrieve workers with a `DEFENDING` role: <br/>
@@ -68,11 +66,8 @@ if worker := self.mediator.select_worker(target_position=building_pos):
     self.mediator.assign_role(tag=worker.tag, role=UnitRole.BUILDING)
     # now we are free to use this worker with `self.build())
     await self.build(
-        building=UnitTypeId.BARRACKS, 
-        near=building_pos, 
-        build_worker=worker
+        building=UnitTypeId.BARRACKS, near=building_pos, build_worker=worker
     )
-    
 ```
 
 * [`self.expand_now()`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/bot_ai.py#L216) <br/>
@@ -87,8 +82,8 @@ However, we can combine `python-sc2` and
 if next_expand_loc := await self.get_next_expansion():
     # ask ares for a worker
     if worker := self.mediator.select_worker(
-            target_position=next_expand_loc,
-            force_close=True,
+        target_position=next_expand_loc,
+        force_close=True,
     ):
         # use ares build_with_specific_worker worker to build base
         # this will assign worker a new role
@@ -115,9 +110,7 @@ Ask `ares` for a worker <br/>
 ```python
 from ares.consts import UnitRole
 
-if worker := self.mediator.select_worker(
-        target_position=self.start_location
-    ):
+if worker := self.mediator.select_worker(target_position=self.start_location):
     self.mediator.assign_role(tag=worker.tag, role=UnitRole.BUILDING)
 ```
 
@@ -149,7 +142,9 @@ For Terran this will return same value as `structure_pending` as worker is alway
 For Protoss or Zerg this will only count workers on route.
 ```python
 # checks workers on route, doesn't include gateways in construction
-num_on_route_to_build_gateways: int = self.mediator.get_building_counter[UnitTypeId.GATEWAY]
+num_on_route_to_build_gateways: int = self.mediator.get_building_counter[
+    UnitTypeId.GATEWAY
+]
 ```
 
 
@@ -184,7 +179,6 @@ from sc2.unit import Unit
 # pretend this unit is already assigned to a unit squad
 unit: Unit = self.units[0]
 self.mediator.remove_tag_from_squads(tag=unit.tag)
-
 ```
 
 Note if you're using the `ares` role system, when assigning a unit a new role,
@@ -197,7 +191,6 @@ from sc2.unit import Unit
 unit: Unit = self.units[0]
 # switches unit to new role, and removes from any squad
 self.mediator.assign_role(tag=unit.tag, role=UnitRole.DEFENDING)
-
 ```
 
 ## Other gotchas?

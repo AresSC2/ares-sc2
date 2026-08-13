@@ -139,9 +139,9 @@ class TerrainManager(Manager, IManagerMediator):
             )
 
         self.map_data = self.manager_mediator.get_map_data_object
-        self.choke_points: set[Point2] = set(
-            [point for ch in self.map_data.map_chokes for point in ch.points]
-        )
+        self.choke_points: set[Point2] = {
+            point for ch in self.map_data.map_chokes for point in ch.points
+        }
 
         # used to make sure we don't accidentally query the fog of war
         self.cached_pathing_grid = self.manager_mediator.get_cached_ground_grid.copy()
@@ -455,13 +455,18 @@ class TerrainManager(Manager, IManagerMediator):
         )[0]
 
         close_enemy: Units = close_enemy.filter(
-            lambda u: u.type_id not in FLYING_IGNORE
-            and u.type_id != UnitTypeId.AUTOTURRET
-            and u.type_id != UnitTypeId.MARINE
+            lambda u: (
+                u.type_id not in FLYING_IGNORE
+                and u.type_id != UnitTypeId.AUTOTURRET
+                and u.type_id != UnitTypeId.MARINE
+            )
         )
-        if structures_only and close_enemy(ALL_STRUCTURES):
-            return True
-        elif not structures_only and close_enemy:
+        if (
+            structures_only
+            and close_enemy(ALL_STRUCTURES)
+            or not structures_only
+            and close_enemy
+        ):
             return True
 
         if not enemy_only:

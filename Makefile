@@ -1,14 +1,10 @@
 # Makefile
-format-black:
-	@black .
-format-isort:
-	@isort .
-lint-black:
-	@black . --check
-lint-isort:
-	@isort . --check
-lint-flake8:
-	@flake8 .
+format-ruff:
+	@ruff format .
+lint-check:
+	@ruff check .
+lint-fix:
+	@ruff check . --fix
 lint-mypy:
 	@mypy .
 lint-mypy-report:

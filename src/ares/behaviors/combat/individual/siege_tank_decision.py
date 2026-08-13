@@ -87,29 +87,25 @@ class SiegeTankDecision(CombatIndividualBehavior):
 
             # siege up for any enemy static defence
             if (
-                len(
-                    [
-                        e
-                        for e in enemy_ground
-                        if e.type_id in STATIC_DEFENCE
-                        and cy_distance_to_squared(e.position, self.unit.position)
-                        < 169.0
-                    ]
+                (
+                    len(
+                        [
+                            e
+                            for e in enemy_ground
+                            if e.type_id in STATIC_DEFENCE
+                            and cy_distance_to_squared(e.position, self.unit.position)
+                            < 169.0
+                        ]
+                    )
+                    > 0
                 )
-                > 0
+                or (
+                    self.stay_sieged_near_target
+                    and cy_distance_to_squared(unit_pos, self.target) < 25.0
+                )
+                or (ai.get_total_supply(enemy_ground) >= 4.0 and len(enemy_ground) > 1)
+                or ([t for t in enemy_ground if t.type_id in TANK_TYPES])
             ):
-                self.unit(AbilityId.SIEGEMODE_SIEGEMODE)
-                return True
-            elif (
-                self.stay_sieged_near_target
-                and cy_distance_to_squared(unit_pos, self.target) < 25.0
-            ):
-                self.unit(AbilityId.SIEGEMODE_SIEGEMODE)
-                return True
-
-            elif (
-                ai.get_total_supply(enemy_ground) >= 4.0 and len(enemy_ground) > 1
-            ) or ([t for t in enemy_ground if t.type_id in TANK_TYPES]):
                 self.unit(AbilityId.SIEGEMODE_SIEGEMODE)
                 return True
 

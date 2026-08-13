@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import deque
-from typing import TYPE_CHECKING, Any, Deque
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from cython_extensions import cy_distance_to
@@ -58,7 +58,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         -------
 
         """
-        super(UnitMemoryManager, self).__init__(ai, config, mediator)
+        super().__init__(ai, config, mediator)
         self.manager_requests_dict = {
             ManagerRequestType.GET_ALL_ENEMY: lambda kwargs: self.all_enemies,
             ManagerRequestType.GET_ANY_ENEMY_IN_RANGE: (
@@ -79,13 +79,13 @@ class UnitMemoryManager(Manager, IManagerMediator):
         # Dictionary of units that we remember the position of. Keyed by unit tag.
         # Deque is used so that new snapshots are added to the left, and old ones are
         # removed from the right.
-        self._memory_units_by_tag: dict[int, Deque[Unit]] = {}
+        self._memory_units_by_tag: dict[int, deque[Unit]] = {}
 
         # Dictionary of units that we know of, but which are longer present at the
         # location last seen. Keyed by unit tag
-        self._archive_units_by_tag: dict[int, Deque[Unit]] = {}
+        self._archive_units_by_tag: dict[int, deque[Unit]] = {}
         self._tags_destroyed: set[int] = set()
-        self.unit_dict: dict[int, Deque[Unit]] = {}
+        self.unit_dict: dict[int, deque[Unit]] = {}
 
         # remove units from memory after <time_in_seconds> based on air or ground
         self.expire_air: int = 30
@@ -579,29 +579,22 @@ class UnitMemoryManager(Manager, IManagerMediator):
         # quick check and return
         if is_unit and unit.has_buff(BuffId.ORACLEREVELATION):
             return True
-        pos: Point2
-        if isinstance(unit, Unit):
-            pos = unit.position
-        else:
-            pos = unit
+        pos: Point2 = unit.position if isinstance(unit, Unit) else unit
         if by_enemy:
             return self.get_position_in_enemy_detector_range(pos)
         else:
             for effect in self.ai.state.effects:
-                if effect.id in DETECTOR_RANGES:
-                    if (
-                        cy_distance_to(pos, list(effect.positions)[0])
-                        < DETECTOR_RANGES[effect.id]
-                    ):
-                        return True
+                if effect.id in DETECTOR_RANGES and (
+                    cy_distance_to(pos, list(effect.positions)[0])
+                    < DETECTOR_RANGES[effect.id]
+                ):
+                    return True
 
             for unit in self.ai.all_own_units:
-                if unit.type_id in DETECTOR_RANGES:
-                    if (
-                        cy_distance_to(pos, unit.position)
-                        < DETECTOR_RANGES[unit.type_id]
-                    ):
-                        return True
+                if unit.type_id in DETECTOR_RANGES and (
+                    cy_distance_to(pos, unit.position) < DETECTOR_RANGES[unit.type_id]
+                ):
+                    return True
             return False
 
     def get_own_units_in_enemy_detector_range(self) -> set[int]:

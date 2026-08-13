@@ -6,7 +6,6 @@ from os import environ
 from os.path import abspath, dirname, isabs, join
 
 import yaml
-from cython_extensions import cy_unit_pending
 from loguru import logger
 from sc2 import maps
 from sc2.data import Difficulty, Race
@@ -188,15 +187,15 @@ class BuildRunnerBot(AresBot):
         self._verification_start_time: float = 0.0
 
     async def on_before_start(self) -> None:
-        await super(BuildRunnerBot, self).on_before_start()
-        with open(BUILDS_FILE, "r") as config_file:
+        await super().on_before_start()
+        with open(BUILDS_FILE) as config_file:
             build_config: dict = yaml.safe_load(config_file)
         # don't write data files during the test
         build_config["UseData"] = False
         self.config.update(build_config)
 
     async def on_start(self) -> None:
-        await super(BuildRunnerBot, self).on_start()
+        await super().on_start()
         self.client.game_step = 8
         self.build_order_runner.switch_opening(self._build_to_test)
         logger.info(
@@ -205,7 +204,7 @@ class BuildRunnerBot(AresBot):
         )
 
     async def on_step(self, iteration: int) -> None:
-        await super(BuildRunnerBot, self).on_step(iteration)
+        await super().on_step(iteration)
         for depot in self.mediator.get_own_structures_dict[UnitTypeId.SUPPLYDEPOT]:
             depot(AbilityId.MORPH_SUPPLYDEPOT_LOWER)
 
@@ -316,18 +315,16 @@ class BuildRunnerBot(AresBot):
             command: AbilityId | UnitTypeId | UpgradeId = step.command
             if isinstance(command, UnitTypeId):
                 _count_requirement(command)
-            elif isinstance(command, AbilityId):
+            elif isinstance(command, AbilityId) and command in ABILITY_TO_MORPH_RESULT:
                 # addon swaps just relocate an existing addon, and scouting /
                 # cancelling commands leave no persistent artifact to check
-                if command in ABILITY_TO_MORPH_RESULT:
-                    _count_requirement(ABILITY_TO_MORPH_RESULT[command])
+                _count_requirement(ABILITY_TO_MORPH_RESULT[command])
 
         for structure_type, required in required_structures.items():
             present: int = self._present_structure_count(structure_type)
             if present < required:
                 missing.append(
-                    f"{structure_type.name} structure (need {required}, "
-                    f"have {present})"
+                    f"{structure_type.name} structure (need {required}, have {present})"
                 )
 
         for unit_type, required in required_units.items():
@@ -398,7 +395,7 @@ if __name__ == "__main__":
         f"Build runner config - race: {BUILD_RUNNER_RACE.name}, file: {BUILDS_FILE}"
     )
 
-    with open(BUILDS_FILE, "r") as config_file:
+    with open(BUILDS_FILE) as config_file:
         builds_config: dict = yaml.safe_load(config_file)
     builds_to_run: list[str] = list(builds_config[BUILDS].keys())
 

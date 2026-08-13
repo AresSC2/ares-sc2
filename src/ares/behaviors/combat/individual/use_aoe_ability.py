@@ -126,13 +126,12 @@ class UseAOEAbility(CombatIndividualBehavior):
                 distances=radius,
                 query_tree=UnitTreeQueryType.AllOwn,
             )[0]
-            if self.avoid_own_flying and [
-                u for u in own_in_range if UNIT_DATA[u.type_id]["flying"]
-            ]:
-                can_cast = False
-            elif self.avoid_own_ground and [
-                u for u in own_in_range if not UNIT_DATA[u.type_id]["flying"]
-            ]:
+            if (
+                self.avoid_own_flying
+                and [u for u in own_in_range if UNIT_DATA[u.type_id]["flying"]]
+                or self.avoid_own_ground
+                and [u for u in own_in_range if not UNIT_DATA[u.type_id]["flying"]]
+            ):
                 can_cast = False
 
         # check if spell already active in this area
@@ -145,11 +144,7 @@ class UseAOEAbility(CombatIndividualBehavior):
                 radius: float = AOE_ABILITY_SPELLS_INFO[self.ability_id]["radius"]
                 for eff in ai.state.effects:
                     if eff == effect_or_buff and any(
-                        [
-                            p
-                            for p in eff.positions
-                            if cy_distance_to(position, p) < radius
-                        ]
+                        p for p in eff.positions if cy_distance_to(position, p) < radius
                     ):
                         can_cast = False
             elif isinstance(effect_or_buff, BuffId):

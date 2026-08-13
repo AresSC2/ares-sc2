@@ -55,9 +55,9 @@ class TechUp(MacroBehavior):
     ignore_existing_techlabs: bool = False
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
-        assert isinstance(
-            self.desired_tech, (UpgradeId, UnitTypeId)
-        ), f"Wrong type provided for `desired_tech`, got {type(self.desired_tech)}"
+        assert isinstance(self.desired_tech, (UpgradeId, UnitTypeId)), (
+            f"Wrong type provided for `desired_tech`, got {type(self.desired_tech)}"
+        )
 
         if (
             self.desired_tech in {UnitTypeId.HIVE, UnitTypeId.LAIR}
@@ -83,16 +83,17 @@ class TechUp(MacroBehavior):
 
         # special handling of teching to techlabs
         if researched_from_id in TECHLAB_TYPES:
-            if ai.can_afford(researched_from_id) and self._adding_techlab(
-                ai,
-                self.base_location,
-                researched_from_id,
-                tech_required,
-                self.desired_tech,
-                self.ignore_existing_techlabs,
-            ):
-                return True
-            return False
+            return bool(
+                ai.can_afford(researched_from_id)
+                and self._adding_techlab(
+                    ai,
+                    self.base_location,
+                    researched_from_id,
+                    tech_required,
+                    self.desired_tech,
+                    self.ignore_existing_techlabs,
+                )
+            )
 
         # can we build this tech building right away?
         # 1.0 = Yes, < 1.0 = No

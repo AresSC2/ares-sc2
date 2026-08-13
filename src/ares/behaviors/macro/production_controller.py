@@ -90,14 +90,17 @@ class ProductionController(MacroBehavior):
                 f"{ai.time_formatted}: ProductionController not supported for Zerg."
             )
             return False
-        if ai.race == Race.Protoss and self.should_repower_structures:
-            if RestorePower().execute(ai, config, mediator):
-                return True
+        if (
+            ai.race == Race.Protoss
+            and self.should_repower_structures
+            and RestorePower().execute(ai, config, mediator)
+        ):
+            return True
 
         army_comp_dict: dict = self.army_composition_dict
-        assert isinstance(
-            army_comp_dict, dict
-        ), f"self.army_composition_dict should be dict type, got {type(army_comp_dict)}"
+        assert isinstance(army_comp_dict, dict), (
+            f"self.army_composition_dict should be dict type, got {type(army_comp_dict)}"
+        )
 
         # get the current standing army based on the army comp dict
         # note we don't consider units outside the army comp dict
@@ -118,7 +121,7 @@ class ProductionController(MacroBehavior):
 
         # iterate through desired army comp starting with the highest priority unit
         for unit_type_id, army_comp_info in sorted(
-            army_comp_dict.items(), key=lambda x: x[1].get("priority", int(0))
+            army_comp_dict.items(), key=lambda x: x[1].get("priority", 0)
         ):
             assert isinstance(unit_type_id, UnitTypeId), (
                 f"army_composition_dict expects UnitTypeId type as keys, "
@@ -170,21 +173,20 @@ class ProductionController(MacroBehavior):
             if (
                 ai.minerals >= self.add_production_at_bank[0]
                 and ai.vespene >= self.add_production_at_bank[1]
+            ) and self._building_production_due_to_bank(
+                ai,
+                unit_type_id,
+                collection_rate_minerals,
+                collection_rate_vespene,
+                existing_structures,
+                trained_from,
+                target_proportion,
             ):
-                if self._building_production_due_to_bank(
-                    ai,
-                    unit_type_id,
-                    collection_rate_minerals,
-                    collection_rate_vespene,
-                    existing_structures,
-                    trained_from,
-                    target_proportion,
-                ):
-                    return True
+                return True
 
             # target proportion is low and something is pending, don't add extra yet
             if target_proportion <= 0.15 and (
-                any([ai.structure_pending(type_id) for type_id in train_from])
+                any(ai.structure_pending(type_id) for type_id in train_from)
             ):
                 continue
 
@@ -259,12 +261,15 @@ class ProductionController(MacroBehavior):
         num_existing: int = len([s for s in existing_structures if s.is_ready])
         num_production: int = num_existing + ai.structure_pending(trained_from)
 
-        if num_production < simul_afford_min and num_production < simul_afford_ves:
-            if BuildStructure(self.base_location, trained_from).execute(
+        if (
+            num_production < simul_afford_min
+            and num_production < simul_afford_ves
+            and BuildStructure(self.base_location, trained_from).execute(
                 ai, ai.config, ai.mediator
-            ):
-                logger.info(f"Adding {trained_from} as income level will support this.")
-                return True
+            )
+        ):
+            logger.info(f"Adding {trained_from} as income level will support this.")
+            return True
         return False
 
     def _can_already_produce(self, train_from, structure_dict) -> bool:
@@ -277,9 +282,8 @@ class ProductionController(MacroBehavior):
             for s in structure_dict[structure_type]:
                 if s.is_ready and s.is_idle:
                     return True
-                if s.orders:
-                    if s.orders[0].progress >= self.unit_pending_progress:
-                        return True
+                if s.orders and s.orders[0].progress >= self.unit_pending_progress:
+                    return True
                 # structure about to come online
                 if 1.0 > s.build_progress >= 0.9:
                     return True
@@ -293,14 +297,14 @@ class ProductionController(MacroBehavior):
             prod_flying: bool = False
             # might have this structure flying
             for tag in flying_structures:
-                if unit := ai.unit_tag_dict.get(tag, None):
+                if (
+                    (unit := ai.unit_tag_dict.get(tag, None))
                     # make sure flying structure is nearby
-                    if (
-                        unit.type_id in UNIT_UNIT_ALIAS
-                        and cy_distance_to_squared(unit.position, self.base_location)
-                        < 360.0
-                    ):
-                        for s_id in train_from:
+                    and unit.type_id in UNIT_UNIT_ALIAS
+                    and cy_distance_to_squared(unit.position, self.base_location)
+                    < 360.0
+                ):
+                    for s_id in train_from:
                             if UNIT_UNIT_ALIAS[unit.type_id] == s_id:
                                 prod_flying = True
                                 break

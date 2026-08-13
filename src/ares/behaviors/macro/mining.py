@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions.units_utils import cy_sorted_by_distance_to
@@ -96,16 +97,16 @@ class Mining(MacroBehavior):
         health_perc: float = self.flee_at_health_perc
         avoidance_grid: np.ndarray = mediator.get_ground_avoidance_grid
         grid: np.ndarray = mediator.get_ground_grid
-        mineral_patch_to_list_of_workers: dict[
-            int, set[int]
-        ] = mediator.get_mineral_patch_to_list_of_workers
+        mineral_patch_to_list_of_workers: dict[int, set[int]] = (
+            mediator.get_mineral_patch_to_list_of_workers
+        )
         path_find: Callable = mediator.find_path_next_point
         pos_safe: Callable = mediator.is_position_safe
         th_dist_factor: float = config[MINING][TOWNHALL_DISTANCE_FACTOR]
         worker_to_geyser_dict: dict[int, int] = mediator.get_worker_to_vespene_dict
-        worker_to_mineral_patch_dict: dict[
-            int, int
-        ] = mediator.get_worker_to_mineral_patch_dict
+        worker_to_mineral_patch_dict: dict[int, int] = (
+            mediator.get_worker_to_mineral_patch_dict
+        )
         worker_to_th: dict[int, int] = mediator.get_worker_tag_to_townhall_tag
         # for each mineral tag, get the position in front of the mineral
         min_target: dict[int, Point2] = mediator.get_mineral_target_dict
@@ -515,11 +516,12 @@ class Mining(MacroBehavior):
     def _worker_attacking_enemy(
         ai: AresBot, dist_to_resource: float, worker: Unit
     ) -> bool:
-        if not worker.is_collecting or dist_to_resource > 1.0:
-            if enemies := cy_in_attack_range(worker, ai.enemy_units):
-                target: Unit = cy_pick_enemy_target(enemies)
+        if (not worker.is_collecting or dist_to_resource > 1.0) and (
+            enemies := cy_in_attack_range(worker, ai.enemy_units)
+        ):
+            target: Unit = cy_pick_enemy_target(enemies)
 
-                if cy_attack_ready(ai, worker, target):
-                    worker.attack(target)
-                    return True
+            if cy_attack_ready(ai, worker, target):
+                worker.attack(target)
+                return True
         return False

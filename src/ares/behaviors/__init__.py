@@ -1,1 +1,1 @@
-from ares.behaviors.behavior import Behavior
+from ares.behaviors.behavior import Behavior as Behavior

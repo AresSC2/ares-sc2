@@ -2,6 +2,7 @@
 
 Feel free to add to this.
 """
+
 from __future__ import annotations
 
 from sc2.ids.unit_typeid import UnitTypeId

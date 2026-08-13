@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Coroutine
+from collections.abc import Coroutine
+from typing import TYPE_CHECKING, Any
 
 from cython_extensions.geometry import cy_distance_to_squared
 from loguru import logger
@@ -38,11 +39,11 @@ class WarpInManager(Manager, IManagerMediator):
         mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
-        super(WarpInManager, self).__init__(ai, config, mediator)
+        super().__init__(ai, config, mediator)
 
         self.manager_requests_dict = {
-            ManagerRequestType.REQUEST_WARP_IN: lambda kwargs: (
-                self.request_warp_in(**kwargs)
+            ManagerRequestType.REQUEST_WARP_IN: lambda kwargs: self.request_warp_in(
+                **kwargs
             ),
         }
 
@@ -120,9 +121,9 @@ class WarpInManager(Manager, IManagerMediator):
         if not self.requested_warp_ins:
             return
 
-        own_structures_dict: dict[
-            UnitTypeId, list[Unit]
-        ] = self.manager_mediator.get_own_structures_dict
+        own_structures_dict: dict[UnitTypeId, list[Unit]] = (
+            self.manager_mediator.get_own_structures_dict
+        )
         pylons: list[Unit] = [
             s for s in own_structures_dict[UnitTypeId.PYLON] if s.is_ready
         ]

@@ -3,6 +3,7 @@
 from ares import AresBot
 from ares.behaviors.macro.mining import Mining
 
+
 class MyBot(AresBot):
     async def on_step(self, iteration: int) -> None:
         await super(MyBot, self).on_step(iteration)

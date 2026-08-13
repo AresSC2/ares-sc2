@@ -47,13 +47,14 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
     def execute(
         self, ai: AresBot, config: dict, mediator: ManagerMediator, **kwargs
     ) -> bool:
-        if self.aoe_ability in self.unit.abilities:
-            # try to fire the ability if we find a position
-            if pos := self._calculate_target_position(ai):
-                if ai.is_visible(pos) and (
-                    cy_distance_to(pos, self.unit.position) < self.reaper_grenade_range
-                ):
-                    return self.unit(self.aoe_ability, pos)
+        # try to fire the ability if we find a position
+        if (
+            self.aoe_ability in self.unit.abilities
+            and (pos := self._calculate_target_position(ai))
+            and ai.is_visible(pos)
+            and cy_distance_to(pos, self.unit.position) < self.reaper_grenade_range
+        ):
+            return self.unit(self.aoe_ability, pos)
         # no position found or the ability isn't ready
         return False
 
@@ -163,7 +164,7 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
         real_path: list[Point2] = [unit_path[0]]
         curr_target_idx: int = 1
         # 100 should be overkill, but I'm really just trying to avoid a `while` loop
-        for step in range(100):
+        for _step in range(100):
             if curr_target_idx >= len(unit_path):
                 # we've made it to the end of the path
                 break
@@ -212,7 +213,7 @@ class PlacePredictiveAoE(CombatIndividualBehavior):
         unit_path: list[Point2] = [start_position]
         target_idx = 0
 
-        for i in range(100):
+        for _i in range(100):
             next_position, reached_target = self._get_unit_next_position(
                 current_position=unit_path[-1],
                 current_target=target_unit_path[target_idx],

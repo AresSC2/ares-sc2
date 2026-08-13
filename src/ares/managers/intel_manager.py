@@ -374,10 +374,12 @@ class IntelManager(Manager, IManagerMediator):
             return False
 
         num_proxy_gateways: int = self.ai.enemy_structures.filter(
-            lambda s: s.type_id == UnitTypeId.GATEWAY
-            and cy_distance_to_squared(self.ai.start_location, s.position) < 10000.0
-            and cy_distance_to_squared(self.ai.enemy_start_locations[0], s.position)
-            > 3600.0
+            lambda s: (
+                s.type_id == UnitTypeId.GATEWAY
+                and cy_distance_to_squared(self.ai.start_location, s.position) < 10000.0
+                and cy_distance_to_squared(self.ai.enemy_start_locations[0], s.position)
+                > 3600.0
+            )
         ).amount
         proxy_zealots: list[Unit] = [
             z
@@ -385,11 +387,9 @@ class IntelManager(Manager, IManagerMediator):
             if z.type_id == UnitTypeId.ZEALOT
             and cy_distance_to_squared(z.position, self.ai.start_location) < 4225
         ]
-        if num_proxy_gateways >= 2 or (
-            self.ai.time < 150.0 and len(proxy_zealots) >= 1
-        ):
-            return True
-        return False
+        return bool(
+            num_proxy_gateways >= 2 or self.ai.time < 150.0 and len(proxy_zealots) >= 1
+        )
 
     async def update(self, iteration: int) -> None:
         if self.ai.arcade_mode:

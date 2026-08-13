@@ -46,11 +46,10 @@ class KeepGroupSafe(CombatGroupBehavior):
 
         executed: bool = False
         for u in self.group:
-            if self.attack_in_range_enemy:
-                if ShootTargetInRange(u, self.close_enemy).execute(
-                    ai, config, mediator
-                ):
-                    continue
+            if self.attack_in_range_enemy and ShootTargetInRange(
+                u, self.close_enemy
+            ).execute(ai, config, mediator):
+                continue
             if KeepUnitSafe(u, self.grid).execute(ai, config, mediator):
                 executed = True
 
