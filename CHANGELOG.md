@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v3.13.0 (2026-08-14)
+
+### Feature
+
+* Install pre commit hooks / new dev docs ([`ec6dc67`](https://github.com/AresSC2/ares-sc2/commit/ec6dc67fd51634420af4f57f372165643c32b71c))
+
+### Fix
+
+* Improve build-order parsing and update test map configuration ([`7c980f1`](https://github.com/AresSC2/ares-sc2/commit/7c980f1422cddd4e8342b2c758844f6da805e380))
+
 ## v3.12.1 (2026-08-11)
 
 ### Fix
