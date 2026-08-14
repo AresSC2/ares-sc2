@@ -81,7 +81,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -294,7 +294,7 @@ class UnitRoleManager(Manager, IManagerMediator):
                     self.unit_role_dict[role.name] & restrict_to.tags
                 )
             else:
-                tags_to_get: set[int] = self.unit_role_dict[role.name]
+                tags_to_get = self.unit_role_dict[role.name]
             # get the list[Unit] from UnitCacheManager and return as Units
             return Units(
                 self.manager_mediator.manager_request(
@@ -424,9 +424,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         if not restrict_to:
             shared_tags: set[int] = unit_with_role_tags & units_of_type_tags
         else:
-            shared_tags: set[int] = (
-                unit_with_role_tags & units_of_type_tags & restrict_to.tags
-            )
+            shared_tags = unit_with_role_tags & units_of_type_tags & restrict_to.tags
         # get the list[Unit] from UnitCacheManager
         return self.manager_mediator.manager_request(
             ManagerName.UNIT_CACHE_MANAGER,

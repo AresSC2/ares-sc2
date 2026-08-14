@@ -41,15 +41,14 @@ class ConfigParser:
         user_config_path: str = path.join(
             self.user_config_location, self.config_file_name
         )
+        internal_config: dict = {}
         if path.isfile(internal_config_path):
             with open(internal_config_path) as config_file:
-                internal_config: dict = yaml.safe_load(config_file)
-        else:
-            internal_config: dict = {}
+                internal_config = yaml.safe_load(config_file)
 
         if path.isfile(user_config_path):
             with open(user_config_path) as config_file:
-                user_config: dict = yaml.safe_load(config_file)
+                user_config = yaml.safe_load(config_file)
         # if no user config, fine to return internal_config here
         else:
             return internal_config
@@ -61,7 +60,7 @@ class ConfigParser:
         """Get absolute path to resource, works for dev and for PyInstaller"""
         try:
             # PyInstaller creates a temp folder and stores path in _MEIPASS
-            base_path = sys._MEIPASS
+            base_path: str = sys._MEIPASS  # type: ignore[attr-defined]
         except Exception:
             base_path = path.abspath(".")
 

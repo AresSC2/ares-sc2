@@ -6,7 +6,7 @@ operations.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 import numpy as np
 from cython_extensions import cy_point_below_value
@@ -66,7 +66,7 @@ class PathManager(Manager, IManagerMediator):
         ]
         self.whole_map_tree: KDTree = KDTree(self.whole_map)
         # vague attempt at not recalculating np.argwhere for danger tiles
-        self.calculated_danger_tiles: list[dict[str, int | np.ndarray]] = []
+        self.calculated_danger_tiles: list[dict[str, float | np.ndarray]] = []
         self.nydus_path_cache: dict[
             tuple[float, float, float, float],
             tuple[float, tuple[Point2 | None, Point2 | None, list[int] | None]],
@@ -102,7 +102,7 @@ class PathManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -304,9 +304,9 @@ class PathManager(Manager, IManagerMediator):
             for precalculated in self.calculated_danger_tiles:
                 if (
                     precalculated[DANGER_THRESHOLD] == danger_threshold
-                    and (precalculated[PATHING_GRID] == grid).all()
+                    and (cast("np.ndarray", precalculated[PATHING_GRID]) == grid).all()
                 ):
-                    dangers = precalculated[DANGER_TILES]
+                    dangers = cast("np.ndarray", precalculated[DANGER_TILES])
                     found = True
                     break
             if not found:

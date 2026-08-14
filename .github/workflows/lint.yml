@@ -15,17 +15,18 @@ jobs:
         uses: actions/checkout@v4
       # install poetry
       - name: Install poetry
-        run: pipx install poetry==1.6.1
+        run: pipx install poetry
       # set-up python with cache
       - name: Setup Python 3.11
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'poetry'
-      # install requirements (including dev dependencies)
+      # install requirements (including main + lint dev dependencies, so
+      # mypy sees the same third-party types as the local environment)
       - name: Install requirements
-        run: poetry install --only lint --no-root
-      # run linters
+        run: poetry install --with lint --no-root
+      # run linters (ruff format check, ruff check, mypy)
       - name: Run linters
         run: |
           set -o pipefail

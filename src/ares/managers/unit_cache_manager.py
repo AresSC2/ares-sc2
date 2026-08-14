@@ -103,7 +103,7 @@ class UnitCacheManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -138,9 +138,9 @@ class UnitCacheManager(Manager, IManagerMediator):
         -------
 
         """
-        self.removed_units: Units = Units([], self.ai)
-        self.enemy_army_tags: set[int] = self.enemy_army.tags
-        self.enemy_worker_tags: set[int] = self.enemy_workers.tags
+        self.removed_units = Units([], self.ai)
+        self.enemy_army_tags = self.enemy_army.tags
+        self.enemy_worker_tags = self.enemy_workers.tags
 
     @property
     def enemy_army_value(self) -> int:

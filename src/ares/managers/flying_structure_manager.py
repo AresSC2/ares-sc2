@@ -66,7 +66,7 @@ class FlyingStructureManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> dict | None:
         """Fetch information from this Manager so another Manager can use it.

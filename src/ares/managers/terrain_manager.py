@@ -150,7 +150,7 @@ class TerrainManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -454,7 +454,7 @@ class TerrainManager(Manager, IManagerMediator):
             query_tree=UnitTreeQueryType.AllEnemy,
         )[0]
 
-        close_enemy: Units = close_enemy.filter(
+        close_enemy = close_enemy.filter(
             lambda u: (
                 u.type_id not in FLYING_IGNORE
                 and u.type_id != UnitTypeId.AUTOTURRET
@@ -499,7 +499,7 @@ class TerrainManager(Manager, IManagerMediator):
 
         """
         if not position:
-            return
+            return None
         # might not get action error if mine blows up the worker, save it immediately
         close_mines: Units = self.manager_mediator.get_units_in_range(
             start_points=[position],
@@ -517,6 +517,8 @@ class TerrainManager(Manager, IManagerMediator):
             ):
                 self.positions_blocked_by_enemy_burrowed_units.append(position)
                 return position
+
+        return None
 
     def _calculate_expansion_path_distances(
         self, from_pos: Point2

@@ -117,9 +117,7 @@ class AutoSupply(MacroBehavior):
             if supply_left <= max(
                 2 * num_production_structures, 5
             ) and pending_supply_units < math.ceil(num_production_structures / 2):
-                num: int = (
-                    math.ceil(num_production_structures / 2) - pending_supply_units
-                )
+                num = math.ceil(num_production_structures / 2) - pending_supply_units
                 return min(num, 6)
 
             # we have no prod structures, just in case

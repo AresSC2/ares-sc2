@@ -73,7 +73,7 @@ class StutterGroupBack(CombatGroupBehavior):
                     from_pos=move_to_target, grid=self.grid
                 )
             else:
-                safe_spot: Point2 = mediator.find_closest_safe_spot(
+                safe_spot = mediator.find_closest_safe_spot(
                     from_pos=self.group_position, grid=self.grid
                 )
 

@@ -84,7 +84,7 @@ class GridManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -267,10 +267,7 @@ class GridManager(Manager, IManagerMediator):
                             indices[0], indices[1], strict=False
                         ):  # Properly zip the x and y coordinates
                             pos: Point3 = Point3((x, y, height))
-                            if grid[x, y] == np.inf:
-                                val: int = 9999
-                            else:
-                                val: int = int(grid[x, y])
+                            val = 9999 if grid[x, y] == np.inf else int(grid[x, y])
                             if val != 9999:
                                 self.ai.client.debug_text_world(
                                     str(val), pos, (201, 168, 79), 13

@@ -32,10 +32,10 @@ class PlacementRequest:
     pylon_build_progress: float = 1.0
     closest_to: Point2 | None = None
     supply_depot: bool = False
-    production: bool = (False,)
-    upgrade_structure: bool = (False,)
-    bunker: bool = (False,)
-    missile_turret: bool = (False,)
+    production: bool = False
+    upgrade_structure: bool = False
+    bunker: bool = False
+    missile_turret: bool = False
     sensor_tower: bool = False
     reaper_wall: bool = False
 
@@ -155,7 +155,7 @@ class PoweredPlacementStrategy(BasePlacementStrategy):
             if len(close_to_pylon) < 4:
                 build_near = optimal_pylon[0]
 
-        closest_to: Point2 = (
+        closest_to = (
             base_location
             if not self.req.wall
             else self.placement_manager.ai.main_base_ramp.bottom_center
@@ -367,12 +367,12 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
             a for a in available if not placements_for_base[a].get("custom", False)
         ]
         if non_custom:
-            final_placement: Point2 = min(
+            final_placement = min(
                 non_custom,
                 key=lambda k: cy_distance_to_squared(k, closest_to),
             )
         else:
-            final_placement: Point2 = min(
+            final_placement = min(
                 available,
                 key=lambda k: cy_distance_to_squared(k, closest_to),
             )

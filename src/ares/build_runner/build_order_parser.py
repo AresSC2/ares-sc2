@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 import numpy as np
@@ -47,20 +47,20 @@ class BuildOrderParser:
     """
 
     ai: AresBot
-    build_order_step_dict: dict | None = None
+    build_order_step_dict: dict = field(default_factory=dict, init=False)
 
     def __post_init__(self) -> None:
         """Initializes the `build_order_step_dict` attribute."""
         self.build_order_step_dict = self._generate_build_step_dict()
 
     def parse(
-        self, raw_build_order: list[str], remove_completed: bool = False
+        self, raw_build_order: list[str | dict], remove_completed: bool = False
     ) -> list[BuildOrderStep]:
         """
         Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
 
         Args:
-            raw_build_order (list[str]): Build order extracted from build file.
+            raw_build_order (list[str | dict]): Build order extracted from build file.
             remove_completed (bool = False) description
 
         Returns:
@@ -410,25 +410,21 @@ class BuildOrderParser:
 
         # if a user passed a command matching a UnitTypeId enum key
         # then automatically handle that
+        step: BuildOrderStep
         try:
             unit_id_command: UnitTypeId = UnitTypeId[command]
             if unit_id_command in ALL_STRUCTURES:
-                step: BuildOrderStep = self._generate_structure_build_step(
-                    unit_id_command
-                )()
+                step = self._generate_structure_build_step(unit_id_command)()
             else:
-                step: BuildOrderStep = self._generate_unit_build_step(unit_id_command)()
+                step = self._generate_unit_build_step(unit_id_command)()
         except Exception:
             try:
                 upgrade_id_command: UpgradeId = UpgradeId[command]
-                step: BuildOrderStep = self._generate_upgrade_build_step(
-                    upgrade_id_command
-                )()
+                step = self._generate_upgrade_build_step(upgrade_id_command)()
             except Exception:
                 assert BuildOrderOptions.contains_key(command), (
                     f"Unrecognized build order command, got: {command}"
                 )
-                step: BuildOrderStep
 
                 if command == BuildOrderOptions.ADDONSWAP:
                     step = self._generate_addon_build_step(commands)()
@@ -503,7 +499,7 @@ class BuildOrderParser:
             _target: str
             target_positions: list[Point2] = []
             for target in targets:
-                _target: str = target.upper()
+                _target = target.upper()
                 assert BuildOrderTargetOptions.contains_key(_target), (
                     f"Unrecognized build order target option, got: {_target}."
                     f"Valid options are: {BuildOrderTargetOptions.list_options()}"
@@ -559,6 +555,7 @@ class BuildOrderParser:
                 return BuildOrderTargetOptions[target]
             except KeyError:
                 pass
+        raise ValueError(f"Unrecognized build order target: {target}")
 
     @staticmethod
     def _get_supply_and_command(raw_step: str) -> tuple[int, str]:
@@ -582,13 +579,13 @@ class BuildOrderParser:
         )
         # supply at which to start
         try:
-            supply: int = int(commands[0])
+            supply = int(commands[0])
         except ValueError:
             logger.warning(
                 f"""{raw_step} should begin with an integer supply count,
                 found {commands[0]}, setting supply target to 0"""
             )
-            supply: int = 0
+            supply = 0
 
         # this is the main command of a build order step (worker, gas, expand etc.)
         command: str = commands[1].upper()
@@ -647,12 +644,12 @@ class BuildOrderParser:
         last_point: np.ndarray | None = None
         for point in ordered:
             if last_point is None:
-                _pos: Point2 = Point2(cy_towards(point, location, 2.0))
+                _pos = Point2(cy_towards(point, location, 2.0))
                 target_positions.append(_pos)
                 last_point = point
                 continue
             if np.linalg.norm(point - last_point) >= min_spacing:
-                _pos: Point2 = Point2(cy_towards(point, location, 2.0))
+                _pos = Point2(cy_towards(point, location, 2.0))
                 target_positions.append(_pos)
                 last_point = point
 
@@ -749,11 +746,11 @@ class BuildOrderParser:
                     on_route: int = int(
                         self.ai.not_started_but_in_building_tracker(command)
                     )
-                    total_present: int = num_existing + on_route
+                    total_present = num_existing + on_route
                 else:
                     num_units: int = len(self.ai.mediator.get_own_army_dict[command])
                     pending: int = cy_unit_pending(self.ai, command)
-                    total_present: int = num_units + pending
+                    total_present = num_units + pending
 
                 if total_present == 0:
                     continue

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from sc2.data import Race
 
@@ -32,7 +32,7 @@ class UserPlacementExtractor:
         return map_name.replace(" ", "")
 
     @staticmethod
-    def iter_point_pairs(value: list) -> list[list[float]]:
+    def iter_point_pairs(value: Any) -> list[list[float]]:
         """
         Accepts any of:
           - [x, y]

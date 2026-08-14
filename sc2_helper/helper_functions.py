@@ -17,5 +17,5 @@ def circles_intersect(
 
 def find_points_inside_circle(
     point, radius: float, map_height: int, map_width: int
-) -> list[(int, int)]:
+) -> list[tuple[int, int]]:
     return r_find_points_inside_circle(point, radius, map_height, map_width)

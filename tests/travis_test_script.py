@@ -29,7 +29,8 @@ timeout_time = 8 * 60  # 8 minutes real time
 if len(sys.argv) > 1:
     # Attempt to run process with retries and timeouts
     t0 = time.time()
-    process, result = None, None
+    process: subprocess.Popen | None = None
+    process_output: str = ""
     output_as_list = []
     i = 0
     for i in range(retries):
@@ -38,11 +39,10 @@ if len(sys.argv) > 1:
         process = subprocess.Popen(["python", sys.argv[1]], stdout=subprocess.PIPE)
         try:
             # Stop the current bot if the timeout was reached - the bot needs to finish a game within 3 minutes real time
-            result = process.communicate(timeout=timeout_time)
+            out, _ = process.communicate(timeout=timeout_time)
         except subprocess.TimeoutExpired:
             continue
-        out, err = result
-        result = out.decode("utf-8")
+        process_output = out.decode("utf-8")
         if process.returncode is not None and process.returncode != 0:
             # Bot has thrown an error, try again
             print(
@@ -53,13 +53,13 @@ if len(sys.argv) > 1:
         # Break as the bot run was successful
         break
 
-    if process.returncode is not None:
+    if process is not None and process.returncode is not None:
         # Reformat the output into a list
-        print_output: str = result
+        print_output: str = process_output
         linebreaks = [
-            ["\r\n", print_output.count("\r\n")],
-            ["\r", print_output.count("\r")],
-            ["\n", print_output.count("\n")],
+            ("\r\n", print_output.count("\r\n")),
+            ("\r", print_output.count("\r")),
+            ("\n", print_output.count("\n")),
         ]
         most_linebreaks_type = max(linebreaks, key=lambda x: x[1])
         linebreak_type, linebreak_count = most_linebreaks_type
@@ -73,7 +73,7 @@ if len(sys.argv) > 1:
     time_taken = time.time() - t0
 
     # Bot was not successfully run in time, returncode will be None
-    if process.returncode is None or process.returncode != 0:
+    if process is None or process.returncode is None or process.returncode != 0:
         print(
             f"Exiting with exit code 5, error: Attempted to launch script {sys.argv[1]} timed out after {time_taken} seconds. Retries completed: {i}"
         )
@@ -82,7 +82,7 @@ if len(sys.argv) > 1:
     # process.returncode will always return 0 if the game was run successfully or if there was a python error (in this case it returns as defeat)
     print(f"Returncode: {process.returncode}")
     print(f"Game took {round(time.time() - t0, 1)} real time seconds")
-    if process is not None and process.returncode == 0:
+    if process.returncode == 0:
         for line in output_as_list:
             # This will throw an error even if a bot is called Traceback
             if "Traceback " in line:

@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 from collections import defaultdict
 from os import getcwd, path
+from typing import TYPE_CHECKING
 
 import yaml
 from cython_extensions import cy_towards, cy_unit_pending
@@ -59,6 +60,9 @@ from ares.dicts.enemy_vs_ground_static_defense_ranges import (
 from ares.managers.hub import Hub
 from ares.managers.manager_mediator import ManagerMediator
 
+if TYPE_CHECKING:
+    from ares.chat_debug import ChatDebug
+
 
 class AresBot(CustomBotAI):
     """Final setup of CustomBotAI for usage.
@@ -69,6 +73,8 @@ class AresBot(CustomBotAI):
     behavior_executioner: BehaviorExecutioner  # executes behaviors on each step
     build_order_runner: BuildOrderRunner  # execute exact build order from config
     cost_dict: dict[UnitTypeId, Cost]  #: UnitTypeId to cost for faster lookup later
+    enemy_vs_ground_static_defense: Units
+    overcharged_battery: Unit | None
 
     NYDUSES: set[UnitTypeId] = {UnitTypeId.NYDUSCANAL, UnitTypeId.NYDUSNETWORK}
     UNIT_TYPES_NOT_IN_SLIM: set[UnitTypeId] = {
@@ -116,7 +122,7 @@ class AresBot(CustomBotAI):
 
         self.game_step_override: int | None = game_step_override
         self.unit_tag_dict: dict[int, Unit] = {}
-        self.chat_debug = None
+        self.chat_debug: ChatDebug | None = None
         self.forcefield_to_bile_dict: dict[Point2, int] = {}
         self.last_game_loop: int = -1
 
@@ -131,7 +137,7 @@ class AresBot(CustomBotAI):
         self.num_larva_left: int = 0
 
         self._same_order_actions: list[
-            tuple[AbilityId, set[int], Point2 | Unit | None]
+            tuple[AbilityId, list[int] | set[int], int | Point2 | Unit | None]
         ] = []
         self._drop_unload_actions: list[tuple[int, int]] = []
         self._archon_morph_actions: list[list] = []
@@ -198,7 +204,7 @@ class AresBot(CustomBotAI):
         # there's going to be a lot of appending, so form Units at the end
         batteries_list: list[Unit] = []
         cannons_list: list[Unit] = []
-        enemy_vs_ground_static_defense_list = []
+        enemy_vs_ground_static_defense_list: list[Unit] = []
         self._clear_adept_shades()
 
         if update_managers:
@@ -669,7 +675,7 @@ class AresBot(CustomBotAI):
             return
         if update_managers:
             self.manager_hub.unit_role_manager.catch_unit(unit_obj, unit_id, tag)
-            self.manager_hub.ability_tracker_manager.catch_unit(unit_obj, unit_id, tag)
+            self.manager_hub.ability_tracker_manager.catch_unit(unit_id, tag)
 
         self.all_own_units.append(unit_obj)
         # if unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
@@ -806,7 +812,7 @@ class AresBot(CustomBotAI):
         """
         # clear every 3 minutes
         if self.state.game_loop % 4032 == 0:
-            self._blocked_positions = set()
+            self._blocked_positions: set[Point2] = set()
         # Set of enemy units detected by own sensor tower,
         # as blips have less unit information than normal visible units
         self.all_units: Units = Units([], self)
@@ -837,10 +843,10 @@ class AresBot(CustomBotAI):
         self.all_gas_buildings = Units([], self)
         self.eggs: Units = Units([], self)
         self.unit_tag_dict = {}
-        self.overcharged_battery: Unit | None = None
+        self.overcharged_battery = None
         self.nyduses = Units([], self)
         self.enemy_detectors: list[Unit] = []
-        self.enemy_vs_ground_static_defense: Units = Units([], self)
+        self.enemy_vs_ground_static_defense = Units([], self)
         self.friendly_parasitic_bomb_positions: list[Point2] = []
         self.enemy_parasitic_bomb_positions: list[Point2] = []
 
@@ -940,7 +946,7 @@ class AresBot(CustomBotAI):
         own_army_dict: dict[UnitTypeId, list[Unit]] = self.mediator.get_own_army_dict
         build_from_dict: dict[UnitTypeId, list[Unit]] = structures_dict
         if self.race != Race.Terran:
-            build_from_dict: dict[UnitTypeId, list[Unit]] = {
+            build_from_dict = {
                 **structures_dict,
                 **own_army_dict,
             }

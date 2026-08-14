@@ -48,13 +48,13 @@ class WarpInManager(Manager, IManagerMediator):
         }
 
         self.warp_in_positions: set[Point2] = set()
-        self.requested_warp_ins: list[(UnitTypeId, Point2)] = []
+        self.requested_warp_ins: list[tuple[UnitTypeId, UnitTypeId, Point2 | None]] = []
 
     def manager_request(
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> dict | defaultdict | Coroutine[Any, Any, bool] | None:
         """Fetch information from this Manager so another Manager can use it.

@@ -93,15 +93,16 @@ class AddonSwap(MacroBehavior):
         )
 
         # search for addon required
+        add_ons: list[Unit]
         if self.precise_addon_structure_id:
-            add_ons: list[Unit] = [
+            add_ons = [
                 s
                 for s in ai.structures
                 if s.type_id == self.precise_addon_structure_id
                 and s.tag in search_for_tags
             ]
         else:
-            add_ons: list[Unit] = [
+            add_ons = [
                 s
                 for s in ai.structures
                 if s.tag in search_for_tags and s.is_ready and s.is_idle

@@ -1,4 +1,4 @@
-"""Enable cross manager communication."""
+"""Enable cross-manager communication."""
 
 from __future__ import annotations
 
@@ -19,6 +19,7 @@ from scipy.spatial import KDTree
 from ares.consts import EngagementResult, ManagerName, ManagerRequestType, UnitRole
 
 if TYPE_CHECKING:
+    from ares.managers.manager import Manager
     from ares.managers.squad_manager import UnitSquad
 
 
@@ -37,7 +38,7 @@ class IManagerMediator(metaclass=ABCMeta):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """How requests will be structured.
@@ -80,7 +81,7 @@ class ManagerMediator(IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Function to request information from a manager.
@@ -132,7 +133,7 @@ class ManagerMediator(IManagerMediator):
     def update_unit_to_ability_dict(self, **kwargs) -> None:
         """Update tracking to reflect ability usage.
 
-        After a unit uses an ability it should call this to update the frame the
+        After a unit uses an ability, it should call this to update the frame the
         ability will next be available
 
         AbilityTrackerManager.
@@ -177,10 +178,10 @@ class ManagerMediator(IManagerMediator):
         )
 
     def cancel_structure(self, **kwargs) -> None:
-        """Cancel a structure and remove from internal ares bookkeeping.
+        """Cancel a structure and remove from internal ares' bookkeeping.
 
         If you try cancelling without calling this method, ares may try
-        to keep rebuilding the cancelled structure.
+        to keep rebuilding the canceled structure.
 
         BuildingManager.
 
@@ -261,7 +262,7 @@ class ManagerMediator(IManagerMediator):
         Find the nearest position on the edge of the creep nearby a given point.
 
         This function is used to determine a position that lies at the edge of the
-        creep, in proximity to a reference point within a game map scenario. The edge
+        creep, close to a reference point within a game map scenario. The edge
         of the creep refers to the boundary or border of an area covered by creep,
         a terrain-modifying biome commonly associated with certain game mechanics.
 
@@ -314,7 +315,7 @@ class ManagerMediator(IManagerMediator):
         ```
 
         Parameters:
-            pos (Point2): The position to search for closest creep tile.
+            pos (Point2): The position to search for the closest creep tile.
 
         Returns:
             Point2 representing the closest creep tile or None if no creep tiles.
@@ -466,7 +467,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     def get_random_creep_position(self, **kwargs) -> Point2 | None:
-        """Find a random valid creep position within tumor range.
+        """Find a random valid creep position within the tumor range.
 
         Parameters:
             position : Point2
@@ -487,7 +488,7 @@ class ManagerMediator(IManagerMediator):
     def get_overlord_creep_spotter_positions(self, **kwargs) -> dict[int, Point2]:
         """Find optimal positions for overlords to provide vision for creep spread.
 
-        This function finds the edge of creep and distributes
+        This function finds the edge of the creep and distributes
         overlord positions evenly around it.
 
         Parameters:
@@ -519,7 +520,7 @@ class ManagerMediator(IManagerMediator):
 
         Returns:
             Point2:
-                Furthest placement with lowest cost under tumor influence.
+                Furthest placement with the lowest cost under tumor influence.
 
         """
         return self.manager_request(
@@ -542,7 +543,7 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_flying_enemy_near_bases(self) -> dict[int, set[int]]:
-        """Get dictionary containing flying enemy near townhalls.
+        """Get a dictionary containing flying enemy near townhalls.
 
         EnemyToBase Manager
 
@@ -558,7 +559,7 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_ground_enemy_near_bases(self, **kwargs) -> dict[int, set[int]]:
-        """Get dictionary containing ground enemy near townhalls.
+        """Get a dictionary containing a ground enemy near townhalls.
 
         EnemyToBase Manager
 
@@ -606,8 +607,8 @@ class ManagerMediator(IManagerMediator):
     def get_th_tag_with_largest_ground_threat(self) -> int:
         """Get the tag of our townhall with the largest enemy ground force nearby.
 
-        WARNING: This will remember the townhall tag even if enemy has gone.
-        Do not use this to detect enemy at a base.
+        WARNING: This will remember the townhall tag even if the enemy has gone.
+        Do not use this to detect the enemy at a base.
         Use `get_main_ground_threats_near_townhall`
         Or `get_ground_enemy_near_bases` instead
 
@@ -678,7 +679,7 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_enemy_has_base_outside_natural(self) -> bool:
-        """Has the enemy expanded outside of their natural?
+        """Has the enemy expanded outside their natural?
 
         WARNING: Opinionated method, please write your own if you don't
         agree with this decision.
@@ -874,7 +875,7 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_is_proxy_zealot(self) -> bool:
-        """There is currently proxy zealot attempt from enemy?
+        """There is currently a proxy zealot attempt from the enemy?
 
         WARNING: Opinionated method, please write your own if you don't
         agree with this decision.
@@ -928,7 +929,7 @@ class ManagerMediator(IManagerMediator):
     """
 
     def add_to_nydus_travellers(self, **kwargs) -> None:
-        """Add a unit to the nydus travellers.
+        """Add a unit to the nydus travelers.
 
         NydusManager
 
@@ -949,7 +950,7 @@ class ManagerMediator(IManagerMediator):
         )
 
     def clear_nydus_travellers(self, **kwargs) -> None:
-        """Clear the nydus travellers dictionary.
+        """Clear the nydus travelers dictionary.
 
         NydusManager
         """
@@ -973,7 +974,7 @@ class ManagerMediator(IManagerMediator):
             may need to send a scout before the canal can be placed.
 
         Find a Nydus position with pathing cost less than max_cost in a region
-        containing the given point, at least min_distance from an enemy base and
+        containing the given point, at least min_distance from an enemy base, and
         no more than max_distance from the target point.
 
         NydusManager
@@ -1002,7 +1003,7 @@ class ManagerMediator(IManagerMediator):
 
         Returns:
             Dictionary where key is unit tag, and value is info
-            about the nydus travellers.
+            about the nydus travelers.
 
         """
         return self.manager_request(
@@ -1015,13 +1016,13 @@ class ManagerMediator(IManagerMediator):
     def get_nydus_travellers_dict(
         self, **kwargs
     ) -> dict[int, dict[str, int | Point2 | UnitTypeId]]:
-        """Get the nydus travellers dictionary.
+        """Get the nydus travelers dictionary.
 
         NydusManager
 
         Returns:
             Dictionary where key is unit tag, and value is info
-            about the nydus travellers.
+            about the nydus travelers.
 
         """
         return self.manager_request(
@@ -1029,13 +1030,13 @@ class ManagerMediator(IManagerMediator):
         )
 
     def remove_from_nydus_travellers(self, **kwargs) -> None:
-        """Remove a unit from the nydus travellers dictionary.
+        """Remove a unit from the nydus travelers dictionary.
 
         NydusManager
 
         Parameters:
             unit_tag: int
-                The unit tag to be removed from the nydus travellers.
+                The unit tag to be removed from the nydus travelers.
         """
         return self.manager_request(
             ManagerName.NYDUS_MANAGER,
@@ -1059,7 +1060,7 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_primary_nydus_enemy_main(self) -> Point2:
-        """Get the optimal position for a nydus in enemy main,
+        """Get the optimal position for a nydus in the enemy main,
         considering distance from base and ramp.
 
         Nydus Manager
@@ -1073,8 +1074,8 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_primary_nydus_own_main(self) -> Point2:
-        """Get the optimal position for a nydus in own main.
-        Could be useful scouting position.
+        """Get the optimal position for a nydus in the own main.
+        Could be a useful scouting position.
 
         Nydus Manager
 
@@ -1639,7 +1640,7 @@ class ManagerMediator(IManagerMediator):
     """
 
     def can_place_structure(self, **kwargs) -> bool:
-        """Check if structure can be placed at a given position.
+        """Check if the structure can be placed at a given position.
 
         Faster cython alternative to `python-sc2` `await self.can_place()`
 
@@ -1652,7 +1653,7 @@ class ManagerMediator(IManagerMediator):
                 check addon will place too.
 
         Returns:
-            Indicating if structure can be placed at given position.
+            Indicating if the structure can be placed at a given position.
         """
         return self.manager_request(
             ManagerName.PLACEMENT_MANAGER,
@@ -1662,7 +1663,7 @@ class ManagerMediator(IManagerMediator):
 
     @property
     def get_placements_dict(self, **kwargs) -> dict:
-        """Get the placement dict ares calculated at beginning
+        """Get the placement dict ares calculated at the beginning
         of the game.
 
         Structure of dictionary:
@@ -1788,7 +1789,7 @@ class ManagerMediator(IManagerMediator):
                 first pylon if available.
                 Default value is False.
             static_defence (bool, optional): Try to take designated
-                static defence placements if available.
+                static defense placements if available.
                 Default value is False.
             wall (bool, optional): Request a wall structure placement.
                 Will find alternative if no wall placements available.

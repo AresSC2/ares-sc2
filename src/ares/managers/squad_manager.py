@@ -123,7 +123,7 @@ class SquadManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Fetch information from this Manager so another Manager can use it.

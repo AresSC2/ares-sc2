@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import deque
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 import numpy as np
 from cython_extensions import cy_distance_to
@@ -135,7 +135,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -391,8 +391,8 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         """
         memory_tags_to_remove.append(unit_tag)
-        snaps = self._memory_units_by_tag.get(unit_tag)
-        self._archive_units_by_tag[unit_tag] = snaps
+        if snaps := self._memory_units_by_tag.get(unit_tag):
+            self._archive_units_by_tag[unit_tag] = snaps
 
     def generate_kd_trees(self) -> None:
         """Generate cKDTrees using unit locations for quicker distance calculations.
@@ -453,7 +453,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         if tree is None:
             in_range_list = [self.empty_units for _ in range(len(start_points))]
         else:
-            in_range_list: list[Units] = []
+            in_range_list = []
             if start_points:
                 positions = [
                     u.position if isinstance(u, Unit) else u for u in start_points
@@ -468,7 +468,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
         return (
             {
                 (
-                    start_points[idx].tag
+                    cast("Unit", start_points[idx]).tag
                     if isinstance(start_points[idx], Unit)
                     else start_points[idx]
                 ): in_range_list[idx]
@@ -531,7 +531,7 @@ class UnitMemoryManager(Manager, IManagerMediator):
 
         enemies_in_range = self.enemy_tree.query_ball_point(positions, radius)
 
-        return [np.any(result) for result in enemies_in_range]
+        return [bool(np.any(result)) for result in enemies_in_range]
 
     def get_position_in_enemy_detector_range(self, position: Point2) -> bool:
         """Check if the given position is in range of an enemy detector.

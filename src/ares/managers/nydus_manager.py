@@ -57,9 +57,7 @@ class NydusManager(Manager, IManagerMediator):
                 self.ai.enemy_start_locations[0]
             ]
         else:
-            self.all_enemy_main_nydus_points: list[Point2] = [
-                self.ai.game_info.map_center
-            ]
+            self.all_enemy_main_nydus_points = [self.ai.game_info.map_center]
         self.all_own_main_nydus_points: list[Point2] = [self.ai.start_location]
 
         # key is tag of travelling unit,
@@ -103,7 +101,7 @@ class NydusManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.

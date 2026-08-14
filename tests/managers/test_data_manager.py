@@ -142,8 +142,8 @@ class TestDataManager:
 
         # check that we switch to "C" after 5 losses
         for i in range(5):
-            history_b = {STRATEGY_USED: "B", RESULT: 0}
-            dm.opponent_history.append(history_b)
+            loss_entry = {STRATEGY_USED: "B", RESULT: 0}
+            dm.opponent_history.append(loss_entry)
             dm._choose_opening()
             if i < 4:
                 assert dm.chosen_opening == "B"

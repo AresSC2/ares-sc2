@@ -3,7 +3,7 @@ from __future__ import annotations
 from sc2 import BotAI, Difficulty, Race, UnitTypeId, maps, run_game
 from sc2.player import Bot, Computer
 
-from sc2_helper import CombatPredictor, CombatSettings, test_unit
+from sc2_helper.sc2_helper import CombatPredictor, CombatSettings
 
 
 class BasicBot(BotAI):
@@ -27,9 +27,6 @@ class BasicBot(BotAI):
             # await self.client.debug_create_unit([[UnitTypeId.TEMPEST, 10, self.start_location, 2]])
             # await self.client.debug_upgrade()
         if self.units(UnitTypeId.MARINE):
-            zergling = self.enemy_units(UnitTypeId.BATTLECRUISER)[0]
-            # s = perf_counter_ns()
-            test_unit(zergling)
             await self.client.leave()
             # e = perf_counter_ns()
             # t = e - s

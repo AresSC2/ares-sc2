@@ -48,7 +48,7 @@ class NydusPathUnitToTarget(CombatIndividualBehavior):
     grid: np.ndarray
     target: Point2
     success_at_distance: float = 0.0
-    large: bool = (False,)
+    large: bool = False
     sensitivity: int = 5
     smoothing: bool = False
     exit_nydus_max_influence: float = 10.0

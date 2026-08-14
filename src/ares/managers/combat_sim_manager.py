@@ -60,7 +60,7 @@ class CombatSimManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -108,14 +108,14 @@ class CombatSimManager(Manager, IManagerMediator):
         """
         Use the combat simulator to predict if our units can beat the enemy units.
 
-        Returns an Enum so that thresholds can be easily adjusted
+        Returns an Enum so that thresholds can be easily adjusted,
         and it may be easier to read the results in other code.
 
         Parameters
         ----------
         own_units :
             Our units involved in the battle.
-        enemy_units
+        enemy_units :
             The enemy units.
         timing_adjust :
             Take distance between units into account.
@@ -144,7 +144,7 @@ class CombatSimManager(Manager, IManagerMediator):
             sum([u.health + u.shield for u in enemy_units]) + 1e-16,
         )
         # if the winning units are at 10% health after the fight,
-        # the actual engagement will be determined by micro
+        # micro will determine the actual engagement
         if result[0]:
             health_percentage = result[1] / own_health
             if health_percentage >= 0.9:

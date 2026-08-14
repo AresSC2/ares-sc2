@@ -1,6 +1,8 @@
 # Makefile
 format-ruff:
 	@ruff format .
+lint-format:
+	@ruff format --check .
 lint-check:
 	@ruff check .
 lint-fix:
@@ -22,8 +24,8 @@ clean-cov:
 	@rm -rf pytest.xml
 	@rm -rf pytest-coverage.txt
 
-format: format-black format-isort
-lint: lint-black lint-isort lint-flake8
+format: format-ruff
+lint: lint-format lint-check lint-mypy
 
 
 ##@ Documentation

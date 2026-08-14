@@ -33,8 +33,11 @@ from ares.behaviors.macro import (
     AutoSupply,
     BuildWorkers,
     ExpansionController,
+    GasBuildingController,
     MacroPlan,
     Mining,
+    ProductionController,
+    SpawnController,
 )
 
 
@@ -72,15 +75,15 @@ class DummyBot(AresBot):
         macro_plan.add(AutoSupply(base_location=self.start_location))
         macro_plan.add(BuildWorkers(12))
         macro_plan.add(ExpansionController(to_count=100, max_pending=100))
-        # macro_plan.add(
-        #     GasBuildingController(
-        #         to_count=100,
-        #         max_pending=100,
-        #     )
-        # )
-        # if self.race != Race.Zerg:
-        #     macro_plan.add(ProductionController(self.army_comp, self.start_location))
-        # macro_plan.add(SpawnController(self.army_comp))
+        macro_plan.add(
+            GasBuildingController(
+                to_count=100,
+                max_pending=100,
+            )
+        )
+        if self.race != Race.Zerg:
+            macro_plan.add(ProductionController(self.army_comp, self.start_location))
+        macro_plan.add(SpawnController(self.army_comp))
         self.register_behavior(macro_plan)
 
         army: list[Unit] = [
@@ -104,7 +107,7 @@ class DummyBot(AresBot):
             self.register_behavior(maneuver)
 
         for unit in self.units(UnitTypeId.QUEEN):
-            maneuver: CombatManeuver = CombatManeuver()
+            maneuver = CombatManeuver()
             maneuver.add(QueenSpreadCreep(unit=unit))
             self.register_behavior(maneuver)
 
@@ -145,7 +148,7 @@ if __name__ == "__main__":
         maps.get(random_map),
         [
             # Human(Race.Zerg),
-            Bot(Race.Protoss, DummyBot(), "DummyBot"),
+            Bot(Race.Random, DummyBot(), "DummyBot"),
             Computer(Race.Random, Difficulty.Easy),
         ],
         realtime=False,

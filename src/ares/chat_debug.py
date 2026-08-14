@@ -165,10 +165,11 @@ class ChatDebug:
         -------
 
         """
+        units_to_destroy: Units
         if player_id == 1:
-            units_to_destroy: Units = self.ai.all_own_units(unit_id)
+            units_to_destroy = self.ai.all_own_units(unit_id)
         else:
-            units_to_destroy: Units = self.ai.all_enemy_units(unit_id)
+            units_to_destroy = self.ai.all_enemy_units(unit_id)
 
         if not units_to_destroy:
             await self.ai.chat_send("Can't find any of those")

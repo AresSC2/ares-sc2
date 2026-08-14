@@ -328,7 +328,7 @@ class BuildRunnerBot(AresBot):
                 )
 
         for unit_type, required in required_units.items():
-            present: int = self._present_unit_count(unit_type)
+            present = self._present_unit_count(unit_type)
             if present < required:
                 missing.append(
                     f"{unit_type.name} unit (need {required}, have {present})"

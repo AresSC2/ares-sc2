@@ -111,7 +111,7 @@ class IntelManager(Manager, IManagerMediator):
         self,
         receiver: str,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Fetch information from this Manager.
@@ -219,6 +219,8 @@ class IntelManager(Manager, IManagerMediator):
                 logger.info(f"{self.ai.time_formatted}: marauder rush detected")
             self.get_enemy_went_marauder_rush = True
             return True
+
+        return False
 
     @property_cache_once_per_frame
     def get_enemy_four_gate(self) -> bool:

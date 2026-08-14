@@ -251,9 +251,9 @@ class ProductionController(MacroBehavior):
             * target_proportion
         )
         if cost_of_unit.vespene == 0:
-            simul_afford_ves: int = simul_afford_min
+            simul_afford_ves = simul_afford_min
         else:
-            simul_afford_ves: int = int(
+            simul_afford_ves = int(
                 (collection_rate_vespene / (cost_of_unit.vespene + 1))
                 * self.alpha
                 * target_proportion
@@ -305,9 +305,9 @@ class ProductionController(MacroBehavior):
                     < 360.0
                 ):
                     for s_id in train_from:
-                            if UNIT_UNIT_ALIAS[unit.type_id] == s_id:
-                                prod_flying = True
-                                break
+                        if UNIT_UNIT_ALIAS[unit.type_id] == s_id:
+                            prod_flying = True
+                            break
             if prod_flying:
                 return True
         return False

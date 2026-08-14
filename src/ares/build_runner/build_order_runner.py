@@ -131,7 +131,7 @@ class BuildOrderRunner:
                 f"I can't find it. Spelling perhaps?"
             )
 
-            build: list[str] = config[BUILDS][opening_name][OPENING_BUILD_ORDER]
+            build: list[str | dict] = config[BUILDS][opening_name][OPENING_BUILD_ORDER]
             logger.info(
                 f"{self.ai.time_formatted}: Running build from yml file: {opening_name}"
             )
@@ -161,12 +161,12 @@ class BuildOrderRunner:
                     self.SHOULD_HANDLE_GAS_STEAL
                 ]
 
-            self.build_step: int = 0
-            self.current_step_started: bool = False
-            self.current_step_complete: bool = False
-            self.current_build_position: Point2 = self.ai.start_location
-            self.assigned_persistent_worker: bool = False
-            self._temporary_build_step: int = -1
+            self.build_step = 0
+            self.current_step_started = False
+            self.current_step_complete = False
+            self.current_build_position = self.ai.start_location
+            self.assigned_persistent_worker = False
+            self._temporary_build_step = -1
 
             self.build_order = self._build_order_parser.parse(build, remove_completed)
 
@@ -325,12 +325,14 @@ class BuildOrderRunner:
                 building_tracker: dict = self.mediator.get_building_tracker_dict
                 persistent_worker_available: bool = False
                 if self.persistent_worker:
-                    for worker in persistent_workers:
+                    for persistent_worker in persistent_workers:
                         if self.ai.race == Race.Protoss:
                             persistent_worker_available = True
                             break
-                        if worker.tag in building_tracker:
-                            target: Point2 = building_tracker[worker.tag][TARGET]
+                        if persistent_worker.tag in building_tracker:
+                            target: Point2 = building_tracker[persistent_worker.tag][
+                                TARGET
+                            ]
                             if [
                                 s
                                 for s in self.ai.structures
@@ -474,7 +476,7 @@ class BuildOrderRunner:
                 self.current_step_complete = step.end_condition()
             # end condition hasn't yet activated
             if not self.current_step_complete:
-                command: UnitTypeId | UpgradeId = step.command
+                command = step.command
                 # sometimes gas building didn't go through
                 # due to conflict with gas steal
                 if (
@@ -517,7 +519,7 @@ class BuildOrderRunner:
                 elif isinstance(command, UpgradeId):
                     self.ai.research(command)
                 elif command == UnitTypeId.ARCHON:
-                    army_comp: dict = {command: {"proportion": 1.0, "priority": 0}}
+                    army_comp = {command: {"proportion": 1.0, "priority": 0}}
                     SpawnController(army_comp, freeflow_mode=True, maximum=1).execute(
                         self.ai, self.config, self.mediator
                     )
@@ -670,6 +672,8 @@ class BuildOrderRunner:
                 5,
             )
 
+        return None
+
     def get_structure(self, target: str) -> Unit | None:
         """Get the first structure matching the specified type.
 
@@ -691,6 +695,8 @@ class BuildOrderRunner:
             )
         ):
             return valid_structures.first
+
+        return None
 
     def _assign_persistent_worker(self) -> None:
         """Assign a worker that does not get assigned back to gathering."""
@@ -879,7 +885,7 @@ class BuildOrderRunner:
         for geyser_tag, worker_tag in self._geyser_tag_to_probe_tag.items():
             assigned_worker_tag: int = self._geyser_tag_to_probe_tag[geyser_tag]
             if geyser_tag in self.ai.unit_tag_dict:
-                geyser: Unit = self.ai.unit_tag_dict[geyser_tag]
+                geyser = self.ai.unit_tag_dict[geyser_tag]
 
                 # no enemy workers, or
                 # gas building exists here now, clean up

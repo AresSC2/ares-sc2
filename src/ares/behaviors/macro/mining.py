@@ -127,7 +127,7 @@ class Mining(MacroBehavior):
             dist_to_resource: float = 15.0
 
             if assigned_mineral_patch or assigned_gas_building:
-                resource_tag: int = (
+                resource_tag = (
                     worker_to_mineral_patch_dict[worker_tag]
                     if assigned_mineral_patch
                     else worker_to_geyser_dict[worker_tag]
@@ -402,7 +402,7 @@ class Mining(MacroBehavior):
                 not mediator.is_position_safe(grid=grid, position=worker_position)
                 and cy_distance_to_squared(worker_position, return_base_position) > 64.0
             ):
-                move_to: Point2 = mediator.find_path_next_point(
+                move_to = mediator.find_path_next_point(
                     start=worker_position,
                     target=return_base_position,
                     grid=grid,
@@ -456,7 +456,7 @@ class Mining(MacroBehavior):
                 )
                 return False
         else:
-            resource_target_pos: Point2 = Point2(
+            resource_target_pos = Point2(
                 cy_towards(target_position, worker_position, TOWNHALL_TARGET)
             )
 
@@ -467,9 +467,9 @@ class Mining(MacroBehavior):
             ai.mediator.remove_gas_building(gas_building_tag=target.tag)
 
         try:
-            townhall: Unit = ai.unit_tag_dict[worker_tag_to_townhall_tag[worker.tag]]
+            townhall = ai.unit_tag_dict[worker_tag_to_townhall_tag[worker.tag]]
         except KeyError:
-            townhall: Unit = cy_closest_to(worker_position, ai.townhalls)
+            townhall = cy_closest_to(worker_position, ai.townhalls)
 
         return SpeedMining(
             worker,
@@ -494,7 +494,7 @@ class Mining(MacroBehavior):
             Units object of safe mineral patches if mineral patches still exist
         """
         if not ai.mineral_field:
-            return
+            return []
 
         assigned_patches: dict[int, set] = mediator.get_mineral_patch_to_list_of_workers
         grid: np.ndarray = mediator.get_ground_grid

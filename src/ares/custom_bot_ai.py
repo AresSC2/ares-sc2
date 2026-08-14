@@ -217,7 +217,7 @@ class CustomBotAI(BotAI):
 
     def split_ground_fliers(
         self, units: Units | list[Unit], return_as_lists: bool = False
-    ) -> tuple[Units | Units, tuple[list, list]]:
+    ) -> tuple[Units, Units] | tuple[list[Unit], list[Unit]]:
         """Split units into ground units and flying units.
 
         Parameters
@@ -482,9 +482,7 @@ class CustomBotAI(BotAI):
             query_tree=UnitTreeQueryType.EnemyGround,
         )[0]
 
-        close_enemy: Units = close_enemy.filter(
-            lambda u: u.type_id != UnitTypeId.AUTOTURRET
-        )
+        close_enemy = close_enemy.filter(lambda u: u.type_id != UnitTypeId.AUTOTURRET)
         if close_enemy:
             return True
 
@@ -524,10 +522,7 @@ class CustomBotAI(BotAI):
             *np.where((grid > lower_threshold) & (grid < upper_threshold)), strict=False
         ):
             pos: Point3 = Point3((x, y, height))
-            if grid[x, y] == np.inf:
-                val: int = 9999
-            else:
-                val: int = int(grid[x, y])
+            val = 9999 if grid[x, y] == np.inf else int(grid[x, y])
             self.client.debug_text_world(str(val), pos, color, size)
 
     def main_ramp_walled_off(self, ramp: Ramp) -> bool:

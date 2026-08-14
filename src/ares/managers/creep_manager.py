@@ -75,7 +75,7 @@ class CreepManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Fetch information from this Manager so another Manager can use it.
@@ -315,7 +315,7 @@ class CreepManager(Manager, IManagerMediator):
         if path := self.manager_mediator.find_raw_path(
             start=from_pos, target=to_pos, grid=grid, sensitivity=12
         ):
-            grid: np.ndarray = self.manager_mediator.get_ground_grid
+            grid = self.manager_mediator.get_ground_grid
             creep_grid = self.get_creep_grid
             min_separation_squared = min_separation**2
             for point in path:
@@ -552,7 +552,7 @@ class CreepManager(Manager, IManagerMediator):
         ]
 
         # Select positions with minimum separation
-        target_positions = []
+        target_positions: list[Point2] = []
         min_separation = 18.0  # Minimum distance between overlord positions
 
         for edge_point in edge_points:

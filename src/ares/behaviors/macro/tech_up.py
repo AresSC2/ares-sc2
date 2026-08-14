@@ -167,9 +167,7 @@ class TechUp(MacroBehavior):
 
                 if tech_ready:
                     if structure_type in {UnitTypeId.LAIR, UnitTypeId.HIVE}:
-                        upgrading: bool = self._upgrade_zerg_townhall(
-                            structure_type, ai
-                        )
+                        upgrading = self._upgrade_zerg_townhall(structure_type, ai)
                         if upgrading:
                             logger.info(
                                 f"{ai.time_formatted} Adding {structure_type} to"
@@ -301,7 +299,7 @@ class TechUp(MacroBehavior):
             )
         ):
             # all townhalls will be a hatchery if got to here
-            th: Unit = idle_lair[0]
+            th = idle_lair[0]
             th(AbilityId.UPGRADETOHIVE_HIVE)
             return True
 

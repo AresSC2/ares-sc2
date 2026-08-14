@@ -54,7 +54,7 @@ class BuildingManager(Manager, IManagerMediator):
     ----------
     blocked_expansion_locations : set[Point2]
         Which expansion locations are blocked and not considered for expanding
-    building_tracker : dict[int, dict[str, Point2 | Unit | UnitTypeId, float]
+    building_tracker : dict[int, dict[str, Any]]
         Tracks the worker tag to:
             UnitTypeId of the building to be built
             Point2 of where the building is to be placed
@@ -100,9 +100,7 @@ class BuildingManager(Manager, IManagerMediator):
             ),
         }
 
-        self.building_tracker: dict[
-            int, dict[str, Point2 | Unit | UnitTypeId, float]
-        ] = {}
+        self.building_tracker: dict[int, dict[str, Any]] = {}
         self.building_counter: defaultdict[UnitTypeId, int] = defaultdict(int)
         # remember for each expansion attempt, otherwise we lose memory
         # should be cleared after expanding
@@ -112,9 +110,9 @@ class BuildingManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
-    ) -> dict | defaultdict | Coroutine[Any, Any, bool] | None:
+    ) -> Any:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -262,13 +260,17 @@ class BuildingManager(Manager, IManagerMediator):
             distance: float = 3.2 if structure_id in GAS_BUILDINGS else 1.0
             # if terran, check for unfinished structure
             existing_unfinished_structure: Unit | None = None
-            if self.ai.race == Race.Terran and structure_id in structures_dict and (
-                existing_unfinished_structures := [
-                    s
-                    for s in structures_dict[structure_id]
-                    if cy_distance_to_squared(s.position, target.position) < 2.25
-                    and s.build_progress < 1.0
-                ]
+            if (
+                self.ai.race == Race.Terran
+                and structure_id in structures_dict
+                and (
+                    existing_unfinished_structures := [
+                        s
+                        for s in structures_dict[structure_id]
+                        if cy_distance_to_squared(s.position, target.position) < 2.25
+                        and s.build_progress < 1.0
+                    ]
+                )
             ):
                 existing_unfinished_structure = existing_unfinished_structures[0]
                 distance = 4.5
@@ -408,7 +410,7 @@ class BuildingManager(Manager, IManagerMediator):
             elif gatherers := self.manager_mediator.get_units_from_role(
                 role=UnitRole.GATHERING, unit_type=self.ai.worker_type
             ):
-                worker_tag: int = gatherers[0].tag
+                worker_tag = gatherers[0].tag
                 self.manager_mediator.assign_role(
                     tag=worker_tag, role=UnitRole.BUILDING
                 )
@@ -527,7 +529,7 @@ class BuildingManager(Manager, IManagerMediator):
                     continue
 
                 if self.ai.time > 300:
-                    target_geyser: Unit = possible_geysers.first
+                    target_geyser = possible_geysers.first
 
                 else:
                     # target geyser closest to mf so worker doesn't have to move as far
@@ -539,11 +541,11 @@ class BuildingManager(Manager, IManagerMediator):
                             < 144.0
                         )
                     ):
-                        target_geyser: Unit = cy_closest_to(
+                        target_geyser = cy_closest_to(
                             cy_center(close_mf), possible_geysers
                         )
                     else:
-                        target_geyser: Unit = possible_geysers[0]
+                        target_geyser = possible_geysers[0]
                 # found a geyser so break out the loop
                 break
 

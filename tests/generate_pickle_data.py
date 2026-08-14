@@ -32,7 +32,7 @@ from ares.dicts.unit_tech_requirement import UNIT_TECH_REQUIREMENT
 class ExporterBot(AresBot):
     def __init__(self, game_step_override: int | None = None):
         super().__init__(game_step_override)
-        self.map_name: str = None
+        self.map_name: str | None = None
 
     async def on_step(self, iteration):
         await super().on_step(iteration)

@@ -201,7 +201,7 @@ class ResourceManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -384,7 +384,7 @@ class ResourceManager(Manager, IManagerMediator):
             workers = workers.filter(lambda u: u.shield_percentage >= min_shield_perc)
         # there is a chance we have no workers
         if not workers or not target_position:
-            return
+            return None
 
         # if there are workers not assigned to mine (probably long distance mining)
         # choose one of those and return
@@ -392,7 +392,7 @@ class ResourceManager(Manager, IManagerMediator):
             list(self.worker_to_mineral_patch_dict) + list(self.worker_to_geyser_dict)
         )
         if unassigned_workers and not force_close:
-            worker: Unit = cy_closest_to(target_position, unassigned_workers)
+            worker = cy_closest_to(target_position, unassigned_workers)
             self.remove_worker_from_mineral(worker.tag)
             return worker
 
@@ -444,9 +444,7 @@ class ResourceManager(Manager, IManagerMediator):
                                     < 100.0
                                 )
                             ):
-                                worker: Unit = cy_closest_to(
-                                    target_position, close_workers
-                                )
+                                worker = cy_closest_to(target_position, close_workers)
                                 self.remove_worker_from_mineral(worker.tag)
                                 return worker
                         else:
@@ -459,14 +457,14 @@ class ResourceManager(Manager, IManagerMediator):
                                     and not w.is_collecting
                                 )
                             ):
-                                worker: Unit = _workers.first
+                                worker = _workers.first
                                 # make sure to remove worker, so a new one
                                 # can be assigned to mine
                                 self.remove_worker_from_mineral(worker.tag)
                                 return worker
 
             # somehow got here without finding a worker, any worker will do
-            worker: Unit = cy_closest_to(target_position, available_workers)
+            worker = cy_closest_to(target_position, available_workers)
             self.remove_worker_from_mineral(worker.tag)
             return worker
         return None
@@ -605,14 +603,14 @@ class ResourceManager(Manager, IManagerMediator):
                 continue
 
             if self.ai.time < 120:
-                mineral: Unit = cy_closest_to(worker.position, _minerals)
+                mineral = cy_closest_to(worker.position, _minerals)
             else:
                 # early game threats, stick to main base where possible
                 if (
                     self.ai.time < 300.0
                     and self.manager_mediator.get_main_ground_threats_near_townhall
                 ):
-                    mineral: Unit = cy_closest_to(self.ai.start_location, _minerals)
+                    mineral = cy_closest_to(self.ai.start_location, _minerals)
                 else:
                     # find the closest mineral, then find the nearby minerals that are
                     # closest to the townhall
@@ -621,7 +619,7 @@ class ResourceManager(Manager, IManagerMediator):
                     th: Unit = cy_closest_to(
                         closest_mineral.position, self.ai.townhalls
                     )
-                    mineral: Unit = cy_closest_to(th.position, nearby_minerals)
+                    mineral = cy_closest_to(th.position, nearby_minerals)
 
             if len(self.mineral_patch_to_list_of_workers.get(mineral.tag, [])) < 2:
                 self._assign_worker_to_patch(mineral, worker)
@@ -833,9 +831,9 @@ class ResourceManager(Manager, IManagerMediator):
         """
         resource_to_workers: defaultdict[Unit, list[Unit]] = defaultdict(list)
         if resource_type == MINERAL:
-            worker_to_resource: dict[int, int] = self.worker_to_mineral_patch_dict
+            worker_to_resource = self.worker_to_mineral_patch_dict
         else:
-            worker_to_resource: dict[int, int] = self.worker_to_geyser_dict
+            worker_to_resource = self.worker_to_geyser_dict
         for worker in self.ai.workers:
             if worker.tag in worker_to_resource:
                 resource_tag: int = worker_to_resource[worker.tag]
