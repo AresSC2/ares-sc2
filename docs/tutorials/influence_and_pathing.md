@@ -1,10 +1,10 @@
-The ares framework comes with the [SC2MapAnalysis library](https://github.com/spudde123/SC2MapAnalysis) already integrated. This integration 
-provides access to the library's grid and pathing features, enabling ares to offer a variety of 
+The ares framework comes with the [SC2MapAnalysis library](https://github.com/spudde123/SC2MapAnalysis) already integrated. This integration
+provides access to the library's grid and pathing features, enabling ares to offer a variety of
 preconfigured grids and pathing functions right out of the box. This also enables users to create
 their own custom grids which they can use with existing ares pathing and behavior methods.
 
 ## What is a grid?
-A grid is essentially a two-dimensional array, where each element represents an x,y coordinate in the game, 
+A grid is essentially a two-dimensional array, where each element represents an x,y coordinate in the game,
 and the value of that element will contain some numerical value.
 A basic ground grid might contain zeroes for unpathable tiles and ones for pathable. See a visual example
 below of a simple pathing ground grid the Blizzard API provides.
@@ -31,7 +31,7 @@ grid containing dangerous effects to avoid. For example storms, ravager biles, p
 - [`self.mediator.get_air_grid`](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.get_air_grid) an air
 grid containing all enemy units and effects dangerous to air.
 - [`self.mediator.get_air_vs_ground_grid`](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.get_air_vs_ground_grid) a specialised
-air grid where ground pathable tiles have increased cost. The idea behind this one is for air units will favour high ground areas when 
+air grid where ground pathable tiles have increased cost. The idea behind this one is for air units will favour high ground areas when
 using pathing queries.
 - [`self.mediator.get_climber_grid`](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.get_climber_grid) - Same
 as `get_ground_grid` but areas where reapers can jump, or colossus can climb are pathable.
@@ -189,7 +189,7 @@ if reapers := self.mediator.get_own_army_dict[UnitTypeId.REAPER]:
         )
 ```
 
-Have a check on the `cython_extensions-sc2` repo docs for other functions including: 
+Have a check on the `cython_extensions-sc2` repo docs for other functions including:
 
 - `cy_all_points_below_max_value`
 - `cy_all_points_have_value`
@@ -197,8 +197,8 @@ Have a check on the `cython_extensions-sc2` repo docs for other functions includ
 - `cy_points_with_value`
 
 ## Create your own grids
-The available grids in ares are pre-filled with enemy cost based on the developers' perspectives. 
-However, you have the flexibility to create your own custom grids. Even better, you can integrate 
+The available grids in ares are pre-filled with enemy cost based on the developers' perspectives.
+However, you have the flexibility to create your own custom grids. Even better, you can integrate
 these custom grids into existing ares functions and behaviors!
 
 As the [SC2MapAnalysis library](https://github.com/spudde123/SC2MapAnalysis) in integrated into

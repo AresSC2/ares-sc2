@@ -1,23 +1,23 @@
 ## Selecting a worker
-If you're using the [Mining behavior](../api_reference/behaviors/macro_behaviors.md#ares.behaviors.macro.mining.Mining) 
+If you're using the [Mining behavior](../api_reference/behaviors/macro_behaviors.md#ares.behaviors.macro.mining.Mining)
 and need to select workers
 to perform tasks, then you should request `ares` to release workers from mining.
 
 #### Problem
 
-Behind the scenes, Ares designates workers to `UnitRole.GATHERING` and automatically assigns 
+Behind the scenes, Ares designates workers to `UnitRole.GATHERING` and automatically assigns
 specific resources to each worker. If you try to steal these workers without informing `ares`
 the `Mining` task will send the worker back to mining again.
 
 #### Solution
-Opting to 
+Opting to
 [select a worker through the mediator](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.select_worker)
-is recommended. 
+is recommended.
 This not only simplifies internal bookkeeping by removing the worker from mining and assigned resource
-but also prioritizes a worker 
-that isn't currently involved in mining or holding resources. The selection process even extends to workers at 
-distant mineral patches whenever possible. 
-Additionally, it's worth considering assigning a fresh role to the worker to preempt potential 
+but also prioritizes a worker
+that isn't currently involved in mining or holding resources. The selection process even extends to workers at
+distant mineral patches whenever possible.
+Additionally, it's worth considering assigning a fresh role to the worker to preempt potential
 reassignment by the Mining task. Here's an example:<br/>
 ```python
 from ares.consts import UnitRole
@@ -103,7 +103,7 @@ one is obviously broken if you're using `Mining` behavior but added for completi
 
 * [`self.select_build_worker()`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/bot_ai.py#L580) <br/>
 <b>Problem</b> <br/>
-Similar to previous problems, `python-sc2` will not be able to select a 
+Similar to previous problems, `python-sc2` will not be able to select a
 worker without `ares-sc2` trying to steal it back. <br/><br/>
 <b> Solution</b><br/>
 Ask `ares` for a worker <br/>
@@ -196,4 +196,3 @@ self.mediator.assign_role(tag=unit.tag, role=UnitRole.DEFENDING)
 ## Other gotchas?
 Found something not listed here? Please feel free to contribute to the docs or raise an issue
 in the `ares-sc2` github repo.
-

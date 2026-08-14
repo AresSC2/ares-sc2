@@ -1,6 +1,6 @@
 <b>Recommended reading:</b> How to curate [Combat Maneuver's](./combat_maneuver_example.md) using
 existing `Behavior`'s in `ares-sc2`.
-Before curating custom behaviors, take a look at some of the 
+Before curating custom behaviors, take a look at some of the
 core [behaviors in ares-sc2](https://github.com/AresSC2/ares-sc2/tree/main/src/ares/behaviors), to get an idea
 how one should be structured.
 
@@ -54,7 +54,7 @@ since sieging/unsieging tanks is a strategic decision personal to your bot.
 We propose a solution: create a reusable custom combat behavior that `ares-sc2` understands and can be executed.
 
 As long as our behavior class follows the `CombatIndividualBehavior` Protocol, we can add it to
-our existing `offensive_attack` `CombatManeuver`. 
+our existing `offensive_attack` `CombatManeuver`.
 - `CombatIndividualBehavior` Protocol says we should implement an `execute` method with the following signature:
 
 `def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:`
@@ -188,5 +188,3 @@ class MyBot(AresBot):
             # register the maneuver so it gets executed
             self.register_behavior(offensive_attack)
 ```
-
-

@@ -1,13 +1,13 @@
-See the following guide by [VersusAI](https://www.youtube.com/@Vers-AI) featuring how to use the combat simulator. 
+See the following guide by [VersusAI](https://www.youtube.com/@Vers-AI) featuring how to use the combat simulator.
 However, it also serves as a good introduction to combat behaviors and combat maneuvers.
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=dAhpVo-rmJU" target="_blank">
  <img src="http://img.youtube.com/vi/dAhpVo-rmJU/mqdefault.jpg" alt="Watch the video" width="360" height="270" border="10" />
 </a>
 
-Combat Behaviors serve as essential components for constructing intricate unit and group control strategies. 
-These behaviors act as modular elements that can be combined to create bespoke combat maneuvers. 
-To facilitate the process of creating army behaviors, a practical aid called the `CombatManeuver` helper 
+Combat Behaviors serve as essential components for constructing intricate unit and group control strategies.
+These behaviors act as modular elements that can be combined to create bespoke combat maneuvers.
+To facilitate the process of creating army behaviors, a practical aid called the `CombatManeuver` helper
 class is made available.
 
 To illustrate the concept, consider the following example that demonstrates the execution of a mine drop:

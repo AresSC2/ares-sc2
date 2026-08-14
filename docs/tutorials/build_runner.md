@@ -1,14 +1,14 @@
 
 ## Build Runner System
-The Build Runner System is a tool that enables swift build prototyping through a configuration file. 
+The Build Runner System is a tool that enables swift build prototyping through a configuration file.
 Optional data usage can be incorporated to maintain build history. IMPORTANT: The build runner system
-is designed only for curating optimized build orders in the first few minutes of the game. Your bot 
+is designed only for curating optimized build orders in the first few minutes of the game. Your bot
 should switch to dynamic behavior after completion, checked via ```self.build_order_runner.build_completed```.
 
 ### Declaring openings
-To initiate the Build Runner, a `<my_race_lowercase>_builds.yml` file should be included in the root directory of 
+To initiate the Build Runner, a `<my_race_lowercase>_builds.yml` file should be included in the root directory of
 your bot project. [Check starter-bot for example](https://github.com/AresSC2/ares-sc2-starter-bot)
-If you are playing as the Random race, then a yml file must be declared for each race that you wish ares to handle 
+If you are playing as the Random race, then a yml file must be declared for each race that you wish ares to handle
 openings and/or data management for.
 
 Below is an example of a valid yml file. (`protoss_builds.yml`)
@@ -30,29 +30,29 @@ BuildChoices:
         BotName: Test
         Cycle:
             - FastExpand
-            
+
     Protoss:
         BotName: ProtossRace
         Cycle:
             - FastExpand
             - WorkerBuild
-            
+
     Random:
         BotName: RandomRace
         Cycle:
             - FastExpand
-            
+
     Terran:
         BotName: TerranRace
         Cycle:
             - FastExpand
-            
+
     Zerg:
         BotName: ZergRace
         Cycle:
             - FastExpand
             - WorkerBuild
-    
+
     # Can also use specific opponent ids (overrides race options above)
     a_bot_opponent_id_from_aiarena:
         BotName: QueenBot
@@ -81,12 +81,12 @@ the supply is equal or greater than this supply. Therefore, if this is not impor
 ie. `["14 pylon", "1 gateway"]` will work just as well.
 
 
-Under the BuildChoices key, you should include keys for each enemy race. You may also use opponent IDs instead of races 
-to select specific openings for opponents. Under the Cycle key, declare the opening build names for that opponent or 
+Under the BuildChoices key, you should include keys for each enemy race. You may also use opponent IDs instead of races
+to select specific openings for opponents. Under the Cycle key, declare the opening build names for that opponent or
 race. For each build name, ensure that there is a corresponding build name under Builds.
 
 <b>WARNING</b>: The build runner is dumb by nature, and expected to be told exactly what to do. Please
-be careful adding build steps that are impossible to commence. Such as adding a barracks before a 
+be careful adding build steps that are impossible to commence. Such as adding a barracks before a
 supply depot or a gateway before pylon.
 
 Further to this, be careful adding steps where units require morphing from other units. If you
@@ -96,8 +96,8 @@ in the gaps for you.
 
 
 ### Valid build order options
-Each item in the build order should contain a string, with the first word being the command. 
-This supports any [`UnitTypeID`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/ids/unit_typeid.py) 
+Each item in the build order should contain a string, with the first word being the command.
+This supports any [`UnitTypeID`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/ids/unit_typeid.py)
 or [`UpgradeId`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/ids/upgrade_id.py) type from python-sc2.
 
 A few extra options are also supported:
@@ -117,7 +117,7 @@ class BuildOrderOptions(str, Enum):
     WORKER_SCOUT = "WORKER_SCOUT"
 ```
 
-Additionally, strings may contain targets such as `14 pylon @ ramp`, where the last word should contain the target 
+Additionally, strings may contain targets such as `14 pylon @ ramp`, where the last word should contain the target
 command. The following targets are currently supported:
 ```python
 class BuildOrderTargetOptions(str, Enum):
@@ -182,7 +182,7 @@ Full example build order with an addonswap:
 
 ### AutoSupply (optional)
 Automatically handle building supply structures after the supply set.
-Enable AutoSupply in your build order at a specific supply count. 
+Enable AutoSupply in your build order at a specific supply count.
 This example turns on AutoSupply after 17 supply so you no longer need to declare supply
 structures in your build:
 ```yml
@@ -218,7 +218,7 @@ Builds:
 ```
 
 ### Build complete
-Upon completion of the build, a typical bot workflow should allow for dynamic production. To check whether the opening 
+Upon completion of the build, a typical bot workflow should allow for dynamic production. To check whether the opening
 has been completed or not, you can use the following method call:
 
 ```python
@@ -267,7 +267,7 @@ Retrieve the opening build name using the following method call:
 
 ```self.build_order_runner.chosen_opening```
 
-This method will return a string value containing the name of the currently selected build from the 
+This method will return a string value containing the name of the currently selected build from the
 `<my_race_lowercase>_builds.yml` file.
 
 ### Scouting

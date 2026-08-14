@@ -629,6 +629,18 @@ markers = {semver = "sys_platform == \"linux\" and platform_python_implementatio
 pycparser = {version = "*", markers = "implementation_name != \"PyPy\""}
 
 [[package]]
+name = "cfgv"
+version = "3.5.0"
+description = "Validate configuration and produce human readable error messages."
+optional = false
+python-versions = ">=3.10"
+groups = ["lint"]
+files = [
+    {file = "cfgv-3.5.0-py2.py3-none-any.whl", hash = "sha256:a8dc6b26ad22ff227d2634a65cb388215ce6cc96bbcc5cfde7641ae87e8dacc0"},
+    {file = "cfgv-3.5.0.tar.gz", hash = "sha256:d5b1034354820651caa73ede66a6294d6e95c1b00acc5e9b098e917404669132"},
+]
+
+[[package]]
 name = "charset-normalizer"
 version = "3.5.0"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -1255,6 +1267,18 @@ files = [
 ]
 
 [[package]]
+name = "distlib"
+version = "0.4.3"
+description = "Distribution utilities"
+optional = false
+python-versions = "*"
+groups = ["lint"]
+files = [
+    {file = "distlib-0.4.3-py2.py3-none-any.whl", hash = "sha256:4b0ce306c966eb73bc3a7b6abad017c556dadd92c44701562cd528ac7fde4d5b"},
+    {file = "distlib-0.4.3.tar.gz", hash = "sha256:f152097224a0ae24be5a0f6bae1b9359af82133bce63f98a95f86cae1aede9ed"},
+]
+
+[[package]]
 name = "docutils"
 version = "0.23"
 description = "Docutils -- Python Documentation Utilities"
@@ -1307,6 +1331,18 @@ files = [
 
 [package.extras]
 devel = ["colorama", "json-spec", "jsonschema", "pylint", "pytest", "pytest-benchmark", "pytest-cache", "validictory"]
+
+[[package]]
+name = "filelock"
+version = "3.32.3"
+description = "A platform independent file lock."
+optional = false
+python-versions = ">=3.10"
+groups = ["lint"]
+files = [
+    {file = "filelock-3.32.3-py3-none-any.whl", hash = "sha256:7f0ca4bcc0e181c60dbbd8aa9ab5b120ebb99e4e064e83636340056f833a1f09"},
+    {file = "filelock-3.32.3.tar.gz", hash = "sha256:0ffa185a3540854c95caa7fa76b76cb219d907415e2c5dc9af25fd970563487f"},
+]
 
 [[package]]
 name = "fonttools"
@@ -1693,6 +1729,21 @@ cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<14)"]
 http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (==1.*)"]
 zstd = ["zstandard (>=0.18.0)"]
+
+[[package]]
+name = "identify"
+version = "2.6.19"
+description = "File identification library for Python"
+optional = false
+python-versions = ">=3.10"
+groups = ["lint"]
+files = [
+    {file = "identify-2.6.19-py2.py3-none-any.whl", hash = "sha256:20e6a87f786f768c092a721ad107fc9df0eb89347be9396cadf3f4abbd1fb78a"},
+    {file = "identify-2.6.19.tar.gz", hash = "sha256:6be5020c38fcb07da56c53733538a3081ea5aa70d36a156f83044bfbf9173842"},
+]
+
+[package.extras]
+license = ["ukkonen"]
 
 [[package]]
 name = "idna"
@@ -3610,6 +3661,18 @@ files = [
 ]
 
 [[package]]
+name = "nodeenv"
+version = "1.10.0"
+description = "Node.js virtual environment builder"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
+groups = ["lint"]
+files = [
+    {file = "nodeenv-1.10.0-py2.py3-none-any.whl", hash = "sha256:5bb13e3eed2923615535339b3c620e76779af4cb4c6a90deccc9e36b274d3827"},
+    {file = "nodeenv-1.10.0.tar.gz", hash = "sha256:996c191ad80897d076bdfba80a41994c2b47c68e224c542b48feba42ba00f8bb"},
+]
+
+[[package]]
 name = "notebook"
 version = "7.6.2"
 description = "Jupyter Notebook - A web-based notebook environment for interactive computing"
@@ -3962,7 +4025,7 @@ version = "4.11.2"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`."
 optional = false
 python-versions = ">=3.10"
-groups = ["main", "docs", "notebook"]
+groups = ["main", "docs", "lint", "notebook"]
 files = [
     {file = "platformdirs-4.11.2-py3-none-any.whl", hash = "sha256:7f89089b6ea71bda7962953edcf784b2e2d9d285b40ad88be2bb75c6e9d82ab4"},
     {file = "platformdirs-4.11.2.tar.gz", hash = "sha256:3a2ae5fca3520a01ab1be8b45613537f52ddf5b5f6f53d88233892dfbf0cd82d"},
@@ -3998,6 +4061,25 @@ files = [
 
 [package.dependencies]
 psutil = "*"
+
+[[package]]
+name = "pre-commit"
+version = "4.6.2"
+description = "A framework for managing and maintaining multi-language pre-commit hooks."
+optional = false
+python-versions = ">=3.10"
+groups = ["lint"]
+files = [
+    {file = "pre_commit-4.6.2-py2.py3-none-any.whl", hash = "sha256:e2dde9a75d3bce11bd3831c26d134df00a2803c1d818be6a0383c3dcda25dc4e"},
+    {file = "pre_commit-4.6.2.tar.gz", hash = "sha256:8f5d7bfb021ecdbcd9d49d89847082dd24172ccde534390081a679ad046e2441"},
+]
+
+[package.dependencies]
+cfgv = ">=2.0.0"
+identify = ">=1.0.0"
+nodeenv = ">=0.11.1"
+pyyaml = ">=5.1"
+virtualenv = ">=20.10.0"
 
 [[package]]
 name = "prometheus-client"
@@ -4402,6 +4484,21 @@ files = [
 six = ">=1.5"
 
 [[package]]
+name = "python-discovery"
+version = "1.5.2"
+description = "Python interpreter discovery"
+optional = false
+python-versions = ">=3.8"
+groups = ["lint"]
+files = [
+    {file = "python_discovery-1.5.2-py3-none-any.whl", hash = "sha256:3e338c2d0f15dfaeea57493f4c2c6caebe0e998ea815c30ae8bf8ee21f1112d3"},
+    {file = "python_discovery-1.5.2.tar.gz", hash = "sha256:45fd4f20a4e3f9b7bf2e0817870bc8e3b320a19658da177af800768c82dbf354"},
+]
+
+[package.dependencies]
+filelock = ">=3.15.4"
+
+[[package]]
 name = "python-gitlab"
 version = "3.15.0"
 description = "Interact with GitLab API"
@@ -4513,7 +4610,7 @@ version = "6.0.3"
 description = "YAML parser and emitter for Python"
 optional = false
 python-versions = ">=3.8"
-groups = ["main", "docs", "notebook"]
+groups = ["main", "docs", "lint", "notebook"]
 files = [
     {file = "PyYAML-6.0.3-cp38-cp38-macosx_10_13_x86_64.whl", hash = "sha256:c2514fceb77bc5e7a2f7adfaa1feb2fb311607c9cb518dbc378688ec73d8292f"},
     {file = "PyYAML-6.0.3-cp38-cp38-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:9c57bb8c96f6d1808c030b1687b9b5fb476abaa47f0db9c0101f5e9f394e97f4"},
@@ -5439,6 +5536,24 @@ socks = ["pysocks (>=1.5.6,!=1.5.7,<2.0)"]
 zstd = ["backports-zstd (>=1.0.0)"]
 
 [[package]]
+name = "virtualenv"
+version = "21.7.4"
+description = "Virtual Python Environment builder"
+optional = false
+python-versions = ">=3.9"
+groups = ["lint"]
+files = [
+    {file = "virtualenv-21.7.4-py3-none-any.whl", hash = "sha256:376ec93cd6aab3044fa395d7db226db38043b7b5748948044b2a87168525e843"},
+    {file = "virtualenv-21.7.4.tar.gz", hash = "sha256:c9d960c95fa458171e58222a5ccab7465298e4b6559977865e627c4719f1e825"},
+]
+
+[package.dependencies]
+distlib = ">=0.3.7,<1"
+filelock = {version = ">=3.24.2,<4", markers = "python_version >= \"3.10\""}
+platformdirs = ">=3.9.1,<5"
+python-discovery = ">=1.4.2"
+
+[[package]]
 name = "watchdog"
 version = "6.0.0"
 description = "Filesystem events monitoring"
@@ -5719,4 +5834,4 @@ type = ["pytest-mypy (>=1.0.1)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11, <3.13"
-content-hash = "39343dfaee84b4f00bec7ae9eddc99a690095eae9c37c8faa2e0bd5bc71fd281"
+content-hash = "8ecccc309b3445070c4f81c40d12aaaa570e4aa214304c0b2fdc3f6ef6baba81"

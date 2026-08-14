@@ -1,11 +1,11 @@
-When it comes to elevating your bot's strategic capabilities, leveraging the unit role management 
+When it comes to elevating your bot's strategic capabilities, leveraging the unit role management
 system in `ares-sc2` becomes an invaluable asset.
 
 <b>Let's consider a simple yet effective example: orchestrating ling harassment.</b>
 
-<b>The Scenario:</b> Picture an early-game offensive with 2 roaches and 12 zerglings. 
-However, the enemy has left their third base unguarded. 
-What if, amidst the distraction caused by our main force, we could dispatch 
+<b>The Scenario:</b> Picture an early-game offensive with 2 roaches and 12 zerglings.
+However, the enemy has left their third base unguarded.
+What if, amidst the distraction caused by our main force, we could dispatch
 half of our zerglings to assail the vulnerable third base?
 
 ## Basic A-Move
@@ -39,7 +39,7 @@ class MyBot(AresBot):
             unit.attack(target)
 ```
 
-This basic strategy involves a simple attack-move command, lacking any intricate logic. 
+This basic strategy involves a simple attack-move command, lacking any intricate logic.
 Now, let's introduce unit roles and assign them dynamically using the `on_unit_created` hook.
 
 ```python
@@ -84,7 +84,7 @@ class MyBot(AresBot):
 ```
 
 
-This enhancement allows us to categorize units into roles upon creation, 
+This enhancement allows us to categorize units into roles upon creation,
 enabling us to later retrieve our attacking force using:
 
 ```python
@@ -172,13 +172,13 @@ class MyBot(AresBot):
             unit.attack(self.mediator.get_enemy_third)
 ```
 
-In this improved version, we assign ling harassment 
+In this improved version, we assign ling harassment
 role to every second zergling in our attacking force. We can then retrieve units
 based on their role and micro them accordingly.
 
-Please note this is an 
+Please note this is an
 example that assumes 12 zerglings already exist. In your own bot, the logic
-should flow accordingly for your scenario, like ensuring you already have army units! 
+should flow accordingly for your scenario, like ensuring you already have army units!
 Also, you may want to dynamically
 assign harass throughout the game based on intel rather than as a one-off task.
 
@@ -218,4 +218,3 @@ Might be useful for debugging
 ```python
 self.mediator.get_unit_role_dict
 ```
-

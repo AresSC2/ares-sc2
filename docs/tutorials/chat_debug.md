@@ -13,9 +13,9 @@ and check for valid debug commands.
 
 ### Spawning units
 Spawn new units directly where the in game camera is.
-To trigger the first word should be `make` or `create`, the second word is the amount of units/structures 
+To trigger the first word should be `make` or `create`, the second word is the amount of units/structures
 to create,
-the third is a valid `UnitTypeId` type, and the fourth should be the player for which units should be spawned 
+the third is a valid `UnitTypeId` type, and the fourth should be the player for which units should be spawned
 (there is a default value of `1` for this, so omit if spawning for player 1).
 
 Here are some valid commands you can try:

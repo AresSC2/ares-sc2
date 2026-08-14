@@ -1,15 +1,15 @@
-Although `ares-sc2` automatically calculates building formations for all base locations, 
-there are situations where precise placement is critical, and custom-building layouts 
-are preferred. To address this, `ares-sc2` allows users to specify custom-building positions, 
-which are seamlessly integrated into its placement calculations. These custom placements 
+Although `ares-sc2` automatically calculates building formations for all base locations,
+there are situations where precise placement is critical, and custom-building layouts
+are preferred. To address this, `ares-sc2` allows users to specify custom-building positions,
+which are seamlessly integrated into its placement calculations. These custom placements
 are fully compatible with core `ares-sc2` features, such as the Build Runner, `BuildStructure `
-behavior, and direct interactions with the building tracker via the `ManagerMediator`. 
-Additionally, the system ensures that standard placements within a base location adapt 
+behavior, and direct interactions with the building tracker via the `ManagerMediator`.
+Additionally, the system ensures that standard placements within a base location adapt
 to account for user-defined custom positions.
 
 This is a feature only available for Terran and Protoss authors.
 
-> **_Tip:_** When working with custom placements, it is recommended to use the `Debug` flag 
+> **_Tip:_** When working with custom placements, it is recommended to use the `Debug` flag
 > in your `config.yml` file as well as enabling `ShowBuildingFormation` in `DebugOptions` like so:
 ```yml
 # other config file content ...
@@ -23,7 +23,7 @@ custom placements, while any other colour represents placements calculated by `a
 
 ## Defining custom placements
 Create a file in the root of your bot folder named `<bot_race>_building_placements.yml`, you should enter placements
-into this file like below. All entries are optional, and if not specified, ares-sc2 will use default values 
+into this file like below. All entries are optional, and if not specified, ares-sc2 will use default values
 in its own file or search for calculated alternatives.
 
 Here is an example of a `protoss_building_placements.yml` file defining natural wall placements for Protoss vs Zerg.
@@ -71,10 +71,10 @@ Persephone:
 > **_Tip:_** 2x2 placements should be placed at rounded coordinates eg `[ [ 71.0, 138.0 ] ]`
 > And 3x3 placements should be placed at coordinates ending with `0.5` eg `[ [ 74.5, 135.5 ], [ 72.5, 139.5 ] ]`
 
-Note there is no need to specify the base location placements belong to, `ares-sc2` will automatically 
+Note there is no need to specify the base location placements belong to, `ares-sc2` will automatically
 calculate them based on the position passed in.
 
-Now let's look at an example of a `terran_building_placements.yml` file where we highlight different 
+Now let's look at an example of a `terran_building_placements.yml` file where we highlight different
 ways of defining placements. Ignore the actual dummy positions shown here, they are just for illustration purposes.
 
 ```yaml
@@ -88,7 +88,7 @@ Pylon:
       Production: [[ 170.5, 92.5], [ 165.5, 92.5], [ 160.5, 92.5]]
       UpgradeStructures: [[ 170.5, 89.5], [ 165.5, 89.5]]
       SensorTowers: [[ 169.0, 90.0], [ 165.5, 89.5]]
-      # or make a list of lists if you want 
+      # or make a list of lists if you want
       # to organize placements using comments
       SupplyDepots:
         # main base
@@ -159,12 +159,12 @@ SupplyDepots:
 ```
 
 
-`ares-sc2` does contain some default natural wall placements for Protoss vs Zerg for 
+`ares-sc2` does contain some default natural wall placements for Protoss vs Zerg for
 some maps. You can view the internal file inside the `ares-sc2/src/ares/` directory.
 
-However, you can override any of 
-these settings by creating your own `<bot_race>_building_placements.yml` file and specifying 
-only the elements you wish to change. `ares-sc2` will automatically prioritize 
+However, you can override any of
+these settings by creating your own `<bot_race>_building_placements.yml` file and specifying
+only the elements you wish to change. `ares-sc2` will automatically prioritize
 your custom placements and fill in any missing elements with the default values.
 
 This is an example content of a `protoss_building_placements.yml`
@@ -209,8 +209,8 @@ class BuildingPlacementOptions(str, Enum):
 ```
 
 ### Providing impossible placements
-`ares-sc2` validates your placements before adding them internally. If an invalid placement is detected, 
-an error message will be logged, but your bot will continue running as normal. If your placements 
+`ares-sc2` validates your placements before adding them internally. If an invalid placement is detected,
+an error message will be logged, but your bot will continue running as normal. If your placements
 aren’t working as expected, be sure to check the logs for more details.
 
 ### WARNING!
@@ -218,7 +218,7 @@ Ensure care is taken when defining placements, try to leave room for addons and 
 blocking in units.
 
 ## Retrieve gate keeper placements
-In Protoss vs Zerg this is the gap in the natural wall that is usually blocked by a 
+In Protoss vs Zerg this is the gap in the natural wall that is usually blocked by a
 gateway unit. Keep in mind this could be `None` if no position is provided for the
 current map.
 
@@ -226,7 +226,7 @@ current map.
 nat_gatekeeper_position: Point2 | None = self.mediator.get_nat_gatekeeper_position
 ```
 
-The system is flexible enough to handle multiple gatekeepers though. You can retrieve the 
+The system is flexible enough to handle multiple gatekeepers though. You can retrieve the
 internal dictionary `ares` uses:
 ```python
 # key is expansion location, value is list of gatekeepers
@@ -242,10 +242,10 @@ There are several ways these placements can be utilized.
 ### Via the BuildRunner
 See [build Runner tutorial](../tutorials/build_runner.md) if you're unfamiliar.
 
-Below is an example of a valid build order that places structures at the natural wall or the reaper wall. 
-To specify that a structure should use your custom natural wall placements or reaper wall placements, simply 
-add `@ nat_wall` or `@ reaper_wall` when declaring a build step. If the map has no custom placements or 
-all available positions are already taken, the build runner will automatically find a 
+Below is an example of a valid build order that places structures at the natural wall or the reaper wall.
+To specify that a structure should use your custom natural wall placements or reaper wall placements, simply
+add `@ nat_wall` or `@ reaper_wall` when declaring a build step. If the map has no custom placements or
+all available positions are already taken, the build runner will automatically find a
 suitable alternative nearby.
 
 ```yml
@@ -300,7 +300,7 @@ Builds:
 ```
 
 ### `BuildStructure` behavior
-You can build wall structures within your own bot logic via the 
+You can build wall structures within your own bot logic via the
 [`BuildStructure` behavior](../api_reference/behaviors/macro_behaviors.md#ares.behaviors.macro.build_structure.BuildStructure).
 If wall placements are not available this will look for a closely alternative. Remember here
 you need to pass in the correct expansion location to pick up the custom placements for that base.
@@ -410,4 +410,3 @@ production_placements: list[Point2] = [
     if natural_placements[BuildingSize.THREE_BY_THREE][placement]["production"]
 ]
 ```
-

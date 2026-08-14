@@ -1,12 +1,12 @@
 
-Dealing with production logic for a bot often means wrestling with the same old repetitive code headaches. 
+Dealing with production logic for a bot often means wrestling with the same old repetitive code headaches.
 Imagine starting off with a bot geared towards a stalker and immortal combo, finely tuning your logic around
-that. Now, say you want to shake things up and switch to a late-game skytoss setup – suddenly, you're 
+that. Now, say you want to shake things up and switch to a late-game skytoss setup – suddenly, you're
 stuck adding more code for production facilities, tech structures, and handling those late-game units.
 
-We get it, this kind of redundancy is a pain. We didn't just 
-want to make transitioning between army compositions smoother; we wanted to kick out all that extra, 
-unnecessary code clutter. Whether you're rocking a stalker and immortal crew or going all-in on a late-game 
+We get it, this kind of redundancy is a pain. We didn't just
+want to make transitioning between army compositions smoother; we wanted to kick out all that extra,
+unnecessary code clutter. Whether you're rocking a stalker and immortal crew or going all-in on a late-game
 skytoss spectacle, our approach offers a more straightforward and adaptable development process.
 
 Furthermore, this system is split into two main behaviors, the `SpawnController` to manage army production,
@@ -69,7 +69,7 @@ class TestBot(AresBot):
         self.register_behavior(SpawnController(self.viking_tank))
 ```
 
-These behaviors can be further customized through arguments, 
+These behaviors can be further customized through arguments,
 please refer to the [API docs](../api_reference/behaviors/macro_behaviors.md)
 
 ## Setting up a `MacroPlan`
@@ -121,5 +121,3 @@ class TestBot(AresBot):
         # only need to register once for whole plan
         self.register_behavior(macro_plan)
 ```
-
-

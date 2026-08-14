@@ -1,67 +1,65 @@
-# Contributors guidance
-
-***
-
-<b> Rough notes for now, this section of the docs needs work </b>
-
-***
+# Contributor guidance
 
 ### Random bits explaining some decisions
  - Application layout - [Python Packaging Authority](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
-recommend the `src` layout
+ recommends the `src` layout
  - Standard to store version number in the package's `__init__.py` [PEP8](https://peps.python.org/pep-0008/)
  - Also store the version in `pyproject.toml`
  - `Makefile` contains most of the commonly used commands from this write-up. This file is used by GitHub workflow
- - Follow [semantic versioning](https://semver.org/) `MAJOR.MINOR.PATCH` 
+ - Follow [semantic versioning](https://semver.org/) `MAJOR.MINOR.PATCH`
 
 
 ### Setting up dev environment
 - install `poetry`
-- clone repo 
-- run `poetry install --with docs lint test semver notebook`
+- clone repo
+- set up a dev environment
+```
+poetry install --with docs lint test semver notebook
+poetry run pre-commit install
+poetry run pre-commit install --hook-type pre-push
+```
+
+- check it works: (you may need to download maps first)
+```
+poetry run python tests/test_bots/melee_bot.py
+```
 
 ### Linting and autoformatting
- - black for main autoformatting
- - isort for import formatting
- - flake8 for checking code base against coding style (PEP8)
- - mypy for checking type annotations 
+ - ruff for autoformatting (enforced by GitHub actions)
 
-isort and black don't agree on some things, add following to `pyproject.toml`
-```
-[tool.isort]
-profile = "black"
-```
+`ruff format .`
 
-flake8 also needs to use black settings, we do this with a `.flake8` settings file
+ - ruff for linting (enforced by GitHub actions)
 
-For mypy we configure via `pyproject.toml`, see 
+`ruff check .`
+
+ - mypy for checking type annotations (enforced by GitHub actions)
+
+`mypy .`
+
+These tools can be configured to run automatically in your favourite IDE.
+
+For mypy we configure via `pyproject.toml`, see
 [docs](https://mypy.readthedocs.io/en/stable/config_file.html#using-a-pyproject-toml)
 See more [here](https://mypy.readthedocs.io/en/stable/running_mypy.html)
 
-#### Using these tools on command line
-
-Can pass in `--check` for some of these
-
-`isort .`
-`black.`
-`flake8 .`
-`mypy .`
-
+#### Using via makefile
 We put all these into a `makefile`, which allows us to do:
-`make format`
-`make lint`
+`make format`  Use the ruff formatter
+`make lint`   Use the ruff and mypy linters
 
 However, using makefiles on Windows requires a bit more setup
 
-#### Configure PyCharm to run these automatically
-TODO: Put own guide here as link might die
+### Unit tests
+Read [this](https://realpython.com/pytest-python-testing/), no point repeating it here
 
-black, isort and flake8 
-[See guide here](https://johschmidt42.medium.com/automate-linting-formatting-in-pycharm-with-your-favourite-tools-de03e856ee17)
+Each test should be small and self-contained
 
-mypy - PyCharm will help with type annotations, just ensure they are being used, and run `mypy .` before committing
-to ensure the github lint workflow tests pass
+Simply run `pytest` to run existing tests.
 
+### Pre-commit
+We use [pre-commit](https://pre-commit.com/) to run our linters and formatters automatically before committing.
+Simply run `pre-commit install` to install the hooks, and then `pre-commit run --all-files` to run them on all files.
 
 ### Git commit guidelines
 See [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), all commits and PR's should follow
@@ -101,12 +99,6 @@ Example of breaking change commit message
 
 #### Github workflow
 All formatters and linters are run in a github workflow, we use the `makefile` here.
-
-### Unit tests
-Read [this](https://realpython.com/pytest-python-testing/), no point repeating it here
-`poetry add --group test pytest`
-
-Each test should be small and self-contained
 
 #### Coverage
 Indicates how much code is covered by tests
@@ -221,8 +213,8 @@ Automatically generated and shouldn't be edited
 
 Install all dependencies based on the lock file
 
-This command will read the TOML file, resolve all the dependencies and finally install them in a virtual environment 
-that poetry will create by default under {cache-dir}/virtualenvs/. 
+This command will read the TOML file, resolve all the dependencies and finally install them in a virtual environment
+that poetry will create by default under {cache-dir}/virtualenvs/.
 
 ```poetry install```
 
@@ -265,4 +257,3 @@ package at the global or user level:
 
 As long as `ares-sc2` was installed with the `notebook` dependencies, then when launching
 jupyter notebook there should be an option to open a notebook with the poetry kernel
-

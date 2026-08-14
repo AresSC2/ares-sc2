@@ -7,22 +7,25 @@
 
 [Documentation](https://aressc2.github.io/ares-sc2/index.html)
 
+## Contributing
+If you're interested in contributing to `ares-sc2`, please follow the guidelines outlined in our [contributor docs](https://aressc2.github.io/ares-sc2/contributing/index.html)
+
 If you're interested in creating a bot with `ares-sc2` we recommend following the instructions on the
 [`ares-sc2-starter-bot` repo](https://github.com/AresSC2/ares-sc2-starter-bot).
 
 ## About
 `Ares-sc2` is a library that extends the capabilities of the
-[python-sc2](https://github.com/BurnySc2/python-sc2) framework. The fundamental principle driving the evolution of 
+[python-sc2](https://github.com/BurnySc2/python-sc2) framework. The fundamental principle driving the evolution of
 `ares-sc2` is to empower users with full command over strategic decisions.
-Consequently, the library is designed to offer supportive functionalities for bot developers, 
-avoiding preconceived choices out of the box. In fact, when initiating a project with `ares-sc2`, it closely 
+Consequently, the library is designed to offer supportive functionalities for bot developers,
+avoiding preconceived choices out of the box. In fact, when initiating a project with `ares-sc2`, it closely
 resembles starting with a blank `python-sc2` bot! You can write standard `python-sc2` logic and call upon
 `ares` functionality as required.
 
 ## Features
 
  - Optimized cython functions via the [cython-extensions-sc2 library](https://github.com/AresSC2/cython-extensions-sc2).
- - Calculated production formation for every expansion location on game start for Terran and Protoss, 
+ - Calculated production formation for every expansion location on game start for Terran and Protoss,
 use convenience behavior `BuildStructure` for easy usage.
 ```python
 from ares.behaviors.macro import BuildStructure
@@ -164,8 +167,8 @@ Install optional dependencies only as needed, for example:
 `poetry install --only docs`
 
 ## Contributing to the docs
-It's possible to set up a lightweight environment that only sets up requirements for testing 
-the documentation locally. As a prerequisite [poetry](https://python-poetry.org/) should 
+It's possible to set up a lightweight environment that only sets up requirements for testing
+the documentation locally. As a prerequisite [poetry](https://python-poetry.org/) should
 be installed on your system. `pip install poetry` is probably all you need in most instances.
 
 1. Fork and then Clone the repo
@@ -181,8 +184,7 @@ be installed on your system. `pip install poetry` is probably all you need in mo
 
 5. Edit `.md` files in the `docs` directory, and any saved changes will automatically be reloaded in your browser.
 
-The documentation relies on the [MkDocs](https://www.mkdocs.org/) library to generate the docs. 
+The documentation relies on the [MkDocs](https://www.mkdocs.org/) library to generate the docs.
 To automatically generate API docs from code we use the [mkdocstrings extension](https://mkdocstrings.github.io/) .
 
 See `mkdocs.yml` file for settings and for configuring the navigation bars.
-

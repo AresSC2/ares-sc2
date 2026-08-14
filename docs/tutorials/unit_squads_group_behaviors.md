@@ -1,22 +1,22 @@
-<b>Recommended Reading:</b> 
- - Explore how to effectively curate 
-[Combat Maneuvers](./combat_maneuver_example.md) with individual units, 
+<b>Recommended Reading:</b>
+ - Explore how to effectively curate
+[Combat Maneuvers](./combat_maneuver_example.md) with individual units,
 providing insights into the workings of the combat maneuver and behavior system in `ares-sc2`.
  - Previous knowledge of the [unit role system](./assigning_unit_roles.md)  is beneficial
 
 ## Why Opt for Unit Squads and Group Behaviors?
 
- - Enable a squadron of units to function cohesively as a group, rather than as 
+ - Enable a squadron of units to function cohesively as a group, rather than as
 individual units lacking consideration for the collective strength in the face of nearby enemies.
- - Gain visibility into the spatial distribution of our units; recognizing scenarios 
-where our main squad may have fewer units than smaller squads moving across the map. 
+ - Gain visibility into the spatial distribution of our units; recognizing scenarios
+where our main squad may have fewer units than smaller squads moving across the map.
 This insight could prompt strategic decisions such as pulling back to allow units to converge.
- - Embrace the concept of group thinking within a squad, unlocking the potential for 
+ - Embrace the concept of group thinking within a squad, unlocking the potential for
 human-like control, where all units respond to a single, coordinated action.
 
 ## Group Behavior tutorial
 
-To begin, here's a basic example of a Zerg bot utilizing the unit role system to assign all units to the 
+To begin, here's a basic example of a Zerg bot utilizing the unit role system to assign all units to the
 `ATTACKING` role.
 ```python
 from ares import AresBot
@@ -49,7 +49,7 @@ class ZergBot(AresBot):
 ```
 
 Now imagine at some specific moment we would like to separate any roaches into their own
-separate hit squad. In an actual game you should choose to do this depending on the 
+separate hit squad. In an actual game you should choose to do this depending on the
 game state, but for the purposes of clarity in this tutorial lets seperate the roaches
 at 6 minutes.
 
@@ -181,16 +181,16 @@ class ZergBot(AresBot):
         self.mediator.assign_role(tag=unit.tag, role=UnitRole.ATTACKING)
 ```
 
-This method creates a basic "a-move" group maneuver for our roaches. Given a target, the roaches will 
-advance towards it. Moreover, `ares-sc2` automatically checks for duplicated actions to prevent action spam, 
+This method creates a basic "a-move" group maneuver for our roaches. Given a target, the roaches will
+advance towards it. Moreover, `ares-sc2` automatically checks for duplicated actions to prevent action spam,
 enabling your bot to "a-move" akin to a human player.
 
 ### Extending the group maneuver
-Similar to individual combat maneuvers, Behaviors should be orchestrated in priority order. 
+Similar to individual combat maneuvers, Behaviors should be orchestrated in priority order.
 `ares` executes behaviors according to the user-provided order, therefore if a behavior executes and action,
-any subsequent behaviors will be ignored. With this in mind, let's add a group behavior 
+any subsequent behaviors will be ignored. With this in mind, let's add a group behavior
 for when enemies are close. We'd like our roaches to be aggressive, closing in on nearby enemies
-using the `StutterGroupForward` behavior. 
+using the `StutterGroupForward` behavior.
 Otherwise, if no enemies are present, the `AMoveGroup` behavior will execute:
 
 ```python
@@ -244,12 +244,12 @@ def control_roach_hit_squad(self, roach_hit_squad: Units, target: Point2) -> Non
 
 ## Unit Squads: Enhanced Group Tactics
 
-Our roach_squad_maneuver works well, but controlling roaches as a group has a significant flaw. 
-Imagine our roach squad is scattered across the map; issuing StutterGroupForward to roaches 
-that don't have nearby enemies is ineffective. Moreover, calculating close enemies to our 
+Our roach_squad_maneuver works well, but controlling roaches as a group has a significant flaw.
+Imagine our roach squad is scattered across the map; issuing StutterGroupForward to roaches
+that don't have nearby enemies is ineffective. Moreover, calculating close enemies to our
 group becomes inaccurate, leading to undesirable behavior.
 
-Thankfully, we can utilize the UnitSquad system in ares-sc2 to split our hit squad into logical groups! 
+Thankfully, we can utilize the UnitSquad system in ares-sc2 to split our hit squad into logical groups!
 Let's enhance the control_roach_hit_squad method to incorporate this:
 
 ```python
@@ -304,7 +304,7 @@ def control_roach_hit_squad(self, roach_hit_squad: Units, target: Point2) -> Non
         self.register_behavior(roach_squad_maneuver)
 ```
 
-Now, UnitSquad provides attributes such as squad_position, squad_units, and tags, eliminating the 
+Now, UnitSquad provides attributes such as squad_position, squad_units, and tags, eliminating the
 need for manual calculations. This allows for greater synergy with the group maneuver system, as we
 can pass this attributes directly as arguments into group behaviors:
 
