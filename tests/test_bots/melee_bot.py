@@ -136,12 +136,11 @@ class DummyBot(AresBot):
 if __name__ == "__main__":
     random_map = random.choice(
         [
-            # "IncorporealAIE_v4",
-            # "MagannathaAIE_v2"
-            # "PersephoneAIE_v4",
-            # "PylonAIE_v4",
-            # "TorchesAIE_v4",
-            "LeyLinesAIE_v3"
+            "IncorporealAIE_v4",
+            "MagannathaAIE_v2PersephoneAIE_v4",
+            "PylonAIE_v4",
+            "TorchesAIE_v4",
+            # "LeyLinesAIE_v3"
         ]
     )
     run_game(

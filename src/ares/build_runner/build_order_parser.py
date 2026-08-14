@@ -452,14 +452,32 @@ class BuildOrderParser:
         if len(commands) >= 2 and command != BuildOrderOptions.ADDONSWAP:
             extra_commands: list[str] = commands[2:]
             for command in extra_commands:
-                target = command.upper()
-                # Try to set the target
-                if _target := self._get_target_for_step(target):
-                    step.target = _target
+                # build-order strings often use `@` as a separator, e.g.:
+                # `13 pylon @ ramp`
+                # In that case `raw_step.split(" ")` is ["13","pylon","@","ramp"]
+                if command == "@":
+                    continue
 
+                # Also support `@ramp` (no space) by stripping a leading "@"
+                if command.startswith("@"):
+                    command = command[1:]
+
+                target = command.upper()
                 # Extract integer from the target if applicable
+                # (e.g. `stalker *3` or `drone x4`). These aren't "targets" and
+                # shouldn't be sent through `_get_target_for_step`.
                 if _duplicates := self.extract_integer_from_target(target):
                     duplicates = _duplicates
+                    continue
+
+                # Try to set the target
+                try:
+                    if _target := self._get_target_for_step(target):
+                        step.target = _target
+                except ValueError:
+                    # Ignore unknown extra tokens; they may be aliases or other
+                    # modifiers not relevant to targets.
+                    pass
 
         if command == BuildOrderOptions.CHRONO and not step.target:
             raise Exception(
