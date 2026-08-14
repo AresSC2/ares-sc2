@@ -1,10 +1,10 @@
-The ares framework comes with the [SC2MapAnalysis library](https://github.com/spudde123/SC2MapAnalysis) already integrated. This integration 
-provides access to the library's grid and pathing features, enabling ares to offer a variety of 
+The ares framework comes with the [SC2MapAnalysis library](https://github.com/spudde123/SC2MapAnalysis) already integrated. This integration
+provides access to the library's grid and pathing features, enabling ares to offer a variety of
 preconfigured grids and pathing functions right out of the box. This also enables users to create
 their own custom grids which they can use with existing ares pathing and behavior methods.
 
 ## What is a grid?
-A grid is essentially a two-dimensional array, where each element represents an x,y coordinate in the game, 
+A grid is essentially a two-dimensional array, where each element represents an x,y coordinate in the game,
 and the value of that element will contain some numerical value.
 A basic ground grid might contain zeroes for unpathable tiles and ones for pathable. See a visual example
 below of a simple pathing ground grid the Blizzard API provides.
@@ -31,7 +31,7 @@ grid containing dangerous effects to avoid. For example storms, ravager biles, p
 - [`self.mediator.get_air_grid`](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.get_air_grid) an air
 grid containing all enemy units and effects dangerous to air.
 - [`self.mediator.get_air_vs_ground_grid`](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.get_air_vs_ground_grid) a specialised
-air grid where ground pathable tiles have increased cost. The idea behind this one is for air units will favour high ground areas when 
+air grid where ground pathable tiles have increased cost. The idea behind this one is for air units will favour high ground areas when
 using pathing queries.
 - [`self.mediator.get_climber_grid`](../api_reference/manager_mediator.md#ares.managers.manager_mediator.ManagerMediator.get_climber_grid) - Same
 as `get_ground_grid` but areas where reapers can jump, or colossus can climb are pathable.
@@ -52,7 +52,7 @@ Where you have a unit, but you just need the next point to move along a path.
 move_to: Point2 = self.mediator.find_path_next_point(
     start=self.start_location,
     target=self.enemy_start_locations[0],
-    grid=self.mediator.get_air_grid
+    grid=self.mediator.get_air_grid,
 )
 ```
 
@@ -62,7 +62,7 @@ Get the entire queried path.
 path: list[Point2] = self.mediator.find_raw_path(
     start=self.start_location,
     target=self.enemy_start_locations[0],
-    grid=self.mediator.get_air_grid
+    grid=self.mediator.get_air_grid,
 )
 ```
 
@@ -73,7 +73,7 @@ Useful for queuing up commands, for example an overlord going to a spotting posi
 path: list[Point2] = self.mediator.find_low_priority_path(
     start=self.start_location,
     target=self.enemy_start_locations[0],
-    grid=self.mediator.get_air_grid
+    grid=self.mediator.get_air_grid,
 )
 ```
 
@@ -87,9 +87,7 @@ unit: Unit = self.workers[0]
 
 
 path_unit: Behavior = PathUnitToTarget(
-    unit=unit,
-    grid=self.mediator.get_ground_grid,
-    target=self.game_info.map_center
+    unit=unit, grid=self.mediator.get_ground_grid, target=self.game_info.map_center
 )
 self.register_behavior(path_unit)
 ```
@@ -108,7 +106,7 @@ path_group: Behavior = PathGroupToTarget(
     group=group,
     group_tags={u.tag for u in group},
     grid=self.mediator.get_ground_grid,
-    target=self.game_info.map_center
+    target=self.game_info.map_center,
 )
 self.register_behavior(path_group)
 ```
@@ -119,9 +117,7 @@ self.register_behavior(path_group)
 Given a position, find a nearby safe spot. Most useful for working out where to retreat to.
 ```python
 safe_spot: Point2 = self.mediator.find_closest_safe_spot(
-    from_pos=self.start_location,
-    grid=self.mediator.get_air_avoidance_grid,
-    radius=8
+    from_pos=self.start_location, grid=self.mediator.get_air_avoidance_grid, radius=8
 )
 ```
 
@@ -144,7 +140,7 @@ self.register_behavior(keep_safe)
 - [`KeepGroupSafe`](../api_reference/behaviors/combat_behaviors.md#ares.behaviors.combat.group.path_group_to_target.KeepGroupSafe)<br/>
 A `CombatBehavior` that keeps an entire group safe.
 ```python
-from ares.behaviors.combat.group import KeepGroupSafe 
+from ares.behaviors.combat.group import KeepGroupSafe
 from ares.behaviors.behavior import Behavior
 
 group: Units = self.workers
@@ -187,13 +183,13 @@ if reapers := self.mediator.get_own_army_dict[UnitTypeId.REAPER]:
     for reaper in reapers:
         pos: Point2 = reaper.position
         reaper_is_safe: float = cy_point_below_value(
-            grid=grid, 
+            grid=grid,
             position=pos.rounded,
-            weight_safety_limit=1.0 # default pathing cell with no danger is 1.0
+            weight_safety_limit=1.0,  # default pathing cell with no danger is 1.0
         )
 ```
 
-Have a check on the `cython_extensions-sc2` repo docs for other functions including: 
+Have a check on the `cython_extensions-sc2` repo docs for other functions including:
 
 - `cy_all_points_below_max_value`
 - `cy_all_points_have_value`
@@ -201,8 +197,8 @@ Have a check on the `cython_extensions-sc2` repo docs for other functions includ
 - `cy_points_with_value`
 
 ## Create your own grids
-The available grids in ares are pre-filled with enemy cost based on the developers' perspectives. 
-However, you have the flexibility to create your own custom grids. Even better, you can integrate 
+The available grids in ares are pre-filled with enemy cost based on the developers' perspectives.
+However, you have the flexibility to create your own custom grids. Even better, you can integrate
 these custom grids into existing ares functions and behaviors!
 
 As the [SC2MapAnalysis library](https://github.com/spudde123/SC2MapAnalysis) in integrated into
@@ -214,16 +210,17 @@ from ares import AresBot
 import numpy as np
 from sc2.position import Point2
 
+
 class MyBot(AresBot):
     async def on_step(self, iteration: int) -> None:
         # get access to the SC2MapAnalysis library
         map_data: MapData = self.mediator.get_map_data_object
-        
+
         # get a clean ground grid
         my_ground_grid: np.ndarray = map_data.get_pyastar_grid()
         # or an air grid if needed
         my_air_grid: np.ndarray = map_data.get_clean_air_grid()
-        
+
         """
         Add cost to this grid
         For this example, let's make the enemy spawn location
@@ -235,10 +232,9 @@ class MyBot(AresBot):
             position=self.enemy_start_locations[0],
             radius=20,
             grid=my_ground_grid,
-            weight=100.5
+            weight=100.5,
         )
-        
-        
+
         """
         In a real world bot, you probably add cost for enemy units,
         structures and effects, something like:
@@ -250,30 +246,26 @@ class MyBot(AresBot):
                     position=unit.position,
                     radius=unit.ground_range + radius_buffer,
                     grid=my_ground_grid,
-                    weight=unit.ground_dps
+                    weight=unit.ground_dps,
                 )
             if unit.can_attack_air:
                 my_air_grid = map_data.add_cost(
                     position=self.enemy_start_locations[0],
                     radius=unit.air_range + radius_buffer,
                     grid=my_air_grid,
-                    weight=unit.ground_dps
+                    weight=unit.ground_dps,
                 )
-                
+
         # now my_ground_grid, my_ground_grid are ready to use
-        
+
         # will find the best path to enemy spawn, factoring in enemy cost
         move_to: Point2 = self.mediator.find_path_next_point(
             start=self.start_location,
             target=self.enemy_start_locations[0],
-            grid=my_ground_grid
+            grid=my_ground_grid,
         )
-        
+
         """
         Use custom grids with any ares method, behavior etc
         """
-            
-
-
-
 ```

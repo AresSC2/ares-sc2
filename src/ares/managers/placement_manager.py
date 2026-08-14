@@ -3,9 +3,10 @@ from __future__ import annotations
 import math
 import time
 from collections import defaultdict
+from collections.abc import Callable
 from itertools import product
 from os import getcwd, path
-from typing import TYPE_CHECKING, Any, Callable, Coroutine
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from cython_extensions import (
@@ -104,15 +105,13 @@ class PlacementManager(Manager, IManagerMediator):
         mediator : ManagerMediator
             ManagerMediator used for getting information from other managers.
         """
-        super(PlacementManager, self).__init__(ai, config, mediator)
+        super().__init__(ai, config, mediator)
 
         self.manager_requests_dict = {
             ManagerRequestType.CAN_PLACE_STRUCTURE: lambda kwargs: (
                 self.can_place_structure(**kwargs)
             ),
-            ManagerRequestType.GET_PLACEMENTS_DICT: lambda kwargs: (
-                self.placements_dict
-            ),
+            ManagerRequestType.GET_PLACEMENTS_DICT: lambda kwargs: self.placements_dict,
             ManagerRequestType.GET_PVZ_NAT_GATEKEEPER_POS: lambda kwargs: (
                 self.get_pvz_nat_gatekeeper_pos
             ),
@@ -164,9 +163,9 @@ class PlacementManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
-    ) -> dict | defaultdict | Coroutine[Any, Any, bool] | None:
+    ) -> Any:
         """Fetch information from this Manager so another Manager can use it.
 
         Parameters
@@ -183,7 +182,7 @@ class PlacementManager(Manager, IManagerMediator):
 
         Returns
         -------
-        dict | defaultdict | Coroutine[Any, Any, bool] | None :
+        Any :
             Everything that could possibly be returned from the Manager fits in there
 
         """
@@ -214,8 +213,8 @@ class PlacementManager(Manager, IManagerMediator):
         if self.ai.arcade_mode:
             return
 
-        self.warp_in_positions = set()
-        self.requested_warp_ins = []
+        self.warp_in_positions: set[Point2] = set()
+        self.requested_warp_ins: list[Any] = []
         # occasionally check if worker on route locations can be unlocked
         if iteration % 16 == 0 and len(self.worker_on_route_tracker) > 0:
             self._track_requested_placements()
@@ -248,7 +247,7 @@ class PlacementManager(Manager, IManagerMediator):
         self.race_to_building_solver_method[self.ai.race]()
         finish: float = time.time()
 
-        logger.info(f"Solved placement formation in {(finish - start)*1000} ms")
+        logger.info(f"Solved placement formation in {(finish - start) * 1000} ms")
 
     def can_place_structure(
         self, position: Point2, structure_type: UnitTypeId, include_addon: bool = False
@@ -272,14 +271,16 @@ class PlacementManager(Manager, IManagerMediator):
             Indicating if structure can be placed at given position.
         """
         assert structure_type in STRUCTURE_TO_BUILDING_SIZE, (
-            f"{structure_type}, " f"not present in STRUCTURE_TO_BUILDING_SIZE dict"
+            f"{structure_type}, not present in STRUCTURE_TO_BUILDING_SIZE dict"
         )
 
         if structure_type in GAS_BUILDINGS:
             pos: Point2 = position.position
             existing_gas_buildings: Units = self.ai.all_units.filter(
-                lambda u: u.type_id in ALL_GAS
-                and cy_distance_to_squared(pos, u.position) < 12.25
+                lambda u: (
+                    u.type_id in ALL_GAS
+                    and cy_distance_to_squared(pos, u.position) < 12.25
+                )
             )
             return len(existing_gas_buildings) == 0
 
@@ -288,11 +289,11 @@ class PlacementManager(Manager, IManagerMediator):
         origin_x: int = round(position[0] - offset)
         origin_y: int = round(position[1] - offset)
 
-        size: tuple[int, int] = self.BUILDING_SIZE_ENUM_TO_TUPLE[size]
+        size_tuple: tuple[int, int] = self.BUILDING_SIZE_ENUM_TO_TUPLE[size]
         skip_creep_check: bool = structure_type in self.SKIP_CREEP_CHECK_IDS
         return cy_can_place_structure(
             (origin_x, origin_y),
-            size,
+            size_tuple,
             self.ai.state.creep.data_numpy,
             self.ai.game_info.placement_grid.data_numpy,
             self.manager_mediator.get_ground_grid.astype(np.uint8).T,
@@ -322,12 +323,12 @@ class PlacementManager(Manager, IManagerMediator):
         reaper_wall: bool = False,
     ) -> Point2 | None:
         """Given a base location and building size find an available placement."""
-        assert (
-            self.ai.race != Race.Zerg
-        ), "`request_building_placement` not supported for Zerg"
-        assert (
-            structure_type in STRUCTURE_TO_BUILDING_SIZE
-        ), f"{structure_type} not found in STRUCTURE_TO_BUILDING_SIZE dict"
+        assert self.ai.race != Race.Zerg, (
+            "`request_building_placement` not supported for Zerg"
+        )
+        assert structure_type in STRUCTURE_TO_BUILDING_SIZE, (
+            f"{structure_type} not found in STRUCTURE_TO_BUILDING_SIZE dict"
+        )
 
         # Construct options bag
         req: PlacementRequest = PlacementRequest(
@@ -701,7 +702,7 @@ class PlacementManager(Manager, IManagerMediator):
         within_psionic_matrix: bool,
         pylon_build_progress: float = 1.0,
     ) -> list[Point2]:
-        potential_placements: dict[Point2:dict] = self.placements_dict[location][
+        potential_placements: dict[Point2, dict] = self.placements_dict[location][
             building_size
         ]
         available: list[Point2] = [
@@ -761,6 +762,8 @@ class PlacementManager(Manager, IManagerMediator):
                 return min(
                     available, key=lambda k: cy_distance_to_squared(k, base_location)
                 )
+
+        return None
 
     def on_building_started(self, unit: Unit) -> None:
         """On structure starting, update placements_dict with this new information.
@@ -843,9 +846,9 @@ class PlacementManager(Manager, IManagerMediator):
         tag : optional
             Tag of existing structure.
         """
-        assert (
-            base_location in self.placements_dict
-        ), f"{base_location} not in placements dict"
+        assert base_location in self.placements_dict, (
+            f"{base_location} not in placements dict"
+        )
 
         if (
             size not in self.placements_dict[base_location]
@@ -859,9 +862,9 @@ class PlacementManager(Manager, IManagerMediator):
 
         self.placements_dict[base_location][size][building_pos]["available"] = True
         self.placements_dict[base_location][size][building_pos]["building_tag"] = 0
-        self.placements_dict[base_location][size][building_pos][
-            "worker_on_route"
-        ] = False
+        self.placements_dict[base_location][size][building_pos]["worker_on_route"] = (
+            False
+        )
         if tag in self.structure_tag_to_base_location:
             self.structure_tag_to_base_location.pop(tag)
 
@@ -883,9 +886,9 @@ class PlacementManager(Manager, IManagerMediator):
         tag :
             Tag of new structure at placement.
         """
-        assert (
-            base_location in self.placements_dict
-        ), f"{base_location} not in placements dict"
+        assert base_location in self.placements_dict, (
+            f"{base_location} not in placements dict"
+        )
         placement_dict: dict = self.placements_dict[base_location][size][building_pos]
         placement_dict["available"] = False
         placement_dict["building_tag"] = tag
@@ -1021,12 +1024,12 @@ class PlacementManager(Manager, IManagerMediator):
                 reduce_x_stride=True,
             )
 
-            start_x: int = int(el.x - 6.5)
-            start_y: int = int(el.y - 6.5)
+            start_x = int(el.x - 6.5)
+            start_y = int(el.y - 6.5)
             self.points_to_avoid_grid[
                 start_y : start_y + 13, start_x : start_x + 13
             ] = 1
-            max_dist: int = 16
+            max_dist = 16
 
             self._find_placements_for_base_location(
                 el=el,
@@ -1126,8 +1129,8 @@ class PlacementManager(Manager, IManagerMediator):
         angles: list[float] = []
         max_dist: float = 0.0
         for mf in mineral_fields:
-            dx: float = mf.position.x - el.x
-            dy: float = mf.position.y - el.y
+            dx = mf.position.x - el.x
+            dy = mf.position.y - el.y
             angles.append(math.atan2(dy, dx))
             max_dist = max(max_dist, math.hypot(dx, dy))
 
@@ -1154,9 +1157,9 @@ class PlacementManager(Manager, IManagerMediator):
         max_dist_sq: float = max_dist * max_dist
 
         for y in range(min_y, max_y):
-            dy: float = (y + 0.5) - el.y
+            dy = (y + 0.5) - el.y
             for x in range(min_x, max_x):
-                dx: float = (x + 0.5) - el.x
+                dx = (x + 0.5) - el.x
                 dist_sq: float = dx * dx + dy * dy
                 if dist_sq > max_dist_sq:
                     continue
@@ -1168,7 +1171,7 @@ class PlacementManager(Manager, IManagerMediator):
                     self.points_to_avoid_grid[y, x] = 1
 
     def _find_optimal_pylon_for_base(self, el: Point2) -> None:
-        two_by_twos: dict[Point2:dict] = self.placements_dict[el][
+        two_by_twos: dict[Point2, dict] = self.placements_dict[el][
             BuildingSize.TWO_BY_TWO
         ]
         prod_pylons: list[Point2] = [
@@ -1176,7 +1179,7 @@ class PlacementManager(Manager, IManagerMediator):
             for placement in two_by_twos
             if two_by_twos[placement]["production_pylon"]
         ]
-        three_by_threes: dict[Point2:dict] = self.placements_dict[el][
+        three_by_threes: dict[Point2, dict] = self.placements_dict[el][
             BuildingSize.THREE_BY_THREE
         ]
 
@@ -1298,7 +1301,7 @@ class PlacementManager(Manager, IManagerMediator):
         self._add_placement_position(
             BuildingSize.TWO_BY_TWO, el, pylon_pos, wall=True, production_pylon=True
         )
-        building_positions = [pos for pos in buildings]
+        building_positions = list(buildings)
         self._add_placement_position(
             BuildingSize.THREE_BY_THREE, el, building_positions[0], wall=True
         )
@@ -1333,7 +1336,7 @@ class PlacementManager(Manager, IManagerMediator):
         self._add_placement_position(
             BuildingSize.THREE_BY_THREE, el, center_pos, wall=True
         )
-        corner_positions = [pos for pos in ramp.corner_depots]
+        corner_positions = list(ramp.corner_depots)
         self._add_placement_position(
             BuildingSize.TWO_BY_TWO,
             el,
@@ -1441,13 +1444,11 @@ class PlacementManager(Manager, IManagerMediator):
                 info = self.placements_dict[location][BuildingSize.TWO_BY_TWO][
                     placement
                 ]
-                position: Point2 = Point2(placement)
+                position = Point2(placement)
                 pos_min = Point3((placement.x - 1.0, placement.y - 1.0, z))
                 pos_max = Point3((placement.x + 1.0, placement.y + 1.0, z + 1))
 
-                if info["custom"]:
-                    colour = Point3((255, 255, 255))
-                elif info["first_pylon"]:
+                if info["custom"] or info["first_pylon"]:
                     colour = Point3((255, 255, 255))
                 elif info["is_wall"]:
                     colour = Point3((255, 255, 0))
@@ -1513,18 +1514,15 @@ class PlacementManager(Manager, IManagerMediator):
                     )
                     loc_to_remove.append(building_location)
 
-            elif building_location in base_placements[three_by_three]:
-                if (
-                    self.ai.time
-                    > base_placements[three_by_three][building_location][
-                        "time_requested"
-                    ]
-                    + self.WORKER_ON_ROUTE_TIMEOUT
-                ):
-                    self._make_placement_available(
-                        three_by_three, base_location, building_location
-                    )
-                    loc_to_remove.append(building_location)
+            elif building_location in base_placements[three_by_three] and (
+                self.ai.time
+                > base_placements[three_by_three][building_location]["time_requested"]
+                + self.WORKER_ON_ROUTE_TIMEOUT
+            ):
+                self._make_placement_available(
+                    three_by_three, base_location, building_location
+                )
+                loc_to_remove.append(building_location)
 
         for loc in loc_to_remove:
             self.worker_on_route_tracker.pop(loc)

@@ -6,6 +6,7 @@ import json
 import os
 from collections import defaultdict, deque
 from os import path
+from typing import Any
 
 from loguru import logger
 from sc2.data import Result
@@ -61,7 +62,7 @@ class DataManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> str | list[str] | None:
         Fetch information from this Manager so another Manager can use it.
@@ -95,7 +96,7 @@ class DataManager(Manager, IManagerMediator):
         self.found_build: bool = False
         self.opponent_history: list = []
 
-        self.file_path: path = path.join(
+        self.file_path: str = path.join(
             DATA_DIR, f"{self.ai.opponent_id}-{self.ai.race.name.lower()}.json"
         )
         self.build_selection_method: str = CYCLE
@@ -107,7 +108,7 @@ class DataManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> str | list[str] | None:
         """Fetch information from this Manager so another Manager can use it.
@@ -134,9 +135,12 @@ class DataManager(Manager, IManagerMediator):
         return self.manager_requests_dict[request](kwargs)
 
     def initialise(self) -> None:
-        if BUILD_SELECTION in self.config and self.config[USE_DATA]:
-            if self.config[BUILD_SELECTION] == WINRATE_BASED:
-                self.build_selection_method = WINRATE_BASED
+        if (
+            BUILD_SELECTION in self.config
+            and self.config[USE_DATA]
+            and self.config[BUILD_SELECTION] == WINRATE_BASED
+        ):
+            self.build_selection_method = WINRATE_BASED
         if MIN_GAMES_WINRATE_BASED in self.config:
             self.min_games = self.config[MIN_GAMES_WINRATE_BASED]
 
@@ -197,7 +201,7 @@ class DataManager(Manager, IManagerMediator):
         If there is a winrate tie (including all 0.0), cycle through tied builds.
         """
         # Count games per build
-        build_counts = {build: 0 for build in self.build_cycle}
+        build_counts = dict.fromkeys(self.build_cycle, 0)
         for entry in self.opponent_history:
             build = entry.get(STRATEGY_USED)
             if build in build_counts:
@@ -209,7 +213,9 @@ class DataManager(Manager, IManagerMediator):
             return
 
         # --- Winrate-based selection ---
-        build_games = defaultdict(deque)  # build -> deque of last 10 results
+        build_games: defaultdict[str, deque[Any]] = defaultdict(
+            deque
+        )  # build -> deque of last 10 results
         for entry in reversed(self.opponent_history):
             build = entry.get(STRATEGY_USED)
             result = entry.get(RESULT)
@@ -222,7 +228,7 @@ class DataManager(Manager, IManagerMediator):
 
         winrates = {}
         for build in self.build_cycle:
-            games = build_games.get(build, [])
+            games = build_games[build]
             if len(games) >= self.min_games:
                 wins = sum(1 for r in games if r == 2)
                 winrate: float = wins / len(games)
@@ -270,10 +276,7 @@ class DataManager(Manager, IManagerMediator):
         self._choose_opening_cycle()
 
     def _get_build_cycle(self) -> list[str]:
-        if self.config[DEBUG]:
-            opponent_id: str = TEST_OPPONENT_ID
-        else:
-            opponent_id: str = self.ai.opponent_id
+        opponent_id = TEST_OPPONENT_ID if self.config[DEBUG] else self.ai.opponent_id
 
         build_cycle: list[str] = []
         if BUILD_CHOICES in self.config:
@@ -290,7 +293,7 @@ class DataManager(Manager, IManagerMediator):
 
     def _get_opponent_data(self, _opponent_id: str) -> None:
         if path.isfile(self.file_path):
-            with open(self.file_path, "r") as f:
+            with open(self.file_path) as f:
                 self.opponent_history = json.load(f)
         else:
             # no data, create a dummy version

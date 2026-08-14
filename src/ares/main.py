@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 from collections import defaultdict
 from os import getcwd, path
+from typing import TYPE_CHECKING
 
 import yaml
 from cython_extensions import cy_towards, cy_unit_pending
@@ -59,6 +60,9 @@ from ares.dicts.enemy_vs_ground_static_defense_ranges import (
 from ares.managers.hub import Hub
 from ares.managers.manager_mediator import ManagerMediator
 
+if TYPE_CHECKING:
+    from ares.chat_debug import ChatDebug
+
 
 class AresBot(CustomBotAI):
     """Final setup of CustomBotAI for usage.
@@ -69,6 +73,8 @@ class AresBot(CustomBotAI):
     behavior_executioner: BehaviorExecutioner  # executes behaviors on each step
     build_order_runner: BuildOrderRunner  # execute exact build order from config
     cost_dict: dict[UnitTypeId, Cost]  #: UnitTypeId to cost for faster lookup later
+    enemy_vs_ground_static_defense: Units
+    overcharged_battery: Unit | None
 
     NYDUSES: set[UnitTypeId] = {UnitTypeId.NYDUSCANAL, UnitTypeId.NYDUSNETWORK}
     UNIT_TYPES_NOT_IN_SLIM: set[UnitTypeId] = {
@@ -116,7 +122,7 @@ class AresBot(CustomBotAI):
 
         self.game_step_override: int | None = game_step_override
         self.unit_tag_dict: dict[int, Unit] = {}
-        self.chat_debug = None
+        self.chat_debug: ChatDebug | None = None
         self.forcefield_to_bile_dict: dict[Point2, int] = {}
         self.last_game_loop: int = -1
 
@@ -131,7 +137,7 @@ class AresBot(CustomBotAI):
         self.num_larva_left: int = 0
 
         self._same_order_actions: list[
-            tuple[AbilityId, set[int], Point2 | Unit | None]
+            tuple[AbilityId, list[int] | set[int], int | Point2 | Unit | None]
         ] = []
         self._drop_unload_actions: list[tuple[int, int]] = []
         self._archon_morph_actions: list[list] = []
@@ -152,7 +158,7 @@ class AresBot(CustomBotAI):
     def do_unload_container(self, container_tag: int, index: int = 0) -> None:
         self._drop_unload_actions.append((container_tag, index))
 
-    def calculate_cost(self, item_id: AbilityId | UnitTypeId | UpgradeId) -> (Cost):
+    def calculate_cost(self, item_id: AbilityId | UnitTypeId | UpgradeId) -> Cost:
         if isinstance(item_id, UnitTypeId):
             cost_dict: dict[UnitTypeId, Cost] = getattr(self, "cost_dict", COST_DICT)
             if item_id in cost_dict:
@@ -198,7 +204,7 @@ class AresBot(CustomBotAI):
         # there's going to be a lot of appending, so form Units at the end
         batteries_list: list[Unit] = []
         cannons_list: list[Unit] = []
-        enemy_vs_ground_static_defense_list = []
+        enemy_vs_ground_static_defense_list: list[Unit] = []
         self._clear_adept_shades()
 
         if update_managers:
@@ -301,7 +307,7 @@ class AresBot(CustomBotAI):
             self.__user_config_location__, f"{self.race.name.lower()}_builds.yml"
         )
         if path.isfile(__user_build_orders_location__):
-            with open(__user_build_orders_location__, "r") as config_file:
+            with open(__user_build_orders_location__) as config_file:
                 build_order_config: dict = yaml.safe_load(config_file)
                 self.config.update(build_order_config)
 
@@ -411,16 +417,17 @@ class AresBot(CustomBotAI):
             await self.build_order_runner.run_build()
 
         # detect scouts used by the build runner that are finished
-        if self.time < 390.0:
-            if scouts := [
+        if self.time < 390.0 and (
+            scouts := [
                 w
                 for w in self.mediator.get_units_from_role(
                     role=UnitRole.BUILD_RUNNER_SCOUT, unit_type=WORKER_TYPES
                 )
                 if w.is_idle
-            ]:
-                for scout in scouts:
-                    self.mediator.assign_role(tag=scout.tag, role=UnitRole.GATHERING)
+            ]
+        ):
+            for scout in scouts:
+                self.mediator.assign_role(tag=scout.tag, role=UnitRole.GATHERING)
 
         self.actual_iteration += 1
         if self.chat_debug:
@@ -441,7 +448,7 @@ class AresBot(CustomBotAI):
             await self._do_zerg_build_placement(requested_zerg_placement)
         self.manager_hub.grid_manager.reset_grids(self.actual_iteration)
         await self.manager_hub.warp_in_manager.do_warp_ins()
-        return await super(AresBot, self)._after_step()
+        return await super()._after_step()
 
     def register_behavior(self, behavior: Behavior) -> None:
         """Register behavior.
@@ -668,7 +675,7 @@ class AresBot(CustomBotAI):
             return
         if update_managers:
             self.manager_hub.unit_role_manager.catch_unit(unit_obj, unit_id, tag)
-            self.manager_hub.ability_tracker_manager.catch_unit(unit_obj, unit_id, tag)
+            self.manager_hub.ability_tracker_manager.catch_unit(unit_id, tag)
 
         self.all_own_units.append(unit_obj)
         # if unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
@@ -679,10 +686,13 @@ class AresBot(CustomBotAI):
                 self.own_units_slim.append(unit_obj)
             elif unit_id not in self.UNIT_TYPES_NOT_IN_SLIM:
                 self.own_structures_slim.append(unit_obj)
-            if unit_id == UnitTypeId.CREEPTUMORBURROWED:
-                if not unit_obj.is_idle and isinstance(unit_obj.order_target, Point2):
-                    self._used_tumors.add(tag)
-                    return
+            if (
+                unit_id == UnitTypeId.CREEPTUMORBURROWED
+                and not unit_obj.is_idle
+                and isinstance(unit_obj.order_target, Point2)
+            ):
+                self._used_tumors.add(tag)
+                return
             if update_managers:
                 self.manager_hub.unit_cache_manager.store_own_structure(unit_obj)
             self.structures.append(unit_obj)
@@ -766,8 +776,10 @@ class AresBot(CustomBotAI):
                 UnitTreeQueryType.EnemyGround,
                 return_as_dict=False,
             )[0].filter(
-                lambda u: u.tag not in self.adept_tags_with_shades_assigned
-                and u.type_id == UnitTypeId.ADEPT
+                lambda u: (
+                    u.tag not in self.adept_tags_with_shades_assigned
+                    and u.type_id == UnitTypeId.ADEPT
+                )
             )
             if close_adepts:
                 self.adept_shades[shade_tag][SHADE_OWNER] = close_adepts.closest_to(
@@ -800,7 +812,7 @@ class AresBot(CustomBotAI):
         """
         # clear every 3 minutes
         if self.state.game_loop % 4032 == 0:
-            self._blocked_positions = set()
+            self._blocked_positions: set[Point2] = set()
         # Set of enemy units detected by own sensor tower,
         # as blips have less unit information than normal visible units
         self.all_units: Units = Units([], self)
@@ -831,10 +843,10 @@ class AresBot(CustomBotAI):
         self.all_gas_buildings = Units([], self)
         self.eggs: Units = Units([], self)
         self.unit_tag_dict = {}
-        self.overcharged_battery: Unit | None = None
+        self.overcharged_battery = None
         self.nyduses = Units([], self)
         self.enemy_detectors: list[Unit] = []
-        self.enemy_vs_ground_static_defense: Units = Units([], self)
+        self.enemy_vs_ground_static_defense = Units([], self)
         self.friendly_parasitic_bomb_positions: list[Point2] = []
         self.enemy_parasitic_bomb_positions: list[Point2] = []
 
@@ -928,13 +940,13 @@ class AresBot(CustomBotAI):
         if build_dict is None:
             build_dict = {}
 
-        structures_dict: dict[
-            UnitTypeId, list[Unit]
-        ] = self.mediator.get_own_structures_dict
+        structures_dict: dict[UnitTypeId, list[Unit]] = (
+            self.mediator.get_own_structures_dict
+        )
         own_army_dict: dict[UnitTypeId, list[Unit]] = self.mediator.get_own_army_dict
         build_from_dict: dict[UnitTypeId, list[Unit]] = structures_dict
         if self.race != Race.Terran:
-            build_from_dict: dict[UnitTypeId, list[Unit]] = {
+            build_from_dict = {
                 **structures_dict,
                 **own_army_dict,
             }
@@ -1087,7 +1099,7 @@ class AresBot(CustomBotAI):
         """
         num_pending: int = 0
         building_tracker: dict = self.mediator.get_building_tracker_dict
-        for tag, info in building_tracker.items():
+        for tag, _info in building_tracker.items():
             structure_id: UnitTypeId = building_tracker[tag][ID]
             if structure_id != structure_type:
                 continue
@@ -1111,20 +1123,23 @@ class AresBot(CustomBotAI):
         base_location: Point2 = requested_zerg_placement[0]
         unit_type: UnitTypeId = requested_zerg_placement[1]
 
-        if pos := await self.find_placement(
-            unit_type,
-            Point2(cy_towards(base_location, self.game_info.map_center, 6.0)),
-            30,
-        ):
-            if worker := self.mediator.select_worker(
+        if (
+            pos := await self.find_placement(
+                unit_type,
+                Point2(cy_towards(base_location, self.game_info.map_center, 6.0)),
+                30,
+            )
+        ) and (
+            worker := self.mediator.select_worker(
                 target_position=pos,
                 force_close=True,
-            ):
-                self.mediator.build_with_specific_worker(
-                    worker=worker,
-                    structure_type=unit_type,
-                    pos=pos,
-                )
+            )
+        ):
+            self.mediator.build_with_specific_worker(
+                worker=worker,
+                structure_type=unit_type,
+                pos=pos,
+            )
 
     def _fix_broken_exp_locations(self):
         map_name: MapName | None = MapName.__members__.get(

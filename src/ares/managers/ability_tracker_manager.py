@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 
 from sc2.ids.ability_id import AbilityId
 from sc2.ids.unit_typeid import UnitTypeId
-from sc2.unit import Unit
 
 from ares.consts import ManagerName, ManagerRequestType
 from ares.dicts.ability_cooldowns import ABILITY_FRAME_COOL_DOWN
@@ -63,16 +62,16 @@ class AbilityTrackerManager(Manager, IManagerMediator):
             ),
         }
         # make a copy, so we don't mess with anything when updating Medivac cds
-        self.ability_frame_cd_dict: dict[
-            AbilityId, int
-        ] = ABILITY_FRAME_COOL_DOWN.copy()
+        self.ability_frame_cd_dict: dict[AbilityId, int] = (
+            ABILITY_FRAME_COOL_DOWN.copy()
+        )
         self.unit_to_ability_dict: dict[int, dict[AbilityId, int]] = {}
 
     def manager_request(
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> dict | None:
         """Fetch information from this Manager so another Manager can use it.
@@ -98,14 +97,14 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         """
         return self.manager_requests_dict[request](kwargs)
 
-    async def update(self, _iteration: int) -> None:
+    async def update(self, iteration: int) -> None:
         """Not used by this manager.
 
         Manager is an abstract class and must have an ``update`` method.
 
         Parameters
         ----------
-        _iteration :
+        iteration :
             The current game iteration
 
         Returns
@@ -114,7 +113,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
         """
         pass
 
-    def catch_unit(self, unit: Unit, unit_type: UnitTypeId, tag: int) -> None:
+    def catch_unit(self, unit_type: UnitTypeId, tag: int) -> None:
         """Make sure units are included in the tracking.
 
         Notes
@@ -129,8 +128,6 @@ class AbilityTrackerManager(Manager, IManagerMediator):
 
         Parameters
         ----------
-        unit :
-            The Unit in question.
         unit_type :
         tag :
 
@@ -139,11 +136,10 @@ class AbilityTrackerManager(Manager, IManagerMediator):
 
         """
         current_frame: int = self.ai.state.game_loop
-        if tag not in self.unit_to_ability_dict:
-            if unit_type == UnitTypeId.WIDOWMINE:
-                self.unit_to_ability_dict[tag] = {
-                    AbilityId.WIDOWMINEATTACK_WIDOWMINEATTACK: current_frame
-                }
+        if tag not in self.unit_to_ability_dict and unit_type == UnitTypeId.WIDOWMINE:
+            self.unit_to_ability_dict[tag] = {
+                AbilityId.WIDOWMINEATTACK_WIDOWMINEATTACK: current_frame
+            }
             # Protoss
             # if unit_type == UnitTypeId.ADEPT:
             #     self.unit_to_ability_dict[tag] = {
@@ -214,7 +210,7 @@ class AbilityTrackerManager(Manager, IManagerMediator):
     ) -> None:
         """Update the ability cooldown in the duration dictionary.
 
-        Use this if the cd is no longer the base CD, i.e. after Rapid Reignition System
+        Use this if the cd is no longer the base CD, i.e., after Rapid Reignition System
         is researched for Medivacs.
 
         Parameters
@@ -237,15 +233,15 @@ class AbilityTrackerManager(Manager, IManagerMediator):
     def update_unit_to_ability_dict(self, ability: AbilityId, unit_tag: int) -> None:
         """Update tracking to reflect ability usage.
 
-        After a unit uses an ability it should call this to update the frame the
-        ability will next be available
+        After a unit uses an ability, it should call this to update the frame the
+        ability will next be available.
 
         Parameters
         ----------
         ability :
             The AbilityId that was used.
         unit_tag :
-            The tag of the Unit that used the ability
+            The tag of the Unit that used the ability.
 
         Returns
         -------

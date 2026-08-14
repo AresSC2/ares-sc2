@@ -125,7 +125,6 @@ class CombatSimulator:
         :return:
         """
         if optimistic:
-
             winner, health_left = self.combat_predictor.predict_engage(
                 own_units, enemy_units, defender_player, self.combat_settings
             )

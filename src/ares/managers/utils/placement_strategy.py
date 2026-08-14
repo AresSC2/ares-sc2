@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_distance_to_squared
@@ -31,10 +32,10 @@ class PlacementRequest:
     pylon_build_progress: float = 1.0
     closest_to: Point2 | None = None
     supply_depot: bool = False
-    production: bool = (False,)
-    upgrade_structure: bool = (False,)
-    bunker: bool = (False,)
-    missile_turret: bool = (False,)
+    production: bool = False
+    upgrade_structure: bool = False
+    bunker: bool = False
+    missile_turret: bool = False
     sensor_tower: bool = False
     reaper_wall: bool = False
 
@@ -44,12 +45,12 @@ class BasePlacementStrategy:
 
     def __init__(
         self,
-        placement_manager: "PlacementManager",
+        placement_manager: PlacementManager,
         request: PlacementRequest,
         structure_type: UnitTypeId,
         building_size: BuildingSize,
     ) -> None:
-        self.placement_manager: "PlacementManager" = placement_manager
+        self.placement_manager: PlacementManager = placement_manager
         self.req: PlacementRequest = request
         self.structure_type = structure_type
         self.building_size = building_size
@@ -88,9 +89,9 @@ class PoweredPlacementStrategy(BasePlacementStrategy):
         two_by_twos: dict = self.placement_manager.placements_dict[building_at_base][
             BuildingSize.TWO_BY_TWO
         ]
-        placements_for_base: dict[
-            Point2, dict
-        ] = self.placement_manager.placements_dict[building_at_base][self.building_size]
+        placements_for_base: dict[Point2, dict] = (
+            self.placement_manager.placements_dict[building_at_base][self.building_size]
+        )
 
         if self.req.reaper_wall:
             available_reaper_wall = self._filter_by_flag(
@@ -154,7 +155,7 @@ class PoweredPlacementStrategy(BasePlacementStrategy):
             if len(close_to_pylon) < 4:
                 build_near = optimal_pylon[0]
 
-        closest_to: Point2 = (
+        closest_to = (
             base_location
             if not self.req.wall
             else self.placement_manager.ai.main_base_ramp.bottom_center
@@ -176,9 +177,9 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
         available: list[Point2],
         building_at_base: Point2,
     ) -> None | Point2:
-        placements_for_base: dict[
-            Point2, dict
-        ] = self.placement_manager.placements_dict[building_at_base][self.building_size]
+        placements_for_base: dict[Point2, dict] = (
+            self.placement_manager.placements_dict[building_at_base][self.building_size]
+        )
 
         closest_to: Point2 = (
             building_at_base if not self.req.closest_to else self.req.closest_to
@@ -366,12 +367,12 @@ class UnpoweredPlacementStrategy(BasePlacementStrategy):
             a for a in available if not placements_for_base[a].get("custom", False)
         ]
         if non_custom:
-            final_placement: Point2 = min(
+            final_placement = min(
                 non_custom,
                 key=lambda k: cy_distance_to_squared(k, closest_to),
             )
         else:
-            final_placement: Point2 = min(
+            final_placement = min(
                 available,
                 key=lambda k: cy_distance_to_squared(k, closest_to),
             )

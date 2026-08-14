@@ -4,6 +4,7 @@ import asyncio
 import sys
 from os.path import abspath, dirname, join
 
+import pytest
 import pytest_asyncio
 
 d = dirname(dirname(abspath(__file__)))
@@ -25,8 +26,14 @@ async def bot(request):
     yield bot
 
 
-@pytest_asyncio.fixture(scope="class")
-def event_loop(request):
-    loop = asyncio.get_event_loop()
-    yield loop
-    loop.close()
+@pytest.fixture
+def event_loop(_function_scoped_runner: asyncio.Runner):
+    """
+    Compatibility fixture for tests that still request an `event_loop` parameter.
+
+    pytest-asyncio (>=1.x) manages the loop lifecycle via asyncio.Runner fixtures
+    (e.g. `_function_scoped_runner`). We must *not* close the loop ourselves,
+    otherwise pytest-asyncio teardown will fail with "RuntimeError: Event loop is closed".
+    """
+
+    return _function_scoped_runner.get_loop()

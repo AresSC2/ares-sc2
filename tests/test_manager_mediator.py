@@ -37,9 +37,9 @@ class TestMediator:
             unit_tag=unit_tag,
         )
         # assert
-        unit_to_ability_dict: dict[
-            int, dict[AbilityId, int]
-        ] = bot.mediator.get_unit_to_ability_dict
+        unit_to_ability_dict: dict[int, dict[AbilityId, int]] = (
+            bot.mediator.get_unit_to_ability_dict
+        )
 
         # unit present in ability tracker
         assert unit_tag in unit_to_ability_dict
@@ -58,9 +58,9 @@ class TestMediator:
             unit_tag=unit_tag,
         )
         # assert
-        unit_to_ability_dict: dict[
-            int, dict[AbilityId, int]
-        ] = bot.mediator.get_unit_to_ability_dict
+        unit_to_ability_dict: dict[int, dict[AbilityId, int]] = (
+            bot.mediator.get_unit_to_ability_dict
+        )
 
         # unit present in ability tracker
         assert unit_tag in unit_to_ability_dict

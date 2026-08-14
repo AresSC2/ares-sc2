@@ -78,42 +78,44 @@ class ReaperGrenade(CombatIndividualBehavior):
 
         # close unit is not chasing reaper, throw aggressive grenade
         if (
-            self.place_predictive
-            and close_unit.type_id not in ALL_WORKER_TYPES
-            and cy_is_facing(self.unit, close_unit, 0.1)
+            (
+                self.place_predictive
+                and close_unit.type_id not in ALL_WORKER_TYPES
+                and cy_is_facing(self.unit, close_unit, 0.1)
+            )
+            and (
+                path_to_target := mediator.find_raw_path(
+                    start=unit_pos,
+                    target=close_unit.position,
+                    grid=self.grid,
+                    sensitivity=1,
+                )
+            )
+            and PlacePredictiveAoE(
+                unit=self.unit,
+                path=path_to_target[:30],
+                enemy_center_unit=close_unit,
+                aoe_ability=AbilityId.KD8CHARGE_KD8CHARGE,
+                ability_delay=34,
+            ).execute(ai, config=config, mediator=mediator)
         ):
-            if path_to_target := mediator.find_raw_path(
-                start=unit_pos,
-                target=close_unit.position,
-                grid=self.grid,
-                sensitivity=1,
-            ):
-
-                if PlacePredictiveAoE(
-                    unit=self.unit,
-                    path=path_to_target[:30],
-                    enemy_center_unit=close_unit,
-                    aoe_ability=AbilityId.KD8CHARGE_KD8CHARGE,
-                    ability_delay=34,
-                ).execute(ai, config=config, mediator=mediator):
-                    return True
+            return True
 
         close_targets: list[Unit] = [
             t
             for t in self.enemy_units
             if cy_distance_to_squared(t.position, close_unit.position) < 20
         ]
-        if (
-            cy_distance_to(close_unit.position, self.unit.position)
-            < self.reaper_grenade_range + close_unit.radius
-            and len(close_targets) >= 2
-        ):
-            if UseAOEAbility(
+        return bool(
+            (
+                cy_distance_to(close_unit.position, self.unit.position)
+                < self.reaper_grenade_range + close_unit.radius
+                and len(close_targets) >= 2
+            )
+            and UseAOEAbility(
                 unit=self.unit,
                 ability_id=AbilityId.KD8CHARGE_KD8CHARGE,
                 targets=close_targets,
                 min_targets=2,
-            ).execute(ai, config, mediator):
-                return True
-
-        return False
+            ).execute(ai, config, mediator)
+        )

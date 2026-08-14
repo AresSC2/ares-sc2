@@ -68,9 +68,9 @@ class UpgradeController(MacroBehavior):
                 continue
 
             researched_from_id: UnitTypeId = UPGRADE_RESEARCHED_FROM[upgrade]
-            researched_from: list[Unit] = [
-                s for s in mediator.get_own_structures_dict[researched_from_id]
-            ]
+            researched_from: list[Unit] = list(
+                mediator.get_own_structures_dict[researched_from_id]
+            )
 
             # there is nowhere to research this from, tech up to it
             # but only if auto_tech_up_enabled is True
@@ -93,7 +93,7 @@ class UpgradeController(MacroBehavior):
                     for s in researched_from
                     if s.is_ready
                     and s.is_idle
-                    and (not ai.race == Race.Protoss or s.is_powered)
+                    and (ai.race != Race.Protoss or s.is_powered)
                 ]
                 if idle:
                     building: Unit = idle[0]
@@ -111,9 +111,7 @@ class UpgradeController(MacroBehavior):
                     # there is a structure to upgrade from, but:
                     # we can't do the upgrade, might need something like:
                     # hive for 3/3? twilight council for 2/2?
-                    elif required_building := research_info.get(
-                        "required_building", None
-                    ):
+                    elif required_building := research_info.get("required_building"):
                         if not self.auto_tech_up_enabled:
                             return False
 

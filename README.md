@@ -7,32 +7,32 @@
 
 [Documentation](https://aressc2.github.io/ares-sc2/index.html)
 
+## Contributing
+If you're interested in contributing to `ares-sc2`, please follow the guidelines outlined in our [contributor docs](https://aressc2.github.io/ares-sc2/contributing/index.html)
+
 If you're interested in creating a bot with `ares-sc2` we recommend following the instructions on the
 [`ares-sc2-starter-bot` repo](https://github.com/AresSC2/ares-sc2-starter-bot).
 
 ## About
 `Ares-sc2` is a library that extends the capabilities of the
-[python-sc2](https://github.com/BurnySc2/python-sc2) framework. The fundamental principle driving the evolution of 
+[python-sc2](https://github.com/BurnySc2/python-sc2) framework. The fundamental principle driving the evolution of
 `ares-sc2` is to empower users with full command over strategic decisions.
-Consequently, the library is designed to offer supportive functionalities for bot developers, 
-avoiding preconceived choices out of the box. In fact when initiating a project with `ares-sc2`, it closely 
+Consequently, the library is designed to offer supportive functionalities for bot developers,
+avoiding preconceived choices out of the box. In fact, when initiating a project with `ares-sc2`, it closely
 resembles starting with a blank `python-sc2` bot! You can write standard `python-sc2` logic and call upon
 `ares` functionality as required.
 
 ## Features
 
  - Optimized cython functions via the [cython-extensions-sc2 library](https://github.com/AresSC2/cython-extensions-sc2).
- - Calculated production formation for every expansion location on game start for Terran and Protoss, 
+ - Calculated production formation for every expansion location on game start for Terran and Protoss,
 use convenience behavior `BuildStructure` for easy usage.
 ```python
 from ares.behaviors.macro import BuildStructure
 from sc2.ids.unit_typeid import UnitTypeId
 
 self.register_behavior(
-    BuildStructure(
-        base_location=self.start_location,
-        structure_id=UnitTypeId.BARRACKS
-    )
+    BuildStructure(base_location=self.start_location, structure_id=UnitTypeId.BARRACKS)
 )
 ```
 ![protoss](https://github.com/user-attachments/assets/31a2cbf1-a95b-492c-89eb-563013cc6b75)
@@ -54,6 +54,7 @@ from sc2.unit import Unit
 from sc2.units import Units
 import numpy as np
 
+
 class MyBot(AresBot):
     async def on_step(self, iteration: int) -> None:
         # retrieve medivac and mines_to_pickup and pass to method
@@ -61,21 +62,14 @@ class MyBot(AresBot):
         # mines would require their own behavior
         self.do_medivac_mine_drop(medivac, mines_to_pickup)
 
-    def do_medivac_mine_drop(
-            self, 
-            medivac: Unit, 
-            mines_to_pickup: Units
-    ) -> None:
+    def do_medivac_mine_drop(self, medivac: Unit, mines_to_pickup: Units) -> None:
         # initialize a new CombatManeuver
         mine_drop: CombatManeuver = CombatManeuver()
         # get a grid for the medivac to path on
         air_grid: np.ndarray = self.mediator.get_air_grid
         # first priority is picking up units
         mine_drop.add(
-            PickUpCargo(
-                unit=medivac, 
-                grid=air_grid, 
-                pickup_targets=mines_to_pickup)
+            PickUpCargo(unit=medivac, grid=air_grid, pickup_targets=mines_to_pickup)
         )
         # if there is cargo, path to target and drop them off
         if medivac.has_cargo:
@@ -88,14 +82,10 @@ class MyBot(AresBot):
                 )
             )
             # drop off the mines
-            mine_drop.add(
-                DropCargo(unit=medivac, target=medivac.position)
-            )
+            mine_drop.add(DropCargo(unit=medivac, target=medivac.position))
         # no cargo and no units to pick up, stay safe
         else:
-            mine_drop.add(
-                KeepUnitSafe(unit=medivac, grid=air_grid)
-            )
+            mine_drop.add(KeepUnitSafe(unit=medivac, grid=air_grid))
 
         # finally register this maneuver to be executed
         self.register_behavior(mine_drop)
@@ -144,7 +134,9 @@ from ares.consts import UnitRole
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.units import Units
 
-if worker := self.mediator.select_worker(target_position=self.main_base_ramp.top_center):
+if worker := self.mediator.select_worker(
+    target_position=self.main_base_ramp.top_center
+):
     self.mediator.assign_role(tag=worker.tag, role=UnitRole.DEFENDING)
 
 # retrieve `UnitRole.DEFENDING` workers
@@ -158,7 +150,7 @@ available methods.
 
 ## Setting up `ares-sc2`
 
-To setup a full development environment:
+To set up a full development environment:
 
 `poetry install --with docs,lint,test,semver,notebook`
 
@@ -175,8 +167,8 @@ Install optional dependencies only as needed, for example:
 `poetry install --only docs`
 
 ## Contributing to the docs
-It's possible to set up a lightweight environment that only sets up requirements for testing 
-the documentation locally. As a prerequisite [poetry](https://python-poetry.org/) should 
+It's possible to set up a lightweight environment that only sets up requirements for testing
+the documentation locally. As a prerequisite [poetry](https://python-poetry.org/) should
 be installed on your system. `pip install poetry` is probably all you need in most instances.
 
 1. Fork and then Clone the repo
@@ -192,8 +184,7 @@ be installed on your system. `pip install poetry` is probably all you need in mo
 
 5. Edit `.md` files in the `docs` directory, and any saved changes will automatically be reloaded in your browser.
 
-The documentation relies on the [MkDocs](https://www.mkdocs.org/) library to generate the docs. 
+The documentation relies on the [MkDocs](https://www.mkdocs.org/) library to generate the docs.
 To automatically generate API docs from code we use the [mkdocstrings extension](https://mkdocstrings.github.io/) .
 
 See `mkdocs.yml` file for settings and for configuring the navigation bars.
-

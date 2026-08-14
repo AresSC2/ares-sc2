@@ -54,7 +54,7 @@ class RavenAutoTurret(CombatIndividualBehavior):
             return True
 
         if self.all_close_enemy and not only_enemy_units:
-            target: Point2 = cy_closest_to(
+            target = cy_closest_to(
                 self.unit.position, self.all_close_enemy
             ).position.towards(self.unit, 3.0)
             if not ai.in_placement_grid(target):
@@ -63,7 +63,4 @@ class RavenAutoTurret(CombatIndividualBehavior):
             self.unit(AbilityId.BUILDAUTOTURRET_AUTOTURRET, target)
             return True
 
-        if self.unit.is_using_ability(AbilityId.BUILDAUTOTURRET_AUTOTURRET):
-            return True
-
-        return False
+        return bool(self.unit.is_using_ability(AbilityId.BUILDAUTOTURRET_AUTOTURRET))

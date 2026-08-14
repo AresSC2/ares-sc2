@@ -1,12 +1,12 @@
 
-Dealing with production logic for a bot often means wrestling with the same old repetitive code headaches. 
+Dealing with production logic for a bot often means wrestling with the same old repetitive code headaches.
 Imagine starting off with a bot geared towards a stalker and immortal combo, finely tuning your logic around
-that. Now, say you want to shake things up and switch to a late-game skytoss setup – suddenly, you're 
+that. Now, say you want to shake things up and switch to a late-game skytoss setup – suddenly, you're
 stuck adding more code for production facilities, tech structures, and handling those late-game units.
 
-We get it, this kind of redundancy is a pain. We didn't just 
-want to make transitioning between army compositions smoother; we wanted to kick out all that extra, 
-unnecessary code clutter. Whether you're rocking a stalker and immortal crew or going all-in on a late-game 
+We get it, this kind of redundancy is a pain. We didn't just
+want to make transitioning between army compositions smoother; we wanted to kick out all that extra,
+unnecessary code clutter. Whether you're rocking a stalker and immortal crew or going all-in on a late-game
 skytoss spectacle, our approach offers a more straightforward and adaptable development process.
 
 Furthermore, this system is split into two main behaviors, the `SpawnController` to manage army production,
@@ -18,6 +18,7 @@ Both controllers rely on an army composition dictionary, for example:
 ```python
 from sc2.ids.unit_typeid import UnitTypeId
 
+
 @property
 def viking_tank(self) -> dict:
     return {
@@ -26,7 +27,6 @@ def viking_tank(self) -> dict:
         UnitTypeId.VIKINGFIGHTER: {"proportion": 0.16, "priority": 3},
         UnitTypeId.RAVEN: {"proportion": 0.02, "priority": 1},
     }
-
 ```
 Things to note:
 
@@ -44,8 +44,8 @@ from ares.behaviors.macro import ProductionController, SpawnController
 
 from sc2.ids.unit_typeid import UnitTypeId
 
+
 class TestBot(AresBot):
-    
     @property
     def viking_tank(self) -> dict:
         return {
@@ -57,21 +57,19 @@ class TestBot(AresBot):
 
     async def on_step(self, iteration: int) -> None:
         await super(TestBot, self).on_step(iteration)
-        
+
         production_location = self.start_location
-        
+
         # production controller
         self.register_behavior(
             ProductionController(self.viking_tank, production_location)
         )
-        
+
         # spawn controller
-        self.register_behavior(
-            SpawnController(self.viking_tank)
-        )
+        self.register_behavior(SpawnController(self.viking_tank))
 ```
 
-These behaviors can be further customized through arguments, 
+These behaviors can be further customized through arguments,
 please refer to the [API docs](../api_reference/behaviors/macro_behaviors.md)
 
 ## Setting up a `MacroPlan`
@@ -87,18 +85,18 @@ Followed by workers, maintaining gas structures, spawning units, then lastly add
 ```python
 from ares import AresBot
 from ares.behaviors.macro import (
-    AutoSupply, 
+    AutoSupply,
     BuildWorkers,
     GasBuildingController,
-    MacroPlan, 
-    ProductionController, 
+    MacroPlan,
+    ProductionController,
     SpawnController,
 )
 
 from sc2.ids.unit_typeid import UnitTypeId
 
+
 class TestBot(AresBot):
-    
     @property
     def viking_tank(self) -> dict:
         return {
@@ -110,20 +108,16 @@ class TestBot(AresBot):
 
     async def on_step(self, iteration: int) -> None:
         await super(TestBot, self).on_step(iteration)
-        
+
         production_location = self.start_location
-        
+
         macro_plan: MacroPlan = MacroPlan()
         macro_plan.add(AutoSupply(production_location))
         macro_plan.add(BuildWorkers(to_count=48))
         macro_plan.add(GasBuildingController(to_count=8))
         macro_plan.add(SpawnController(self.viking_tank))
-        macro_plan.add(ProductionController(
-            self.viking_tank, production_location
-        ))
-        
+        macro_plan.add(ProductionController(self.viking_tank, production_location))
+
         # only need to register once for whole plan
         self.register_behavior(macro_plan)
 ```
-
-

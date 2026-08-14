@@ -77,7 +77,7 @@ class RestorePower(MacroBehavior):
 
         """
         building_tracker: dict = mediator.get_building_tracker_dict
-        for tag, building_info in building_tracker.items():
+        for _tag, building_info in building_tracker.items():
             type_id: UnitTypeId = building_info[ID]
             if type_id == UnitTypeId.PYLON:
                 pos: Point2 = building_info[TARGET]
@@ -110,7 +110,7 @@ class RestorePower(MacroBehavior):
         size: BuildingSize = BuildingSize.TWO_BY_TWO
         offset: float = 1.0
 
-        for base_loc, placements_info in placements_dict.items():
+        for _base_loc, placements_info in placements_dict.items():
             two_by_twos = placements_info[size]
             available: list[Point2] = [
                 placement
@@ -129,16 +129,17 @@ class RestorePower(MacroBehavior):
                     include_addon=False,
                 )
             ]
-            if len(available) > 0:
-                if worker := mediator.select_worker(
+            if len(available) > 0 and (
+                worker := mediator.select_worker(
                     target_position=available[0],
                     force_close=True,
-                ):
-                    mediator.build_with_specific_worker(
-                        worker=worker,
-                        structure_type=UnitTypeId.PYLON,
-                        pos=available[0],
-                    )
-                    return True
+                )
+            ):
+                mediator.build_with_specific_worker(
+                    worker=worker,
+                    structure_type=UnitTypeId.PYLON,
+                    pos=available[0],
+                )
+                return True
 
         return False

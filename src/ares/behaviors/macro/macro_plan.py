@@ -48,9 +48,4 @@ class MacroPlan(Behavior):
         self.macros.append(behavior)
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
-        for macro in self.macros:
-            if macro.execute(ai, config, mediator):
-                # executed a macro behavior
-                return True
-        # none of the macro behaviors completed, no actions executed
-        return False
+        return any(macro.execute(ai, config, mediator) for macro in self.macros)

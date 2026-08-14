@@ -57,9 +57,7 @@ class NydusManager(Manager, IManagerMediator):
                 self.ai.enemy_start_locations[0]
             ]
         else:
-            self.all_enemy_main_nydus_points: list[Point2] = [
-                self.ai.game_info.map_center
-            ]
+            self.all_enemy_main_nydus_points = [self.ai.game_info.map_center]
         self.all_own_main_nydus_points: list[Point2] = [self.ai.start_location]
 
         # key is tag of travelling unit,
@@ -103,7 +101,7 @@ class NydusManager(Manager, IManagerMediator):
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Enables ManagerRequests to this Manager.
@@ -250,9 +248,11 @@ class NydusManager(Manager, IManagerMediator):
         # maximize the sum of the distances from the townhall and ramp
         nydus_spots = sorted(
             potential_points,
-            key=lambda point: -(
-                cy_distance_to_squared(point, main_location)
-                + cy_distance_to_squared(point, ramp_location)
+            key=lambda point: (
+                -(
+                    cy_distance_to_squared(point, main_location)
+                    + cy_distance_to_squared(point, ramp_location)
+                )
             ),
         )
 
@@ -310,10 +310,10 @@ class NydusManager(Manager, IManagerMediator):
             return None
 
         # see if any enemies are in range 12 of each point
-        enemy_in_range_of_points: list[
-            bool
-        ] = self.manager_mediator.get_any_enemies_in_range(
-            positions=potential_locations, radius=12.0
+        enemy_in_range_of_points: list[bool] = (
+            self.manager_mediator.get_any_enemies_in_range(
+                positions=potential_locations, radius=12.0
+            )
         )
         # points that are far enough away
         distanced_locations: list[Point2] = [
@@ -399,7 +399,7 @@ class NydusManager(Manager, IManagerMediator):
                     )
         nydus_tag_to_object = {nydus.tag: nydus for nydus in nyduses}
         for tag in exit_queue:
-            nydus: Unit | None = nydus_tag_to_object.get(tag, None)
+            nydus: Unit | None = nydus_tag_to_object.get(tag)
             if (
                 nydus
                 and nydus.is_ready

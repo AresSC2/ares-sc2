@@ -92,10 +92,12 @@ class WorkerKiteBack(CombatIndividualBehavior):
                         position=unit_pos, units=target_mfs
                     )
                 else:
-                    target_mineral: Unit = cy_closest_to(
+                    target_mineral = cy_closest_to(
                         position=ai.start_location, units=mfs
                     )
                 unit.gather(target_mineral)
             else:
                 unit.gather(cy_closest_to(position=ai.start_location, units=mfs))
             return True
+
+        return False

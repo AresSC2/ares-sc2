@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from time import perf_counter_ns
-
 from sc2 import BotAI, Difficulty, Race, UnitTypeId, maps, run_game
 from sc2.player import Bot, Computer
 
-from sc2_helper import CombatPredictor, CombatSettings, test_unit, test_units
+from sc2_helper.sc2_helper import CombatPredictor, CombatSettings
 
 
-class basic_bot(BotAI):
+class BasicBot(BotAI):
     def __init__(self):
         super().__init__()
 
@@ -29,9 +27,6 @@ class basic_bot(BotAI):
             # await self.client.debug_create_unit([[UnitTypeId.TEMPEST, 10, self.start_location, 2]])
             # await self.client.debug_upgrade()
         if self.units(UnitTypeId.MARINE):
-            zergling = self.enemy_units(UnitTypeId.BATTLECRUISER)[0]
-            # s = perf_counter_ns()
-            test_unit(zergling)
             await self.client.leave()
             # e = perf_counter_ns()
             # t = e - s
@@ -59,7 +54,7 @@ if __name__ == "__main__":
     run_game(
         maps.get("DiscoBloodbathLE"),
         [
-            Bot(Race.Terran, basic_bot()),
+            Bot(Race.Terran, BasicBot()),
             Computer(Race.Protoss, Difficulty.CheatInsane),
         ],
         realtime=False,

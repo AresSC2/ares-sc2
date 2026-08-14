@@ -115,15 +115,15 @@ class SquadManager(Manager, IManagerMediator):
         self._squads_dict: dict[UnitRole, dict[str, Any]] = {
             role: {} for role in UnitRole
         }
-        self._role_to_main_squad_pos: dict[UnitRole, Point2] = {
-            role: ai.start_location for role in UnitRole
-        }
+        self._role_to_main_squad_pos: dict[UnitRole, Point2] = dict.fromkeys(
+            UnitRole, ai.start_location
+        )
 
     def manager_request(
         self,
         receiver: ManagerName,
         request: ManagerRequestType,
-        reason: str = None,
+        reason: str | None = None,
         **kwargs,
     ) -> Any:
         """Fetch information from this Manager so another Manager can use it.
@@ -161,7 +161,7 @@ class SquadManager(Manager, IManagerMediator):
 
         """
         if self.config[DEBUG]:
-            for role, squad_dict in self._squads_dict.items():
+            for _role, squad_dict in self._squads_dict.items():
                 for squad_id, squad_info in squad_dict.items():
                     self.ai.draw_text_on_world(
                         squad_info["squad_object"].squad_position, f"{squad_id}"

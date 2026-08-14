@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from dataclasses import dataclass
-from typing import TYPE_CHECKING, Callable
+from collections.abc import Callable
+from dataclasses import dataclass, field
+from typing import TYPE_CHECKING
 
 import numpy as np
 from cython_extensions import cy_towards, cy_unit_pending
@@ -46,20 +47,20 @@ class BuildOrderParser:
     """
 
     ai: AresBot
-    build_order_step_dict: dict | None = None
+    build_order_step_dict: dict = field(default_factory=dict, init=False)
 
     def __post_init__(self) -> None:
         """Initializes the `build_order_step_dict` attribute."""
         self.build_order_step_dict = self._generate_build_step_dict()
 
     def parse(
-        self, raw_build_order: list[str], remove_completed: bool = False
+        self, raw_build_order: list[str | dict], remove_completed: bool = False
     ) -> list[BuildOrderStep]:
         """
         Parses the `raw_build_order` attribute into a list of `BuildOrderStep`.
 
         Args:
-            raw_build_order (list[str]): Build order extracted from build file.
+            raw_build_order (list[str | dict]): Build order extracted from build file.
             remove_completed (bool = False) description
 
         Returns:
@@ -95,26 +96,32 @@ class BuildOrderParser:
         return {
             BuildOrderOptions.CANCEL_GAS: lambda: BuildOrderStep(
                 command=AbilityId.CANCEL_BUILDINPROGRESS,
-                start_condition=lambda: lambda: any(
-                    [g for g in self.ai.gas_buildings if g.build_progress < 1.0]
+                start_condition=lambda: (
+                    lambda: any(
+                        g for g in self.ai.gas_buildings if g.build_progress < 1.0
+                    )
                 ),
                 end_condition=lambda: True,
             ),
             BuildOrderOptions.CHRONO: lambda: BuildOrderStep(
                 command=AbilityId.EFFECT_CHRONOBOOST,
-                start_condition=lambda: lambda: any(
-                    [t.energy >= 50 for t in self.ai.townhalls]
+                start_condition=lambda: (
+                    lambda: any(t.energy >= 50 for t in self.ai.townhalls)
                 ),
                 end_condition=lambda: True,
             ),
             BuildOrderOptions.EXPAND: lambda: BuildOrderStep(
                 command=self.ai.base_townhall_type,
-                start_condition=lambda: self.ai.minerals
-                >= min_minerals_for_expand
-                - (300 if len(self.ai.townhalls) >= 2 else 0),
+                start_condition=lambda: (
+                    self.ai.minerals
+                    >= min_minerals_for_expand
+                    - (300 if len(self.ai.townhalls) >= 2 else 0)
+                ),
                 end_condition=lambda: self.ai.structures.filter(
-                    lambda s: 0.00001 <= s.build_progress < 0.05
-                    and s.type_id == self.ai.base_townhall_type
+                    lambda s: (
+                        0.00001 <= s.build_progress < 0.05
+                        and s.type_id == self.ai.base_townhall_type
+                    )
                 ),
             ),
             BuildOrderOptions.GAS: lambda: BuildOrderStep(
@@ -125,15 +132,20 @@ class BuildOrderParser:
                     else self.ai.minerals >= 50
                 ),
                 end_condition=lambda: self.ai.structures.filter(
-                    lambda s: 0.00001 <= s.build_progress < 0.05
-                    and s.type_id == self.ai.gas_type
+                    lambda s: (
+                        0.00001 <= s.build_progress < 0.05
+                        and s.type_id == self.ai.gas_type
+                    )
                 ),
             ),
             BuildOrderOptions.ORBITAL: lambda: BuildOrderStep(
                 command=AbilityId.UPGRADETOORBITAL_ORBITALCOMMAND,
-                start_condition=lambda: self.ai.minerals >= 150
-                and self.ai.tech_requirement_progress(UnitTypeId.ORBITALCOMMAND) == 1.0
-                and self.ai.townhalls.filter(lambda th: th.is_ready and th.is_idle),
+                start_condition=lambda: (
+                    self.ai.minerals >= 150
+                    and self.ai.tech_requirement_progress(UnitTypeId.ORBITALCOMMAND)
+                    == 1.0
+                    and self.ai.townhalls.filter(lambda th: th.is_ready and th.is_idle)
+                ),
                 end_condition=lambda: True,
             ),
             BuildOrderOptions.OVERLORD_SCOUT: lambda: BuildOrderStep(
@@ -154,8 +166,10 @@ class BuildOrderParser:
                     if self.ai.race == Race.Zerg
                     else (
                         self.ai.structures.filter(
-                            lambda s: 0.00001 <= s.build_progress < 0.05
-                            and s.type_id == self.ai.supply_type
+                            lambda s: (
+                                0.00001 <= s.build_progress < 0.05
+                                and s.type_id == self.ai.supply_type
+                            )
                         )
                     )
                 ),
@@ -227,11 +241,11 @@ class BuildOrderParser:
         structures_dict = self.ai.mediator.get_own_structures_dict
         return lambda: BuildOrderStep(
             command=AbilityId.LIFT,
-            start_condition=lambda: len(
-                [s for s in structures_dict[main_structure] if s.is_ready]
-            )
-            > 0
-            and len([s for s in structures_dict[add_on_structure] if s.is_ready]) > 0,
+            start_condition=lambda: (
+                len([s for s in structures_dict[main_structure] if s.is_ready]) > 0
+                and len([s for s in structures_dict[add_on_structure] if s.is_ready])
+                > 0
+            ),
             # set via on_structure_started hook
             end_condition=lambda: True,
             target=add_on_structures,
@@ -264,19 +278,25 @@ class BuildOrderParser:
                     if structure_id == UnitTypeId.LAIR
                     else AbilityId.UPGRADETOHIVE_HIVE
                 ),
-                start_condition=lambda: self.ai.townhalls.filter(
-                    lambda th: th.is_ready and th.is_idle and th.type_id == upgrade_from
-                )
-                and self.ai.minerals >= cost.minerals
-                and self.ai.vespene >= cost.vespene,
+                start_condition=lambda: (
+                    self.ai.townhalls.filter(
+                        lambda th: (
+                            th.is_ready and th.is_idle and th.type_id == upgrade_from
+                        )
+                    )
+                    and self.ai.minerals >= cost.minerals
+                    and self.ai.vespene >= cost.vespene
+                ),
                 # set via on_structure_started hook
                 end_condition=lambda: True,
             )
         else:
             return lambda: BuildOrderStep(
                 command=structure_id,
-                start_condition=lambda: self.ai.minerals >= cost.minerals - _mineral
-                and self.ai.vespene >= cost.vespene - 25,
+                start_condition=lambda: (
+                    self.ai.minerals >= cost.minerals - _mineral
+                    and self.ai.vespene >= cost.vespene - 25
+                ),
                 # set via on_structure_started hook
                 end_condition=lambda: False,
             )
@@ -307,11 +327,13 @@ class BuildOrderParser:
         return lambda: BuildOrderStep(
             command=unit_id,
             start_condition=lambda: (
-                self.ai.can_afford(unit_id, check_supply_cost=check_supply_cost)
-                or unit_id == UnitTypeId.ARCHON
-            )
-            and self.ai.tech_ready_for_unit(unit_id)
-            and len(self.ai.get_build_structures(trained_from, unit_id)) > 0,
+                (
+                    self.ai.can_afford(unit_id, check_supply_cost=check_supply_cost)
+                    or unit_id == UnitTypeId.ARCHON
+                )
+                and self.ai.tech_ready_for_unit(unit_id)
+                and len(self.ai.get_build_structures(trained_from, unit_id)) > 0
+            ),
             # if start condition is True a train order will be issued
             # therefore it will automatically complete the step
             end_condition=lambda: unit_id != UnitTypeId.ARCHON,
@@ -333,16 +355,18 @@ class BuildOrderParser:
         researched_from: UnitTypeId = UPGRADE_RESEARCHED_FROM[upgrade_id]
         return lambda: BuildOrderStep(
             command=upgrade_id,
-            start_condition=lambda: self.ai.can_afford(upgrade_id)
-            and not self.ai.already_pending_upgrade(upgrade_id)
-            and len(
-                [
-                    s
-                    for s in self.ai.structures
-                    if s.is_ready and s.is_idle and s.type_id == researched_from
-                ]
-            )
-            > 0,
+            start_condition=lambda: (
+                self.ai.can_afford(upgrade_id)
+                and not self.ai.already_pending_upgrade(upgrade_id)
+                and len(
+                    [
+                        s
+                        for s in self.ai.structures
+                        if s.is_ready and s.is_idle and s.type_id == researched_from
+                    ]
+                )
+                > 0
+            ),
             # if start condition is True a train order will be issued
             # therefore it will automatically complete the step
             end_condition=lambda: self.ai.pending_or_complete_upgrade(upgrade_id),
@@ -365,9 +389,11 @@ class BuildOrderParser:
             Whether we have resources, supply and structure to train unit_type.
         """
         if self.ai.all_own_units.filter(
-            lambda u: u.type_id in UNIT_TRAINED_FROM[unit_type]
-            and u.build_progress == 1.0
-            and u.is_idle
+            lambda u: (
+                u.type_id in UNIT_TRAINED_FROM[unit_type]
+                and u.build_progress == 1.0
+                and u.is_idle
+            )
         ):
             return self.ai.can_afford(unit_type)
 
@@ -384,25 +410,21 @@ class BuildOrderParser:
 
         # if a user passed a command matching a UnitTypeId enum key
         # then automatically handle that
+        step: BuildOrderStep
         try:
             unit_id_command: UnitTypeId = UnitTypeId[command]
             if unit_id_command in ALL_STRUCTURES:
-                step: BuildOrderStep = self._generate_structure_build_step(
-                    unit_id_command
-                )()
+                step = self._generate_structure_build_step(unit_id_command)()
             else:
-                step: BuildOrderStep = self._generate_unit_build_step(unit_id_command)()
+                step = self._generate_unit_build_step(unit_id_command)()
         except Exception:
             try:
                 upgrade_id_command: UpgradeId = UpgradeId[command]
-                step: BuildOrderStep = self._generate_upgrade_build_step(
-                    upgrade_id_command
-                )()
+                step = self._generate_upgrade_build_step(upgrade_id_command)()
             except Exception:
-                assert BuildOrderOptions.contains_key(
-                    command
-                ), f"Unrecognized build order command, got: {command}"
-                step: BuildOrderStep
+                assert BuildOrderOptions.contains_key(command), (
+                    f"Unrecognized build order command, got: {command}"
+                )
 
                 if command == BuildOrderOptions.ADDONSWAP:
                     step = self._generate_addon_build_step(commands)()
@@ -430,14 +452,32 @@ class BuildOrderParser:
         if len(commands) >= 2 and command != BuildOrderOptions.ADDONSWAP:
             extra_commands: list[str] = commands[2:]
             for command in extra_commands:
-                target = command.upper()
-                # Try to set the target
-                if _target := self._get_target_for_step(target):
-                    step.target = _target
+                # build-order strings often use `@` as a separator, e.g.:
+                # `13 pylon @ ramp`
+                # In that case `raw_step.split(" ")` is ["13","pylon","@","ramp"]
+                if command == "@":
+                    continue
 
+                # Also support `@ramp` (no space) by stripping a leading "@"
+                if command.startswith("@"):
+                    command = command[1:]
+
+                target = command.upper()
                 # Extract integer from the target if applicable
+                # (e.g. `stalker *3` or `drone x4`). These aren't "targets" and
+                # shouldn't be sent through `_get_target_for_step`.
                 if _duplicates := self.extract_integer_from_target(target):
                     duplicates = _duplicates
+                    continue
+
+                # Try to set the target
+                try:
+                    if _target := self._get_target_for_step(target):
+                        step.target = _target
+                except ValueError:
+                    # Ignore unknown extra tokens; they may be aliases or other
+                    # modifiers not relevant to targets.
+                    pass
 
         if command == BuildOrderOptions.CHRONO and not step.target:
             raise Exception(
@@ -448,7 +488,7 @@ class BuildOrderParser:
             )
 
         step.start_at_supply = supply
-        for i in range(duplicates):
+        for _i in range(duplicates):
             build_order.append(step)
         return build_order
 
@@ -460,9 +500,9 @@ class BuildOrderParser:
             command: str
             supply, command = self._get_supply_and_command(commands)
 
-            assert BuildOrderOptions.contains_key(
-                command
-            ), f"Unrecognized build order command, got: {command}"
+            assert BuildOrderOptions.contains_key(command), (
+                f"Unrecognized build order command, got: {command}"
+            )
 
             step: BuildOrderStep = self.build_order_step_dict[
                 BuildOrderOptions[command]
@@ -477,7 +517,7 @@ class BuildOrderParser:
             _target: str
             target_positions: list[Point2] = []
             for target in targets:
-                _target: str = target.upper()
+                _target = target.upper()
                 assert BuildOrderTargetOptions.contains_key(_target), (
                     f"Unrecognized build order target option, got: {_target}."
                     f"Valid options are: {BuildOrderTargetOptions.list_options()}"
@@ -495,9 +535,9 @@ class BuildOrderParser:
                 # look behind natural
                 elif order_target == BuildOrderTargetOptions.NAT:
                     location: Point2 = self._get_target(order_target)
-                    behind_min_line_points: list[
-                        Point2
-                    ] = self.ai.mediator.get_behind_mineral_positions(th_pos=location)
+                    behind_min_line_points: list[Point2] = (
+                        self.ai.mediator.get_behind_mineral_positions(th_pos=location)
+                    )
                     for point in behind_min_line_points:
                         target_positions.append(point)
                 # otherwise just go to location
@@ -533,6 +573,7 @@ class BuildOrderParser:
                 return BuildOrderTargetOptions[target]
             except KeyError:
                 pass
+        raise ValueError(f"Unrecognized build order target: {target}")
 
     @staticmethod
     def _get_supply_and_command(raw_step: str) -> tuple[int, str]:
@@ -551,18 +592,18 @@ class BuildOrderParser:
 
         """
         commands: list[str] = raw_step.split(" ")
-        assert (
-            len(commands) >= 2
-        ), f"Expected 2 or more words in build order command, got {raw_step}"
+        assert len(commands) >= 2, (
+            f"Expected 2 or more words in build order command, got {raw_step}"
+        )
         # supply at which to start
         try:
-            supply: int = int(commands[0])
+            supply = int(commands[0])
         except ValueError:
             logger.warning(
                 f"""{raw_step} should begin with an integer supply count,
                 found {commands[0]}, setting supply target to 0"""
             )
-            supply: int = 0
+            supply = 0
 
         # this is the main command of a build order step (worker, gas, expand etc.)
         command: str = commands[1].upper()
@@ -621,12 +662,12 @@ class BuildOrderParser:
         last_point: np.ndarray | None = None
         for point in ordered:
             if last_point is None:
-                _pos: Point2 = Point2(cy_towards(point, location, 2.0))
+                _pos = Point2(cy_towards(point, location, 2.0))
                 target_positions.append(_pos)
                 last_point = point
                 continue
             if np.linalg.norm(point - last_point) >= min_spacing:
-                _pos: Point2 = Point2(cy_towards(point, location, 2.0))
+                _pos = Point2(cy_towards(point, location, 2.0))
                 target_positions.append(_pos)
                 last_point = point
 
@@ -723,11 +764,11 @@ class BuildOrderParser:
                     on_route: int = int(
                         self.ai.not_started_but_in_building_tracker(command)
                     )
-                    total_present: int = num_existing + on_route
+                    total_present = num_existing + on_route
                 else:
                     num_units: int = len(self.ai.mediator.get_own_army_dict[command])
                     pending: int = cy_unit_pending(self.ai, command)
-                    total_present: int = num_units + pending
+                    total_present = num_units + pending
 
                 if total_present == 0:
                     continue

@@ -113,18 +113,18 @@ class TestDataManager:
         dm.build_cycle = ["A", "B", "C"]
 
         # Build "A": 25 games, last 10 are all losses (winrate 0.0 in last 10)
-        history_A = [{STRATEGY_USED: "A", RESULT: 2}] * 15 + [
+        history_a = [{STRATEGY_USED: "A", RESULT: 2}] * 15 + [
             {STRATEGY_USED: "A", RESULT: 0}
         ] * 10
 
         # Build "B": 25 games, last 10 are all wins (winrate 1.0 in last 10)
-        history_B = [{STRATEGY_USED: "B", RESULT: 0}] * 15 + [
+        history_b = [{STRATEGY_USED: "B", RESULT: 0}] * 15 + [
             {STRATEGY_USED: "B", RESULT: 2}
         ] * 10
 
         # Build "C": 25 games, last 10 are mixed
         # (5 wins, 5 losses, winrate 0.5 in last 10)
-        history_C = [{STRATEGY_USED: "C", RESULT: 0}] * 15 + [
+        history_c = [{STRATEGY_USED: "C", RESULT: 0}] * 15 + [
             {STRATEGY_USED: "C", RESULT: 2},
             {STRATEGY_USED: "C", RESULT: 0},
         ] * 5
@@ -132,9 +132,9 @@ class TestDataManager:
         # Interleave histories to simulate real play order
         dm.opponent_history = []
         for i in range(25):
-            dm.opponent_history.append(history_A[i])
-            dm.opponent_history.append(history_B[i])
-            dm.opponent_history.append(history_C[i])
+            dm.opponent_history.append(history_a[i])
+            dm.opponent_history.append(history_b[i])
+            dm.opponent_history.append(history_c[i])
 
         dm._choose_opening()
         # B has the highest winrate (1.0) in its last 10 games
@@ -142,8 +142,8 @@ class TestDataManager:
 
         # check that we switch to "C" after 5 losses
         for i in range(5):
-            history_B = {STRATEGY_USED: "B", RESULT: 0}
-            dm.opponent_history.append(history_B)
+            loss_entry = {STRATEGY_USED: "B", RESULT: 0}
+            dm.opponent_history.append(loss_entry)
             dm._choose_opening()
             if i < 4:
                 assert dm.chosen_opening == "B"

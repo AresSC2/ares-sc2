@@ -67,14 +67,14 @@ class DummyBot(AresBot):
             }
 
     async def on_step(self, iteration: int):
-        await super(DummyBot, self).on_step(iteration)
+        await super().on_step(iteration)
 
         # while here test out some macro and combat behaviors
         self.register_behavior(Mining())
         macro_plan: MacroPlan = MacroPlan()
         macro_plan.add(AutoSupply(base_location=self.start_location))
-        macro_plan.add(BuildWorkers(100))
-        macro_plan.add(ExpansionController(to_count=4, max_pending=1))
+        macro_plan.add(BuildWorkers(12))
+        macro_plan.add(ExpansionController(to_count=100, max_pending=100))
         macro_plan.add(
             GasBuildingController(
                 to_count=100,
@@ -107,29 +107,29 @@ class DummyBot(AresBot):
             self.register_behavior(maneuver)
 
         for unit in self.units(UnitTypeId.QUEEN):
-            maneuver: CombatManeuver = CombatManeuver()
+            maneuver = CombatManeuver()
             maneuver.add(QueenSpreadCreep(unit=unit))
             self.register_behavior(maneuver)
 
     async def on_start(self) -> None:
-        await super(DummyBot, self).on_start()
-
-        desired_army = {
-            Race.Protoss: [UnitTypeId.STALKER, UnitTypeId.IMMORTAL, UnitTypeId.VOIDRAY],
-            Race.Terran: [UnitTypeId.MARINE, UnitTypeId.MARAUDER, UnitTypeId.MEDIVAC],
-            Race.Zerg: [UnitTypeId.ROACH, UnitTypeId.HYDRALISK, UnitTypeId.MUTALISK],
-        }
-
-        await self.client.debug_create_unit(
-            [[self.worker_type, 30, self.start_location, 1]]
-        )
-
-        await self.client.debug_create_unit(
-            [
-                [unit_type, 8, self.start_location, 1]
-                for unit_type in desired_army[self.race]
-            ]
-        )
+        await super().on_start()
+        self.client.game_step = 16
+        # desired_army = {
+        #     Race.Protoss: [UnitTypeId.STALKER, UnitTypeId.IMMORTAL, UnitTypeId.VOIDRAY],
+        #     Race.Terran: [UnitTypeId.MARINE, UnitTypeId.MARAUDER, UnitTypeId.MEDIVAC],
+        #     Race.Zerg: [UnitTypeId.ROACH, UnitTypeId.HYDRALISK, UnitTypeId.MUTALISK],
+        # }
+        #
+        # await self.client.debug_create_unit(
+        #     [[self.worker_type, 30, self.start_location, 1]]
+        # )
+        #
+        # await self.client.debug_create_unit(
+        #     [
+        #         [unit_type, 8, self.start_location, 1]
+        #         for unit_type in desired_army[self.race]
+        #     ]
+        # )
 
 
 # Start game
@@ -137,17 +137,18 @@ if __name__ == "__main__":
     random_map = random.choice(
         [
             "IncorporealAIE_v4",
-            # "PersephoneAIE_v4",
-            # "PylonAIE_v4",
-            # "TorchesAIE_v4",
+            "MagannathaAIE_v2PersephoneAIE_v4",
+            "PylonAIE_v4",
+            "TorchesAIE_v4",
+            # "LeyLinesAIE_v3"
         ]
     )
     run_game(
         maps.get(random_map),
         [
             # Human(Race.Zerg),
-            Bot(Race.Zerg, DummyBot(), "DummyBot"),
-            Computer(Race.Random, Difficulty.CheatInsane),
+            Bot(Race.Random, DummyBot(), "DummyBot"),
+            Computer(Race.Random, Difficulty.Easy),
         ],
         realtime=False,
         random_seed=2564,

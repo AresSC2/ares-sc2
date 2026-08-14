@@ -82,7 +82,7 @@ class SpeedMining(CombatIndividualBehavior):
 
             target_pos: Point2 = self.townhall.position
 
-            target_pos: Point2 = Point2(
+            target_pos = Point2(
                 cy_towards(
                     target_pos,
                     self.worker_position,

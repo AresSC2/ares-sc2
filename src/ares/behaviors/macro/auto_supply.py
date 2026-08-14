@@ -95,26 +95,29 @@ class AutoSupply(MacroBehavior):
                 ):
                     return num_building - pending_supply_units
             else:
-                if ai.race == Race.Zerg:
-                    # scale up based on townhalls
-                    if supply_left < 4 * num_ths and pending_supply_units < num_ths:
-                        num: int = num_ths - pending_supply_units
-                        return min(num, 6)
+                # scale up based on townhalls
+                if (
+                    ai.race == Race.Zerg
+                    and supply_left < 4 * num_ths
+                    and pending_supply_units < num_ths
+                ):
+                    num: int = num_ths - pending_supply_units
+                    return min(num, 6)
         # other races supply based on production facilities
         else:
             # scale up based on production structures
             num_production_structures: int = len(
                 ai.structures.filter(
-                    lambda s: s.type_id in ALL_PRODUCTION_STRUCTURES
-                    and s.build_progress == 1.0
+                    lambda s: (
+                        s.type_id in ALL_PRODUCTION_STRUCTURES
+                        and s.build_progress == 1.0
+                    )
                 )
             )
             if supply_left <= max(
                 2 * num_production_structures, 5
             ) and pending_supply_units < math.ceil(num_production_structures / 2):
-                num: int = (
-                    math.ceil(num_production_structures / 2) - pending_supply_units
-                )
+                num = math.ceil(num_production_structures / 2) - pending_supply_units
                 return min(num, 6)
 
             # we have no prod structures, just in case

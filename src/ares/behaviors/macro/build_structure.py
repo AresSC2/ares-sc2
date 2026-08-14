@@ -134,33 +134,36 @@ class BuildStructure(MacroBehavior):
             ai.race == Race.Protoss and self.structure_id != UnitTypeId.PYLON
         )
 
-        if placement := mediator.request_building_placement(
-            base_location=self.base_location,
-            structure_type=self.structure_id,
-            first_pylon=self.first_pylon,
-            static_defence=self.static_defence,
-            wall=self.wall,
-            find_alternative=self.find_alternative,
-            within_psionic_matrix=within_psionic_matrix,
-            closest_to=self.closest_to,
-            supply_depot=self.supply_depot,
-            missile_turret=self.missile_turret,
-            sensor_tower=self.sensor_tower,
-            upgrade_structure=self.upgrade_structure,
-            production=self.production,
-            bunker=self.bunker,
-            reaper_wall=self.reaper_wall,
-        ):
-            if worker := mediator.select_worker(
+        if (
+            placement := mediator.request_building_placement(
+                base_location=self.base_location,
+                structure_type=self.structure_id,
+                first_pylon=self.first_pylon,
+                static_defence=self.static_defence,
+                wall=self.wall,
+                find_alternative=self.find_alternative,
+                within_psionic_matrix=within_psionic_matrix,
+                closest_to=self.closest_to,
+                supply_depot=self.supply_depot,
+                missile_turret=self.missile_turret,
+                sensor_tower=self.sensor_tower,
+                upgrade_structure=self.upgrade_structure,
+                production=self.production,
+                bunker=self.bunker,
+                reaper_wall=self.reaper_wall,
+            )
+        ) and (
+            worker := mediator.select_worker(
                 target_position=placement,
                 force_close=True,
-            ):
-                mediator.build_with_specific_worker(
-                    worker=worker,
-                    structure_type=self.structure_id,
-                    pos=placement,
-                )
-                return True
+            )
+        ):
+            mediator.build_with_specific_worker(
+                worker=worker,
+                structure_type=self.structure_id,
+                pos=placement,
+            )
+            return True
         return False
 
     def _enough_existing(self, ai: AresBot, mediator: ManagerMediator) -> bool:

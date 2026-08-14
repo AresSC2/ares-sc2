@@ -59,7 +59,7 @@ class Hub:
         terrain_manager: TerrainManager = None,
         resource_manager: ResourceManager = None,
         building_manager: BuildingManager = None,
-        additional_managers: list["Manager"] | None = None,
+        additional_managers: list[Manager] | None = None,
     ) -> None:
         """Initialise Manager objects and set update priority.
 
@@ -104,65 +104,65 @@ class Hub:
         self._is_zerg: bool = ai.race == Race.Zerg
 
         self.data_manager: DataManager = (
-            DataManager(ai, config, self.manager_mediator)
-            if not data_manager
-            else data_manager
+            data_manager
+            if data_manager
+            else DataManager(ai, config, self.manager_mediator)
         )
         self.unit_cache_manager: UnitCacheManager = (
-            UnitCacheManager(ai, config, self.manager_mediator)
-            if not unit_cache_manager
-            else unit_cache_manager
+            unit_cache_manager
+            if unit_cache_manager
+            else UnitCacheManager(ai, config, self.manager_mediator)
         )
         self.ability_tracker_manager: AbilityTrackerManager = (
-            AbilityTrackerManager(ai, config, self.manager_mediator)
-            if not ability_tracker_manager
-            else ability_tracker_manager
+            ability_tracker_manager
+            if ability_tracker_manager
+            else AbilityTrackerManager(ai, config, self.manager_mediator)
         )
         self.intel_manager: IntelManager = (
-            IntelManager(ai, config, self.manager_mediator)
-            if not intel_manager
-            else intel_manager
+            intel_manager
+            if intel_manager
+            else IntelManager(ai, config, self.manager_mediator)
         )
         self.unit_role_manager: UnitRoleManager = (
-            UnitRoleManager(ai, config, self.manager_mediator)
-            if not unit_role_manager
-            else unit_role_manager
+            unit_role_manager
+            if unit_role_manager
+            else UnitRoleManager(ai, config, self.manager_mediator)
         )
         self.unit_memory_manager: UnitMemoryManager = (
-            UnitMemoryManager(ai, config, self.manager_mediator)
-            if not unit_memory_manager
-            else unit_memory_manager
+            unit_memory_manager
+            if unit_memory_manager
+            else UnitMemoryManager(ai, config, self.manager_mediator)
         )
         self.placement_manager: PlacementManager = (
-            PlacementManager(ai, config, self.manager_mediator)
-            if not placement_manager
-            else placement_manager
+            placement_manager
+            if placement_manager
+            else PlacementManager(ai, config, self.manager_mediator)
         )
         self.grid_manager: GridManager = GridManager(ai, config, self.manager_mediator)
         self.path_manager: PathManager = (
-            PathManager(ai, config, self.manager_mediator)
-            if not path_manager
-            else path_manager
+            path_manager
+            if path_manager
+            else PathManager(ai, config, self.manager_mediator)
         )
         self.terrain_manager: TerrainManager = (
-            TerrainManager(ai, config, self.manager_mediator)
-            if not terrain_manager
-            else terrain_manager
+            terrain_manager
+            if terrain_manager
+            else TerrainManager(ai, config, self.manager_mediator)
         )
         self.resource_manager: ResourceManager = (
-            ResourceManager(ai, config, self.manager_mediator)
-            if not resource_manager
-            else resource_manager
+            resource_manager
+            if resource_manager
+            else ResourceManager(ai, config, self.manager_mediator)
         )
         self.building_manager: BuildingManager = (
-            BuildingManager(ai, config, self.manager_mediator)
-            if not building_manager
-            else building_manager
+            building_manager
+            if building_manager
+            else BuildingManager(ai, config, self.manager_mediator)
         )
         self.enemy_to_base_manager: EnemyToBaseManager = (
-            EnemyToBaseManager(ai, config, self.manager_mediator)
-            if not enemy_to_base_manager
-            else enemy_to_base_manager
+            enemy_to_base_manager
+            if enemy_to_base_manager
+            else EnemyToBaseManager(ai, config, self.manager_mediator)
         )
         self.combat_sim_manager: CombatSimManager = CombatSimManager(
             ai, config, self.manager_mediator
@@ -184,7 +184,7 @@ class Hub:
         )
 
         # in order of priority
-        self.managers: list["Manager"] = [
+        self.managers: list[Manager] = [
             self.data_manager,
             self.unit_role_manager,
             self.unit_cache_manager,
@@ -240,10 +240,13 @@ class Hub:
 
         """
         # update placement grid if tumor dies (placement grid doesn't refresh)
-        if self._is_zerg and (unit := self.ai._all_units_previous_map.get(unit_tag)):
-            if unit.type_id in CREEP_TUMOR_TYPES:
-                x, y = unit.position.rounded
-                self.ai.game_info.placement_grid.data_numpy[y, x] = 1
+        if (
+            self._is_zerg
+            and (unit := self.ai._all_units_previous_map.get(unit_tag))
+            and unit.type_id in CREEP_TUMOR_TYPES
+        ):
+            x, y = unit.position.rounded
+            self.ai.game_info.placement_grid.data_numpy[y, x] = 1
 
         self.unit_cache_manager.remove_unit(unit_tag)
         self.unit_memory_manager.remove_unit(unit_tag)
