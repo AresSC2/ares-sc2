@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.13.1 (2026-09-05)
+
+### Fix
+
+* Base_location instead of start_location in `TechUp` behavior ([`80b720f`](https://github.com/AresSC2/ares-sc2/commit/80b720ffa39b99aee6e9dfa9037df16a62c17d9c))
+
 ## v3.13.0 (2026-08-14)
 
 ### Feature
