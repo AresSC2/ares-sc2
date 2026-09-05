@@ -128,7 +128,7 @@ class TechUp(MacroBehavior):
                 f"{ai.time_formatted} Building {researched_from_id} "
                 f"for {self.desired_tech}"
             )
-            return BuildStructure(ai.start_location, researched_from_id).execute(
+            return BuildStructure(self.base_location, researched_from_id).execute(
                 ai, config, mediator
             )
 
