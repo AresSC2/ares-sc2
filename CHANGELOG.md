@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v3.14.0 (2026-10-03)
+
+### Feature
+
+* Add `CalculatePlacements` config option to enable/disable placement calculations ([`896d887`](https://github.com/AresSC2/ares-sc2/commit/896d88776ee52e43ea5d53c2fc30e7693f511b93))
+
+### Fix
+
+* Warn and skip unfinished structure recovery if `CalculatePlacements` is disabled ([`1ebbd43`](https://github.com/AresSC2/ares-sc2/commit/1ebbd4300b1e7dd8cae4076f63fa6d64714d7772))
+* Add warnings for disabled `CalculatePlacements` in relevant behaviors and manager ([`16dd339`](https://github.com/AresSC2/ares-sc2/commit/16dd3395a27944aaacbe93f647ac7d743f3985f9))
+* Warp ins actually try other locations after initial fails ([`f84e4ee`](https://github.com/AresSC2/ares-sc2/commit/f84e4eeea86e8f5c3a01c61ed247d9acc3442ab9))
+
 ## v3.13.1 (2026-09-05)
 
 ### Fix
