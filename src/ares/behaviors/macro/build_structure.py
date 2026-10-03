@@ -9,12 +9,7 @@ from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 
-from ares.consts import (
-    BUILDING_SIZE_ENUM_TO_RADIUS,
-    CALCULATE_PLACEMENTS,
-    PLACEMENT,
-    BuildingSize,
-)
+from ares.consts import BUILDING_SIZE_ENUM_TO_RADIUS, BuildingSize
 from ares.dicts.structure_to_building_size import STRUCTURE_TO_BUILDING_SIZE
 
 if TYPE_CHECKING:
@@ -102,13 +97,10 @@ class BuildStructure(MacroBehavior):
     find_alternative: bool = True
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
-        if not config.get(PLACEMENT, {}).get(CALCULATE_PLACEMENTS, True):
-            logger.warning(
-                "`BuildStructure` called but `CalculatePlacements` is set to "
-                "False in config. `BuildStructure` requires placement "
-                "calculation, enable it to use this behavior."
-            )
-            return False
+        # Note: when `CalculatePlacements` is False, the
+        # `mediator.request_building_placement` call below returns None
+        # (with a one-time warning from the PlacementManager),
+        # so this behavior safely does nothing.
         if self.structure_id not in STRUCTURE_TO_BUILDING_SIZE:
             logger.error(
                 f"Invalid structure type passed to `BuildStructure`: "

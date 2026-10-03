@@ -144,6 +144,7 @@ class PlacementManager(Manager, IManagerMediator):
         self.calculate_placements: bool = self.config.get(PLACEMENT, {}).get(
             CALCULATE_PLACEMENTS, True
         )
+        self._placement_disabled_warned: bool = False
         self.WORKER_ON_ROUTE_TIMEOUT: float = self.config.get(PLACEMENT, {}).get(
             WORKER_ON_ROUTE_TIMEOUT, 60.0
         )
@@ -337,11 +338,13 @@ class PlacementManager(Manager, IManagerMediator):
     ) -> Point2 | None:
         """Given a base location and building size find an available placement."""
         if not self.calculate_placements:
-            logger.warning(
-                "`request_building_placement` called but `CalculatePlacements` "
-                "is set to False in config. No placement returned, "
-                "PlacementManager is turned off."
-            )
+            if not self._placement_disabled_warned:
+                logger.warning(
+                    "`request_building_placement` / `BuildStructure` called but "
+                    "`CalculatePlacements` is set to False in config. "
+                    "No placement returned, PlacementManager is turned off."
+                )
+                self._placement_disabled_warned = True
             return None
         assert self.ai.race != Race.Zerg, (
             "`request_building_placement` not supported for Zerg"
