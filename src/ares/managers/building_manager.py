@@ -25,11 +25,13 @@ from sc2.units import Units
 from ares.consts import (
     ADD_ONS,
     BUILDING_PURPOSE,
+    CALCULATE_PLACEMENTS,
     CREEP_TUMOR_TYPES,
     DEBUG,
     DEBUG_OPTIONS,
     GAS_BUILDINGS,
     ID,
+    PLACEMENT,
     SHOW_BUILDING_FORMATION,
     STRUCTURE_ORDER_COMPLETE,
     TARGET,
@@ -105,6 +107,10 @@ class BuildingManager(Manager, IManagerMediator):
         # remember for each expansion attempt, otherwise we lose memory
         # should be cleared after expanding
         self.blocked_expansion_locations: set[Point2] = set()
+        self.calculate_placements: bool = self.config.get(PLACEMENT, {}).get(
+            CALCULATE_PLACEMENTS, True
+        )
+        self._unfinished_recovery_warned: bool = False
 
     def manager_request(
         self,
@@ -166,6 +172,16 @@ class BuildingManager(Manager, IManagerMediator):
                 not in {UnitTypeId.PLANETARYFORTRESS, UnitTypeId.ORBITALCOMMAND}
             ]
         ):
+            if not self.calculate_placements:
+                # recovery disabled when placement calculation is off,
+                # only warn when there is actually something to recover
+                if not self._unfinished_recovery_warned:
+                    logger.warning(
+                        "Unfinished Terran structure recovery disabled because "
+                        "`CalculatePlacements` is set to False in config."
+                    )
+                    self._unfinished_recovery_warned = True
+                return
             targets: list[Point2] = self.get_all_building_targets()
             for structure in existing_unfinished_structures:
                 if [

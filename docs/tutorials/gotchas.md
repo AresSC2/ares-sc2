@@ -135,6 +135,7 @@ and turns the `PlacementManager` off. The following will log a warning and do no
 * `self.mediator.request_building_placement()`
 * `ProtossStaticDefence` and `RestorePower` behaviors
 * The `ares` `BuildRunner` system (`BuildOrderRunner.run_build`)
+* `BuildingManager` recovery of unfinished Terran structures
 
 Zerg is unaffected, and `self.mediator.can_place_structure()` keeps working for all races
 since it checks the live grids rather than the precalculated placements.
