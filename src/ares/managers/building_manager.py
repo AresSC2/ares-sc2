@@ -368,13 +368,14 @@ class BuildingManager(Manager, IManagerMediator):
                     ):
                         if self.ai.race == Race.Zerg:
                             tags_to_remove.add(worker_tag)
-                        else:
-                            self.building_tracker[worker_tag][TARGET] = (
-                                self.manager_mediator.request_building_placement(
-                                    base_location=self.ai.start_location,
-                                    structure_type=structure_id,
-                                )
+                        elif (
+                            new_target
+                            := self.manager_mediator.request_building_placement(
+                                base_location=self.ai.start_location,
+                                structure_type=structure_id,
                             )
+                        ):
+                            self.building_tracker[worker_tag][TARGET] = new_target
                         continue
 
                 if (

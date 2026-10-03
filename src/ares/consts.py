@@ -85,6 +85,7 @@ UNITS: str = "Units"
 USE_DATA: str = "UseData"
 WINRATE_BASED: str = "WinrateBased"
 WORKER_ON_ROUTE_TIMEOUT: str = "WorkerOnRouteTimeout"
+CALCULATE_PLACEMENTS: str = "CalculatePlacements"
 
 # building manager
 BUILDING: str = "Building"
