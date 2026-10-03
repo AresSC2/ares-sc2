@@ -32,9 +32,11 @@ from ares.consts import (
     ADD_ONS,
     ALL_STRUCTURES,
     BUILDS,
+    CALCULATE_PLACEMENTS,
     GAS_BUILDINGS,
     GATEWAY_UNITS,
     OPENING_BUILD_ORDER,
+    PLACEMENT,
     TARGET,
     WORKER_TYPES,
     BuildingSize,
@@ -110,6 +112,7 @@ class BuildOrderRunner:
         self.should_handle_gas_steal: bool = True
         self._geyser_tag_to_probe_tag: dict[int, int] = {}
         self._last_gas_order_time: float = -999.0
+        self._placement_disabled_warned: bool = False
 
     def set_build_completed(self) -> None:
         logger.info("Build order completed")
@@ -226,6 +229,22 @@ class BuildOrderRunner:
         """
         Runs the build order.
         """
+        # structure positions for Terran / Protoss come from the
+        # PlacementManager, so the runner can't work with it turned off
+        if self.ai.race != Race.Zerg and not self.config.get(PLACEMENT, {}).get(
+            CALCULATE_PLACEMENTS, True
+        ):
+            if not self._placement_disabled_warned:
+                logger.warning(
+                    "`BuildOrderRunner` disabled because `CalculatePlacements` "
+                    "is set to False in config. Terran and Protoss build orders "
+                    "require placement calculation, enable it to use the "
+                    "build runner."
+                )
+                self._placement_disabled_warned = True
+                self.set_build_completed()
+            return
+
         if self.persistent_worker:
             self._assign_persistent_worker()
 
@@ -815,7 +834,8 @@ class BuildOrderRunner:
                         first_pylon=self.ai.time < 30
                         and step.command == UnitTypeId.PYLON,
                         wall=True,
-                    ),
+                    )
+                    or self.ai.start_location,
                     time,
                 )
 

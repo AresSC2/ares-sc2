@@ -125,6 +125,21 @@ tracker in any way. You're maybe using the building tracker if you use the follo
 
 * Using the `ares` `BuildRunner` system in your bot
 
+#### Disabling placement calculation (`Placement.CalculatePlacements: False`)
+Setting `CalculatePlacements: False` in `config.yml` skips the initial placement calculation
+and turns the `PlacementManager` off. The following will log a warning and do nothing
+(returning `False` / `None`) for Terran and Protoss:
+
+* `BuildStructure` behavior (including via `AutoSupply`, `ProductionController`,
+  `TechUp` and `ProtossStaticDefence`)
+* `self.mediator.request_building_placement()`
+* `ProtossStaticDefence` and `RestorePower` behaviors
+* The `ares` `BuildRunner` system (`BuildOrderRunner.run_build`)
+* `BuildingManager` recovery of unfinished Terran structures
+
+Zerg is unaffected, and `self.mediator.can_place_structure()` keeps working for all races
+since it checks the live grids rather than the precalculated placements.
+
 #### [`self.already_pending()`](https://github.com/BurnySc2/python-sc2/blob/develop/sc2/bot_ai.py#L838) breaks for pending structures
 
 ##### Problem

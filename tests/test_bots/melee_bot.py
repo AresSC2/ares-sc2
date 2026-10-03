@@ -114,22 +114,22 @@ class DummyBot(AresBot):
     async def on_start(self) -> None:
         await super().on_start()
         self.client.game_step = 16
-        # desired_army = {
-        #     Race.Protoss: [UnitTypeId.STALKER, UnitTypeId.IMMORTAL, UnitTypeId.VOIDRAY],
-        #     Race.Terran: [UnitTypeId.MARINE, UnitTypeId.MARAUDER, UnitTypeId.MEDIVAC],
-        #     Race.Zerg: [UnitTypeId.ROACH, UnitTypeId.HYDRALISK, UnitTypeId.MUTALISK],
-        # }
-        #
-        # await self.client.debug_create_unit(
-        #     [[self.worker_type, 30, self.start_location, 1]]
-        # )
-        #
-        # await self.client.debug_create_unit(
-        #     [
-        #         [unit_type, 8, self.start_location, 1]
-        #         for unit_type in desired_army[self.race]
-        #     ]
-        # )
+        desired_army = {
+            Race.Protoss: [UnitTypeId.STALKER, UnitTypeId.IMMORTAL, UnitTypeId.VOIDRAY],
+            Race.Terran: [UnitTypeId.MARINE, UnitTypeId.MARAUDER, UnitTypeId.MEDIVAC],
+            Race.Zerg: [UnitTypeId.ROACH, UnitTypeId.HYDRALISK, UnitTypeId.MUTALISK],
+        }
+
+        await self.client.debug_create_unit(
+            [[self.worker_type, 30, self.start_location, 1]]
+        )
+
+        await self.client.debug_create_unit(
+            [
+                [unit_type, 8, self.start_location, 1]
+                for unit_type in desired_army[self.race]
+            ]
+        )
 
 
 # Start game
@@ -137,10 +137,9 @@ if __name__ == "__main__":
     random_map = random.choice(
         [
             "IncorporealAIE_v4",
-            "MagannathaAIE_v2PersephoneAIE_v4",
+            "PersephoneAIE_v4",
             "PylonAIE_v4",
             "TorchesAIE_v4",
-            # "LeyLinesAIE_v3"
         ]
     )
     run_game(

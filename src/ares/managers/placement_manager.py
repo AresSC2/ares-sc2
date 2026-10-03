@@ -30,6 +30,7 @@ from ares.config_parser import ConfigParser
 from ares.consts import (
     BUILDING_PLACEMENTS,
     BUILDING_SIZE_ENUM_TO_RADIUS,
+    CALCULATE_PLACEMENTS,
     DEBUG,
     DEBUG_OPTIONS,
     GAS_BUILDINGS,
@@ -140,9 +141,13 @@ class PlacementManager(Manager, IManagerMediator):
         # this prevents iterating through all bases to check workers on route
         # key: Unique placement location, value: main base location
         self.worker_on_route_tracker: dict[Point2, Point2] = {}
-        self.WORKER_ON_ROUTE_TIMEOUT: float = self.config[PLACEMENT][
-            WORKER_ON_ROUTE_TIMEOUT
-        ]
+        self.calculate_placements: bool = self.config.get(PLACEMENT, {}).get(
+            CALCULATE_PLACEMENTS, True
+        )
+        self._placement_disabled_warned: bool = False
+        self.WORKER_ON_ROUTE_TIMEOUT: float = self.config.get(PLACEMENT, {}).get(
+            WORKER_ON_ROUTE_TIMEOUT, 60.0
+        )
 
         __ares_config_location__: str = path.realpath(
             path.join(getcwd(), path.dirname(__file__), "..")
@@ -213,6 +218,9 @@ class PlacementManager(Manager, IManagerMediator):
         if self.ai.arcade_mode:
             return
 
+        if not self.calculate_placements:
+            return
+
         self.warp_in_positions: set[Point2] = set()
         self.requested_warp_ins: list[Any] = []
         # occasionally check if worker on route locations can be unlocked
@@ -225,6 +233,12 @@ class PlacementManager(Manager, IManagerMediator):
     def initialise(self) -> None:
         """Calculate building formations on game commencement."""
         if self.ai.arcade_mode:
+            return
+        if not self.calculate_placements:
+            logger.info(
+                "`CalculatePlacements` is set to False in config, "
+                "skipping placement calculation."
+            )
             return
         start: float = time.time()
         self.points_to_avoid_grid = np.zeros(
@@ -323,6 +337,15 @@ class PlacementManager(Manager, IManagerMediator):
         reaper_wall: bool = False,
     ) -> Point2 | None:
         """Given a base location and building size find an available placement."""
+        if not self.calculate_placements:
+            if not self._placement_disabled_warned:
+                logger.warning(
+                    "`request_building_placement` / `BuildStructure` called but "
+                    "`CalculatePlacements` is set to False in config. "
+                    "No placement returned, PlacementManager is turned off."
+                )
+                self._placement_disabled_warned = True
+            return None
         assert self.ai.race != Race.Zerg, (
             "`request_building_placement` not supported for Zerg"
         )
@@ -773,6 +796,8 @@ class PlacementManager(Manager, IManagerMediator):
         unit :
             A structure that just started building.
         """
+        if not self.calculate_placements:
+            return
         pos: Point2 = unit.position
         for el in self.placements_dict:
             for location in self.placements_dict[el][BuildingSize.TWO_BY_TWO]:
@@ -800,6 +825,8 @@ class PlacementManager(Manager, IManagerMediator):
             A unit_tag that recently died.
         """
 
+        if not self.calculate_placements:
+            return
         # quick check to make sure we know about this unit
         # saves running extra logic if not
         if unit_tag not in self.structure_tag_to_base_location:
@@ -846,6 +873,8 @@ class PlacementManager(Manager, IManagerMediator):
         tag : optional
             Tag of existing structure.
         """
+        if not self.calculate_placements:
+            return
         assert base_location in self.placements_dict, (
             f"{base_location} not in placements dict"
         )

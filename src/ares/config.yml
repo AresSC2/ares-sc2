@@ -67,6 +67,10 @@ Pathing:
             Range: 3.5
 
 Placement:
+    # if False, no initial placement calculation is performed
+    # and `request_building_placement` / `BuildStructure / build order runner`
+    # will not work
+    CalculatePlacements: True
     # when requesting a placement, location is locked from being selected
     # this allows the placement to become available again
     WorkerOnRouteTimeout: 60.0

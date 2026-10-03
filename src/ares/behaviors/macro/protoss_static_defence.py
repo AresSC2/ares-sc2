@@ -16,6 +16,7 @@ from cython_extensions.geometry import cy_distance_to_squared
 from ares.behaviors.macro.build_structure import BuildStructure
 from ares.behaviors.macro.macro_behavior import MacroBehavior
 from ares.behaviors.macro.tech_up import TechUp
+from ares.consts import CALCULATE_PLACEMENTS, PLACEMENT
 from ares.managers.manager_mediator import ManagerMediator
 
 NEXUS_BASE_DISTANCE_SQ: float = 30.25  # 5.5 ** 2
@@ -47,12 +48,23 @@ class ProtossStaticDefence(MacroBehavior):
     exclude_base_locations: set[Point2] = field(default_factory=set)
     max_on_route: int = 1
     tech_base_location: Point2 | None = None
+    _placements_disabled_warned: bool = field(default=False, repr=False, compare=False)
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         if ai.race != Race.Protoss:
             logger.warning(
                 f"{ai.time_formatted}: ProtossStaticDefence only supports Protoss."
             )
+            return False
+
+        if not config.get(PLACEMENT, {}).get(CALCULATE_PLACEMENTS, True):
+            if not self._placements_disabled_warned:
+                logger.warning(
+                    "`ProtossStaticDefence` called but `CalculatePlacements` is "
+                    "set to False in config. This behavior requires placement "
+                    "calculation, enable it to use this behavior."
+                )
+                self._placements_disabled_warned = True
             return False
 
         placements_dict: dict = mediator.get_placements_dict

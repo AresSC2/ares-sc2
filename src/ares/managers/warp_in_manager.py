@@ -147,7 +147,6 @@ class WarpInManager(Manager, IManagerMediator):
                         placement_step=1,
                     )
                     if placement is None:
-                        logger.info(f"Can't find placement for {unit_type}")
-                        return
+                        continue
                     build_from.warp_in(unit_type, placement)
                     break

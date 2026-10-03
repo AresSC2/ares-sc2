@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
 import numpy as np
+from loguru import logger
 from sc2.ids.unit_typeid import UnitTypeId
 from sc2.position import Point2
 from sc2.unit import Unit
@@ -18,7 +19,14 @@ from cython_extensions import (
 )
 
 from ares.behaviors.macro.macro_behavior import MacroBehavior
-from ares.consts import ID, REQUIRE_POWER_STRUCTURE_TYPES, TARGET, BuildingSize
+from ares.consts import (
+    CALCULATE_PLACEMENTS,
+    ID,
+    PLACEMENT,
+    REQUIRE_POWER_STRUCTURE_TYPES,
+    TARGET,
+    BuildingSize,
+)
 from ares.managers.manager_mediator import ManagerMediator
 
 PYLON_POWERED_DISTANCE_SQUARED: float = 42.25
@@ -40,7 +48,18 @@ class RestorePower(MacroBehavior):
     ```
     """
 
+    _placements_disabled_warned: bool = field(default=False, repr=False, compare=False)
+
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
+        if not config.get(PLACEMENT, {}).get(CALCULATE_PLACEMENTS, True):
+            if not self._placements_disabled_warned:
+                logger.warning(
+                    "`RestorePower` called but `CalculatePlacements` is set to "
+                    "False in config. This behavior requires placement "
+                    "calculation, enable it to use this behavior."
+                )
+                self._placements_disabled_warned = True
+            return False
         if structures_no_power := [
             s
             for s in ai.structures
