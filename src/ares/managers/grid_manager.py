@@ -54,6 +54,7 @@ from ares.consts import (
     TACTICAL_GROUND,
     TACTICAL_GROUND_GRID,
     UNITS,
+    UPDATE_GRIDS,
     ManagerName,
     ManagerRequestType,
 )
@@ -190,6 +191,7 @@ class GridManager(Manager, IManagerMediator):
         self.tactical_ground_grid_enabled: bool = self.config[FEATURES][
             TACTICAL_GROUND_GRID
         ]
+        self.update_grids_enabled: bool = self.config[FEATURES].get(UPDATE_GRIDS, True)
         # ensure grid exists so mediator request dont break
         self.tactical_ground_grid: np.ndarray = self.map_data.get_pyastar_grid(
             default_weight=200
@@ -212,6 +214,8 @@ class GridManager(Manager, IManagerMediator):
         iteration :
             The game iteration.
         """
+        if not self.update_grids_enabled:
+            return
         self.forcefield_positions = []
         self._add_effects()
 
@@ -369,6 +373,8 @@ class GridManager(Manager, IManagerMediator):
         iteration :
             The current game iteration.
         """
+        if not self.update_grids_enabled:
+            return
         self.air_grid = self._cached_clean_air_grid.copy()
         self.air_vs_ground_grid = self._cached_clean_air_vs_ground_grid.copy()
         self.climber_grid = self._cached_climber_grid.copy()
@@ -400,6 +406,8 @@ class GridManager(Manager, IManagerMediator):
         enemy :
             The enemy unit to add the influence of.
         """
+        if not self.update_grids_enabled:
+            return
         if not enemy.is_ready and not enemy.is_cloaked and not enemy.is_burrowed:
             return
         self._add_unit_influence(enemy)
@@ -414,6 +422,8 @@ class GridManager(Manager, IManagerMediator):
         enemy :
             The enemy structure to add the influence of.
         """
+        if not self.update_grids_enabled:
+            return
         # these will expire out of our vision, don't add to grid
         if enemy.type_id == UnitTypeId.AUTOTURRET and enemy.is_snapshot:
             return
