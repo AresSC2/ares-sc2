@@ -1,7 +1,7 @@
 UseData: False
-Debug: False
+Debug: True
 GameStep: 2
-DebugGameStep: 2
+DebugGameStep: 16
 
 DebugOptions:
     # one of: Air, AirVsGround, Ground, GroundAvoidance, AirAvoidance, GroundToAir, TacticalGround
@@ -23,10 +23,22 @@ Features:
     # this grid is useful for disruptor balls and maybe some other uses
     # off by default to save computation
     TacticalGroundGrid: False
+    # if False, grids keep their initial state and no per-step influence updates run
+    UpdateGrids: True
 
 Building:
     # how many seconds before giving up on a construction order?
     CancelOrder: 18
+
+Placement:
+    # if False, no initial placement calculation is performed
+    # and `request_building_placement` / `BuildStructure / build order runner`
+    # will not work
+    CalculatePlacements: True
+    # when requesting a placement, location is locked from being selected
+    # this allows the placement to become available again
+    WorkerOnRouteTimeout: 60.0
+
 
 Mining:
     GeyserDistanceFactor: 1.05
@@ -65,12 +77,3 @@ Pathing:
         Storm:
             Cost: 600
             Range: 3.5
-
-Placement:
-    # if False, no initial placement calculation is performed
-    # and `request_building_placement` / `BuildStructure / build order runner`
-    # will not work
-    CalculatePlacements: True
-    # when requesting a placement, location is locked from being selected
-    # this allows the placement to become available again
-    WorkerOnRouteTimeout: 60.0
