@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v3.15.0 (2026-10-04)
+
+### Feature
+
+* Add `UpdateGrids` config option ([`81cff05`](https://github.com/AresSC2/ares-sc2/commit/81cff05daed9d47b57b5a543a6944f37ef1ed0cf))
+
+### Fix
+
+* Disable debug mode in `ares/config.yml` ([`b3f2e6c`](https://github.com/AresSC2/ares-sc2/commit/b3f2e6c764f5a59d655d11b5f2522c54aba04298))
+
 ## v3.14.0 (2026-10-03)
 
 ### Feature
