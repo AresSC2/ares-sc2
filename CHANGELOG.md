@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v3.15.1 (2026-10-22)
+
+### Fix
+
+* Account for queued units when calculating build amount in `SpawnController` ([`e1cdac1`](https://github.com/AresSC2/ares-sc2/commit/e1cdac1effb9c6d05c95bb87e5f37d84d08cc0f2))
+* Improve resource assignment logic and ensure proper worker targeting ([`e378834`](https://github.com/AresSC2/ares-sc2/commit/e3788342922e62a7418bde26158c9d7810f2513e))
+* Handle equivalent structures for upgrades in `UpgradeController` and `custom_bot_ai` ([`e960dc4`](https://github.com/AresSC2/ares-sc2/commit/e960dc43e4a03a475893a02442c815e242dd4a67))
+* Account for Zerg larva in BuildWorkers ([`d4b36df`](https://github.com/AresSC2/ares-sc2/commit/d4b36df1d5a6162bc700ec606f1e4793b37045a0))
+* Prevent spawn controller getting stuck when exact proportions ([`6a077dc`](https://github.com/AresSC2/ares-sc2/commit/6a077dc43a00a8fb1ef24706c0bfa635d3e650d5))
+
 ## v3.15.0 (2026-10-04)
 
 ### Feature
