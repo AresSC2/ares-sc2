@@ -209,7 +209,9 @@ class Mining(MacroBehavior):
                     worker(AbilityId.SMART, resource)
 
                 elif (self.mineral_boost and assigned_mineral_patch) or (
-                    self.vespene_boost and self.workers_per_gas < 3
+                    self.vespene_boost
+                    and assigned_gas_building
+                    and self.workers_per_gas < 3
                 ):
                     self._do_mining_boost(
                         ai,
@@ -281,7 +283,7 @@ class Mining(MacroBehavior):
             if worker.is_idle or (
                 cy_distance_to_squared(worker.position, resource.position) > 81.0
                 and worker.order_target
-                and worker.order_target != resource
+                and worker.order_target != resource.tag
             ):
                 worker.gather(resource)
                 self.locked_action_tags[worker_tag] = ai.time
@@ -389,7 +391,10 @@ class Mining(MacroBehavior):
                     )
                     worker.move(move_to)
                 elif ai.mineral_field:
-                    if worker.order_target and worker.order_target == target_mineral:
+                    if (
+                        worker.order_target
+                        and worker.order_target == target_mineral.tag
+                    ):
                         return
                     worker.gather(target_mineral)
         # worker is travelling back to a ready townhall
@@ -504,7 +509,7 @@ class Mining(MacroBehavior):
             weight_safety_limit = 100.0
         safe_mfs: list[Unit] = []
         for mf in mfs:
-            if mf in assigned_patches or not mediator.is_position_safe(
+            if mf.tag in assigned_patches or not mediator.is_position_safe(
                 grid=grid, position=mf.position, weight_safety_limit=weight_safety_limit
             ):
                 continue
