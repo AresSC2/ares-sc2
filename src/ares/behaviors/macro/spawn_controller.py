@@ -183,11 +183,11 @@ class SpawnController(MacroBehavior):
 
             num_this_unit: int = mediator.get_own_unit_count(unit_type_id=unit_type_id)
             current_proportion: float = num_this_unit / (num_total_units + 1e-16)
-            # already have enough of this unit type,
+            # already have more than enough of this unit type,
             # but we could add it if:
             # freeflow mode or we don't have much army yet
             if (
-                current_proportion >= target_proportion
+                current_proportion > target_proportion
                 and not self.freeflow_mode
                 and num_total_units >= self.ignore_proportions_below_unit_count
             ):
@@ -216,8 +216,16 @@ class SpawnController(MacroBehavior):
                 self.__build_dict,
                 self.ignored_build_from_tags,
             )
+            # `maximum` is a per step limit, so account for any already queued above
+            num_queued: int = sum(
+                1 for v in self.__build_dict.values() if v == units_ready_to_build[0]
+            )
             amount, supply, cost = self._calculate_build_amount(
-                ai, units_ready_to_build[0], build_structures, self.__supply_available
+                ai,
+                units_ready_to_build[0],
+                build_structures,
+                self.__supply_available,
+                max(self.maximum - num_queued, 0),
             )
             # prioritize spawning close to spawn target
             if self.spawn_target:

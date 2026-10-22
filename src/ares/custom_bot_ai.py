@@ -204,8 +204,15 @@ class CustomBotAI(BotAI):
         ].research_ability.exact_id
 
         researched_from: UnitTypeId = UPGRADE_RESEARCHED_FROM[upgrade_id]
-        upgrade_from_structures: Units = self.mediator.get_own_structures_dict[
-            researched_from
+        # include morphed versions, ie: research may be running in a lair / hive
+        structures_dict = self.mediator.get_own_structures_dict
+        upgrade_from_structures: list[Unit] = [
+            s
+            for type_id in {
+                researched_from,
+                *EQUIVALENTS_FOR_TECH_PROGRESS.get(researched_from, set()),
+            }
+            for s in structures_dict[type_id]
         ]
 
         for structure in upgrade_from_structures:
