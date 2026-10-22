@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from loguru import logger
+from sc2.constants import EQUIVALENTS_FOR_TECH_PROGRESS
 from sc2.data import Race
 from sc2.dicts.unit_research_abilities import RESEARCH_INFO
 from sc2.dicts.upgrade_researched_from import UPGRADE_RESEARCHED_FROM
@@ -68,15 +69,23 @@ class UpgradeController(MacroBehavior):
                 continue
 
             researched_from_id: UnitTypeId = UPGRADE_RESEARCHED_FROM[upgrade]
-            researched_from: list[Unit] = list(
-                mediator.get_own_structures_dict[researched_from_id]
-            )
+            # include morphed versions, ie: lair / hive can research
+            # hatchery upgrades, greater spire can research spire upgrades
+            structures_dict: dict = mediator.get_own_structures_dict
+            researched_from: list[Unit] = [
+                s
+                for type_id in {
+                    researched_from_id,
+                    *EQUIVALENTS_FOR_TECH_PROGRESS.get(researched_from_id, set()),
+                }
+                for s in structures_dict[type_id]
+            ]
 
             # there is nowhere to research this from, tech up to it
             # but only if auto_tech_up_enabled is True
             if not researched_from:
                 if not self.auto_tech_up_enabled:
-                    return False
+                    continue
 
                 teching: bool = TechUp(
                     desired_tech=upgrade, base_location=self.base_location
@@ -113,12 +122,13 @@ class UpgradeController(MacroBehavior):
                     # hive for 3/3? twilight council for 2/2?
                     elif required_building := research_info.get("required_building"):
                         if not self.auto_tech_up_enabled:
-                            return False
+                            continue
 
-                        return TechUp(
+                        if TechUp(
                             desired_tech=required_building,
                             base_location=self.base_location,
-                        ).execute(ai, config, mediator)
+                        ).execute(ai, config, mediator):
+                            return True
 
         # found nothing to do
         return False
