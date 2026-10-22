@@ -216,8 +216,16 @@ class SpawnController(MacroBehavior):
                 self.__build_dict,
                 self.ignored_build_from_tags,
             )
+            # `maximum` is a per step limit, so account for any already queued above
+            num_queued: int = sum(
+                1 for v in self.__build_dict.values() if v == units_ready_to_build[0]
+            )
             amount, supply, cost = self._calculate_build_amount(
-                ai, units_ready_to_build[0], build_structures, self.__supply_available
+                ai,
+                units_ready_to_build[0],
+                build_structures,
+                self.__supply_available,
+                max(self.maximum - num_queued, 0),
             )
             # prioritize spawning close to spawn target
             if self.spawn_target:

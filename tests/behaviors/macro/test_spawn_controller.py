@@ -98,3 +98,20 @@ class TestSpawnController:
         structures[UnitTypeId.SIEGETANK].train.assert_called_once_with(
             UnitTypeId.SIEGETANK
         )
+
+    def test_over_produce_respects_maximum(self):
+        # arrange: only marines in the comp, so the over produce branch runs
+        barracks: list[MagicMock] = [MagicMock(name=f"rax_{i}") for i in range(10)]
+        ai, mediator, _ = _setup({UnitTypeId.MARINE: 0})
+        # like the real method, exclude structures already given a build order
+        ai.get_build_structures.side_effect = lambda _from, _type, build_dict, _: [
+            b for b in barracks if b not in build_dict
+        ]
+
+        # act
+        SpawnController(
+            {UnitTypeId.MARINE: {"proportion": 1.0, "priority": 0}}, maximum=3
+        ).execute(ai, {}, mediator)
+
+        # assert
+        assert sum(b.train.call_count for b in barracks) == 3
