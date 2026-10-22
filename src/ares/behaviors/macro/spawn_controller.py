@@ -183,11 +183,11 @@ class SpawnController(MacroBehavior):
 
             num_this_unit: int = mediator.get_own_unit_count(unit_type_id=unit_type_id)
             current_proportion: float = num_this_unit / (num_total_units + 1e-16)
-            # already have enough of this unit type,
+            # already have more than enough of this unit type,
             # but we could add it if:
             # freeflow mode or we don't have much army yet
             if (
-                current_proportion >= target_proportion
+                current_proportion > target_proportion
                 and not self.freeflow_mode
                 and num_total_units >= self.ignore_proportions_below_unit_count
             ):
