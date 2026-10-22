@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from sc2.data import Race
 from sc2.ids.unit_typeid import UnitTypeId
 
 from ares.behaviors.macro.spawn_controller import SpawnController
@@ -36,15 +37,18 @@ class BuildWorkers(MacroBehavior):
 
     def execute(self, ai: AresBot, config: dict, mediator: ManagerMediator) -> bool:
         worker_type: UnitTypeId = ai.worker_type
-        if (
-            ai.can_afford(worker_type)
-            and ai.townhalls.idle
-            and ai.supply_workers < self.to_count
-        ):
+        num_to_build: int = self.to_count - int(ai.supply_workers)
+        # zerg workers come from larva, so idle townhalls are irrelevant
+        can_build_from: bool = bool(
+            ai.larva if ai.race == Race.Zerg else ai.townhalls.idle
+        )
+        if ai.can_afford(worker_type) and can_build_from and num_to_build > 0:
             return SpawnController(
                 {
                     worker_type: {"proportion": 1.0, "priority": 0},
-                }
+                },
+                # don't overshoot `to_count`, ie: zerg with lots of larva
+                maximum=num_to_build,
             ).execute(ai, config, mediator)
 
         return False
