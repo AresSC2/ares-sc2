@@ -146,6 +146,7 @@ class AresBot(CustomBotAI):
         self._seen_tags: set[int] = set()
 
         self.arcade_mode: bool = False
+        self.first_step_prepared = False
 
     def give_same_action(
         self,
@@ -175,8 +176,7 @@ class AresBot(CustomBotAI):
         self._requested_zerg_placements.append((base_location, structure_type))
 
     async def _prepare_step(self, state, proto_game_info) -> None:
-        """
-        If playing in realtime, we set the game step to 1 (in on_start) and then
+        """If playing in realtime, we set the game step to 1 (in on_start) and then
         manually skip frames. This gives Ares a time limit of 4 frames (45ms per frame)
         to finish an iteration. Playing every 4th frame seems to be the generally
         accepted solution to prevent weird things going on. And from Ares' point of
@@ -184,10 +184,16 @@ class AresBot(CustomBotAI):
         """
         self.state = state
         loop: int = state.game_loop
-        if self.realtime and self.last_game_loop + 4 > loop and loop != 0:
+        if (
+            self.realtime
+            and self.last_game_loop + 4 > loop
+            and loop != 0
+            and self.first_step_prepared
+        ):
             return
 
         self.last_game_loop = loop
+        self.first_step_prepared = True
         return await super()._prepare_step(state, proto_game_info)
 
     # noinspection PyFinal
