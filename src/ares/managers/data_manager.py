@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import random
 from collections import defaultdict, deque
 from os import path
 from typing import Any
@@ -21,6 +22,8 @@ from ares.consts import (
     LOSS,
     MIN_GAMES_WINRATE_BASED,
     RACE,
+    RANDOM,
+    RANDOM_BASED,
     RESULT,
     STRATEGY_USED,
     TEST_OPPONENT_ID,
@@ -135,7 +138,9 @@ class DataManager(Manager, IManagerMediator):
         return self.manager_requests_dict[request](kwargs)
 
     def initialise(self) -> None:
-        if (
+        if BUILD_SELECTION in self.config and self.config[BUILD_SELECTION] == RANDOM:
+            self.build_selection_method = RANDOM_BASED
+        elif (
             BUILD_SELECTION in self.config
             and self.config[USE_DATA]
             and self.config[BUILD_SELECTION] == WINRATE_BASED
@@ -145,7 +150,9 @@ class DataManager(Manager, IManagerMediator):
             self.min_games = self.config[MIN_GAMES_WINRATE_BASED]
 
         if BUILD_CHOICES in self.config:
-            if self.config[USE_DATA]:
+            if self.build_selection_method == RANDOM_BASED:
+                self._choose_opening_random()
+            elif self.config[USE_DATA]:
                 self._get_opponent_data(self.ai.opponent_id)
                 self._choose_opening()
 
@@ -163,6 +170,14 @@ class DataManager(Manager, IManagerMediator):
             The current game iteration
         """
         pass
+
+    def _choose_opening_random(self):
+        """
+        Randm build selection: choose the next build at random.
+        """
+        logger.info("Select build at random.")
+        self.chosen_opening = random.choice(self.build_cycle)
+        logger.info(f"Chosen opening: {self.chosen_opening}")
 
     def _choose_opening_cycle(self):
         """
