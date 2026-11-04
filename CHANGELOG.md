@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v3.16.0 (2026-11-04)
+
+### Feature
+
+* Capability of picking up a random build order from the cycle list. ([`e21f860`](https://github.com/AresSC2/ares-sc2/commit/e21f8609df7fb431ac76991025b6daf1557501a2))
+
 ## v3.15.1 (2026-10-22)
 
 ### Fix
