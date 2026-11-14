@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v3.16.1 (2026-11-14)
+
+### Fix
+
+* Mkdocs build error ([`82abc29`](https://github.com/AresSC2/ares-sc2/commit/82abc29224bcd00f8ea86c00dac9cf5b0e736529))
+* Prevent duplicate casts for in-flight AOE abilities ([`862cbc2`](https://github.com/AresSC2/ares-sc2/commit/862cbc211c7611e55f2a06268690dec837299876))
+* Account for own unit shields in combat sim ([`cf53333`](https://github.com/AresSC2/ares-sc2/commit/cf533333d4ac14b285990167c0759d1be6a5afdf))
+* Check enemy flying status correctly in siege tank decision ([`8d6e8f3`](https://github.com/AresSC2/ares-sc2/commit/8d6e8f34e163463b12c4cb00510e1a0f9819c1bc))
+* Collect unit tags correctly in `UnitRoleManager` ([`49805ea`](https://github.com/AresSC2/ares-sc2/commit/49805eabaf780ff83b4bc32a86092c07472bb752))
+* Handle realtime game loop intervals correctly ([`7c45f0f`](https://github.com/AresSC2/ares-sc2/commit/7c45f0f084b22121a16691623118cc70985fb51c))
+* Enable vespene boosting by default in `Mining` ([`1faae71`](https://github.com/AresSC2/ares-sc2/commit/1faae710f1045cf7900c52cfad70781a7ceea32b))
+
 ## v3.16.0 (2026-11-04)
 
 ### Feature
