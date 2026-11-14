@@ -64,7 +64,7 @@ class SiegeTankDecision(CombatIndividualBehavior):
             for e in self.close_enemy
             if not e.is_burrowed
             and e.type_id not in CHANGELING_TYPES
-            and not UNIT_DATA[type_id]["flying"]
+            and not UNIT_DATA[e.type_id]["flying"]
         ]
         unit_pos: Point2 = self.unit.position
 
