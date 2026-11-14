@@ -140,7 +140,7 @@ class CombatSimManager(Manager, IManagerMediator):
         own_health: float
         enemy_health: float
         own_health, enemy_health = (
-            sum([u.health for u in own_units]) + 1e-16,
+            sum([u.health + u.shield for u in own_units]) + 1e-16,
             sum([u.health + u.shield for u in enemy_units]) + 1e-16,
         )
         # if the winning units are at 10% health after the fight,
