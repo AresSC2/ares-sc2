@@ -1,0 +1,78 @@
+# Custom SC2 dictionary for IDEs
+
+# PyCharm:
+## Settings -> Editor -> Natural Languages -> Spelling -> Add Custom dictionary
+
+# Visual Studio:
+## Create or open an .editorconfig file in your solution's root or project folder.
+## add `spelling_exclusion_path = .\sc2ai_dictionary.dic`
+## add `sc2ai_dictionary.dic` to the same folder as `.editorconfig`
+
+
+addon'd
+addonswap
+artosis
+autosupply
+baneling
+banelings
+banelingcocoon
+barracksreactor
+Berlingrad
+biles
+burnysc
+chrono
+chronoboost
+destructables
+dropperlord
+factorytechlab
+forcefield
+forcefields
+fungaled
+Gresvan
+Hardwire
+hydralisks
+lutris
+Magannatha
+mapanalyzer
+medivacs
+MEIPASS
+Mengsk
+Moondance
+muta
+mutas
+mutalisk
+mutalisks
+nonpathable
+nydus
+nyduses
+Oceanborn
+pathable
+premoving
+protoss
+psistorm
+Romanticide
+reactored
+scvs
+sieged
+siegetanksieged
+skytoss
+speedminers
+speedmining
+starporttechlab
+teching
+techlab
+techlabs
+ultralisk
+ultralisks
+Ultralove
+unpathable
+unsiege
+unsieging
+warpin
+warpins
+warpgate
+warpgates
+widowmine
+Zerg
+zergling
+zerglings
