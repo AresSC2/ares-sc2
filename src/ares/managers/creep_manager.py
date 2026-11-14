@@ -30,11 +30,19 @@ class CreepManager(Manager, IManagerMediator):
     _creep_grid: np.ndarray
     _creep_tiles: tuple[np.ndarray, np.ndarray]
     _creep_edges: tuple[np.ndarray, np.ndarray]
+    # how often to recalculate, in game loops
+    CREEP_COVERAGE_INTERVAL: int = 112
+    CREEP_EDGES_INTERVAL: int = 16
     EDGE_FILTER: np.ndarray = np.array([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
 
     def __init__(self, ai, config: dict, mediator: ManagerMediator) -> None:
         super().__init__(ai, config, mediator)
         self._creep_coverage: float = 0.0
+        # game loops at which periodic work last ran. Compare elapsed loops rather
+        # than `game_loop % n == 0`, in realtime the loops we see are not aligned
+        self._creep_coverage_updated_loop: int = -self.CREEP_COVERAGE_INTERVAL
+        self._creep_edges_updated_loop: int = -self.CREEP_EDGES_INTERVAL
+        self._tumor_spread_calculated_loop: int = 0
         self._overlord_spotter_dict: dict[int, Point2] = {}
         self._setup_overlord_spotter_dict: bool = False
         # Cache for queen edge positions when ability not available
@@ -103,7 +111,12 @@ class CreepManager(Manager, IManagerMediator):
 
     @property_cache_once_per_frame
     def get_creep_edges(self) -> tuple[np.ndarray, np.ndarray]:
-        if self.ai.last_game_loop % 16 == 0 or not hasattr(self, "_creep_edges"):
+        game_loop: int = self.ai.state.game_loop
+        if (
+            game_loop - self._creep_edges_updated_loop >= self.CREEP_EDGES_INTERVAL
+            or not hasattr(self, "_creep_edges")
+        ):
+            self._creep_edges_updated_loop = game_loop
             creep_grid = self.get_creep_grid
             edges = convolve(creep_grid, self.EDGE_FILTER, mode="constant")
 
@@ -205,7 +218,12 @@ class CreepManager(Manager, IManagerMediator):
 
     async def update(self, iteration: int) -> None:
         # once every 5 seconds, calculate creep coverage
-        if self.ai.state.game_loop % 112 == 0:
+        game_loop: int = self.ai.state.game_loop
+        if (
+            game_loop - self._creep_coverage_updated_loop
+            >= self.CREEP_COVERAGE_INTERVAL
+        ):
+            self._creep_coverage_updated_loop = game_loop
             # Get the creep and pathing grids
             creep_grid = self.get_creep_grid.T
             pathing_grid = self.manager_mediator.get_ground_grid
@@ -669,7 +687,11 @@ class CreepManager(Manager, IManagerMediator):
         interval = self._tumor_spread_interval()
         if interval <= 0:
             return True
-        return self.ai.state.game_loop % interval == 0
+        game_loop: int = self.ai.state.game_loop
+        if game_loop - self._tumor_spread_calculated_loop >= interval:
+            self._tumor_spread_calculated_loop = game_loop
+            return True
+        return False
 
     def _position_blocks_expansion(self, position: Point2) -> bool:
         """Will the creep tumor block expansion"""

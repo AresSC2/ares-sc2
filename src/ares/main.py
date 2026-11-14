@@ -130,7 +130,7 @@ class AresBot(CustomBotAI):
         # Key: tag of shade Value: frame shade commenced (+32 if no adept owner found)
         self.adept_shades: defaultdict[int, dict] = defaultdict(dict)
         self.adept_tags_with_shades_assigned: set[int] = set()
-        # we skip python-sc2 iterations in realtime, so we keep track of our own one
+        # our own count of steps taken, independent of python-sc2's iteration
         self.actual_iteration: int = 0
         self.WORKER_TYPES = WORKER_TYPES | {UnitTypeId.DRONEBURROWED}
         self.supply_type: UnitTypeId = UnitTypeId.OVERLORD
@@ -146,7 +146,7 @@ class AresBot(CustomBotAI):
         self._seen_tags: set[int] = set()
 
         self.arcade_mode: bool = False
-        self.first_step_prepared = False
+        self._blocked_positions_cleared_loop: int = 0
 
     def give_same_action(
         self,
@@ -176,24 +176,8 @@ class AresBot(CustomBotAI):
         self._requested_zerg_placements.append((base_location, structure_type))
 
     async def _prepare_step(self, state, proto_game_info) -> None:
-        """If playing in realtime, we set the game step to 1 (in on_start) and then
-        manually skip frames. This gives Ares a time limit of 4 frames (45ms per frame)
-        to finish an iteration. Playing every 4th frame seems to be the generally
-        accepted solution to prevent weird things going on. And from Ares' point of
-        view, they have a better chance of running smoothly on older PC's.
-        """
-        self.state = state
-        loop: int = state.game_loop
-        if (
-            self.realtime
-            and self.last_game_loop + 4 > loop
-            and loop != 0
-            and self.first_step_prepared
-        ):
-            return
-
-        self.last_game_loop = loop
-        self.first_step_prepared = True
+        """Record the game loop, then let python-sc2 prepare the step."""
+        self.last_game_loop = state.game_loop
         return await super()._prepare_step(state, proto_game_info)
 
     # noinspection PyFinal
@@ -340,9 +324,23 @@ class AresBot(CustomBotAI):
         -------
         None
         """
-        # manually skip the frames in realtime
+
+        """
+        In realtime the game step is set to 4, so python-sc2 only
+        requests an observation every 4th frame (~178ms at 22.4 frames per second).
+
+        Game loops are unpredictable, with no guarantee that the bot's actions will
+        show up in the next observation. From testing, it can take up to 3 frames
+        for an action to show up but no guarantees.
+
+        Game step of 4 alleviates this problem
+        mostly, but authors should try to keep their step time short.
+
+        Should be noted none of these issues arise when running realtime vs
+        the ingame AI.
+        """
         if self.realtime:
-            self.client.game_step = 1
+            self.client.game_step = 4
         elif self.game_step_override:
             self.client.game_step = self.game_step_override
         else:
@@ -817,7 +815,9 @@ class AresBot(CustomBotAI):
         None
         """
         # clear every 3 minutes
-        if self.state.game_loop % 4032 == 0:
+        # (elapsed loops rather than modulo, loops aren't aligned in realtime)
+        if self.state.game_loop - self._blocked_positions_cleared_loop >= 4032:
+            self._blocked_positions_cleared_loop = self.state.game_loop
             self._blocked_positions: set[Point2] = set()
         # Set of enemy units detected by own sensor tower,
         # as blips have less unit information than normal visible units
