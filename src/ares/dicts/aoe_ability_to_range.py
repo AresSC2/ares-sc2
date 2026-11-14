@@ -25,6 +25,8 @@ AOE_ABILITY_SPELLS_INFO: dict[AbilityId, dict] = {
         "radius": 2.25,
         "range": 10.0,
         "effect": BuffId.FUNGALGROWTH,
+        # projectile: 10 range / 12 speed ~= 0.83s, rounded up
+        "travel_time": 1.0,
     },
     AbilityId.KD8CHARGE_KD8CHARGE: {"radius": 5.0, "range": 2.0, "effect": None},
     AbilityId.PARASITICBOMB_PARASITICBOMB: {

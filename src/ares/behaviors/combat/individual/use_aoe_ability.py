@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
+from weakref import WeakKeyDictionary
 
 import numpy as np
 from cython_extensions import (
@@ -27,6 +28,13 @@ from ares.managers.manager_mediator import ManagerMediator
 
 if TYPE_CHECKING:
     from ares import AresBot
+
+# Spells with a `travel_time` have no effect or buff to detect until they land,
+# so remember where they were cast: bot -> [(ability, position, landing time)]
+# Behaviors are recreated every step, so this state has to live outside of them.
+_IN_FLIGHT: WeakKeyDictionary[AresBot, list[tuple[AbilityId, Point2, float]]] = (
+    WeakKeyDictionary()
+)
 
 
 @dataclass
@@ -78,7 +86,9 @@ class UseAOEAbility(CombatIndividualBehavior):
         if (
             not self.recalculate
             and self.unit.is_using_ability(self.ability_id)
-            and self._can_cast(ai, mediator, self.unit.order_target, radius)
+            and self._can_cast(
+                ai, mediator, self.unit.order_target, radius, check_in_flight=False
+            )
         ):
             return True
 
@@ -110,15 +120,41 @@ class UseAOEAbility(CombatIndividualBehavior):
             else:
                 self.unit(self.ability_id, position)
 
+            if travel_time := AOE_ABILITY_SPELLS_INFO[self.ability_id].get(
+                "travel_time"
+            ):
+                _IN_FLIGHT.setdefault(ai, []).append(
+                    (self.ability_id, position, ai.time + travel_time)
+                )
             return True
         return False
 
     def _can_cast(
-        self, ai: AresBot, mediator: ManagerMediator, position: Point2, radius: float
+        self,
+        ai: AresBot,
+        mediator: ManagerMediator,
+        position: Point2,
+        radius: float,
+        check_in_flight: bool = True,
     ) -> bool:
         can_cast: bool = (
             len(cy_closer_than(self.targets, radius, position)) >= self.min_targets
         )
+        # check if this spell is already on its way to this area
+        if (
+            can_cast
+            and check_in_flight
+            and not self.stack_same_spell
+            and "travel_time" in AOE_ABILITY_SPELLS_INFO[self.ability_id]
+        ):
+            in_flight = [c for c in _IN_FLIGHT.get(ai, []) if c[2] > ai.time]
+            _IN_FLIGHT[ai] = in_flight
+            if any(
+                ability == self.ability_id and cy_distance_to(position, pos) < radius
+                for ability, pos, _ in in_flight
+            ):
+                return False
+
         # check for friendly splash damage
         if can_cast and self.avoid_own_ground or self.avoid_own_flying:
             own_in_range = mediator.get_units_in_range(

@@ -790,7 +790,7 @@ class AresBot(CustomBotAI):
                     shade_position
                 ).tag
                 self.adept_shades[shade_tag][SHADE_COMMENCED] = current_frame
-                self.adept_tags_with_shades_assigned.add(close_adepts.first.tag)
+                self.adept_tags_with_shades_assigned.add(close_adepts[0].tag)
             else:
                 # we can't find an owner, assume 20% complete
                 self.adept_shades[shade_tag][SHADE_OWNER] = 0
