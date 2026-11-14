@@ -378,7 +378,7 @@ class UnitRoleManager(Manager, IManagerMediator):
         # get the tags of all units that aren't of the excluded types
         for unit_type in own_army_dict:
             if unit_type not in excluded:
-                valid_tags.extend(own_army_dict[unit_type].tags)
+                valid_tags.extend([unit.tag for unit in own_army_dict[unit_type]])
         shared_tags: list[int] = [tag for tag in valid_tags if tag in role_set]
         return Units(
             self.manager_mediator.manager_request(

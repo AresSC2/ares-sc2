@@ -61,7 +61,6 @@ class Mining(MacroBehavior):
         mineral_boost: Turn mineral boosting on or off. Defaults to True.
         vespene_boost: Turn vespene boosting on or off
             (only active when workers_per_gas < 3).
-            WARNING: VESPENE BOOSTING CURRENTLY NOT WORKING.
             Defaults to True.
         workers_per_gas: Control how many workers are assigned to each gas.
             Defaults to 3.
@@ -78,7 +77,7 @@ class Mining(MacroBehavior):
     keep_safe: bool = True
     long_distance_mine: bool = True
     mineral_boost: bool = True
-    vespene_boost: bool = False
+    vespene_boost: bool = True
     workers_per_gas: int = 3
     self_defence_active: bool = True
     safe_long_distance_mineral_fields: Units | None = None
